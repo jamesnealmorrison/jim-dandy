@@ -1,6 +1,6 @@
-package com.jimmie.domain.creatures;
+package com.jimmie.domain.creatures.monsters;
 
-public enum Keyword {
+public enum MonsterKeyword {
 	ACID, AIR, AQUATIC, BLIND, CHARM, COLD, CONSTRUCT, DEMON, DEVIL, DISEASE, DRAGON, EARTH,
 	FEAR, FIRE, FORCE, GAZE, GIANT, HEALING, HOMUNCULUS, ILLUSION, IMPLEMENT, LIGHTNING,
 	LIVING_CONSTRUCT, MOUNT, NECROTIC, OOZE, PLANT, POISON, POLYMORPH, PSYCHIC, RADIANT,

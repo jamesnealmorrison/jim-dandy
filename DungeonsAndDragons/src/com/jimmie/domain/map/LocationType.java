@@ -1,0 +1,5 @@
+package com.jimmie.domain.map;
+
+public enum LocationType {
+	GRASS, ROAD, TREE, RUBBLE, BOULDER, FOLIAGE, WALL, SHALLOW_RIVER, DEEP_RIVER, SACRED_CIRCLE, FALLEN_TREE, WATERFALL
+}
