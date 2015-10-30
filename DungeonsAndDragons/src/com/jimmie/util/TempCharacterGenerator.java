@@ -1,9 +1,5 @@
 package com.jimmie.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jimmie.domain.Equipment;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Elf;
