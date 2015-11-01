@@ -3,6 +3,7 @@ package com.jimmie.domain.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -68,7 +69,7 @@ public class Psion extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getIntelligenceModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -89,15 +90,15 @@ public class Psion extends DndClass {
 			DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
 			if (augment == 2) {
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getIntelligenceModifier() + owner.getWisdomModifier(), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
 			} else {
-			    target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getIntelligenceModifier(), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
+			    target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
 			}
 			
 			int targetPushDistance = 1;
 			
 			if (augment == 1) {
-				targetPushDistance = owner.getWisdomModifier();
+				targetPushDistance = owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM);
 			}
 			
 			if (augment == 2) {
@@ -150,7 +151,7 @@ public class Psion extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getIntelligenceModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -179,12 +180,12 @@ public class Psion extends DndClass {
 				damageDiceType = DiceType.TEN_SIDED;
 			}
 
-		    target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getIntelligenceModifier(), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
+		    target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), owner.getRace()), DamageType.FORCE_DAMAGE, encounter, true);
 			
 			int targetPullDistance = 1;
 			
 			if (augment > 0) {
-				targetPullDistance = owner.getWisdomModifier();
+				targetPullDistance = owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM);
 			}
 			
 			for (int i = 0; i < targetPullDistance; i++) {
@@ -245,7 +246,7 @@ public class Psion extends DndClass {
  		for (int rolls = 0; rolls < damageRolls; rolls++) {
  		    damage = damage + damageDice.basicRoll();
  		}
- 		damage = damage + owner.getIntelligenceModifier();
+ 		damage = damage + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 		
  		List<Creature> hitTargets = new ArrayList<Creature>();
 		DurationType durationType = DurationType.START_OF_NEXT_TURN;
@@ -255,7 +256,7 @@ public class Psion extends DndClass {
 		for (AttackTarget target : targets) {
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-			int roll = diceRoll + owner.getIntelligenceModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 			
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 			
@@ -362,12 +363,12 @@ public class Psion extends DndClass {
  		for (int rolls = 0; rolls < damageRolls; rolls++) {
  		    damage = damage + damageDice.basicRoll() ;
  		}
- 		damage = damage + owner.getIntelligenceModifier();
+ 		damage = damage + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 		
 		for (AttackTarget target : targets) {
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-			int roll = diceRoll + owner.getIntelligenceModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 			
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 			
@@ -397,5 +398,32 @@ public class Psion extends DndClass {
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though.");
 			owner.setUsedStandardAction(false);			
 		}
+	}
+
+	@Override
+	public List<String> selectInitialSkills() {
+		List<String> trainedSkills = new ArrayList<String>();
+		
+		// Now make selections.
+		List<String> choices = new ArrayList<String>();
+		choices.add("Arcana");
+		choices.add("Bluff");
+		choices.add("Diplomacy");
+		choices.add("Dungeoneering");
+		choices.add("History");
+		choices.add("Insight");
+		choices.add("Intimidate");
+		choices.add("Perception");
+		
+		Utils.print("Choose 4 of the following");
+		for (int i = 0; i < 4; i++) {
+			Utils.printValidStringChoices(choices);
+			Utils.print("Your choice:");
+			String choice = Utils.getValidInput(choices);
+			trainedSkills.add(choice);
+			choices.remove(choice);
+		}
+		
+		return trainedSkills;
 	}
 }

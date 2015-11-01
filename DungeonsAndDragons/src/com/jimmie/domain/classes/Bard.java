@@ -3,6 +3,7 @@ package com.jimmie.domain.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -56,7 +57,7 @@ public class Bard extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getCharismaModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -80,7 +81,7 @@ public class Bard extends DndClass {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getCharismaModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 
 			/* The target is marked by an ally within 5 squares. */
 			Creature misdirectedMarker = encounter.chooseAllyWithinRangeOf(owner, owner.getCurrentPosition(), 5);
@@ -100,7 +101,7 @@ public class Bard extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getCharismaModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -124,7 +125,7 @@ public class Bard extends DndClass {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getCharismaModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 
 			/* The target takes a -2 penalty to attack rolls until the end of my next turn. */
 			target.setTemporaryAttackRollModifier(owner, DurationType.END_OF_NEXT_TURN, -2);
@@ -145,7 +146,7 @@ public class Bard extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getCharismaModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -165,7 +166,7 @@ public class Bard extends DndClass {
 			int damageRolls = 1;
 			DiceType damageDiceType = DiceType.SIX_SIDED;
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getCharismaModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 
 			/* I get to slide the target 2 squares and allow an ally to do a basic attack against them as a free action with a +2 power bonus. */
 			Utils.print("You now get to slide " + target.getName() + " 2 squares and allow someone a free attack with a +2 bonus.");
@@ -250,7 +251,7 @@ public class Bard extends DndClass {
 			target.useHealingSurge();
 			int extraRolls = 0;
 			
-			int extraHitPoints = owner.getCharismaModifier();
+			int extraHitPoints = owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA);
 			if (owner.getLevel() < 6) {
 				/* Don't add anything else. */
 				extraRolls = 0;
@@ -314,7 +315,7 @@ public class Bard extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getCharismaModifier() + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + owner.getImplementAttackBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -339,9 +340,9 @@ public class Bard extends DndClass {
 				damageRolls = damageRolls * 2;
 			}
 			/* TODO: Supposed to be psychic damage.  Haven't implemented that yet. */
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getCharismaModifier(), owner.getRace()), DamageType.PSYCHIC_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getImplementDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), owner.getRace()), DamageType.PSYCHIC_DAMAGE, encounter, true);
 
-			target.hitByStirringShout(owner.getCharismaModifier());
+			target.hitByStirringShout(owner.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA));
 		} else {
 			Utils.print("You missed " + target.getName());
 		}
@@ -350,5 +351,41 @@ public class Bard extends DndClass {
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			owner.setUsedStandardAction(false);			
 		}
+	}
+
+	@Override
+	public List<String> selectInitialSkills() {
+		List<String> trainedSkills = new ArrayList<String>();
+		
+		// Add automatic trained skill(s).
+		trainedSkills.add("Arcana");
+		Utils.print("Automatically trained in Arcana.");
+		
+		// Now make selections.
+		List<String> choices = new ArrayList<String>();
+		choices.add("Acrobatics");
+		choices.add("Athletics");
+		choices.add("Bluff");
+		choices.add("Diplomacy");
+		choices.add("Dungeoneering");
+		choices.add("Heal");
+		choices.add("History");
+		choices.add("Insight");
+		choices.add("Intimidate");
+		choices.add("Nature");
+		choices.add("Perception");
+		choices.add("Religion");
+		choices.add("Streetwise");
+		
+		Utils.print("Choose 4 of the following");
+		for (int i = 0; i < 4; i++) {
+			Utils.printValidStringChoices(choices);
+			Utils.print("Your choice:");
+			String choice = Utils.getValidInput(choices);
+			trainedSkills.add(choice);
+			choices.remove(choice);
+		}
+		
+		return trainedSkills;
 	}
 }

@@ -8,8 +8,8 @@ import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.creatures.Race;
 import com.jimmie.domain.creatures.Size;
-import com.jimmie.domain.items.ClothArmor;
-import com.jimmie.domain.items.ShortSword;
+import com.jimmie.domain.items.armor.ClothArmor;
+import com.jimmie.domain.items.weapons.ShortSword;
 
 public class TempCharacterGenerator {
 

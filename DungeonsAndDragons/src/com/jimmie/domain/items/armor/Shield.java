@@ -1,4 +1,4 @@
-package com.jimmie.domain.items;
+package com.jimmie.domain.items.armor;
 
 import java.io.Serializable;
 

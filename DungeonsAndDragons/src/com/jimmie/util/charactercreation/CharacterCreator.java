@@ -3,7 +3,10 @@ package com.jimmie.util.charactercreation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.Skill;
+import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.Ardent;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.Barbarian;
@@ -58,13 +61,71 @@ public class CharacterCreator {
 
 	private void run() {
 		Race race = chooseRace();
+		
 		DndClass dndClass = chooseClass(race);
 
 		PlayerCharacter pc = new PlayerCharacter(race, dndClass);
 
 		generateAbilityScores(pc);
 
+		/* Must have ability scores generated first because some race choices let you add to your ability score. */
+		race.makeRaceChoices(pc, dndClass);
+		dndClass.makeClassChoices(pc);
+
+		
+		/* Skills now. */
+		List<String> trainedSkills = dndClass.selectInitialSkills();
+		setTrainedSkills(pc, trainedSkills);
+		
+		pc.selectFeat();
+		
 		//Utils.saveCharacter(pc);
+	}
+
+	private void setTrainedSkills(PlayerCharacter pc, List<String> trainedSkills) {
+		for (String s : trainedSkills) {
+			Skill skill = null;
+			if ("Acrobatics".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.ACROBATICS);
+			} else if ("Arcana".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.ARCANA);
+			} else if ("Athletics".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.ATHLETICS);
+			} else if ("Bluff".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.BLUFF);
+			} else if ("Diplomacy".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.DIPLOMACY);
+			} else if ("Dungeoneering".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.DUNGEONEERING);
+			} else if ("Endurance".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.ENDURANCE);
+			} else if ("Heal".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.HEAL);
+			} else if ("History".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.HISTORY);
+			} else if ("Insight".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.INSIGHT);
+			} else if ("Intimidate".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.INTIMIDATE);
+			} else if ("Nature".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.NATURE);
+			} else if ("Perception".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.PERCEPTION);
+			} else if ("Religion".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.RELIGION);
+			} else if ("Stealth".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.STEALTH);
+			} else if ("Streetwise".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.STREETWISE);
+			} else if ("Thievery".equalsIgnoreCase(s)) {
+				skill = pc.getSkill(SkillType.THIEVERY);
+			} else {
+				Utils.print("ERROR!!!!! There was a skill selected that I don't understand: " + s);
+			}
+			if (skill != null) {
+				skill.setTrained(true);
+			}
+		}
 	}
 
 	private void generateAbilityScores(PlayerCharacter pc) {
@@ -98,7 +159,7 @@ public class CharacterCreator {
 		Dice.setRollType(choice);
 		List<Integer> choices = null;
 		Dice dice = new Dice(DiceType.SIX_SIDED);
-		boolean rollsQualify = false; // Determines if the player is to powerful or weak.
+		boolean rollsQualify = false; // Determines if the player is too powerful or weak.
 
 		while (!rollsQualify) {
 			choices = new ArrayList<Integer>();
@@ -163,8 +224,8 @@ public class CharacterCreator {
 			Utils.print("Assiging " + choices.get(0) + " to Charisma.");
 			pc.setStrength(choices.get(0));
 			
-			int totalAbilityModifiers = pc.getStrengthModifier() + pc.getDexterityModifier() + pc.getConstitutionModifier() + pc.getIntelligenceModifier()
-					+ pc.getWisdomModifier() + pc.getCharismaModifier();
+			int totalAbilityModifiers = pc.getAbilityModifier(AbilityType.STRENGTH) + pc.getAbilityModifier(AbilityType.DEXTERITY) + pc.getAbilityModifier(AbilityType.CONSTITUTION)
+					+ pc.getAbilityModifier(AbilityType.INTELLIGENCE) + pc.getAbilityModifier(AbilityType.WISDOM) + pc.getAbilityModifier(AbilityType.CHARISMA);
 			if (totalAbilityModifiers >= 4 && totalAbilityModifiers <= 8) {
 				rollsQualify = true;
 			} else {

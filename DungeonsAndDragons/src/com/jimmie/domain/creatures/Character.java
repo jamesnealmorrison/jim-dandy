@@ -3,6 +3,7 @@ package com.jimmie.domain.creatures;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -16,13 +17,18 @@ import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.classes.Warden;
-import com.jimmie.domain.items.Armor;
-import com.jimmie.domain.items.ClothArmor;
 import com.jimmie.domain.items.Implement;
-import com.jimmie.domain.items.NoShield;
-import com.jimmie.domain.items.Shield;
-import com.jimmie.domain.items.Unarmed;
-import com.jimmie.domain.items.Weapon;
+import com.jimmie.domain.items.armor.Armor;
+import com.jimmie.domain.items.armor.ArmorGroup;
+import com.jimmie.domain.items.armor.ArmorType;
+import com.jimmie.domain.items.armor.ClothArmor;
+import com.jimmie.domain.items.armor.NoShield;
+import com.jimmie.domain.items.armor.Shield;
+import com.jimmie.domain.items.weapons.Unarmed;
+import com.jimmie.domain.items.weapons.Weapon;
+import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.domain.items.weapons.WeaponGroup;
+import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
@@ -43,21 +49,21 @@ public abstract class Character extends Creature {
 		/* Light armor lets you add intelligence or dexterity modifier, whichever is greater. */
 		if (getArmor().isLightArmor()) {
 			if (dndClass.getMyOptions().contains(Warden.EARTH_STRENGTH)) {
-				if ((getConstitutionModifier() > getIntelligenceModifier()) &&
-						(getConstitutionModifier() > getDexterityModifier())) {
-					armorClass = armorClass + getConstitutionModifier();
+				if ((getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)) &&
+						(getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY))) {
+					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION);
 				} else {
-					if (getIntelligenceModifier() > getDexterityModifier()) {
-						armorClass = armorClass + getIntelligenceModifier();
+					if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
+						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 					} else {
-						armorClass = armorClass + getDexterityModifier();
+						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
 					}					
 				}
 			}else {
-				if (getIntelligenceModifier() > getDexterityModifier()) {
-					armorClass = armorClass + getIntelligenceModifier();
+				if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
+					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 				} else {
-					armorClass = armorClass + getDexterityModifier();
+					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
 				}
 			}
 			/* Avenger's have "Armor of Faith". */
@@ -180,6 +186,21 @@ public abstract class Character extends Creature {
 	public int getReflexMisc1() {
 		return reflexMisc1;
 	}
+	@Override
+	public int getFortitude(Encounter encounter, Creature attacker) {
+		return super.getFortitude(encounter, attacker) + getFortitudeMisc1() + getFortitudeMisc1();
+	}
+
+	@Override
+	public int getReflex(Creature attacker) {
+		return super.getReflex(attacker) + getReflexMisc1() + getReflexMisc2();
+	}
+
+	@Override
+	public int getWill(Creature attacker) {
+		return super.getWill(attacker) + getWillMisc1() + getWillMisc2();
+	}
+
 	public void setReflexMisc1(int reflexMisc1) {
 		this.reflexMisc1 = reflexMisc1;
 	}
@@ -287,27 +308,27 @@ public abstract class Character extends Creature {
 		this.coinsAndOtherWealth = coinsAndOtherWealth;
 	}
 	protected List<Ritual> rituals;	
-	protected int age;
+	protected int age = 0;
 	protected Gender gender;
-	protected int height;  // in inches
-	protected int weight;  // in pounds
+	protected int height = 0;  // in inches
+	protected int weight = 0;  // in pounds
 	// protected String diety;  // we don't do dieties
 	protected String adventuringCompanyOrOtherAffiliations;
-	protected int initiativeMisc;
-	protected int armorClassMisc1;
-	protected int armorClassMisc2;
-	protected int fortitudeMisc1;
-	protected int fortitudeMisc2;
-	protected int reflexMisc1;
-	protected int reflexMisc2;
-	protected int willMisc1;
-	protected int willMisc2;
-	protected int speedMisc;
-	protected int healingSurgeValue;
-	protected int healingSurgesPerDay;
-	protected int currentSurgeUses;
-	protected boolean usedSecondWind;
-	protected int deathSavingThrowFailures;
+	protected int initiativeMisc = 0;
+	protected int armorClassMisc1 = 0;
+	protected int armorClassMisc2 = 0;
+	protected int fortitudeMisc1 = 0;
+	protected int fortitudeMisc2 = 0;
+	protected int reflexMisc1 = 0;
+	protected int reflexMisc2 = 0;
+	protected int willMisc1 = 0;
+	protected int willMisc2 = 0;
+	protected int speedMisc = 0;
+	protected int healingSurgeValue = 0;
+	protected int healingSurgesPerDay = 0;
+	protected int currentSurgeUses = 0;
+	protected boolean usedSecondWind = false;
+	protected int deathSavingThrowFailures = 0;
 	protected String deathSavingThrowMods; // Not sure what this is.
 	protected List<Resistance> resistances;
 	protected String additionalEffectsForSpendingActionPoints;
@@ -319,27 +340,66 @@ public abstract class Character extends Creature {
 	protected List<Wealth> coinsAndOtherWealth;
 	private Weapon readiedWeapon;
 	private Implement readiedImplement;
-	private List<String> weaponProficiencies;
+	private List<WeaponType> weaponTypeProficiencies;
+	private List<WeaponGroup> weaponGroupProficiencies;
+	private List<WeaponCategory> weaponCategoryProficiencies;
+	private List<ArmorType> armorTypeProficiencies;
+	private List<ArmorGroup> armorGroupProficiencies;
 
 	public void setReadiedWeapon(Weapon readiedWeapon) {
 		this.readiedWeapon = readiedWeapon;
 	}
 	@Override
 	public int getInitiative() {
-		return getDexterityModifier() + getInitiativeMisc();
+		return getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY) + getInitiativeMisc();
 	}
 
 	public void addPower(String powerId) {
 		powers.add(powerId);
 	}
 
-	public void addWeaponProficiency(String weaponId) {
-		weaponProficiencies.add(weaponId);
+	public void addWeaponTypeProficiency(WeaponType weaponType) {
+		if (weaponTypeProficiencies == null) {
+			weaponTypeProficiencies = new ArrayList<WeaponType>();
+		}
+		weaponTypeProficiencies.add(weaponType);
+	}
+
+	public void addWeaponGroupProficiency(WeaponGroup weaponGroup) {
+		if (weaponGroupProficiencies == null) {
+			weaponGroupProficiencies = new ArrayList<WeaponGroup>();
+		}
+		weaponGroupProficiencies.add(weaponGroup);
+	}
+
+	public void addWeaponCategoryProficiency(WeaponCategory weaponCategory) {
+		if (weaponCategoryProficiencies == null) {
+			weaponCategoryProficiencies = new ArrayList<WeaponCategory>();
+		}
+		weaponCategoryProficiencies.add(weaponCategory);
+	}
+
+	public void addArmorTypeProficiency(ArmorType armorType) {
+		if (armorTypeProficiencies == null) {
+			armorTypeProficiencies = new ArrayList<ArmorType>();
+		}
+		armorTypeProficiencies.add(armorType);
+	}
+
+	public void addArmorGroupProficiency(ArmorGroup armorGroup) {
+		if (armorGroupProficiencies == null) {
+			armorGroupProficiencies = new ArrayList<ArmorGroup>();
+		}
+		armorGroupProficiencies.add(armorGroup);
 	}
 
 	public Character() {
 		super();
-		weaponProficiencies = new ArrayList<String>();
+		weaponTypeProficiencies = new ArrayList<WeaponType>();
+		weaponGroupProficiencies = new ArrayList<WeaponGroup>();
+		weaponCategoryProficiencies = new ArrayList<WeaponCategory>();
+		armorTypeProficiencies = new ArrayList<ArmorType>();
+		armorGroupProficiencies = new ArrayList<ArmorGroup>();
 		addPower(Character.BASIC_MELEE_ATTACK);
 		addPower(Creature.SPEND_ACTION_POINT);
 		addPower(Character.SECOND_WIND);
@@ -349,14 +409,14 @@ public abstract class Character extends Creature {
 	@StandardAction(menuName = BASIC_MELEE_ATTACK, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
 	@AtWillPower
 	public void basicMeleeAttack(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getNormalRange());
 
 		if (target != null) {
 			List<AttackTarget> targets = new ArrayList<AttackTarget>();
 			targets.add(target);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.attackRoll(this, target, encounter, getCurrentPosition());
-			int roll = diceRoll + getStrengthModifier() + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
@@ -387,7 +447,7 @@ public abstract class Character extends Creature {
 						Utils.print("Because of your Aspect Of Might bonus, you get a two bonus to this damage.  I'll add it for you!");
 					}
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, getReadiedWeapon().getDamageBonus() + avengerBonus, getStrengthModifier(), race), DamageType.NORMAL_DAMAGE, encounter, true);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, getReadiedWeapon().getDamageBonus() + avengerBonus, getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), race), DamageType.NORMAL_DAMAGE, encounter, true);
 			} else {
 				Utils.print("You missed " + target.getName());
 			}
@@ -441,9 +501,16 @@ public abstract class Character extends Creature {
 	public int getWeaponProficiencyBonus() {
 		Weapon weapon = getReadiedWeapon();
 
-		if (weaponProficiencies.contains(weapon.getWeaponId())) {
+		// check for type or category proficiency is simple.
+		if ((weaponTypeProficiencies.contains(weapon.getWeaponType())) || (weaponCategoryProficiencies.contains(weapon.getWeaponCategory()))) {
 			return weapon.getProficiencyBonus();
 		} else {
+			// Now check for a weapon group proficiency of any of the groups.
+			for (WeaponGroup group : weapon.getWeaponGroups()) {
+				if (weaponGroupProficiencies.contains(group)) {
+					return weapon.getProficiencyBonus();
+				}
+			}
 			return 0;
 		}
 	}
@@ -592,14 +659,14 @@ public abstract class Character extends Creature {
 	public void aidAnother(Encounter encounter) {
 
 		Utils.print("Pick the target that you want to help your ally against.");
-		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getNormalRange());
 
 		if (target != null) {
 			List<AttackTarget> targets = new ArrayList<AttackTarget>();
 			targets.add(target);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.attackRoll(this, target, encounter, getCurrentPosition());
-			int roll = diceRoll + getStrengthModifier() + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 

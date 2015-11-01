@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -36,13 +37,13 @@ public class Fighter extends DndClass implements Serializable {
 	@StandardAction(menuName = SURE_STRIKE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = true, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
 	@AtWillPower
 	public void sureStrike(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter) + 2;
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter) + 2;
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -83,13 +84,13 @@ public class Fighter extends DndClass implements Serializable {
 	@RequiresShield
 	@AtWillPower
 	public void tideOfIron(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -113,7 +114,7 @@ public class Fighter extends DndClass implements Serializable {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			/* Push the target. */
 			String pushDirection = encounter.getPushDirection(owner.getCurrentPosition(), target.getCurrentPosition());
@@ -138,13 +139,13 @@ public class Fighter extends DndClass implements Serializable {
 	public void coveringAttack(Encounter encounter) {
 		if (!usedCoveringAttack) {
 			usedCoveringAttack = true;
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -164,7 +165,7 @@ public class Fighter extends DndClass implements Serializable {
 			int damageRolls = owner.getReadiedWeapon().getDamageRolls() * 2;
 			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			/* An ally adjacent to the target can shift two squares. */
 			Creature ally = encounter.chooseAllyAdjacentTo(owner, target.getCurrentPosition());
@@ -193,13 +194,13 @@ public class Fighter extends DndClass implements Serializable {
 	public void comebackStrike(Encounter encounter) {
 		if (!usedComebackStrike) {
 			usedComebackStrike = true;
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -219,7 +220,7 @@ public class Fighter extends DndClass implements Serializable {
 			int damageRolls = owner.getReadiedWeapon().getDamageRolls() * 2;
 			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			Utils.print("I get to spend a healing surge.");
 			owner.useHealingSurge();
@@ -256,5 +257,31 @@ public class Fighter extends DndClass implements Serializable {
 	@Override
 	public void initializeForNewDay() {
 		usedComebackStrike = false;
+	}
+
+	@Override
+	public List<String> selectInitialSkills() {
+		List<String> trainedSkills = new ArrayList<String>();
+		
+		// Add automatic trained skill(s).
+		
+		// Now make selections.
+		List<String> choices = new ArrayList<String>();
+		choices.add("Athletics");
+		choices.add("Endurance");
+		choices.add("Heal");
+		choices.add("Intimidate");
+		choices.add("Streetwise");
+		
+		Utils.print("Choose 3 of the following");
+		for (int i = 0; i < 3; i++) {
+			Utils.printValidStringChoices(choices);
+			Utils.print("Your choice:");
+			String choice = Utils.getValidInput(choices);
+			trainedSkills.add(choice);
+			choices.remove(choice);
+		}
+		
+		return trainedSkills;
 	}
 }

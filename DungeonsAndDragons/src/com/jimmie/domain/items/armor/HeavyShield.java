@@ -1,6 +1,8 @@
-package com.jimmie.domain.items;
+package com.jimmie.domain.items.armor;
 
-public class LightShield extends Shield {
+
+public class HeavyShield extends Shield {
+
 	/**
 	 * 
 	 */
@@ -8,6 +10,6 @@ public class LightShield extends Shield {
 
 	@Override
 	public int getBonus() {
-		return 1;
+		return 2;
 	}
 }

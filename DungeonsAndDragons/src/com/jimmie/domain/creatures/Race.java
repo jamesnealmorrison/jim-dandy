@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.classes.DndClass;
+
 public abstract class Race implements Serializable {
 	private List<String> myPowers;
 	
@@ -50,4 +52,5 @@ public abstract class Race implements Serializable {
 	public abstract void initializeForEncounter();
 	public abstract void initializeForNewDay();
 	public abstract void processAfterHurtEffects(Creature creature);
+	public abstract void makeRaceChoices(PlayerCharacter pc, DndClass dndClass);
 }

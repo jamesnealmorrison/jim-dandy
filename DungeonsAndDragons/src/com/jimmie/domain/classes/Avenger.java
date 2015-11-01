@@ -3,6 +3,7 @@ package com.jimmie.domain.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -80,14 +81,14 @@ public class Avenger extends DndClass {
 	@StandardAction(menuName = BOND_OF_PURSUIT, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = true, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
 	@AtWillPower
 	public void bondOfPursuit(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
 
-		int roll = diceRoll + owner.getWisdomModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -113,9 +114,9 @@ public class Avenger extends DndClass {
 			}
 			
 			if (this.aspectOfMightEncounterBonus == false) {
-    		  target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+    		  target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			} else {
-                target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus()+2, owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+                target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus()+2, owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 				Utils.print("You got an aspect of might bonus of two to this damage roll.");
 			}
 			
@@ -136,7 +137,7 @@ public class Avenger extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getWisdomModifier() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -161,16 +162,16 @@ public class Avenger extends DndClass {
 				damageRolls = 2;
 			}
 			if (this.aspectOfMightEncounterBonus == false) {
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			} else {
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 				Utils.print("You got an aspect of might bonus of two to this damage roll.");
 			}
 
-			Utils.print(owner.getName() + " gets " + owner.getWisdomModifier() + " temporary HP");
+			Utils.print(owner.getName() + " gets " + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + " temporary HP");
 			/* Only do this if they have < owner.getWisdomModifier() already.  Otherwise we are removing temp hit points they already had. */
-			if (owner.getTemporaryHitPoints() < owner.getWisdomModifier()) {
-			   owner.setTemporaryHitPoints(owner.getWisdomModifier());
+			if (owner.getTemporaryHitPoints() < owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM)) {
+			   owner.setTemporaryHitPoints(owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM));
 			}
 			
 		} else {
@@ -186,20 +187,20 @@ public class Avenger extends DndClass {
 		int shiftDistance;
 		/* In this attack, you can shift 2 squares first (or 1 + dex mod if Censure of Pursuit). */
 		if (CENSURE_OF_PURSUIT.equals(censure)) {
-			shiftDistance = 1 + owner.getDexterityModifier();
+			shiftDistance = 1 + owner.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
 		} else {
 			shiftDistance = 2;
 		}
 		System.out.println("You may shift " + shiftDistance + " before the attack.");
 		owner.shift(shiftDistance, true, encounter);
 		
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 		
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getWisdomModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -222,9 +223,9 @@ public class Avenger extends DndClass {
      		damageRolls = damageRolls * 2;
 
 			if (this.aspectOfMightEncounterBonus == false) {
-	     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+	     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			} else {
-	     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus()+2, owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+	     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus()+2, owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 				Utils.print("You got an aspect of might bonus of two to this damage roll.");
 			}
 			
@@ -263,13 +264,13 @@ public class Avenger extends DndClass {
 	public void aspectOfMight(Encounter encounter) {
 		if (!usedAspectOfMight) {
 			usedAspectOfMight = true;
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 		
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getWisdomModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -291,7 +292,7 @@ public class Avenger extends DndClass {
 
      		damageRolls = damageRolls * 3;
 
-     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+     		target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 		} else {
 			Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
@@ -308,7 +309,7 @@ public class Avenger extends DndClass {
 
      		damageRolls = damageRolls * 3;
 
-     		target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getWisdomModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, false);
+     		target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, false);
 			
 		}
 		   Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");
@@ -323,6 +324,37 @@ public class Avenger extends DndClass {
 	@Override
 	public void initializeForNewDay() {
 		usedAspectOfMight = false;
+	}
+
+	@Override
+	public List<String> selectInitialSkills() {
+		List<String> trainedSkills = new ArrayList<String>();
+		
+		// Add automatic trained skill(s).
+		trainedSkills.add("Religion");
+		Utils.print("Automatically trained in Religion.");
+		
+		// Now make selections.
+		List<String> choices = new ArrayList<String>();
+		choices.add("Acrobatics");
+		choices.add("Athletics");
+		choices.add("Endurance");
+		choices.add("Heal");
+		choices.add("Intimidate");
+		choices.add("Perception");
+		choices.add("Stealth");
+		choices.add("Streetwise");
+		
+		Utils.print("Choose 3 of the following");
+		for (int i = 0; i < 3; i++) {
+			Utils.printValidStringChoices(choices);
+			Utils.print("Your choice:");
+			String choice = Utils.getValidInput(choices);
+			trainedSkills.add(choice);
+			choices.remove(choice);
+		}
+		
+		return trainedSkills;
 	}
 
 }

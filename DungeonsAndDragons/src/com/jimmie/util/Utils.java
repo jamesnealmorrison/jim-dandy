@@ -399,4 +399,10 @@ public class Utils {
 		}
 		return 0;
 	}
+
+	public static void printValidStringChoices(List<String> choices) {
+		for (String s : choices) {
+			print(s);
+		}
+	}
 }

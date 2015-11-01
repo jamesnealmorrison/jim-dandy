@@ -3,6 +3,7 @@ package com.jimmie.domain.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -51,13 +52,13 @@ public class Warden extends DndClass {
 	@StandardAction(menuName = STRENGTH_OF_STONE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = true, psionicTag = false)
 	@AtWillPower
 	public void strengthOfStone(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -81,7 +82,7 @@ public class Warden extends DndClass {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			Utils.print(owner.getName() + " gets 3 temporary HP");
 			/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */
@@ -96,13 +97,13 @@ public class Warden extends DndClass {
 	@StandardAction(menuName = EARTH_SHIELD_STRIKE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = true, psionicTag = false)
 	@AtWillPower
 	public void earthShieldStrike(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -126,7 +127,7 @@ public class Warden extends DndClass {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			/* I get an AC bonus of +1 until the end of my next turn. */
 			Utils.print("Adding a +1 bonus to AC until the end of my next turn.");
@@ -142,7 +143,7 @@ public class Warden extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -166,7 +167,7 @@ public class Warden extends DndClass {
 			if (owner.getLevel() >= 21) {
 				damageRolls = damageRolls * 2;
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			Utils.print(target.getName() + " grants combat advantage to " + owner.getName() + " and allies until the end of " + owner.getName() + "'s next turn.");
 			target.grantCombatAdvantageViaWardensFury(owner);
@@ -183,7 +184,7 @@ public class Warden extends DndClass {
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -203,7 +204,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
@@ -212,7 +213,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, false);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, false);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
 			return -2;
@@ -224,13 +225,13 @@ public class Warden extends DndClass {
 	public void thunderRamAssault(Encounter encounter) {
 		if (!usedThunderRamAssault) {
 			usedThunderRamAssault = true;
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getReach());
+		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
+		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 		
@@ -251,12 +252,12 @@ public class Warden extends DndClass {
 			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
 
 			/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getStrengthModifier(), owner.getRace()), DamageType.THUNDER_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.THUNDER_DAMAGE, encounter, true);
 			
 			/* If you chose the Earth Strength build, you can push the primary target. */
 			if (getMyOptions().contains(Warden.EARTH_STRENGTH)) {
 				String pushDirection = encounter.getPushDirection(owner.getCurrentPosition(), target.getCurrentPosition());
-				for (int i = 0; i < owner.getConstitutionModifier(); i++) {
+				for (int i = 0; i < owner.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
 				    target.push(pushDirection);
 				}
 			}
@@ -280,7 +281,7 @@ public class Warden extends DndClass {
 				secondaryTargets.add(secondaryTarget);
 				d = new Dice(DiceType.TWENTY_SIDED);
 				diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-				roll = diceRoll + owner.getStrengthModifier() + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(secondaryTargets, encounter);
+				roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(secondaryTargets, encounter);
 				
 				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 				
@@ -348,5 +349,34 @@ public class Warden extends DndClass {
 	public void setUsedFormOfTheWillowSentinelAttack(
 			boolean usedFormOfTheWillowSentinelAttack) {
 		this.usedFormOfTheWillowSentinelAttack = usedFormOfTheWillowSentinelAttack;
+	}
+
+	@Override
+	public List<String> selectInitialSkills() {
+		List<String> trainedSkills = new ArrayList<String>();
+		
+		// Add automatic trained skill(s).
+		trainedSkills.add("Nature");
+		Utils.print("Automatically trained in Nature.");
+		
+		// Now make selections.
+		List<String> choices = new ArrayList<String>();
+		choices.add("Athletics");
+		choices.add("Dungeoneering");
+		choices.add("Endurance");
+		choices.add("Heal");
+		choices.add("Intimidate");
+		choices.add("Perception");
+		
+		Utils.print("Choose 3 of the following");
+		for (int i = 0; i < 3; i++) {
+			Utils.printValidStringChoices(choices);
+			Utils.print("Your choice:");
+			String choice = Utils.getValidInput(choices);
+			trainedSkills.add(choice);
+			choices.remove(choice);
+		}
+		
+		return trainedSkills;
 	}
 }
