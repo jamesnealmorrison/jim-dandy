@@ -54,10 +54,6 @@ public class Halfling extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Halfling you get +2 to Dexterity and Charisma.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
-		
 		Utils.print("Setting size to Small.");
 		pc.setSize(Size.SMALL);
 		
@@ -81,6 +77,14 @@ public class Halfling extends Race {
 		
 		// TODO: Bold, Nimble Reaction, Second Chance.
 		Utils.print("NOTE: I have not yet coded Bold, Nimble Reaction, Second Chance.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Halfling you get +2 to Dexterity and Charisma.");
+		pc.setDexterity(pc.getDexterity() + 2);
+		pc.setCharisma(pc.getCharisma() + 2);
 	}
 
 }

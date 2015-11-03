@@ -63,10 +63,6 @@ public class Elf extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As an Elf you get +2 to Dexterity and Wisdom.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -93,5 +89,13 @@ public class Elf extends Race {
 		
 		// TODO: Fey Origin, Group Awareness, Wild Step, Elven Accuracy
 		Utils.print("NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step, Elven Accuracy.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As an Elf you get +2 to Dexterity and Wisdom.");
+		pc.setDexterity(pc.getDexterity() + 2);
+		pc.setWisdom(pc.getWisdom() + 2);		
 	}
 }

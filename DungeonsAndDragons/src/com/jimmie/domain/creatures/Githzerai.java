@@ -57,17 +57,6 @@ public class Githzerai extends Race {
 		Utils.print("As a Githzerai you get +2 to Wisdom.");
 		pc.setWisdom(pc.getWisdom() + 2);
 
-		Utils.print("As a Githzerai, you get to choose to add +2 to Dexterity or Intelligence.");
-		Utils.print("1. Dexterity");
-		Utils.print("2. Intelligence");
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, 2);
-		if (1 == choice) {
-			pc.setDexterity(pc.getDexterity()+2);
-		} else {
-			pc.setIntelligence(pc.getIntelligence()+2);
-		}
-	
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -95,6 +84,21 @@ public class Githzerai extends Race {
 
 		
 		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Githzerai, you get to choose to add +2 to Dexterity or Intelligence.");
+		Utils.print("1. Dexterity");
+		Utils.print("2. Intelligence");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (1 == choice) {
+			pc.setDexterity(pc.getDexterity()+2);
+		} else {
+			pc.setIntelligence(pc.getIntelligence()+2);
+		}		
 	}
 
 }

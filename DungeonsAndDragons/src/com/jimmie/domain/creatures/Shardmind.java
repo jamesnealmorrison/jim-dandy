@@ -57,20 +57,6 @@ public class Shardmind extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Shardmind you get +2 to Intelligence.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
-
-		Utils.print("As a Shardmind, you get to choose to add +2 to Wisdom or Charisma.");
-		Utils.print("1. Wisdom");
-		Utils.print("2. Charisma");
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, 2);
-		if (1 == choice) {
-			pc.setWisdom(pc.getWisdom()+2);
-		} else {
-			pc.setCharisma(pc.getCharisma()+2);
-		}
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -160,6 +146,24 @@ public class Shardmind extends Race {
 		
 		
 		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Shardmind you get +2 to Intelligence.");
+		pc.setIntelligence(pc.getIntelligence() + 2);
+
+		Utils.print("As a Shardmind, you get to choose to add +2 to Wisdom or Charisma.");
+		Utils.print("1. Wisdom");
+		Utils.print("2. Charisma");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (1 == choice) {
+			pc.setWisdom(pc.getWisdom()+2);
+		} else {
+			pc.setCharisma(pc.getCharisma()+2);
+		}
 	}
 
 }

@@ -9,6 +9,12 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.creatures.Role;
+import com.jimmie.domain.items.armor.ArmorGroup;
+import com.jimmie.domain.items.armor.ArmorType;
+import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.DailyPower;
@@ -35,6 +41,7 @@ public class Warden extends DndClass {
 	private boolean usedFormOfTheWillowSentinel;
 	private boolean usedFormOfTheWillowSentinelAttack;
 	private boolean usingFormOfTheWillowSentinel;
+	private GuardianMight guardianMight;
 
 	@Override
 	public void initializeForEncounter() {
@@ -378,5 +385,100 @@ public class Warden extends DndClass {
 		}
 		
 		return trainedSkills;
+	}
+
+	@Override
+	public void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc) {
+		Utils.print("Setting role to Defender.");
+		pc.setRole(Role.DEFENDER);
+		
+		Utils.print("Setting power Source to Primal.");
+		pc.setPowerSource(PowerSource.PRIMAL);
+
+		Utils.print("Adding Armor Proficiencies: Cloth, Leather, Hide, Light Shield, Heavy Shield");
+		pc.addArmorGroupProficiency(ArmorGroup.CLOTH);
+		pc.addArmorGroupProficiency(ArmorGroup.LEATHER);
+		pc.addArmorGroupProficiency(ArmorGroup.HIDE);
+		pc.addArmorGroupProficiency(ArmorGroup.LIGHT_SHIELD);
+		pc.addArmorGroupProficiency(ArmorGroup.HEAVY_SHIELD);
+		
+		Utils.print("Adding Weapon Proficiencies: Simple Melee, Military Melee, Simple Ranged");
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
+		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
+		
+		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
+		if (pc.getFortitudeMisc1() == 0) {
+			pc.setFortitudeMisc1(1);
+		} else {
+			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
+		}
+
+		if (pc.getWillMisc1() == 0) {
+			pc.setWillMisc1(1);
+		} else {
+			pc.setWillMisc2(pc.getWillMisc2() + 1);
+		}
+
+		Utils.print("Setting hit points per level gained = 7");
+		pc.setHitPointsPerLevelGained(7);
+		
+		Utils.print("Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.");
+		Utils.print("Which build option would you like to see?");
+		Utils.print("1. Earth Warden: You draw primal power through a link with the land, and the power of the earth strengthens and sustains you.");
+		Utils.print("2. Wild Warden: Your blood is a medium of primal power; nature's vigor pulses in your veins.");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			Utils.print("Make Strength your primary score and Constitution your secondary score.");
+			Utils.print("Suggested Class Feature: Earthstrength");
+			Utils.print("Suggested Feat: Crushing Earthstrength");
+			Utils.print("Suggested Skills: Athletics, Heal, Nature, Perception");
+			Utils.print("Suggested At-Will Powers: Earth Shield Strike, Strength of Stone");
+			Utils.print("Suggested Encounter Power: Thunder Ram Assault");
+			Utils.print("Suggested Daily Power: Form of the Willow Sentinel");
+		} else {
+			Utils.print("Make Strength your primary score and Wisdom your secondary score.");
+			Utils.print("Suggested Class Feature: Wildblood");
+			Utils.print("Suggested Feat: Wildblood Cunning");
+			Utils.print("Suggested Skills: Athletics, Intimidate, Nature, Perception");
+			Utils.print("Suggested At-Will Powers: Thorn Strike, Weight of Earth");
+			Utils.print("Suggested Encounter Power: Wildblood Frenzy");
+			Utils.print("Suggested Daily Power: Form of the Relentless Panther");
+		}
+		
+		Utils.print("Choose between the following Guardian Mights:");
+		Utils.print("1. Earthstrength.");
+		Utils.print("2. Wildblood.");
+		Utils.print("Your choice:");
+		choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			setGuardianMight(GuardianMight.EARTHSTRENGTH);
+		} else {
+			setGuardianMight(GuardianMight.WILDBLOOD);
+		}
+		
+		// TODO: Font of Life, Guardian Might, Nature's Wrath 
+		Utils.print("NOTE: I have not yet coded Font of Life, Guardian Might, Nature's Wrath.");
+	}
+
+	@Override
+	public void makeClassChoicesAfterAbilityScores(PlayerCharacter pc) {
+		int hp = 17 + pc.getConstitution();
+		Utils.print("Setting hit points to " + hp);
+		pc.setMaxHitPoints(hp);
+		pc.setCurrentHitPoints(hp);
+
+		int healingSurgesPerDay = 9 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
+		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
+		pc.setHealingSurgesPerDay(healingSurgesPerDay);
+	}
+
+	public GuardianMight getGuardianMight() {
+		return guardianMight;
+	}
+
+	public void setGuardianMight(GuardianMight guardianMight) {
+		this.guardianMight = guardianMight;
 	}
 }

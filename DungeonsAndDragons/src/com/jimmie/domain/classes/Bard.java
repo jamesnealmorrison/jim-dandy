@@ -9,6 +9,9 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.creatures.Role;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.DailyPower;
@@ -18,6 +21,9 @@ import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.items.armor.ArmorGroup;
+import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.domain.items.weapons.WeaponType;
 
 public class Bard extends DndClass {
 	/* TODO: Haven't implemented Words of friendship yet. */
@@ -35,6 +41,7 @@ public class Bard extends DndClass {
 	private boolean usedBlunder;
 	private int majesticWordUses;
 	private boolean usedStirringShout;
+	private BardicVirtue bardicVirtue;
 
 	@Override
 	public void initializeForEncounter() {
@@ -387,5 +394,102 @@ public class Bard extends DndClass {
 		}
 		
 		return trainedSkills;
+	}
+
+	@Override
+	public void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc) {
+		Utils.print("Setting role to Leader.");
+		pc.setRole(Role.LEADER);
+		
+		Utils.print("Setting power Source to Arcane.");
+		pc.setPowerSource(PowerSource.ARCANE);
+
+		Utils.print("Adding Armor Proficiencies: Cloth, Leather, Hide, Chainmail");
+		pc.addArmorGroupProficiency(ArmorGroup.CLOTH);
+		pc.addArmorGroupProficiency(ArmorGroup.LEATHER);
+		pc.addArmorGroupProficiency(ArmorGroup.HIDE);
+		pc.addArmorGroupProficiency(ArmorGroup.CHAINMAIL);
+		
+		Utils.print("Adding Weapon Proficiencies: Simple Melee, Longsword, Scimitar, Short Sword, Simple Ranged, Military Ranged");
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
+		pc.addWeaponTypeProficiency(WeaponType.LONGSWORD);
+		pc.addWeaponTypeProficiency(WeaponType.SCIMITAR);
+		pc.addWeaponTypeProficiency(WeaponType.SHORTSWORD);
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
+		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_RANGED);
+		
+		Utils.print("Adding bonus of +1 Reflex, +1 Will");
+		if (pc.getReflexMisc1() == 0) {
+			pc.setReflexMisc1(1);
+		} else {
+			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
+		}
+
+		if (pc.getWillMisc1() == 0) {
+			pc.setWillMisc1(1);
+		} else {
+			pc.setWillMisc2(pc.getWillMisc2() + 1);
+		}
+
+		Utils.print("Setting hit points per level gained = 5");
+		pc.setHitPointsPerLevelGained(5);
+		
+		Utils.print("Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.");
+		Utils.print("Which build option would you like to see?");
+		Utils.print("1. Cunning Bard. You seek to excape danger using your wits, tricking your foes and concocting cunning strategems.");
+		Utils.print("2. Valorous Bard. You have courage in the face of overwhelming odds.");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			Utils.print("Make Charisma your primary score and Intelligence your secondary score. Constitution is third.");
+			Utils.print("Suggested Class Feature: Virtue or Cunning");
+			Utils.print("Suggested Feat: Advantage of Cunning");
+			Utils.print("Suggested Skills: Arcana, Bluff, Intimidate, Perception, Streetwise");
+			Utils.print("Suggested At-Will Powers: Misdirected Mark, Vicious Mockery");
+			Utils.print("Suggested Encounter Power: Blunder");
+			Utils.print("Suggested Daily Power: Stirring Shout");
+		} else {
+			Utils.print("Make Charisma your primary score and Constitution your secondary score.  Intelligence is third.");
+			Utils.print("Suggested Class Feature: Virtue of Valor");
+			Utils.print("Suggested Feat: Strength of Valor");
+			Utils.print("Suggested Skills: Arcana, Athletics, Diplomacy, Intimidate, Perception");
+			Utils.print("Suggested At-Will Powers: Guiding Strike, War Song Strike");
+			Utils.print("Suggested Encounter Power: Shout of Triumph");
+			Utils.print("Suggested Daily Power: Slayer's Song");
+		}
+		
+		Utils.print("Choose between the following Bardic Virtues:");
+		Utils.print("1. Virtue of Cunning.");
+		Utils.print("2. Virtue of Valor.");
+		Utils.print("Your choice:");
+		choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			setBardicVirtue(BardicVirtue.VIRTUE_OF_CUNNING);
+		} else {
+			setBardicVirtue(BardicVirtue.VIRTUE_OF_VALOR);
+		}
+		
+		// TODO: Bardic Training, Bardic Virtue, Majestic Word, Multiclass Versatility, Skill Versatility, Song of Rest, Words of Friendship
+		Utils.print("NOTE: I have not yet coded Bardic Training, Bardic Virtue, Majestic Word, Multiclass Versatility, Skill Versatility, Song of Rest, Words of Friendship.");
+	}
+
+	@Override
+	public void makeClassChoicesAfterAbilityScores(PlayerCharacter pc) {
+		int hp = 12 + pc.getConstitution();
+		Utils.print("Setting hit points to " + hp);
+		pc.setMaxHitPoints(hp);
+		pc.setCurrentHitPoints(hp);
+
+		int healingSurgesPerDay = 7 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
+		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
+		pc.setHealingSurgesPerDay(healingSurgesPerDay);
+	}
+
+	public BardicVirtue getBardicVirtue() {
+		return bardicVirtue;
+	}
+
+	public void setBardicVirtue(BardicVirtue bardicVirtue) {
+		this.bardicVirtue = bardicVirtue;
 	}
 }

@@ -76,11 +76,6 @@ public class Shifter extends Race {
 		
 		if (choice == 1) {
 			shifterType = "Longtooth";
-			Utils.print("As a Longtooth Shifter you get +2 to Strength and Wisdom.");
-			pc.setStrength(pc.getStrength() + 2);
-			pc.setWisdom(pc.getWisdom() + 2);
-			
-			
 			Utils.print("As a Longtooth Shifter, you get +2 Athletics and Endurance");
 			Skill athletics = pc.getSkill(SkillType.ATHLETICS);
 			athletics.setMisc(athletics.getMisc()+2);
@@ -92,11 +87,6 @@ public class Shifter extends Race {
 			Utils.print("NOTE: I have not yet coded the Longtooth Shifting.");
 		} else {
 			shifterType = "Razorclaw";
-			Utils.print("As a Razorclaw Shifter you get +2 to Dexterity and Wisdom.");
-			pc.setDexterity(pc.getDexterity() + 2);
-			pc.setWisdom(pc.getWisdom() + 2);
-			
-			
 			Utils.print("As a Razorclaw Shifter, you get +2 Athletics and Stealth");
 			Skill athletics = pc.getSkill(SkillType.ATHLETICS);
 			athletics.setMisc(athletics.getMisc()+2);
@@ -106,6 +96,20 @@ public class Shifter extends Race {
 			
 			// TODO: Razorclaw Shifting
 			Utils.print("NOTE: I have not yet coded the Razorclaw Shifting.");
+		}
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		if (shifterType.equalsIgnoreCase("Longtooth")) {
+			Utils.print("As a Longtooth Shifter you get +2 to Strength and Wisdom.");
+			pc.setStrength(pc.getStrength() + 2);
+			pc.setWisdom(pc.getWisdom() + 2);
+		} else {
+			Utils.print("As a Razorclaw Shifter you get +2 to Dexterity and Wisdom.");
+			pc.setDexterity(pc.getDexterity() + 2);
+			pc.setWisdom(pc.getWisdom() + 2);
 		}
 	}
 

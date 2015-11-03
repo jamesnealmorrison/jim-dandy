@@ -55,10 +55,6 @@ public class Dwarf extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Dwarf you get +2 to Constitution and Wisdom.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -85,6 +81,15 @@ public class Dwarf extends Race {
 		
 		// TODO: Cast-iron stomach, dwarven resilience, encumbered speed, stand your ground.
 		Utils.print("NOTE: I have not yet coded cast-iron stomach, dwarven resilience, encumbered speed or stand your ground.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Dwarf you get +2 to Constitution and Wisdom.");
+		pc.setConstitution(pc.getConstitution() + 2);
+		pc.setWisdom(pc.getWisdom() + 2);
+
 	}
 
 }

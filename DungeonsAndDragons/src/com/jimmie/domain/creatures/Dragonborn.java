@@ -54,10 +54,6 @@ public class Dragonborn extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Dragonborn you get +2 to Strength and Charisma.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -83,6 +79,16 @@ public class Dragonborn extends Race {
 		
 		// TODO Choices for dragon breath.
 		Utils.print("NOTE: I have not yet coded the choices for dragon breath.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Dragonborn you get +2 to Strength and Charisma.");
+		pc.setStrength(pc.getStrength() + 2);
+		pc.setCharisma(pc.getCharisma() + 2);
+		
+		
 	}
 
 }

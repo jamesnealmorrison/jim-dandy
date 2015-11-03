@@ -39,7 +39,8 @@ public class Deva extends Race {
 	}
 
 	@Override
-	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
+	public void makeRaceChoices(PlayerCharacter pc,
+			DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Adiah, Ansis, Ayab, Bavak, Beriah, Eben, Elyas, Galad, Gamal, Hiyal, Iannes, Kerem,");
 		Utils.print("            Mahar, Marach, Mathas, Natan, Nehem, Oris, Raham, Ronen, Samel, Sered, Tavar, Vered, Zachar");
@@ -55,10 +56,6 @@ public class Deva extends Race {
 		Utils.print("What Weight is your character?  The book suggests 175 - 280 lb");
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
-		
-		Utils.print("As a Dwarf you get +2 to Intelligence and Wisdom.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
 		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
@@ -82,6 +79,16 @@ public class Deva extends Race {
 		
 		// TODO: Astral Majesty, Astral Resistance, Immortal Origin, Memory of a Thousand Lifetimes.
 		Utils.print("NOTE: I have not yet coded Astral Majesty, Astral Resistance, Immortal Origin, Memory of a Thousand Lifetimes.");		
+		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Dwarf you get +2 to Intelligence and Wisdom.");
+		pc.setIntelligence(pc.getIntelligence() + 2);
+		pc.setWisdom(pc.getWisdom() + 2);
+		
 	}
 
 }

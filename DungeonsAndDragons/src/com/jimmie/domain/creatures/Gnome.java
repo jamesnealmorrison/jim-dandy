@@ -65,10 +65,6 @@ public class Gnome extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Gnome you get +2 to Charisma and Intelligence.");
-		pc.setCharisma(pc.getCharisma() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		
 		Utils.print("Setting size to Small.");
 		pc.setSize(Size.SMALL);
 		
@@ -90,5 +86,13 @@ public class Gnome extends Race {
 		
 		// TODO: Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.
 		Utils.print("NOTE: I have not yet coded Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Gnome you get +2 to Charisma and Intelligence.");
+		pc.setCharisma(pc.getCharisma() + 2);
+		pc.setIntelligence(pc.getIntelligence() + 2);
 	}
 }

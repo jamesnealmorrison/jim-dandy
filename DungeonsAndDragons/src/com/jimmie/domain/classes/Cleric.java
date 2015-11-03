@@ -59,7 +59,7 @@ public class Cleric extends DndClass {
 	}
 
 	@Override
-	public void makeClassChoices(PlayerCharacter pc) {
+	public void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc) {
 		Utils.print("Setting role to Leader.");
 		pc.setRole(Role.LEADER);
 		
@@ -83,17 +83,8 @@ public class Cleric extends DndClass {
 			pc.setWillMisc2(pc.getWillMisc2() + 2);
 		}
 		
-		int hp = 12 + pc.getConstitution();
-		Utils.print("Setting hit points to " + hp);
-		pc.setMaxHitPoints(hp);
-		pc.setCurrentHitPoints(hp);
-		
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
-		
-		int healingSurgesPerDay = 7 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
-		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
-		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 		
 		Utils.print("Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.");
 		Utils.print("Which build option would you like to see?");
@@ -122,6 +113,18 @@ public class Cleric extends DndClass {
 		
 		// TODO: Selecting deities.
 		Utils.print("NOTE: I also have not yet implemented anything related to deities.");
+	}
+
+	@Override
+	public void makeClassChoicesAfterAbilityScores(PlayerCharacter pc) {
+		int hp = 12 + pc.getConstitution();
+		Utils.print("Setting hit points to " + hp);
+		pc.setMaxHitPoints(hp);
+		pc.setCurrentHitPoints(hp);
+
+		int healingSurgesPerDay = 7 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
+		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
+		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 	}
 
 }

@@ -58,10 +58,6 @@ public class Eladrin extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As an Eladrin you get +2 to Dexterity and Intelligence.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -161,6 +157,15 @@ public class Eladrin extends Race {
 		// TODO: +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step
 		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step.");
 	
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As an Eladrin you get +2 to Dexterity and Intelligence.");
+		pc.setDexterity(pc.getDexterity() + 2);
+		pc.setIntelligence(pc.getIntelligence() + 2);
+		
 	}
 
 }

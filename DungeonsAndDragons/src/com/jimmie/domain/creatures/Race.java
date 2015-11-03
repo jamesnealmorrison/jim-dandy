@@ -53,4 +53,5 @@ public abstract class Race implements Serializable {
 	public abstract void initializeForNewDay();
 	public abstract void processAfterHurtEffects(Creature creature);
 	public abstract void makeRaceChoices(PlayerCharacter pc, DndClass dndClass);
+	public abstract void makeRacialAbilityScoreAdjustments(PlayerCharacter pc, DndClass dndClass);
 }

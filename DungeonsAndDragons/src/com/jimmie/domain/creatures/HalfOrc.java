@@ -84,10 +84,6 @@ public class HalfOrc extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Half-Orc you get +2 to Strength and Dexterity.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setDexterity(pc.getDexterity() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -109,5 +105,14 @@ public class HalfOrc extends Race {
 		
 		// TODO: Half-Orc Resilience, Swift Charge, Furious Assault.
 		Utils.print("NOTE: I have not yet coded Half-Orc Resilience, Swift Charge, Furious Assault.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Half-Orc you get +2 to Strength and Dexterity.");
+		pc.setStrength(pc.getStrength() + 2);
+		pc.setDexterity(pc.getDexterity() + 2);
+		
 	}
 }

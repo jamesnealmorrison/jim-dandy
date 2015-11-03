@@ -57,18 +57,6 @@ public class Minotaur extends Race {
 		Utils.print("As a Minotaur you get +2 to Strength.");
 		pc.setStrength(pc.getStrength() + 2);
 
-		Utils.print("As a Minotaur, you get to choose to add +2 to Constitution or Wisdom.");
-		Utils.print("1. Constitution");
-		Utils.print("2. Wisdom");
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, 2);
-		if (1 == choice) {
-			pc.setConstitution(pc.getConstitution()+2);
-		} else {
-			pc.setWisdom(pc.getWisdom()+2);
-		}
-
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -93,6 +81,21 @@ public class Minotaur extends Race {
 		// TODO: Vitality, Ferocity, Heedless Charge, Goring Charge."
 		Utils.print("NOTE: I have not yet coded Vitality, Ferocity, Heedless Charge, Goring Charge.");
 		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Minotaur, you get to choose to add +2 to Constitution or Wisdom.");
+		Utils.print("1. Constitution");
+		Utils.print("2. Wisdom");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (1 == choice) {
+			pc.setConstitution(pc.getConstitution()+2);
+		} else {
+			pc.setWisdom(pc.getWisdom()+2);
+		}
 	}
 
 }

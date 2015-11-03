@@ -55,10 +55,6 @@ public class Goliath extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Goliath you get +2 to Strength and Constitution.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setStrength(pc.getStrength() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -94,5 +90,13 @@ public class Goliath extends Race {
 		// TODO: Powerful Athlete, Stone's Endurance.
 		Utils.print("NOTE: I have not yet coded Powerful Athlete, Stone's Endurance.");
 		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Goliath you get +2 to Strength and Constitution.");
+		pc.setConstitution(pc.getConstitution() + 2);
+		pc.setStrength(pc.getStrength() + 2);
 	}
 }

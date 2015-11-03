@@ -1,7 +1,6 @@
 package com.jimmie.domain.creatures;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.EpicDestiny;

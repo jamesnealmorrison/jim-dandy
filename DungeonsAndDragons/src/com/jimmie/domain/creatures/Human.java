@@ -52,6 +52,33 @@ public class Human extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
+		Utils.print("Setting size to Medium.");
+		pc.setSize(Size.MEDIUM);
+		
+		Utils.print("Setting speed to 6.");
+		pc.setSpeed(6);
+		
+		Utils.print("Adding normal vision to senses.");
+		pc.addSense(new Sense(SenseType.NORMAL_VISION));
+		
+		pc.addLanguage("Common");
+
+		/* TODO: Language choice. */
+		Utils.print("NOTE: I have not yet coded the language choice for humans.");
+		
+
+		/* TODO: Bonus at will power. */
+		Utils.print("NOTE: I have not yet coded the bonus at will power for humans.");
+		
+		Utils.print("NOTE: The extra feat for humans will be chosen later in the process because you must choose class features first.");
+		
+		/* TODO: Bonus skill. */
+		Utils.print("NOTE: I have not yet coded the bonus skill from your class.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
 		/* Humans get to add +2 to one ability score of their choice. */
 		Utils.print("As a human, you get to add +2 to one ability score of your choice.");
 		Utils.print("1. Strength");
@@ -83,28 +110,5 @@ public class Human extends Race {
 			pc.setCharisma(pc.getCharisma() + 2);
 			break;
 		}
-		
-		Utils.print("Setting size to Medium.");
-		pc.setSize(Size.MEDIUM);
-		
-		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
-		
-		Utils.print("Adding normal vision to senses.");
-		pc.addSense(new Sense(SenseType.NORMAL_VISION));
-		
-		pc.addLanguage("Common");
-
-		/* TODO: Language choice. */
-		Utils.print("NOTE: I have not yet coded the language choice for humans.");
-		
-
-		/* TODO: Bonus at will power. */
-		Utils.print("NOTE: I have not yet coded the bonus at will power for humans.");
-		
-		Utils.print("NOTE: The extra feat for humans will be chosen later in the process because you must choose class features first.");
-		
-		/* TODO: Bonus skill. */
-		Utils.print("NOTE: I have not yet coded the bonus skill from your class.");
 	}
 }

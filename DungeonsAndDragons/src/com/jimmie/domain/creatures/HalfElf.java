@@ -52,10 +52,6 @@ public class HalfElf extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Half-Elf you get +2 to Constitution and Charisma.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
-		
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -79,6 +75,14 @@ public class HalfElf extends Race {
 
 		// TODO: Dilettante, Group Diplomacy.
 		Utils.print("NOTE: I have not yet coded Dilettante or Group Diplomacy.");
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Half-Elf you get +2 to Constitution and Charisma.");
+		pc.setConstitution(pc.getConstitution() + 2);
+		pc.setCharisma(pc.getCharisma() + 2);
 	}
 
 }

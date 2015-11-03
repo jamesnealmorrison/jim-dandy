@@ -54,21 +54,6 @@ public class Wilden extends Race {
 		Utils.print("Your choice (in pounds):");
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
-		Utils.print("As a Wilden you get +2 to Wisdom.");
-		pc.setWisdom(pc.getWisdom() + 2);
-
-		Utils.print("As a Wilden, you get to choose to add +2 to Constitution or Dexterity.");
-		Utils.print("1. Constitution");
-		Utils.print("2. Dexterity");
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, 2);
-		if (1 == choice) {
-			pc.setConstitution(pc.getConstitution()+2);
-		} else {
-			pc.setDexterity(pc.getDexterity()+2);
-		}
-		
-
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
@@ -92,7 +77,7 @@ public class Wilden extends Race {
 		Utils.print("1. Fortitude");
 		Utils.print("2. Reflex");
 		Utils.print("3. Will");
-		choice = Utils.getValidIntInputInRange(1, 3);
+		int choice = Utils.getValidIntInputInRange(1, 3);
 		if (1 == choice) {
 			/* Make sure the misc bonus isn't already taken. */
 			if (pc.getFortitudeMisc1() == 0) {
@@ -123,6 +108,24 @@ public class Wilden extends Race {
 		Utils.print("NOTE: I have not yet coded Fey Origin, Natures Aspect.");
 
 		
+	}
+
+	@Override
+	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
+			DndClass dndClass) {
+		Utils.print("As a Wilden you get +2 to Wisdom.");
+		pc.setWisdom(pc.getWisdom() + 2);
+
+		Utils.print("As a Wilden, you get to choose to add +2 to Constitution or Dexterity.");
+		Utils.print("1. Constitution");
+		Utils.print("2. Dexterity");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (1 == choice) {
+			pc.setConstitution(pc.getConstitution()+2);
+		} else {
+			pc.setDexterity(pc.getDexterity()+2);
+		}
 	}
 
 }

@@ -65,13 +65,17 @@ public class CharacterCreator {
 		DndClass dndClass = chooseClass(race);
 
 		PlayerCharacter pc = new PlayerCharacter(race, dndClass);
+	
+		race.makeRaceChoices(pc, dndClass);
+
+		dndClass.makeClassChoicesBeforeAbilityScores(pc);
 
 		generateAbilityScores(pc);
-
-		/* Must have ability scores generated first because some race choices let you add to your ability score. */
-		race.makeRaceChoices(pc, dndClass);
-		dndClass.makeClassChoices(pc);
-
+		
+		race.makeRacialAbilityScoreAdjustments(pc, dndClass);
+		
+		dndClass.makeClassChoicesAfterAbilityScores(pc);
+		
 		
 		/* Skills now. */
 		List<String> trainedSkills = dndClass.selectInitialSkills();
