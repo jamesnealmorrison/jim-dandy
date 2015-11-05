@@ -1,9 +1,5 @@
 package com.jimmie.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jimmie.domain.Equipment;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Elf;
@@ -12,8 +8,8 @@ import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.creatures.Race;
 import com.jimmie.domain.creatures.Size;
-import com.jimmie.domain.items.ClothArmor;
-import com.jimmie.domain.items.ShortSword;
+import com.jimmie.domain.items.armor.ClothArmor;
+import com.jimmie.domain.items.weapons.ShortSword;
 
 public class TempCharacterGenerator {
 

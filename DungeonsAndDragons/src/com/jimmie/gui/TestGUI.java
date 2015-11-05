@@ -22,17 +22,17 @@ import com.jimmie.domain.creatures.Goliath;
 import com.jimmie.domain.creatures.HalfOrc;
 import com.jimmie.domain.creatures.Human;
 import com.jimmie.domain.creatures.PlayerCharacter;
-import com.jimmie.domain.items.ChainMail;
-import com.jimmie.domain.items.ClothArmor;
-import com.jimmie.domain.items.HeavyShield;
-import com.jimmie.domain.items.HideArmor;
-import com.jimmie.domain.items.LightShield;
-import com.jimmie.domain.items.LongSword;
-import com.jimmie.domain.items.Mace;
-import com.jimmie.domain.items.NoShield;
-import com.jimmie.domain.items.ScaleArmor;
-import com.jimmie.domain.items.ShortSword;
-import com.jimmie.domain.items.WarHammer;
+import com.jimmie.domain.items.armor.ChainMail;
+import com.jimmie.domain.items.armor.ClothArmor;
+import com.jimmie.domain.items.armor.HeavyShield;
+import com.jimmie.domain.items.armor.HideArmor;
+import com.jimmie.domain.items.armor.LightShield;
+import com.jimmie.domain.items.armor.NoShield;
+import com.jimmie.domain.items.armor.ScaleArmor;
+import com.jimmie.domain.items.weapons.LongSword;
+import com.jimmie.domain.items.weapons.Mace;
+import com.jimmie.domain.items.weapons.ShortSword;
+import com.jimmie.domain.items.weapons.WarHammer;
 import com.jimmie.util.IntegratedCommandConsole;
 
 public class TestGUI extends JPanel {
@@ -130,7 +130,7 @@ public class TestGUI extends JPanel {
 		elfAvenger.setWisdom(18);
 		elfAvenger.setCharisma(10);
 		LongSword ls1 = new LongSword();
-		elfAvenger.addWeaponProficiency(ls1.getWeaponId());
+//		elfAvenger.addWeaponProficiency(ls1.getWeaponId());
 		elfAvenger.setReadiedWeapon(ls1);
 		elfAvenger.setArmor(new ClothArmor());
 		elfAvenger.setReadiedShield(new NoShield());
@@ -189,7 +189,7 @@ public class TestGUI extends JPanel {
 		glock.setCurrentPosition(new Position(2,3));
 		WarHammer warHammer = new WarHammer();
 		glock.setReadiedWeapon(warHammer);
-		glock.addWeaponProficiency(warHammer.getWeaponId());
+//		glock.addWeaponProficiency(warHammer.getWeaponId());
 		glock.setReadiedShield(new LightShield());
 		glock.setArmor(new HideArmor());
 
@@ -224,7 +224,7 @@ public class TestGUI extends JPanel {
 		LongSword ls = new LongSword();
 		halfOrcFighter.setReadiedWeapon(ls);
 		halfOrcFighter.setReadiedShield(new HeavyShield());
-		halfOrcFighter.addWeaponProficiency(ls.getWeaponId());
+//		halfOrcFighter.addWeaponProficiency(ls.getWeaponId());
 		halfOrcFighter.setCurrentPosition(new Position(2,4));
 		halfOrcFighter.setArmor(new ScaleArmor());
 		halfOrcFighter.setHealingSurgesPerDay(10);

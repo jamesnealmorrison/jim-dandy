@@ -6,9 +6,9 @@ import com.jimmie.domain.creatures.Human;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
-import com.jimmie.domain.items.ClothArmor;
-import com.jimmie.domain.items.Mace;
-import com.jimmie.domain.items.NoShield;
+import com.jimmie.domain.items.armor.ClothArmor;
+import com.jimmie.domain.items.armor.NoShield;
+import com.jimmie.domain.items.weapons.Mace;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
@@ -65,11 +65,11 @@ public class TestEncounter extends Encounter {
 		zanros.setArmor(new ClothArmor());
 		zanros.setHealingSurgesPerDay(7);
 		zanros.setHealingSurgeValue(6);
-		zanros.setTrainedInArcana(true);
-		zanros.setTrainedInDungeoneering(true);
-		zanros.setTrainedInInsight(true);
-		zanros.setTrainedInIntimidate(true);
-		zanros.setTrainedInPerception(true);
+//		zanros.setTrainedInArcana(true);
+//		zanros.setTrainedInDungeoneering(true);
+//		zanros.setTrainedInInsight(true);
+//		zanros.setTrainedInIntimidate(true);
+//		zanros.setTrainedInPerception(true);
 		
 		characters.add(zanros);
 		

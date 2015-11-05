@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.PlayerCharacter;
 
 public abstract class DndClass implements Serializable {
 	/**
@@ -46,5 +47,7 @@ public abstract class DndClass implements Serializable {
 	}
 	public abstract void initializeForEncounter();
 	public abstract void initializeForNewDay();
-
+	public abstract List<String> selectInitialSkills();
+	public abstract void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc);
+	public abstract void makeClassChoicesAfterAbilityScores(PlayerCharacter pc);
 }

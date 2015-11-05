@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -142,21 +141,21 @@ public class Utils {
 		}
 	}
 
-	public static Integer getValidIntInput(ArrayList<Integer> validInputs)
+	public static Integer getValidIntInput(List<Integer> choices)
 	{
 		boolean found = false;
 		int input;
 		int validInput = 0;
 		Iterator<Integer> i;
 
-		if ((validInputs == null) || (validInputs.size() == 0)) {
+		if ((choices == null) || (choices.size() == 0)) {
 			Utils.print("No valid Inputs.  Setting to null.  It's your own fault if you get a null pointer exception.");
 			return null;
 		}
 		do
 		{
 			input = getInt();
-			i = validInputs.iterator();
+			i = choices.iterator();
 
 			while(i.hasNext())
 			{
@@ -384,5 +383,26 @@ public class Utils {
 			ex.printStackTrace();
 		}
 		return c;
+	}
+
+	public static void printValidChoices(List<Integer> choices) {
+		for (Integer i : choices) {
+			print(i.toString());
+		}
+	}
+
+	public static int whichChoice(int choice, List<Integer> choices) {
+		for (int i = 0; i < choices.size(); i++) {
+			if (choice == choices.get(i)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	public static void printValidStringChoices(List<String> choices) {
+		for (String s : choices) {
+			print(s);
+		}
 	}
 }

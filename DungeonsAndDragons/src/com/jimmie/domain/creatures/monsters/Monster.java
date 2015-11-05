@@ -7,7 +7,6 @@ import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureType;
 import com.jimmie.domain.creatures.Origin;
-import com.jimmie.domain.creatures.Role;
 import com.jimmie.util.Utils;
 
 public abstract class Monster extends Creature {
@@ -25,7 +24,6 @@ public abstract class Monster extends Creature {
 	protected List<Aura> auras;
 	protected int savingThrows;
 	protected String tactics;
-	protected Role role;
 	protected int experiencePointValue;
 	protected Origin origin;
 	protected CreatureType type;
@@ -126,12 +124,6 @@ public abstract class Monster extends Creature {
 	}
 	public void setType(CreatureType type) {
 		this.type = type;
-	}
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
 	}
 	
 	public int getStrengthModifier() {
