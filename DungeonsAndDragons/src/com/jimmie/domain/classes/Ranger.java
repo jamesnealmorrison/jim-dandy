@@ -20,6 +20,14 @@ public class Ranger extends DndClass {
 	
 	RangerFightingStyle fightingStyle;
 
+	public RangerFightingStyle getFightingStyle() {
+		return fightingStyle;
+	}
+
+	public void setFightingStyle(RangerFightingStyle fightingStyle) {
+		this.fightingStyle = fightingStyle;
+	}
+
 	@Override
 	public void initializeForEncounter() {
 		// TODO Auto-generated method stub

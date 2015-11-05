@@ -344,7 +344,7 @@ public abstract class Character extends Creature {
 	private List<WeaponGroup> weaponGroupProficiencies;
 	private List<WeaponCategory> weaponCategoryProficiencies;
 	private List<ArmorType> armorTypeProficiencies;
-	private List<ArmorGroup> armorGroupProficiencies;
+	protected List<ArmorGroup> armorGroupProficiencies;
 
 	public void setReadiedWeapon(Weapon readiedWeapon) {
 		this.readiedWeapon = readiedWeapon;

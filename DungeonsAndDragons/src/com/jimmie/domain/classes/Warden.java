@@ -13,7 +13,6 @@ import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
-import com.jimmie.domain.items.armor.ArmorType;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
