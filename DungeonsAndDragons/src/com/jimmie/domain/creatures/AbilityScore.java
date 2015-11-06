@@ -12,6 +12,7 @@ public class AbilityScore {
 	}
 	
 	public int getModifier() {
-		return Math.floorDiv((score-10), 2);
+		double div = (score-10)/2;
+		return (int) Math.floor(div);
 	}
 }

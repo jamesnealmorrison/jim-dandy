@@ -346,6 +346,48 @@ public abstract class Character extends Creature {
 	private List<ArmorType> armorTypeProficiencies;
 	protected List<ArmorGroup> armorGroupProficiencies;
 
+	public List<WeaponType> getWeaponTypeProficiencies() {
+		return weaponTypeProficiencies;
+	}
+
+	public void setWeaponTypeProficiencies(List<WeaponType> weaponTypeProficiencies) {
+		this.weaponTypeProficiencies = weaponTypeProficiencies;
+	}
+
+	public List<WeaponGroup> getWeaponGroupProficiencies() {
+		return weaponGroupProficiencies;
+	}
+
+	public void setWeaponGroupProficiencies(
+			List<WeaponGroup> weaponGroupProficiencies) {
+		this.weaponGroupProficiencies = weaponGroupProficiencies;
+	}
+
+	public List<WeaponCategory> getWeaponCategoryProficiencies() {
+		return weaponCategoryProficiencies;
+	}
+
+	public void setWeaponCategoryProficiencies(
+			List<WeaponCategory> weaponCategoryProficiencies) {
+		this.weaponCategoryProficiencies = weaponCategoryProficiencies;
+	}
+
+	public List<ArmorType> getArmorTypeProficiencies() {
+		return armorTypeProficiencies;
+	}
+
+	public void setArmorTypeProficiencies(List<ArmorType> armorTypeProficiencies) {
+		this.armorTypeProficiencies = armorTypeProficiencies;
+	}
+
+	public List<ArmorGroup> getArmorGroupProficiencies() {
+		return armorGroupProficiencies;
+	}
+
+	public void setArmorGroupProficiencies(List<ArmorGroup> armorGroupProficiencies) {
+		this.armorGroupProficiencies = armorGroupProficiencies;
+	}
+
 	public void setReadiedWeapon(Weapon readiedWeapon) {
 		this.readiedWeapon = readiedWeapon;
 	}
