@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
+import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
@@ -17,7 +20,6 @@ public class KoboldWyrmpriest extends Kobold {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SPEAR = "Spear Attack";
 	
 	public KoboldWyrmpriest() {
 		setInitiative(4);
@@ -34,7 +36,7 @@ public class KoboldWyrmpriest extends Kobold {
 		setIntelligence(9);
 		setWisdom(17);
 		setCharisma(12);
-		addPower(SPEAR);
+		addPower(PowerId.SPEAR);
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldWyrmpriest.JPG");
 	}
 
@@ -62,7 +64,7 @@ public class KoboldWyrmpriest extends Kobold {
 		return 2;
 	}
 
-	@StandardAction(menuName = SPEAR, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SPEAR, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void spear(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, 1);

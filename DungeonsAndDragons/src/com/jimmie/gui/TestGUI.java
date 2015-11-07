@@ -10,11 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.jimmie.domain.Position;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.classes.Warden;
+import com.jimmie.domain.classes.WeaponTalent;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Elf;
 import com.jimmie.domain.creatures.Gnome;
@@ -102,13 +104,11 @@ public class TestGUI extends JPanel {
 
 		/* Set up the player characters */
 		Avenger avenger = new Avenger();
-		avenger.addPower(Avenger.BOND_OF_PURSUIT);
-		avenger.addPower(Avenger.RADIANT_VENGEANCE);
-		avenger.addPower(Avenger.ANGELIC_ALACRITY);
-		avenger.addPower(Avenger.OATH_OF_ENMITY);
-		avenger.addPower(Avenger.ABJURE_UNDEAD);
-		avenger.addPower(Avenger.DIVINE_GUIDANCE);
-		avenger.addPower(Avenger.ASPECT_OF_MIGHT);
+		avenger.addPower(PowerId.BOND_OF_PURSUIT);
+		avenger.addPower(PowerId.RADIANT_VENGEANCE);
+		avenger.addPower(PowerId.ANGELIC_ALACRITY);
+		avenger.addPower(PowerId.OATH_OF_ENMITY);
+		avenger.addPower(PowerId.ASPECT_OF_MIGHT);
 		Elf elf = new Elf();
 		PlayerCharacter elfAvenger = new PlayerCharacter(elf, avenger);
 		avenger.setOwner(elfAvenger);
@@ -161,14 +161,11 @@ public class TestGUI extends JPanel {
 		kellen.setArmor(new ChainMail());
 
 		Warden warden = new Warden();
-		warden.addPower(Warden.STRENGTH_OF_STONE);
-		warden.addPower(Warden.EARTH_SHIELD_STRIKE);
-		warden.addPower(Warden.WARDENS_FURY);
-		warden.addPower(Warden.THUNDER_RAM_ASSAULT);
-		warden.addPower(Warden.WARDENS_GRASP);
-		warden.addPower(Warden.FORM_OF_THE_WILLOW_SENTINEL);
+		warden.addPower(PowerId.STRENGTH_OF_STONE);
+		warden.addPower(PowerId.EARTH_SHIELD_STRIKE);
+		warden.addPower(PowerId.THUNDER_RAM_ASSAULT);
+		warden.addPower(PowerId.FORM_OF_THE_WILLOW_SENTINEL);
 		Goliath goliath = new Goliath();
-		goliath.addPower(Goliath.STONES_ENDURANCE);
 		PlayerCharacter glock = new PlayerCharacter(goliath, warden);
 		warden.setOwner(glock);
 		goliath.setOwner(glock);
@@ -194,16 +191,14 @@ public class TestGUI extends JPanel {
 		glock.setArmor(new HideArmor());
 
 		Fighter fighter = new Fighter();
-		fighter.addPower(Fighter.SURE_STRIKE);
-		fighter.addPower(Fighter.TIDE_OF_IRON);
-		fighter.addPower(Fighter.COVERING_ATTACK);
-		fighter.addPower(Fighter.COMEBACK_STRIKE);
+		fighter.addPower(PowerId.SURE_STRIKE);
+		fighter.addPower(PowerId.TIDE_OF_IRON);
+		fighter.addPower(PowerId.COVERING_ATTACK);
+		fighter.addPower(PowerId.COMEBACK_STRIKE);
 		HalfOrc halfOrc = new HalfOrc();
-		halfOrc.addPower(HalfOrc.FURIOUS_ASSAULT);
-		halfOrc.addPower(HalfOrc.HALF_ORC_RESILIENCE);
 		PlayerCharacter halfOrcFighter = new PlayerCharacter(halfOrc, fighter);
 		fighter.setOwner(halfOrcFighter);
-		fighter.setFighterWeaponTalent(Fighter.ONE_HANDED_WEAPON);
+		fighter.setWeaponTalent(WeaponTalent.ONE_HANDED_WEAPONS);
 		halfOrc.setOwner(halfOrcFighter);
 		halfOrcFighter.setName("Eleak Nightraider");
 		//halfOrcFighter.setInitiative(3);

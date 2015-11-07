@@ -14,7 +14,6 @@ public class Gnome extends Race {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String FADE_AWAY = "Fade Away";
 	private boolean usedFadeAway;
 
 	@Override

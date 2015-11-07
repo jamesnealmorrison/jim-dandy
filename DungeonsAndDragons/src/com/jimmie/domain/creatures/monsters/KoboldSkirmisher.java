@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
-import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
@@ -19,8 +21,6 @@ public class KoboldSkirmisher extends Kobold {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SPEAR = "Spear Attack";
-	private static final String SHIFTY = "Shifty";
 	
 	public KoboldSkirmisher() {
 		setInitiative(5);
@@ -37,8 +37,8 @@ public class KoboldSkirmisher extends Kobold {
 		setIntelligence(6);
 		setWisdom(10);
 		setCharisma(15);
-		addPower(SPEAR);
-		addPower(SHIFTY);
+		addPower(PowerId.SPEAR);
+		addPower(PowerId.SHIFTY);
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldSkirmisher.JPG");
 	}
 	
@@ -66,7 +66,7 @@ public class KoboldSkirmisher extends Kobold {
 		return 2;
 	}
 
-	@StandardAction(menuName = SPEAR, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SPEAR, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void spear(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, 1);
@@ -112,7 +112,7 @@ public class KoboldSkirmisher extends Kobold {
 
 			int rollForDamage = Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null);
 			
-			/* Combat Advantage power adds 1d6 damage when the kobold skirmisher has combat advantage against the terget. */
+			/* Combat Advantage power adds 1d6 damage when the kobold skirmisher has combat advantage against the target. */
 			if (Creature.class.isInstance(target)) {
 			   if (Utils.hasCombatAdvantage(this, (Creature) target, encounter)) {
 				   Dice dice = new Dice(DiceType.SIX_SIDED);
@@ -125,11 +125,5 @@ public class KoboldSkirmisher extends Kobold {
 		} else {
 			Utils.print("You missed " + target.getName());
 		}
-	}
-
-	@MinorAction(menuName = SHIFTY)
-	@AtWillPower
-	public void shifty(Encounter encounter) {
-		shift(1, true, encounter);
 	}
 }

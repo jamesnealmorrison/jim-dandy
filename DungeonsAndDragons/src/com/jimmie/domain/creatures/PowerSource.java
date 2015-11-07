@@ -1,5 +1,5 @@
 package com.jimmie.domain.creatures;
 
 public enum PowerSource {
-	DIVINE, MARTIAL, ARCANE, PRIMAL, PSIONIC
+	DIVINE, MARTIAL, ARCANE, PRIMAL, PSIONIC, NONE
 }

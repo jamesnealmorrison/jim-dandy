@@ -1,12 +1,14 @@
 package com.jimmie.util;
 
 import java.lang.annotation.ElementType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import com.jimmie.domain.PowerId;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FreeAction {
-	String menuName();
+	PowerId powerId();
 }

@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
-import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
@@ -28,8 +30,6 @@ public class KoboldDragonshield extends Kobold {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SHORT_SWORD = "Short Sword Attack";
-	private static final String SHIFTY = "Shifty";
 	
 	public KoboldDragonshield() {
 		setInitiative(4);
@@ -46,8 +46,8 @@ public class KoboldDragonshield extends Kobold {
 		setIntelligence(9);
 		setWisdom(12);
 		setCharisma(10);
-		addPower(SHORT_SWORD);
-		addPower(SHIFTY);
+		addPower(PowerId.SHORT_SWORD);
+		addPower(PowerId.SHIFTY);
 		usedDragonshieldTactics = false;
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldDragonshield.JPG");
 	}
@@ -84,7 +84,7 @@ public class KoboldDragonshield extends Kobold {
 		return 1;
 	}
 
-	@StandardAction(menuName = SHORT_SWORD, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SHORT_SWORD, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void shortSword(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, 1);
@@ -132,12 +132,6 @@ public class KoboldDragonshield extends Kobold {
 		} else {
 			Utils.print("You missed " + target.getName());
 		}
-	}
-
-	@MinorAction(menuName = SHIFTY)
-	@AtWillPower
-	public void shifty(Encounter encounter) {
-		shift(1, true, encounter);
 	}
 
 	public void useDragonshieldTactics(Encounter encounter) {

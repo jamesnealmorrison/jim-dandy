@@ -1,6 +1,7 @@
 package com.jimmie.encounters;
 
 import com.jimmie.domain.Position;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.creatures.Human;
 import com.jimmie.domain.creatures.PlayerCharacter;
@@ -36,12 +37,10 @@ public class TestEncounter extends Encounter {
 	
 		Human human = new Human();
 		Psion psion = new Psion();
-		psion.addPower(Psion.KINETIC_TRAWL);
-		psion.addPower(Psion.FORCE_PUNCH);
-		psion.addPower(Psion.MEMORY_HOLE);
-		psion.addPower(Psion.FAR_HAND);
-		psion.addPower(Psion.FORCEFUL_PUSH);
-		psion.addPower(Psion.TELEKINETIC_ANCHOR);
+		psion.addPower(PowerId.KINETIC_TRAWL);
+		psion.addPower(PowerId.MEMORY_HOLE);
+		psion.addPower(PowerId.FORCEFUL_PUSH);
+		psion.addPower(PowerId.TELEKINETIC_ANCHOR);
 		PlayerCharacter zanros = new PlayerCharacter(human, psion);
 		psion.setOwner(zanros);
 		human.setOwner(zanros);

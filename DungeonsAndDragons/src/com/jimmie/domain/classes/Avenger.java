@@ -7,6 +7,7 @@ import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -20,6 +21,7 @@ import com.jimmie.util.EncounterPower;
 import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.AttackType;
 
 public class Avenger extends DndClass {
 
@@ -27,14 +29,6 @@ public class Avenger extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String BOND_OF_PURSUIT = "Bond of Pursuit";
-	public static final String RADIANT_VENGEANCE = "Radiant Vengeance";
-	public static final String ANGELIC_ALACRITY = "Angelic Alacrity";
-	public static final String OATH_OF_ENMITY = "Oath of Enmity";
-	public static final String ABJURE_UNDEAD = "Abjure Undead";
-	public static final String DIVINE_GUIDANCE = "Divine Guidance";
-	public static final String ASPECT_OF_MIGHT = "Aspect of Might";
-	public static final String CENSURE_OF_PURSUIT = "Censure of Pursuit";
 	private AvengersCensure censure;
 	private boolean usedAngelicAlacrity;
 	private boolean usedOathOfEnmity;
@@ -75,9 +69,9 @@ public class Avenger extends DndClass {
 		aspectOfMightEncounterBonus = false;
 	}
 
-	@StandardAction(menuName = BOND_OF_PURSUIT, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = true, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.BOND_OF_PURSUIT, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.DIVINE, attackType = AttackType.MELEE)
 	@AtWillPower
-	public void bondOfPursuit(Encounter encounter) {
+	public void bondOfPursuit(Encounter encounter) { 
 		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
@@ -125,7 +119,7 @@ public class Avenger extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = RADIANT_VENGEANCE, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = true, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.RADIANT_VENGEANCE, isBasicAttack = false,	weaponTag = false, powerSource = PowerSource.DIVINE, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void radiantVengeance(Encounter encounter) {
 		AttackTarget target = encounter.chooseRangedTarget(owner, 10, 10);
@@ -176,14 +170,14 @@ public class Avenger extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = ANGELIC_ALACRITY, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = true, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.ANGELIC_ALACRITY, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.DIVINE, attackType = AttackType.MELEE)
 	@EncounterPower
 	public void angelicAlacrity(Encounter encounter) {
 		if (!usedAngelicAlacrity) {
 			usedAngelicAlacrity = true;
 		int shiftDistance;
 		/* In this attack, you can shift 2 squares first (or 1 + dex mod if Censure of Pursuit). */
-		if (CENSURE_OF_PURSUIT.equals(censure)) {
+		if (AvengersCensure.CENSURE_OF_PURSUIT.equals(censure)) {
 			shiftDistance = 1 + owner.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
 		} else {
 			shiftDistance = 2;
@@ -236,7 +230,7 @@ public class Avenger extends DndClass {
 		}
 	}
 
-	@MinorAction(menuName = OATH_OF_ENMITY)
+	@MinorAction(powerId = PowerId.OATH_OF_ENMITY)
 	@EncounterPower
 	public void oathOfEnmity(Encounter encounter) {
 		if (!usedOathOfEnmity) {
@@ -256,7 +250,7 @@ public class Avenger extends DndClass {
 
 	/* TODO: Not going to implement "Abjure undead" until we are facing undead enemies. */
 	
-	@StandardAction(menuName = ASPECT_OF_MIGHT, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = true, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.ASPECT_OF_MIGHT, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.DIVINE, attackType = AttackType.MELEE)
 	@DailyPower
 	public void aspectOfMight(Encounter encounter) {
 		if (!usedAspectOfMight) {

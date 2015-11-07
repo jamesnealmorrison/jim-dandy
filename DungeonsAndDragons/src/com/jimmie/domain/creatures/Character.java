@@ -8,6 +8,7 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.Resistance;
 import com.jimmie.domain.Ritual;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
@@ -16,7 +17,9 @@ import com.jimmie.domain.Wealth;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
+import com.jimmie.domain.classes.GuardianMight;
 import com.jimmie.domain.classes.Warden;
+import com.jimmie.domain.classes.WeaponTalent;
 import com.jimmie.domain.items.Implement;
 import com.jimmie.domain.items.armor.Armor;
 import com.jimmie.domain.items.armor.ArmorGroup;
@@ -35,6 +38,7 @@ import com.jimmie.util.Dice;
 import com.jimmie.util.EncounterPower;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.AttackType;
 
 public abstract class Character extends Creature {
 	private Armor armor;
@@ -48,18 +52,20 @@ public abstract class Character extends Creature {
 
 		/* Light armor lets you add intelligence or dexterity modifier, whichever is greater. */
 		if (getArmor().isLightArmor()) {
-			if (dndClass.getMyOptions().contains(Warden.EARTH_STRENGTH)) {
-				if ((getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)) &&
-						(getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY))) {
-					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION);
-				} else {
-					if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
-						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
+			if (Warden.class.isInstance(dndClass)) {
+				if (((Warden) dndClass).getGuardianMight() == GuardianMight.EARTHSTRENGTH) {
+					if ((getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)) &&
+							(getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY))) {
+						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION);
 					} else {
-						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
-					}					
+						if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
+							armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
+						} else {
+							armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
+						}					
+					}
 				}
-			}else {
+			} else {
 				if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
 					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 				} else {
@@ -113,9 +119,6 @@ public abstract class Character extends Creature {
 		return armor;
 	}
 	private static final long serialVersionUID = 1L;
-	private static final String BASIC_MELEE_ATTACK = "Basic Melee Attack";
-	private static final String SECOND_WIND = "Second Wind";
-	private static final String AID_ANOTHER = "Aid Another";
 	public List<Ritual> getRituals() {
 		return rituals;
 	}
@@ -396,7 +399,7 @@ public abstract class Character extends Creature {
 		return getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY) + getInitiativeMisc();
 	}
 
-	public void addPower(String powerId) {
+	public void addPower(PowerId powerId) {
 		powers.add(powerId);
 	}
 
@@ -442,13 +445,13 @@ public abstract class Character extends Creature {
 		weaponCategoryProficiencies = new ArrayList<WeaponCategory>();
 		armorTypeProficiencies = new ArrayList<ArmorType>();
 		armorGroupProficiencies = new ArrayList<ArmorGroup>();
-		addPower(Character.BASIC_MELEE_ATTACK);
-		addPower(Creature.SPEND_ACTION_POINT);
-		addPower(Character.SECOND_WIND);
-		addPower(Character.AID_ANOTHER);
+		addPower(PowerId.BASIC_MELEE_ATTACK);
+		addPower(PowerId.SPEND_ACTION_POINT);
+		addPower(PowerId.SECOND_WIND);
+		addPower(PowerId.AID_ANOTHER);
 	}
 
-	@StandardAction(menuName = BASIC_MELEE_ATTACK, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.BASIC_MELEE_ATTACK, isBasicAttack = true, weaponTag = true, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void basicMeleeAttack(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getNormalRange());
@@ -513,9 +516,9 @@ public abstract class Character extends Creature {
 		/* See if they have Fighter Weapon Talent. */
 		if (Fighter.class.isInstance(dndClass)) {
 
-			if ((Fighter.ONE_HANDED_WEAPON.equalsIgnoreCase(((Fighter) dndClass).getFighterWeaponTalent())) && (getReadiedWeapon().isOneHandedWeapon())) {
+			if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.ONE_HANDED_WEAPONS) && (getReadiedWeapon().isOneHandedWeapon())) {
 				total = total + 1;
-			} else if ((Fighter.TWO_HANDED_WEAPON.equalsIgnoreCase(((Fighter) dndClass).getFighterWeaponTalent())) && (getReadiedWeapon().isTwoHandedWeapon())) {
+			} else if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.TWO_HANDED_WEAPONS) && (getReadiedWeapon().isTwoHandedWeapon())) {
 				total = total + 1;
 			}
 		}
@@ -662,7 +665,7 @@ public abstract class Character extends Creature {
 		}
 	}
 
-	@StandardAction(menuName = SECOND_WIND, arcaneTag = false, divineTag = false, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = false, martialTag = false, primalTag = false, psionicTag = false, weaponTag = false)
+	@StandardAction(powerId = PowerId.SECOND_WIND, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.NONE)
 	@EncounterPower
 	public void secondWind(Encounter encounter) {
 		if (!usedSecondWind) {
@@ -696,7 +699,7 @@ public abstract class Character extends Creature {
 		}
 	}
 
-	@StandardAction(menuName = AID_ANOTHER, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.AID_ANOTHER, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void aidAnother(Encounter encounter) {
 

@@ -82,7 +82,9 @@ public class CharacterCreator {
 		setTrainedSkills(pc, trainedSkills);
 		
 		pc.selectFeat();
+		// Reminder: When I got tired of adding feats, I had stopped after InescapableForce. page 205
 		
+		pc.choosePowers();
 		//Utils.saveCharacter(pc);
 	}
 
