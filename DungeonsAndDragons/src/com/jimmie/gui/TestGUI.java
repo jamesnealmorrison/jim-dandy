@@ -31,10 +31,10 @@ import com.jimmie.domain.items.armor.HideArmor;
 import com.jimmie.domain.items.armor.LightShield;
 import com.jimmie.domain.items.armor.NoShield;
 import com.jimmie.domain.items.armor.ScaleArmor;
-import com.jimmie.domain.items.weapons.LongSword;
+import com.jimmie.domain.items.weapons.Longsword;
 import com.jimmie.domain.items.weapons.Mace;
 import com.jimmie.domain.items.weapons.ShortSword;
-import com.jimmie.domain.items.weapons.WarHammer;
+import com.jimmie.domain.items.weapons.Warhammer;
 import com.jimmie.util.IntegratedCommandConsole;
 
 public class TestGUI extends JPanel {
@@ -129,10 +129,11 @@ public class TestGUI extends JPanel {
 		elfAvenger.setIntelligence(13);
 		elfAvenger.setWisdom(18);
 		elfAvenger.setCharisma(10);
-		LongSword ls1 = new LongSword();
+		Longsword ls1 = new Longsword();
 //		elfAvenger.addWeaponProficiency(ls1.getWeaponId());
 		elfAvenger.setReadiedWeapon(ls1);
-		elfAvenger.setArmor(new ClothArmor());
+		elfAvenger.addArmor(new ClothArmor());
+		elfAvenger.setReadiedArmor(elfAvenger.getArmor().get(0));
 		elfAvenger.setReadiedShield(new NoShield());
 		elfAvenger.setCurrentPosition(new Position(2,1));
 
@@ -158,7 +159,8 @@ public class TestGUI extends JPanel {
 		kellen.setCurrentPosition(new Position(2,2));
 		kellen.setReadiedWeapon(new ShortSword());
 		kellen.setReadiedShield(new LightShield());
-		kellen.setArmor(new ChainMail());
+		kellen.addArmor(new ChainMail());
+		kellen.setReadiedArmor(kellen.getArmor().get(0));
 
 		Warden warden = new Warden();
 		warden.addPower(PowerId.STRENGTH_OF_STONE);
@@ -184,11 +186,12 @@ public class TestGUI extends JPanel {
 		glock.setWisdom(10);
 		glock.setCharisma(13);
 		glock.setCurrentPosition(new Position(2,3));
-		WarHammer warHammer = new WarHammer();
-		glock.setReadiedWeapon(warHammer);
+		Warhammer warhammer = new Warhammer();
+		glock.setReadiedWeapon(warhammer);
 //		glock.addWeaponProficiency(warHammer.getWeaponId());
 		glock.setReadiedShield(new LightShield());
-		glock.setArmor(new HideArmor());
+		glock.addArmor(new HideArmor());
+		glock.setReadiedArmor(glock.getArmor().get(0));
 
 		Fighter fighter = new Fighter();
 		fighter.addPower(PowerId.SURE_STRIKE);
@@ -216,12 +219,13 @@ public class TestGUI extends JPanel {
 		halfOrcFighter.setIntelligence(10);
 		halfOrcFighter.setWisdom(13);
 		halfOrcFighter.setCharisma(11);
-		LongSword ls = new LongSword();
+		Longsword ls = new Longsword();
 		halfOrcFighter.setReadiedWeapon(ls);
 		halfOrcFighter.setReadiedShield(new HeavyShield());
 //		halfOrcFighter.addWeaponProficiency(ls.getWeaponId());
 		halfOrcFighter.setCurrentPosition(new Position(2,4));
-		halfOrcFighter.setArmor(new ScaleArmor());
+		halfOrcFighter.addArmor(new ScaleArmor());
+		halfOrcFighter.setReadiedArmor(halfOrcFighter.getArmor().get(0));
 		halfOrcFighter.setHealingSurgesPerDay(10);
 		halfOrcFighter.setHealingSurgeValue(6);
 
@@ -247,7 +251,8 @@ public class TestGUI extends JPanel {
 		tane.setReadiedWeapon(new Mace());
 		tane.setReadiedShield(new NoShield());
 		tane.setCurrentPosition(new Position(2,5));
-		tane.setArmor(new ClothArmor());
+		tane.addArmor(new ClothArmor());
+		tane.setReadiedArmor(tane.getArmor().get(0));
 
 		List<Creature> characters = new ArrayList<Creature>();
 		characters.add(elfAvenger);

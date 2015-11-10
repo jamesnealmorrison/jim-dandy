@@ -1,5 +1,8 @@
 package com.jimmie.domain.items.armor;
 
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Price;
+
 
 public class ChainMail extends Armor {
 
@@ -49,7 +52,7 @@ public class ChainMail extends Armor {
 	}
 
 	@Override
-	public int getPrice() {
-		return 40;
+	public Price getPrice() {
+		return new Price(40, CoinType.GOLD_PIECE);
 	}
 }

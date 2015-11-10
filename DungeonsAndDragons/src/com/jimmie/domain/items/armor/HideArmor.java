@@ -1,5 +1,8 @@
 package com.jimmie.domain.items.armor;
 
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Price;
+
 
 public class HideArmor extends Armor {
 	/**
@@ -48,7 +51,7 @@ public class HideArmor extends Armor {
 	}
 
 	@Override
-	public int getPrice() {
-		return 30;
+	public Price getPrice() {
+		return new Price(30, CoinType.GOLD_PIECE);
 	}
 }

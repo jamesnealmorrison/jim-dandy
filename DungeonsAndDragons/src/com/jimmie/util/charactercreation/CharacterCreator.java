@@ -49,7 +49,10 @@ import com.jimmie.domain.creatures.Shardmind;
 import com.jimmie.domain.creatures.Shifter;
 import com.jimmie.domain.creatures.Tiefling;
 import com.jimmie.domain.creatures.Wilden;
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.util.BasicStore;
 import com.jimmie.util.Dice;
+import com.jimmie.util.Store;
 import com.jimmie.util.Utils;
 
 public class CharacterCreator {
@@ -77,7 +80,7 @@ public class CharacterCreator {
 		dndClass.makeClassChoicesAfterAbilityScores(pc);
 		
 		
-		/* Skills now. */
+		// Skills now.
 		List<String> trainedSkills = dndClass.selectInitialSkills();
 		setTrainedSkills(pc, trainedSkills);
 		
@@ -85,7 +88,16 @@ public class CharacterCreator {
 		// Reminder: When I got tired of adding feats, I had stopped after InescapableForce. page 205
 		
 		pc.choosePowers();
-		//Utils.saveCharacter(pc);
+
+		
+		pc.addCoins(100, CoinType.GOLD_PIECE);
+		Utils.printCoins(pc);
+
+		Store store = new BasicStore();
+		store.shop(pc);
+		Utils.printCoins(pc);
+		
+		Utils.saveCharacter(pc);
 	}
 
 	private void setTrainedSkills(PlayerCharacter pc, List<String> trainedSkills) {
@@ -658,7 +670,7 @@ public class CharacterCreator {
 		Utils.print("Classes from book 2:");
 		Utils.print("9. Avenger");
 		Utils.print("10. Barbarian");
-		Utils.print("11.Bard");
+		Utils.print("11. Bard");
 		Utils.print("12. Druid");
 		Utils.print("13. Invoker");
 		Utils.print("14. Shaman");

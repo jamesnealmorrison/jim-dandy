@@ -1,5 +1,8 @@
 package com.jimmie.domain.items.armor;
 
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Price;
+
 
 public class HeavyShield extends Shield {
 
@@ -11,5 +14,25 @@ public class HeavyShield extends Shield {
 	@Override
 	public int getBonus() {
 		return 2;
+	}
+
+	@Override
+	public int getSkillPenalty() {
+		return -2;
+	}
+
+	@Override
+	public int getWeight() {
+		return 15;
+	}
+
+	@Override
+	public Price getPrice() {
+		return new Price(10, CoinType.GOLD_PIECE);
+	}
+
+	@Override
+	public ShieldType getShieldType() {
+		return ShieldType.HEAVY_SHIELD;
 	}
 }

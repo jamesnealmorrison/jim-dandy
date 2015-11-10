@@ -8,19 +8,23 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.NotEnoughCurrencyException;
 import com.jimmie.domain.PowerId;
 import com.jimmie.domain.Resistance;
 import com.jimmie.domain.Ritual;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.TemporaryBonus;
-import com.jimmie.domain.Wealth;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.classes.GuardianMight;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.classes.WeaponTalent;
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Coins;
+import com.jimmie.domain.items.Gear;
 import com.jimmie.domain.items.Implement;
+import com.jimmie.domain.items.Price;
 import com.jimmie.domain.items.armor.Armor;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.armor.ArmorType;
@@ -31,6 +35,7 @@ import com.jimmie.domain.items.weapons.Unarmed;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponGroup;
+import com.jimmie.domain.items.weapons.WeaponHandType;
 import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
@@ -41,17 +46,36 @@ import com.jimmie.util.Utils;
 import com.jimmie.domain.AttackType;
 
 public abstract class Character extends Creature {
-	private Armor armor;
-	public void setArmor(Armor armor) {
+	private Armor readiedArmor;
+	private List<Armor> armor;
+	private List<Gear> gear;
+
+	public List<Gear> getGear() {
+		return gear;
+	}
+
+	public void setGear(List<Gear> gear) {
+		this.gear = gear;
+	}
+
+	public List<Armor> getArmor() {
+		return armor;
+	}
+
+	public void setArmor(List<Armor> armor) {
 		this.armor = armor;
+	}
+
+	public void setReadiedArmor(Armor readiedArmor) {
+		this.readiedArmor = readiedArmor;
 	}
 
 	@Override
 	public int getArmorClass(Creature attacker) {
-		int armorClass = (10+getLevel()/2 + getArmor().getBonus() + getReadiedShield().getBonus());
+		int armorClass = (10+getLevel()/2 + getReadiedArmor().getBonus() + getReadiedShield().getBonus());
 
 		/* Light armor lets you add intelligence or dexterity modifier, whichever is greater. */
-		if (getArmor().isLightArmor()) {
+		if (getReadiedArmor().isLightArmor()) {
 			if (Warden.class.isInstance(dndClass)) {
 				if (((Warden) dndClass).getGuardianMight() == GuardianMight.EARTHSTRENGTH) {
 					if ((getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)) &&
@@ -75,7 +99,7 @@ public abstract class Character extends Creature {
 			/* Avenger's have "Armor of Faith". */
 			if (Avenger.class.isInstance(dndClass)) {
 				/* But they only get the bonus if wearing light armor AND not using a shield. */
-				if (getArmor().isLightArmor() && (NoShield.class.isInstance(getReadiedShield()))) {
+				if (getReadiedArmor().isLightArmor() && (NoShield.class.isInstance(getReadiedShield()))) {
 					armorClass = armorClass + 3;
 				}
 			}
@@ -112,11 +136,11 @@ public abstract class Character extends Creature {
 		return armorClass;
 	}
 
-	public Armor getArmor() {
-		if (armor == null) {
-			armor = new ClothArmor();
+	public Armor getReadiedArmor() {
+		if (readiedArmor == null) {
+			readiedArmor = new ClothArmor();
 		}
-		return armor;
+		return readiedArmor;
 	}
 	private static final long serialVersionUID = 1L;
 	public List<Ritual> getRituals() {
@@ -304,12 +328,9 @@ public abstract class Character extends Creature {
 	public void setSessionAndCampaignNotes(List<String> sessionAndCampaignNotes) {
 		this.sessionAndCampaignNotes = sessionAndCampaignNotes;
 	}
-	public List<Wealth> getCoinsAndOtherWealth() {
-		return coinsAndOtherWealth;
-	}
-	public void setCoinsAndOtherWealth(List<Wealth> coinsAndOtherWealth) {
-		this.coinsAndOtherWealth = coinsAndOtherWealth;
-	}
+
+	protected Coins coins = new Coins();
+	
 	protected List<Ritual> rituals;	
 	protected int age = 0;
 	protected Gender gender;
@@ -340,8 +361,8 @@ public abstract class Character extends Creature {
 	protected String background;
 	protected List<CompanionOrAlly> companionsAndAllies;
 	protected List<String> sessionAndCampaignNotes;
-	protected List<Wealth> coinsAndOtherWealth;
 	private Weapon readiedWeapon;
+	private List<Weapon> weapons;
 	private Implement readiedImplement;
 	private List<WeaponType> weaponTypeProficiencies;
 	private List<WeaponGroup> weaponGroupProficiencies;
@@ -516,9 +537,9 @@ public abstract class Character extends Creature {
 		/* See if they have Fighter Weapon Talent. */
 		if (Fighter.class.isInstance(dndClass)) {
 
-			if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.ONE_HANDED_WEAPONS) && (getReadiedWeapon().isOneHandedWeapon())) {
+			if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.ONE_HANDED_WEAPONS) && (getReadiedWeapon().getHandType() == WeaponHandType.ONE_HANDED)) {
 				total = total + 1;
-			} else if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.TWO_HANDED_WEAPONS) && (getReadiedWeapon().isTwoHandedWeapon())) {
+			} else if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.TWO_HANDED_WEAPONS) && (getReadiedWeapon().getHandType() == WeaponHandType.TWO_HANDED)) {
 				total = total + 1;
 			}
 		}
@@ -625,6 +646,7 @@ public abstract class Character extends Creature {
 	}
 
 	private Shield readiedShield;
+	private List<Shield> shields;
 
 	public Shield getReadiedShield() {
 		if (readiedShield == null) {
@@ -755,6 +777,81 @@ public abstract class Character extends Creature {
 				Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
 			}
 		}
+	}
 
+	public void addCoins(int i, CoinType coinType) {
+		switch (coinType) {
+		case COPPER_PIECE :
+			coins.addCopperPieces(i);
+			break;
+		case SILVER_PIECE :
+			coins.addSilverPieces(i);
+			break;
+		case GOLD_PIECE :
+			coins.addGoldPieces(i);
+			break;
+		case PLATINUM_PIECE :
+			coins.addPlatinumPieces(i);
+			break;
+		case ASTRAL_DIAMOND :
+			coins.addAstralDiamonds(i);
+			break;
+		}
+	}
+
+	public Coins getCoins() {
+		return coins;
+	}
+
+	public void setCoins(Coins coins) {
+		this.coins = coins;
+	}
+
+	public void spendCoins(Price price) throws NotEnoughCurrencyException {
+		coins.spend(price.getAmount(), price.getCoinType());
+	}
+
+	public void addArmor(Armor armor) {
+		if (this.armor == null) {
+			this.armor = new ArrayList<Armor>();
+		}
+		this.armor.add(armor);
+	}
+
+	public void addGear(Gear gear) {
+		if (this.gear == null) {
+			this.gear = new ArrayList<Gear>();
+		}
+		this.gear.add(gear);
+	}
+
+	public List<Shield> getShields() {
+		return shields;
+	}
+
+	public void setShields(List<Shield> shields) {
+		this.shields = shields;
+	}
+	
+	public void addShield(Shield shield) {
+		if (shields == null) {
+			shields = new ArrayList<Shield>();
+		}
+		shields.add(shield);
+	}
+
+	public List<Weapon> getWeapons() {
+		return weapons;
+	}
+
+	public void setWeapons(List<Weapon> weapons) {
+		this.weapons = weapons;
+	}
+	
+	public void addWeapon(Weapon weapon) {
+		if (weapons == null) {
+			weapons = new ArrayList<Weapon>();
+		}
+		weapons.add(weapon);
 	}
 }

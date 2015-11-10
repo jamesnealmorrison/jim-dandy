@@ -405,4 +405,13 @@ public class Utils {
 			print(s);
 		}
 	}
+
+	public static void printCoins(Character c) {
+		print(c.getName() + " has the following coins:");
+		print("Copper pieces:   " + c.getCoins().getCopperPieces());
+		print("Silver pieces:   " + c.getCoins().getSilverPieces());
+		print("Gold pieces:     " + c.getCoins().getGoldPieces());
+		print("Platinum pieces: " + c.getCoins().getPlatinumPieces());
+		print("Astral diamonds: " + c.getCoins().getAstralDiamonds());
+	}
 }

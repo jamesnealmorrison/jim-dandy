@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Price;
 
 public class Unarmed extends Weapon {
 	/**
@@ -32,18 +34,8 @@ public class Unarmed extends Weapon {
 	}
 
 	@Override
-	public boolean isOneHandedWeapon() {
-		return true;
-	}
-
-	@Override
-	public boolean isTwoHandedWeapon() {
-		return false;
-	}
-
-	@Override
 	public int getNormalRange() {
-		return 1;
+		return 0;
 	}
 
 	@Override
@@ -52,8 +44,8 @@ public class Unarmed extends Weapon {
 	}
 
 	@Override
-	public int getPrice() {
-		return 0;
+	public Price getPrice() {
+		return new Price(0, CoinType.GOLD_PIECE);
 	}
 
 	@Override
@@ -82,5 +74,10 @@ public class Unarmed extends Weapon {
 	@Override
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.IMPROVISED_MELEE;
+	}
+
+	@Override
+	public WeaponHandType getHandType() {
+		return WeaponHandType.ONE_HANDED;
 	}
 }

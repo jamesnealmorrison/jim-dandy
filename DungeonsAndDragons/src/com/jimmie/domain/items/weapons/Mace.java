@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.items.CoinType;
+import com.jimmie.domain.items.Price;
 
 public class Mace extends Weapon {
 	/**
@@ -32,18 +34,8 @@ public class Mace extends Weapon {
 	}
 
 	@Override
-	public boolean isOneHandedWeapon() {
-		return true;
-	}
-
-	@Override
-	public boolean isTwoHandedWeapon() {
-		return false;
-	}
-
-	@Override
 	public int getNormalRange() {
-		return 1;
+		return 0;
 	}
 
 	@Override
@@ -52,8 +44,8 @@ public class Mace extends Weapon {
 	}
 
 	@Override
-	public int getPrice() {
-		return 5;
+	public Price getPrice() {
+		return new Price(5, CoinType.GOLD_PIECE);
 	}
 
 	@Override
@@ -83,5 +75,10 @@ public class Mace extends Weapon {
 	@Override
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SIMPLE_MELEE;
+	}
+
+	@Override
+	public WeaponHandType getHandType() {
+		return WeaponHandType.ONE_HANDED;
 	}
 }

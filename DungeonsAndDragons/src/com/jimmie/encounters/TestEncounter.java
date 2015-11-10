@@ -61,7 +61,8 @@ public class TestEncounter extends Encounter {
 		zanros.setReadiedWeapon(new Mace());
 		zanros.setReadiedShield(new NoShield());
 		zanros.setCurrentPosition(new Position(1,2));
-		zanros.setArmor(new ClothArmor());
+		zanros.addArmor(new ClothArmor());
+		zanros.setReadiedArmor(zanros.getArmor().get(0));
 		zanros.setHealingSurgesPerDay(7);
 		zanros.setHealingSurgeValue(6);
 //		zanros.setTrainedInArcana(true);

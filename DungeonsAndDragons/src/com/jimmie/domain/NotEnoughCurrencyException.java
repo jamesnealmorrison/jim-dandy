@@ -1,8 +1,6 @@
 package com.jimmie.domain;
 
-import java.io.Serializable;
-
-public class Wealth implements Serializable {
+public class NotEnoughCurrencyException extends Exception {
 
 	/**
 	 * 

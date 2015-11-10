@@ -621,7 +621,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			}
 			if (skill.hasArmorPenalty()) {
 				if (Character.class.isAssignableFrom(this.getClass())) {
-					Armor armor = ((Character) this).getArmor();
+					Armor armor = ((Character) this).getReadiedArmor();
 					baseSkillLevel -= armor.getSkillPenalty(); 
 				}
 			}

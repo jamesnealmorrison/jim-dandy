@@ -13,6 +13,7 @@ import com.jimmie.domain.PowerId;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.feats.Feat;
 import com.jimmie.domain.feats.FeatType;
+import com.jimmie.domain.items.armor.ClothArmor;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.DailyPower;
 import com.jimmie.util.EncounterPower;
@@ -52,6 +53,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	public PlayerCharacter(Race r, DndClass c) {
 		race = r;
 		dndClass = c;
+		// The book says that all player characters start out with cloth armor (basic clothing).
+		addArmor(new ClothArmor());
 	}
 
 	public ParagonPath getParagonPath() {
