@@ -30,11 +30,14 @@ import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.classes.Warlock;
 import com.jimmie.domain.classes.Warlord;
 import com.jimmie.domain.classes.Wizard;
+import com.jimmie.domain.creatures.Alignment;
 import com.jimmie.domain.creatures.Deva;
+import com.jimmie.domain.creatures.Deity;
 import com.jimmie.domain.creatures.Dragonborn;
 import com.jimmie.domain.creatures.Dwarf;
 import com.jimmie.domain.creatures.Eladrin;
 import com.jimmie.domain.creatures.Elf;
+import com.jimmie.domain.creatures.Gender;
 import com.jimmie.domain.creatures.Githzerai;
 import com.jimmie.domain.creatures.Gnome;
 import com.jimmie.domain.creatures.Goliath;
@@ -68,8 +71,12 @@ public class CharacterCreator {
 		DndClass dndClass = chooseClass(race);
 
 		PlayerCharacter pc = new PlayerCharacter(race, dndClass);
+		
+		pc.setLevel(1);
 	
 		race.makeRaceChoices(pc, dndClass);
+		
+		getMiscInfo(pc);
 
 		dndClass.makeClassChoicesBeforeAbilityScores(pc);
 
@@ -98,6 +105,111 @@ public class CharacterCreator {
 		Utils.printCoins(pc);
 		
 		Utils.saveCharacter(pc);
+	}
+
+	private void getMiscInfo(PlayerCharacter pc) {
+		Utils.print("How old is your character?");
+		int age = Utils.getValidIntInputInRange(0, 1000);
+		pc.setAge(age);
+		
+		Utils.print("Is you character Male (M) or Female(F)?");
+		List<String> choices = new ArrayList<String>();
+		choices.add("M");
+		choices.add("F");
+		String choice = Utils.getValidInput(choices);
+		Gender gender = null;
+		if ("M".equalsIgnoreCase(choice)) {
+			gender = Gender.MALE;
+		} else {
+			gender = Gender.FEMALE;
+		}
+		pc.setGender(gender);
+		
+		Alignment alignment = null;
+		Utils.print("What alignment is your character?");
+		Utils.print("1. Good");
+		Utils.print("2. Lawful Good");
+		Utils.print("3. Evil");
+		Utils.print("4. Chaotic Evil");
+		Utils.print("5. Unaligned");
+		int alignmentChoice = Utils.getValidIntInputInRange(1, 5);
+		switch (alignmentChoice) {
+		case 1 :
+			alignment = Alignment.GOOD;
+			break;
+		case 2 :
+			alignment = Alignment.LAWFUL_GOOD;
+			break;
+		case 3 :
+			alignment = Alignment.EVIL;
+			break;
+		case 4 :
+			alignment = Alignment.CHAOTIC_EVIL;
+			break;
+		case 5 :
+			alignment = Alignment.UNALIGNED;
+			break;
+		}
+		pc.setAlignment(alignment);
+
+
+		Deity deity = null;
+		Utils.print("What deity do you choose for character?");
+		Utils.print("1. Avandra");
+		Utils.print("2. Bahamut");
+		Utils.print("3. Corellon");
+		Utils.print("4. Erathis");
+		Utils.print("5. Ioun");
+		Utils.print("6. Kord");
+		Utils.print("7. Melora");
+		Utils.print("8. Moradin");
+		Utils.print("9. Pelor");
+		Utils.print("10. The Raven Queen");
+		Utils.print("11. Sehanine");
+		Utils.print("12. None");
+				
+		int deityChoice = Utils.getValidIntInputInRange(1, 12);
+		switch (deityChoice) {
+		case 1 :
+			deity = Deity.AVANDRA;
+			break;
+		case 2 :
+			deity = Deity.BAHAMUT;
+			break;
+		case 3 :
+			deity = Deity.CORELLON;
+			break;
+		case 4 :
+			deity = Deity.ERATHIS;
+			break;
+		case 5 :
+			deity = Deity.IOUN;
+			break;
+		case 6 :
+			deity = Deity.KORD;
+			break;
+		case 7 :
+			deity = Deity.MELORA;
+			break;
+		case 8 :
+			deity = Deity.MORADIN;
+			break;
+		case 9 :
+			deity = Deity.PELOR;
+			break;
+		case 10 :
+			deity = Deity.THE_RAVEN_QUEEN;
+			break;
+		case 11 :
+			deity = Deity.SEHANINE;
+			break;
+		}
+		pc.setDeity(deity);
+		
+		Utils.print("Type whatever you want to show up under Adventuring Company or Other Affiliation:  (Keep it kind of short.  There's not too much space)");
+		String company = Utils.getInput();
+		pc.setAdventuringCompanyOrOtherAffiliations(company);
+		
 	}
 
 	private void setTrainedSkills(PlayerCharacter pc, List<String> trainedSkills) {
@@ -529,7 +641,7 @@ public class CharacterCreator {
 		choices.remove(Utils.whichChoice(choice, choices));
 
 		Utils.print("Assiging " + choices.get(0) + " to Charisma.");
-		pc.setStrength(choices.get(0));
+		pc.setCharisma(choices.get(0));
 	}
 
 	private Race chooseRace() {

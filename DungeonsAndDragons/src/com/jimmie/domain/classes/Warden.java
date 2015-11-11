@@ -475,4 +475,10 @@ public class Warden extends DndClass {
 	public void setGuardianMight(GuardianMight guardianMight) {
 		this.guardianMight = guardianMight;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

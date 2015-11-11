@@ -151,4 +151,10 @@ public class Warlock extends DndClass {
 	public void setEldritchPact(EldritchPact eldritchPact) {
 		this.eldritchPact = eldritchPact;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

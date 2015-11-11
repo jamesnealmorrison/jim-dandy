@@ -70,9 +70,14 @@ public abstract class Character extends Creature {
 		this.readiedArmor = readiedArmor;
 	}
 
+	public int getBaseArmorClass() {
+		return (10+getLevel()/2 + getReadiedArmor().getBonus()  + dndClass.getArmorClassBonus() + getReadiedShield().getBonus());
+		// TODO: Enhancement and two miscellaneous????
+	}
+	
 	@Override
 	public int getArmorClass(Creature attacker) {
-		int armorClass = (10+getLevel()/2 + getReadiedArmor().getBonus() + getReadiedShield().getBonus());
+		int armorClass = getBaseArmorClass();
 
 		/* Light armor lets you add intelligence or dexterity modifier, whichever is greater. */
 		if (getReadiedArmor().isLightArmor()) {
@@ -336,7 +341,14 @@ public abstract class Character extends Creature {
 	protected Gender gender;
 	protected int height = 0;  // in inches
 	protected int weight = 0;  // in pounds
-	// protected String diety;  // we don't do dieties
+	protected Deity deity;
+	public Deity getDeity() {
+		return deity;
+	}
+
+	public void setDeity(Deity deity) {
+		this.deity = deity;
+	}
 	protected String adventuringCompanyOrOtherAffiliations;
 	protected int initiativeMisc = 0;
 	protected int armorClassMisc1 = 0;

@@ -144,4 +144,10 @@ public class Wizard extends DndClass {
 	public void setArcaneImplement(ArcaneImplement arcaneImplement) {
 		this.arcaneImplement = arcaneImplement;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

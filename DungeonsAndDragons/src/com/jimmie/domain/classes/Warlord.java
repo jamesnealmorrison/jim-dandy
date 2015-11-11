@@ -148,4 +148,10 @@ public class Warlord extends DndClass {
 	public void setCommandingPresence(CommandingPresence commandingPresence) {
 		this.commandingPresence = commandingPresence;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

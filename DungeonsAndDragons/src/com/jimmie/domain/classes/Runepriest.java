@@ -149,4 +149,10 @@ public class Runepriest extends DndClass {
 	public void setRunicArtistry(RunicArtistry runicArtistry) {
 		this.runicArtistry = runicArtistry;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

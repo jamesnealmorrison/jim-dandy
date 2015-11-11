@@ -932,7 +932,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected int will;
 	protected int actionPoints;
 	protected List<PowerId> powers;
-	protected String alignment;
+	protected Alignment alignment;
 	protected List<String> languages;
 	protected List<Skill> skills;
 	protected int strength;
@@ -1200,12 +1200,12 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		damageVulnerabilities.put(damageType, vulnerability);
 	}
 
-	public String getAlignment() {
+	public Alignment getAlignment() {
 		return alignment;
 	}
 
 
-	public void setAlignment(String alignment) {
+	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
 	}
 

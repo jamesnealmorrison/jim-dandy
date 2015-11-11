@@ -239,4 +239,17 @@ public class PlayerCharacter extends Character implements Serializable {
 			}
 		}
 	}
+
+	public int getFeatArmorClassBonus() {
+		int base = 0;
+		for (Feat feat : feats) {
+			base = base + feat.getArmorClassBonus();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getBaseArmorClass() {
+		return super.getBaseArmorClass() + getFeatArmorClassBonus();
+	}
 }

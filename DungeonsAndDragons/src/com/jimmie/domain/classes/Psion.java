@@ -509,4 +509,10 @@ public class Psion extends DndClass {
 	public void setDisciplineFocus(PsionDiscipline disciplineFocus) {
 		this.disciplineFocus = disciplineFocus;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -15,4 +15,8 @@ public abstract class Feat implements Serializable {
 	public abstract String getBenefit();
 	public abstract boolean meetsPrerequisites(PlayerCharacter pc);
 	public abstract void makeFeatChoices(PlayerCharacter pc);
+	public int getArmorClassBonus() {
+		// TODO: The expectation is that I'll override this in any feat that has an armor class bonus.
+		return 0;
+	}
 }

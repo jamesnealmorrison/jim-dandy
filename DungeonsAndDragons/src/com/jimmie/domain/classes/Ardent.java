@@ -150,4 +150,10 @@ public class Ardent extends DndClass {
 	public void setArdentMantle(ArdentMantle ardentMantle) {
 		this.ardentMantle = ardentMantle;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -91,7 +91,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 	
 		/* Set up the player characters */
-		Character elfAvenger = Utils.loadCharacter("Jim");
+		Character elfAvenger = Utils.loadCharacter("Aelar");
 		elfAvenger.setCurrentPosition(new Position(3,19));
 		Character kellen = Utils.loadCharacter("Jim");
 		kellen.setCurrentPosition(new Position(1,21));

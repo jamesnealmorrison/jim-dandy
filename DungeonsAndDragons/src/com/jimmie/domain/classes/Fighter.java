@@ -366,4 +366,10 @@ public class Fighter extends DndClass implements Serializable {
 	public void setWeaponTalent(WeaponTalent weaponTalent) {
 		this.weaponTalent = weaponTalent;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

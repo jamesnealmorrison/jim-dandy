@@ -153,4 +153,10 @@ public class Druid extends DndClass {
 	public void setPrimalAspect(PrimalAspect primalAspect) {
 		this.primalAspect = primalAspect;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

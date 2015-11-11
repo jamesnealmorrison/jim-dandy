@@ -40,4 +40,5 @@ public abstract class DndClass implements Serializable {
 	public abstract List<String> selectInitialSkills();
 	public abstract void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc);
 	public abstract void makeClassChoicesAfterAbilityScores(PlayerCharacter pc);
+	public abstract int getArmorClassBonus();
 }

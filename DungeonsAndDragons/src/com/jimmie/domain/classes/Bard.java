@@ -488,4 +488,10 @@ public class Bard extends DndClass {
 	public void setBardicVirtue(BardicVirtue bardicVirtue) {
 		this.bardicVirtue = bardicVirtue;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

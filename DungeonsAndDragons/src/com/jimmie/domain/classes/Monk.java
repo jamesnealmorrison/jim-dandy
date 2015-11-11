@@ -160,4 +160,10 @@ public class Monk extends DndClass {
 	public void setMonasticTradition(MonasticTradition monasticTradition) {
 		this.monasticTradition = monasticTradition;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
