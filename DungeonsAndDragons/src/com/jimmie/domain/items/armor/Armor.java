@@ -2,6 +2,8 @@ package com.jimmie.domain.items.armor;
 
 import java.io.Serializable;
 
+import com.jimmie.domain.items.Price;
+
 public abstract class Armor implements Serializable {
 	/**
 	 * 
@@ -24,5 +26,5 @@ public abstract class Armor implements Serializable {
 	
 	public abstract ArmorGroup getArmorGroup();
 	
-	public abstract int getPrice();
+	public abstract Price getPrice();
 }

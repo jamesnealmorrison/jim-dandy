@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
+import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
-import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
@@ -24,9 +26,6 @@ public class KoboldSlinger extends Kobold {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String DAGGER = "Dagger";
-	private static final String SLING = "Sling";
-	private static final String SHIFTY = "Shifty";
 	
 	public KoboldSlinger() {
 		setInitiative(3);
@@ -43,9 +42,9 @@ public class KoboldSlinger extends Kobold {
 		setIntelligence(9);
 		setWisdom(12);
 		setCharisma(10);
-		addPower(DAGGER);
-		addPower(SLING);
-		addPower(SHIFTY);
+		addPower(PowerId.DAGGER);
+		addPower(PowerId.SLING);
+		addPower(PowerId.SHIFTY);
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldSlinger.JPG");
 	}
 
@@ -73,7 +72,7 @@ public class KoboldSlinger extends Kobold {
 		return 0;
 	}
 
-	@StandardAction(menuName = DAGGER, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.DAGGER, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void dagger(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, 1);
@@ -106,9 +105,9 @@ public class KoboldSlinger extends Kobold {
 		}
 	}
 
-	@StandardAction(menuName = SLING, isBasicAttack = true, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SLING, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.RANGED)
 	@AtWillPower
-	public void javelin(Encounter encounter) {
+	public void sling(Encounter encounter) {
 		AttackTarget target = encounter.chooseRangedTarget(this, 10, 20);
 			
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
@@ -139,11 +138,5 @@ System.out.println("STILL NEED TO IMPLEMENT SPECIAL SHOT and general rounds!!!!!
 		} else {
 			Utils.print("You missed " + target.getName());
 		}
-	}
-
-	@MinorAction(menuName = SHIFTY)
-	@AtWillPower
-	public void shifty(Encounter encounter) {
-		shift(1, true, encounter);
 	}
 }

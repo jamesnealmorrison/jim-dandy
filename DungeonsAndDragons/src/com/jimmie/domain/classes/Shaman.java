@@ -153,4 +153,10 @@ public class Shaman extends DndClass {
 	public void setCompanionSpirit(CompanionSpirit companionSpirit) {
 		this.companionSpirit = companionSpirit;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

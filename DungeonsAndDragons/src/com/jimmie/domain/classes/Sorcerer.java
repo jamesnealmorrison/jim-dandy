@@ -146,4 +146,10 @@ public class Sorcerer extends DndClass {
 	public void setSpellSource(SorcererSpellSource spellSource) {
 		this.spellSource = spellSource;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

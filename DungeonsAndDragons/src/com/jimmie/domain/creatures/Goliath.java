@@ -13,7 +13,6 @@ public class Goliath extends Race {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String STONES_ENDURANCE = "Stone's Endurance";
 
 	@Override
 	public int getRacialDamageBonus() {

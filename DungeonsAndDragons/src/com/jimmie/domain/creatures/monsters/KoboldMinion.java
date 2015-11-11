@@ -6,12 +6,14 @@ import java.util.List;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.PowerId;
+import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.AtWillPower;
 import com.jimmie.util.Dice;
-import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.AttackType;
 
 public class KoboldMinion extends Kobold {
 	@Override
@@ -24,10 +26,6 @@ public class KoboldMinion extends Kobold {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SPEAR = "Spear";
-	private static final String JAVELIN = "Javelin";
-	private static final String SHIFTY = "Shifty";
-	private static final String TRAP_SENSE = "Trap Sense";
 	
 	public KoboldMinion() {
 		setInitiative(3);
@@ -44,10 +42,9 @@ public class KoboldMinion extends Kobold {
 		setIntelligence(9);
 		setWisdom(12);
 		setCharisma(10);
-		addPower(SPEAR);
-		addPower(JAVELIN);
-		addPower(SHIFTY);
-		addPower(TRAP_SENSE);
+		addPower(PowerId.SPEAR);
+		addPower(PowerId.JAVELIN);
+		addPower(PowerId.SHIFTY);
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldMinion.JPG");
 	}
 
@@ -75,7 +72,7 @@ public class KoboldMinion extends Kobold {
 		return 0;
 	}
 
-	@StandardAction(menuName = SPEAR, isBasicAttack = true, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SHORT_SWORD, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void shortSword(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(this, 1);
@@ -101,7 +98,7 @@ public class KoboldMinion extends Kobold {
 		}
 	}
 
-	@StandardAction(menuName = JAVELIN, isBasicAttack = true, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.JAVELIN, isBasicAttack = true, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void javelin(Encounter encounter) {
 		AttackTarget target = encounter.chooseRangedTarget(this, 10, 20);
@@ -125,11 +122,5 @@ public class KoboldMinion extends Kobold {
 		} else {
 			Utils.print("You missed " + target.getName());
 		}
-	}
-
-	@MinorAction(menuName = SHIFTY)
-	@AtWillPower
-	public void shifty(Encounter encounter) {
-		shift(1, true, encounter);
 	}
 }

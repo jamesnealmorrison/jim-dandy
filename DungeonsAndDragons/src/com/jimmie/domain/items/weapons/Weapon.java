@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.items.Price;
 
 public abstract class Weapon implements Serializable {
 	/**
@@ -19,15 +20,13 @@ public abstract class Weapon implements Serializable {
 
 	public abstract int getProficiencyBonus();
 
-	public abstract boolean isOneHandedWeapon();
-
-	public abstract boolean isTwoHandedWeapon();
+	public abstract WeaponHandType getHandType();
 	
 	public abstract int getNormalRange();
 	
 	public abstract int getLongRange();
 	
-	public abstract int getPrice();
+	public abstract Price getPrice();
 	
 	public abstract int getWeight();
 	

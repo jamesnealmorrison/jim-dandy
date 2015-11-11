@@ -153,4 +153,10 @@ public class Seeker extends DndClass {
 	public void setSeekerBond(SeekerBond seekerBond) {
 		this.seekerBond = seekerBond;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

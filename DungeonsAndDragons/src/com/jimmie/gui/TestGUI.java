@@ -10,11 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.jimmie.domain.Position;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.classes.Warden;
+import com.jimmie.domain.classes.WeaponTalent;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Elf;
 import com.jimmie.domain.creatures.Gnome;
@@ -29,10 +31,10 @@ import com.jimmie.domain.items.armor.HideArmor;
 import com.jimmie.domain.items.armor.LightShield;
 import com.jimmie.domain.items.armor.NoShield;
 import com.jimmie.domain.items.armor.ScaleArmor;
-import com.jimmie.domain.items.weapons.LongSword;
+import com.jimmie.domain.items.weapons.Longsword;
 import com.jimmie.domain.items.weapons.Mace;
 import com.jimmie.domain.items.weapons.ShortSword;
-import com.jimmie.domain.items.weapons.WarHammer;
+import com.jimmie.domain.items.weapons.Warhammer;
 import com.jimmie.util.IntegratedCommandConsole;
 
 public class TestGUI extends JPanel {
@@ -102,13 +104,11 @@ public class TestGUI extends JPanel {
 
 		/* Set up the player characters */
 		Avenger avenger = new Avenger();
-		avenger.addPower(Avenger.BOND_OF_PURSUIT);
-		avenger.addPower(Avenger.RADIANT_VENGEANCE);
-		avenger.addPower(Avenger.ANGELIC_ALACRITY);
-		avenger.addPower(Avenger.OATH_OF_ENMITY);
-		avenger.addPower(Avenger.ABJURE_UNDEAD);
-		avenger.addPower(Avenger.DIVINE_GUIDANCE);
-		avenger.addPower(Avenger.ASPECT_OF_MIGHT);
+		avenger.addPower(PowerId.BOND_OF_PURSUIT);
+		avenger.addPower(PowerId.RADIANT_VENGEANCE);
+		avenger.addPower(PowerId.ANGELIC_ALACRITY);
+		avenger.addPower(PowerId.OATH_OF_ENMITY);
+		avenger.addPower(PowerId.ASPECT_OF_MIGHT);
 		Elf elf = new Elf();
 		PlayerCharacter elfAvenger = new PlayerCharacter(elf, avenger);
 		avenger.setOwner(elfAvenger);
@@ -129,10 +129,11 @@ public class TestGUI extends JPanel {
 		elfAvenger.setIntelligence(13);
 		elfAvenger.setWisdom(18);
 		elfAvenger.setCharisma(10);
-		LongSword ls1 = new LongSword();
+		Longsword ls1 = new Longsword();
 //		elfAvenger.addWeaponProficiency(ls1.getWeaponId());
 		elfAvenger.setReadiedWeapon(ls1);
-		elfAvenger.setArmor(new ClothArmor());
+		elfAvenger.addArmor(new ClothArmor());
+		elfAvenger.setReadiedArmor(elfAvenger.getArmor().get(0));
 		elfAvenger.setReadiedShield(new NoShield());
 		elfAvenger.setCurrentPosition(new Position(2,1));
 
@@ -158,17 +159,15 @@ public class TestGUI extends JPanel {
 		kellen.setCurrentPosition(new Position(2,2));
 		kellen.setReadiedWeapon(new ShortSword());
 		kellen.setReadiedShield(new LightShield());
-		kellen.setArmor(new ChainMail());
+		kellen.addArmor(new ChainMail());
+		kellen.setReadiedArmor(kellen.getArmor().get(0));
 
 		Warden warden = new Warden();
-		warden.addPower(Warden.STRENGTH_OF_STONE);
-		warden.addPower(Warden.EARTH_SHIELD_STRIKE);
-		warden.addPower(Warden.WARDENS_FURY);
-		warden.addPower(Warden.THUNDER_RAM_ASSAULT);
-		warden.addPower(Warden.WARDENS_GRASP);
-		warden.addPower(Warden.FORM_OF_THE_WILLOW_SENTINEL);
+		warden.addPower(PowerId.STRENGTH_OF_STONE);
+		warden.addPower(PowerId.EARTH_SHIELD_STRIKE);
+		warden.addPower(PowerId.THUNDER_RAM_ASSAULT);
+		warden.addPower(PowerId.FORM_OF_THE_WILLOW_SENTINEL);
 		Goliath goliath = new Goliath();
-		goliath.addPower(Goliath.STONES_ENDURANCE);
 		PlayerCharacter glock = new PlayerCharacter(goliath, warden);
 		warden.setOwner(glock);
 		goliath.setOwner(glock);
@@ -187,23 +186,22 @@ public class TestGUI extends JPanel {
 		glock.setWisdom(10);
 		glock.setCharisma(13);
 		glock.setCurrentPosition(new Position(2,3));
-		WarHammer warHammer = new WarHammer();
-		glock.setReadiedWeapon(warHammer);
+		Warhammer warhammer = new Warhammer();
+		glock.setReadiedWeapon(warhammer);
 //		glock.addWeaponProficiency(warHammer.getWeaponId());
 		glock.setReadiedShield(new LightShield());
-		glock.setArmor(new HideArmor());
+		glock.addArmor(new HideArmor());
+		glock.setReadiedArmor(glock.getArmor().get(0));
 
 		Fighter fighter = new Fighter();
-		fighter.addPower(Fighter.SURE_STRIKE);
-		fighter.addPower(Fighter.TIDE_OF_IRON);
-		fighter.addPower(Fighter.COVERING_ATTACK);
-		fighter.addPower(Fighter.COMEBACK_STRIKE);
+		fighter.addPower(PowerId.SURE_STRIKE);
+		fighter.addPower(PowerId.TIDE_OF_IRON);
+		fighter.addPower(PowerId.COVERING_ATTACK);
+		fighter.addPower(PowerId.COMEBACK_STRIKE);
 		HalfOrc halfOrc = new HalfOrc();
-		halfOrc.addPower(HalfOrc.FURIOUS_ASSAULT);
-		halfOrc.addPower(HalfOrc.HALF_ORC_RESILIENCE);
 		PlayerCharacter halfOrcFighter = new PlayerCharacter(halfOrc, fighter);
 		fighter.setOwner(halfOrcFighter);
-		fighter.setFighterWeaponTalent(Fighter.ONE_HANDED_WEAPON);
+		fighter.setWeaponTalent(WeaponTalent.ONE_HANDED_WEAPONS);
 		halfOrc.setOwner(halfOrcFighter);
 		halfOrcFighter.setName("Eleak Nightraider");
 		//halfOrcFighter.setInitiative(3);
@@ -221,12 +219,13 @@ public class TestGUI extends JPanel {
 		halfOrcFighter.setIntelligence(10);
 		halfOrcFighter.setWisdom(13);
 		halfOrcFighter.setCharisma(11);
-		LongSword ls = new LongSword();
+		Longsword ls = new Longsword();
 		halfOrcFighter.setReadiedWeapon(ls);
 		halfOrcFighter.setReadiedShield(new HeavyShield());
 //		halfOrcFighter.addWeaponProficiency(ls.getWeaponId());
 		halfOrcFighter.setCurrentPosition(new Position(2,4));
-		halfOrcFighter.setArmor(new ScaleArmor());
+		halfOrcFighter.addArmor(new ScaleArmor());
+		halfOrcFighter.setReadiedArmor(halfOrcFighter.getArmor().get(0));
 		halfOrcFighter.setHealingSurgesPerDay(10);
 		halfOrcFighter.setHealingSurgeValue(6);
 
@@ -252,7 +251,8 @@ public class TestGUI extends JPanel {
 		tane.setReadiedWeapon(new Mace());
 		tane.setReadiedShield(new NoShield());
 		tane.setCurrentPosition(new Position(2,5));
-		tane.setArmor(new ClothArmor());
+		tane.addArmor(new ClothArmor());
+		tane.setReadiedArmor(tane.getArmor().get(0));
 
 		List<Creature> characters = new ArrayList<Creature>();
 		characters.add(elfAvenger);

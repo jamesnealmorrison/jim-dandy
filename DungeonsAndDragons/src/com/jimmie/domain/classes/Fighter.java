@@ -9,6 +9,7 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
@@ -23,23 +24,18 @@ import com.jimmie.util.EncounterPower;
 import com.jimmie.util.RequiresShield;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.AttackType;
 
 public class Fighter extends DndClass implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String SURE_STRIKE = "Sure Strike";
-	public static final String TIDE_OF_IRON = "Tide Of Iron";
-	public static final String COVERING_ATTACK = "Covering Attack";
-	public static final String COMEBACK_STRIKE = "Comeback Strike";
-	public static final String ONE_HANDED_WEAPON = "OneHandedWeapon";
-	public static final String TWO_HANDED_WEAPON = "TwoHandedWeapon";
-	private String fighterWeaponTalent;
 	private boolean usedCoveringAttack;
 	private boolean usedComebackStrike;
+	private WeaponTalent weaponTalent;
 
-	@StandardAction(menuName = SURE_STRIKE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = true, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.SURE_STRIKE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.MARTIAL, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void sureStrike(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
@@ -85,7 +81,7 @@ public class Fighter extends DndClass implements Serializable {
 		
 	}
 
-	@StandardAction(menuName = TIDE_OF_IRON, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = true, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.TIDE_OF_IRON, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.MARTIAL, attackType = AttackType.MELEE)
 	@RequiresShield
 	@AtWillPower
 	public void tideOfIron(Encounter encounter) {
@@ -139,7 +135,7 @@ public class Fighter extends DndClass implements Serializable {
 		Utils.print(target.getName() + " is now marked by " + owner.getName() + " until the end of my next turn because I have Combat Challenge.");
 	}
 
-	@StandardAction(menuName = COVERING_ATTACK, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = true, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.COVERING_ATTACK, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.MARTIAL, attackType = AttackType.MELEE)
 	@EncounterPower
 	public void coveringAttack(Encounter encounter) {
 		if (!usedCoveringAttack) {
@@ -194,7 +190,7 @@ public class Fighter extends DndClass implements Serializable {
 		}
 	}
 
-	@StandardAction(menuName = COMEBACK_STRIKE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = true, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.COMEBACK_STRIKE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.MARTIAL, attackType = AttackType.MELEE)
 	@DailyPower
 	public void comebackStrike(Encounter encounter) {
 		if (!usedComebackStrike) {
@@ -243,15 +239,6 @@ public class Fighter extends DndClass implements Serializable {
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			owner.setUsedStandardAction(false);
 		}
-	}
-
-	public String getFighterWeaponTalent() {
-		return fighterWeaponTalent;
-	}
-
-	public String setFighterWeaponTalent(String fighterWeaponTalent) {
-		this.fighterWeaponTalent = fighterWeaponTalent;
-		return fighterWeaponTalent;
 	}
 
 	@Override
@@ -345,6 +332,17 @@ public class Fighter extends DndClass implements Serializable {
 			Utils.print("Suggested Daily Power: Comeback Strike");
 		}
 		
+		Utils.print("Choose between the following Fighter Weapon Talents:");
+		Utils.print("1. One Handed Weapons.");
+		Utils.print("2. Two Handed Weapons.");
+		Utils.print("Your choice:");
+		choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			setWeaponTalent(WeaponTalent.ONE_HANDED_WEAPONS);
+		} else {
+			setWeaponTalent(WeaponTalent.TWO_HANDED_WEAPONS);
+		}
+
 		// TODO: Combat Superiority
 		Utils.print("NOTE: Looks like I may have implemented Combat Challenge and Fighter Weapon Talent already.  I'm not sure about Combat Superiority.");
 	}
@@ -359,5 +357,19 @@ public class Fighter extends DndClass implements Serializable {
 		int healingSurgesPerDay = 9 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
 		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
 		pc.setHealingSurgesPerDay(healingSurgesPerDay);
+	}
+
+	public WeaponTalent getWeaponTalent() {
+		return weaponTalent;
+	}
+
+	public void setWeaponTalent(WeaponTalent weaponTalent) {
+		this.weaponTalent = weaponTalent;
+	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

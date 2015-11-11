@@ -8,6 +8,7 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
@@ -22,6 +23,7 @@ import com.jimmie.util.EncounterPower;
 import com.jimmie.util.MinorAction;
 import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.AttackType;
 
 public class Warden extends DndClass {
 
@@ -29,13 +31,6 @@ public class Warden extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String STRENGTH_OF_STONE = "Strength of Stone";
-	public static final String EARTH_SHIELD_STRIKE = "Earth Shield Strike";
-	public static final String WARDENS_FURY = "Warden's Fury";
-	public static final String THUNDER_RAM_ASSAULT = "Thunder Ram Assault";
-	public static final String WARDENS_GRASP = "Warden's Grasp";
-	public static final String FORM_OF_THE_WILLOW_SENTINEL = "Form of the Willow Sentinel";
-	public static final String EARTH_STRENGTH = "Earth Strength";
 	private boolean usedThunderRamAssault;
 	private boolean usedFormOfTheWillowSentinel;
 	private boolean usedFormOfTheWillowSentinelAttack;
@@ -55,7 +50,7 @@ public class Warden extends DndClass {
 	}
 
 
-	@StandardAction(menuName = STRENGTH_OF_STONE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = true, psionicTag = false)
+	@StandardAction(powerId = PowerId.STRENGTH_OF_STONE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void strengthOfStone(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
@@ -100,7 +95,7 @@ public class Warden extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = EARTH_SHIELD_STRIKE, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = true, psionicTag = false)
+	@StandardAction(powerId = PowerId.EARTH_SHIELD_STRIKE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void earthShieldStrike(Encounter encounter) {
 		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
@@ -226,7 +221,7 @@ public class Warden extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = THUNDER_RAM_ASSAULT, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = true, arcaneTag = false, primalTag = true, psionicTag = false)
+	@StandardAction(powerId = PowerId.THUNDER_RAM_ASSAULT, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
 	@EncounterPower
 	public void thunderRamAssault(Encounter encounter) {
 		if (!usedThunderRamAssault) {
@@ -261,7 +256,7 @@ public class Warden extends DndClass {
 			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.THUNDER_DAMAGE, encounter, true);
 			
 			/* If you chose the Earth Strength build, you can push the primary target. */
-			if (getMyOptions().contains(Warden.EARTH_STRENGTH)) {
+			if (guardianMight == GuardianMight.EARTHSTRENGTH) {
 				String pushDirection = encounter.getPushDirection(owner.getCurrentPosition(), target.getCurrentPosition());
 				for (int i = 0; i < owner.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
 				    target.push(pushDirection);
@@ -325,7 +320,7 @@ public class Warden extends DndClass {
 		}
 	}
 
-	@MinorAction(menuName = FORM_OF_THE_WILLOW_SENTINEL)
+	@MinorAction(powerId = PowerId.FORM_OF_THE_WILLOW_SENTINEL)
 	@DailyPower
 	public void formOfTheWillowSentinel(Encounter encounter) {
 		if (!usedFormOfTheWillowSentinel) {
@@ -479,5 +474,11 @@ public class Warden extends DndClass {
 
 	public void setGuardianMight(GuardianMight guardianMight) {
 		this.guardianMight = guardianMight;
+	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

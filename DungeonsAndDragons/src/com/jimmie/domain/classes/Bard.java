@@ -8,6 +8,7 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
@@ -24,6 +25,7 @@ import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.domain.AttackType;
 
 public class Bard extends DndClass {
 	/* TODO: Haven't implemented Words of friendship yet. */
@@ -32,12 +34,6 @@ public class Bard extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String MISDIRECTED_MARK = "Misdirected Mark";
-	public static final String VICIOUS_MOCKERY = "Vicious Mockery";
-	public static final String BLUNDER = "Blunder";
-	public static final String MAJESTIC_WORD = "Majectic Word";
-	public static final String WORDS_OF_FRIENDSHIP = "Words of Friendship";
-	public static final String STIRRING_SHOUT = "Stirring Shout";
 	private boolean usedBlunder;
 	private int majesticWordUses;
 	private boolean usedStirringShout;
@@ -55,7 +51,7 @@ public class Bard extends DndClass {
 		usedStirringShout = false;
 	}
 
-	@StandardAction(menuName = MISDIRECTED_MARK, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, primalTag = false, arcaneTag = true, weaponTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.MISDIRECTED_MARK, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.ARCANE, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void misdirectedMark(Encounter encounter) {
 		AttackTarget target = encounter.chooseRangedTarget(owner, 10, 10);
@@ -99,7 +95,7 @@ public class Bard extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = VICIOUS_MOCKERY, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, primalTag = false, arcaneTag = true, weaponTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.VISCIOUS_MOCKERY, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.ARCANE, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void viciousMockery(Encounter encounter) {
 		AttackTarget target = encounter.chooseRangedTarget(owner, 10, 10);
@@ -142,7 +138,7 @@ public class Bard extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = BLUNDER, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, primalTag = false, arcaneTag = true, weaponTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.BLUNDER, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.ARCANE, attackType = AttackType.RANGED)
 	@EncounterPower
 	public void blunder(Encounter encounter) {
 		if (!usedBlunder) {
@@ -237,7 +233,7 @@ public class Bard extends DndClass {
 		}
 	}
 
-	@MinorAction(menuName = MAJESTIC_WORD)
+	@MinorAction(powerId = PowerId.MAJESTIC_WORD)
 	@EncounterPower
 	public void majesticWord(Encounter encounter) {
 		if (majesticWordUses < 2) {
@@ -311,7 +307,7 @@ public class Bard extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = STIRRING_SHOUT, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, primalTag = false, arcaneTag = true, weaponTag = false, psionicTag = false)
+	@StandardAction(powerId = PowerId.STIRRING_SHOUT, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.ARCANE, attackType = AttackType.RANGED)
 	@DailyPower
 	public void stirringShout(Encounter encounter) {
 		if (!usedStirringShout) {
@@ -491,5 +487,11 @@ public class Bard extends DndClass {
 
 	public void setBardicVirtue(BardicVirtue bardicVirtue) {
 		this.bardicVirtue = bardicVirtue;
+	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

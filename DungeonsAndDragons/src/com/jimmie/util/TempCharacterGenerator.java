@@ -24,7 +24,7 @@ public class TempCharacterGenerator {
 		Character c1 = new PlayerCharacter(race, dndClass);
 		
 		c1.setAge(30);
-		c1.setArmor(new ClothArmor());
+		c1.addArmor(new ClothArmor());
 		c1.setCharisma(10);
 		c1.setConstitution(12);
 		c1.setCurrentHitPoints(20);

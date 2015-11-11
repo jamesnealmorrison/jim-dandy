@@ -146,4 +146,10 @@ public class Battlemind extends DndClass {
 	public void setPsionicStudy(PsionicStudy psionicStudy) {
 		this.psionicStudy = psionicStudy;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

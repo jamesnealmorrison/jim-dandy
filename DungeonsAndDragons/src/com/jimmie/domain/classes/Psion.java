@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
@@ -29,12 +31,6 @@ public class Psion extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String KINETIC_TRAWL = "Kinetic Trawl";
-	public static final String FORCE_PUNCH = "Force Punch";
-	public static final String MEMORY_HOLE = "Memory Hole";
-	public static final String FAR_HAND = "Far Hand";
-	public static final String FORCEFUL_PUSH = "Forceful Push";
-	public static final String TELEKINETIC_ANCHOR = "Telekinetic Anchor";
 	private int powerPoints;
 	private boolean usedForcefulPush;
 	private boolean usedTelekineticAnchor;
@@ -52,7 +48,7 @@ public class Psion extends DndClass {
 		usedTelekineticAnchor = false;
 	}
 
-	@StandardAction(menuName = FORCE_PUNCH, isBasicAttack = false, isMeleeAttack = true, isRangedAttack = false, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = true)
+	@StandardAction(powerId = PowerId.FORCE_PUSH, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.PSIONIC, attackType = AttackType.MELEE)
 	@AtWillPower
 	public void forcePunch(Encounter encounter) {
 		/* See if they want to augment. */
@@ -132,7 +128,7 @@ public class Psion extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = KINETIC_TRAWL, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = true)
+	@StandardAction(powerId = PowerId.KINETIC_TRAWL, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.PSIONIC, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void kineticTrawl(Encounter encounter) {
 		/* TODO: The book says this power can be used unaugmented as a ranged basic attack. */ 
@@ -204,7 +200,7 @@ public class Psion extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = MEMORY_HOLE, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = true)
+	@StandardAction(powerId = PowerId.MEMORY_HOLE, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.PSIONIC, attackType = AttackType.RANGED)
 	@AtWillPower
 	public void memoryHole(Encounter encounter) {
 		/* See if they want to augment. */
@@ -298,7 +294,7 @@ public class Psion extends DndClass {
 		this.powerPoints = powerPoints;
 	}
 
-	@FreeAction(menuName = FORCEFUL_PUSH)
+	@FreeAction(powerId = PowerId.FORCEFUL_PUSH)
 	@EncounterPower
 	public void forcefulPush(Encounter encounter) {
 		if (!usedForcefulPush) {
@@ -342,7 +338,7 @@ public class Psion extends DndClass {
 		}
 	}
 
-	@StandardAction(menuName = TELEKINETIC_ANCHOR, isBasicAttack = false, isMeleeAttack = false, isRangedAttack = true, martialTag = false, divineTag = false, weaponTag = false, arcaneTag = false, primalTag = false, psionicTag = true)
+	@StandardAction(powerId = PowerId.TELEKINETIC_ANCHOR, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.PSIONIC, attackType = AttackType.RANGED)
 	@DailyPower
 	public void telekineticAnchor(Encounter encounter) {
 		if (!usedTelekineticAnchor) {
@@ -512,5 +508,11 @@ public class Psion extends DndClass {
 
 	public void setDisciplineFocus(PsionDiscipline disciplineFocus) {
 		this.disciplineFocus = disciplineFocus;
+	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

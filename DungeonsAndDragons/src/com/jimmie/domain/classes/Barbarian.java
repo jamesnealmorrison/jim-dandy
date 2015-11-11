@@ -142,4 +142,10 @@ public class Barbarian extends DndClass {
 	public void setFeralMight(FeralMight feralMight) {
 		this.feralMight = feralMight;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

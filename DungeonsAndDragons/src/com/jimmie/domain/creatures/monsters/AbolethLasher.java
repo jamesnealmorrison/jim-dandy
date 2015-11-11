@@ -3,23 +3,16 @@ package com.jimmie.domain.creatures.monsters;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AlternativeMovementMode;
 import com.jimmie.domain.AlternativeMovementModeType;
-import com.jimmie.domain.Attack;
-import com.jimmie.domain.AttackPower;
 import com.jimmie.domain.Aura;
 import com.jimmie.domain.AuraEffect;
 import com.jimmie.domain.AuraEffectType;
 import com.jimmie.domain.ConditionEffect;
 import com.jimmie.domain.DamageEffect;
-import com.jimmie.domain.DefenseType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.Effect;
 import com.jimmie.domain.EffecteeType;
-import com.jimmie.domain.Power;
-import com.jimmie.domain.PowerType;
-import com.jimmie.domain.RechargeType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.TimeConstraint;
@@ -72,18 +65,18 @@ public class AbolethLasher extends Aboleth {
 		AlternativeMovementMode altMovementMode = new AlternativeMovementMode(AlternativeMovementModeType.SWIM, 10);
 		altMovementModes.add(altMovementMode);
 		setAlternativeMovementModes(altMovementModes);
-		List<Power> powers = new ArrayList<Power>();
-		AttackPower tentacle = new AttackPower();
-		tentacle.setActionType(ActionType.STANDARD);
-		tentacle.setBasic(true);
-		tentacle.setName("Tentacle");
-		tentacle.setPowerType(PowerType.MELEE);
-		tentacle.setRechargeType(RechargeType.AT_WILL);
-		tentacle.setReach(2);
-		Attack attack = new Attack();
-		attack.setBasicAttackModifier(20);
-		attack.setDefenseType(DefenseType.ARMOR_CLASS);
-		tentacle.setPrimaryAttack(attack);
+//		List<Power> powers = new ArrayList<Power>();
+//		AttackPower tentacle = new AttackPower();
+//		tentacle.setActionType(ActionType.STANDARD);
+//		tentacle.setBasic(true);
+//		tentacle.setName("Tentacle");
+//		tentacle.setPowerType(PowerType.MELEE);
+//		tentacle.setRechargeType(RechargeType.AT_WILL);
+//		tentacle.setReach(2);
+//		Attack attack = new Attack();
+//		attack.setBasicAttackModifier(20);
+//		attack.setDefenseType(DefenseType.ARMOR_CLASS);
+//		tentacle.setPrimaryAttack(attack);
 		List<Effect> attackEffects = new ArrayList<Effect>();
 		DamageEffect effect1 = new DamageEffect();
 		effect1.setNumberOfDice(2);
@@ -110,7 +103,7 @@ public class AbolethLasher extends Aboleth {
 		
 		
 		//tentacle.setPrimaryHitEffects(primaryHitEffects);
-		powers.add(tentacle);
+//		powers.add(tentacle);
 		//setPowers(powers);
 	}
 }

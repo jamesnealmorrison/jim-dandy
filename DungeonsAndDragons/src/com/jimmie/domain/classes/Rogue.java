@@ -150,4 +150,10 @@ public class Rogue extends DndClass {
 		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
 		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -27,6 +27,7 @@ import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.PowerId;
 import com.jimmie.domain.Prone;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.Skill;
@@ -54,12 +55,11 @@ import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
 public abstract class Creature implements Serializable, TurnTaker, AttackTarget {
-	public static final String SPEND_ACTION_POINT = "Spend Action Point";
 	private boolean usedActionPoint;
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
 		damageVulnerabilities = new HashMap<DamageType, Integer>();		
-		powers = new ArrayList<String>();
+		powers = new ArrayList<PowerId>();
 		/* Initialize skills. */
 		addSkill(new Skill(SkillType.ACROBATICS));
 		addSkill(new Skill(SkillType.ARCANA));
@@ -278,9 +278,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		int index = 0;
 
 		/* Use reflection to find valid standard actions for this creature. */
-		if (this.getPowers() != null) {
+		if (getPowers() != null) {
 			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -297,7 +297,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -305,7 +305,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* See if the class has any standard actions. */
 		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
 			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -322,7 +322,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -357,7 +357,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
 			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && this.getPowers().contains(method.getAnnotation(FreeAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(FreeAction.class) && this.getPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -374,7 +374,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -382,7 +382,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* See if the class has any standard actions. */
 		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
 			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(FreeAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(FreeAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -399,7 +399,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -621,7 +621,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			}
 			if (skill.hasArmorPenalty()) {
 				if (Character.class.isAssignableFrom(this.getClass())) {
-					Armor armor = ((Character) this).getArmor();
+					Armor armor = ((Character) this).getReadiedArmor();
 					baseSkillLevel -= armor.getSkillPenalty(); 
 				}
 			}
@@ -667,7 +667,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
 			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
 					StandardAction standardAction = method.getAnnotation(StandardAction.class);
 					if (standardAction.isBasicAttack()) {
 						/* Still might have to meet other requirements to use this power now. */
@@ -686,7 +686,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 						index++;
 						validActions.put(index, method);
 						correspondingValidObjects.put(index, this);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).menuName() + " (" + actionType + ")");
+						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
 					}
 				}
 			}
@@ -695,7 +695,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* See if the class has any standard actions. */
 		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
 			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
 					StandardAction standardAction = method.getAnnotation(StandardAction.class);
 					if (standardAction.isBasicAttack()) {
 						/* Still might have to meet other requirements to use this power now. */
@@ -714,7 +714,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 						index++;
 						validActions.put(index, method);
 						correspondingValidObjects.put(index, dndClass);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).menuName() + " (" + actionType + ")");
+						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
 					}
 				}
 			}
@@ -798,7 +798,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
 			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && this.getPowers().contains(method.getAnnotation(MinorAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(MinorAction.class) && this.getPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -815,7 +815,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -823,7 +823,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* See if the class has any standard actions. */
 		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
 			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(MinorAction.class).menuName()))) {
+				if ((method.isAnnotationPresent(MinorAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
 					/* Still might have to meet other requirements to use this power now. */
 					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
 						/* Skip it. */
@@ -840,7 +840,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					index++;
 					validActions.put(index, method);
 					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).menuName() + " (" + actionType + ")");
+					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
 				}
 			}
 		}
@@ -931,8 +931,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected int reflex;
 	protected int will;
 	protected int actionPoints;
-	protected List<String> powers;
-	protected String alignment;
+	protected List<PowerId> powers;
+	protected Alignment alignment;
 	protected List<String> languages;
 	protected List<Skill> skills;
 	protected int strength;
@@ -1170,18 +1170,18 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public List<String> getPowers() {
+	public List<PowerId> getPowers() {
 		return powers;
 	}
 
 
-	public void setPowers(List<String> powers) {
+	public void setPowers(List<PowerId> powers) {
 		this.powers = powers;
 	}
 
-	public void addPower(String power) {
+	public void addPower(PowerId power) {
 		if (powers == null) {
-			powers = new ArrayList<String>();
+			powers = new ArrayList<PowerId>();
 		}
 		powers.add(power);
 	}
@@ -1200,12 +1200,12 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		damageVulnerabilities.put(damageType, vulnerability);
 	}
 
-	public String getAlignment() {
+	public Alignment getAlignment() {
 		return alignment;
 	}
 
 
-	public void setAlignment(String alignment) {
+	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
 	}
 
@@ -1885,7 +1885,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		currentConditions.add(new Prone());
 	}
 
-	@FreeAction(menuName = SPEND_ACTION_POINT)
+	@FreeAction(powerId = PowerId.SPEND_ACTION_POINT)
 	@EncounterPower
 	public void spendActionPoint(Encounter encounter) {
 		/* Only let them do this if they have already used a standard action. */

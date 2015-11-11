@@ -127,4 +127,10 @@ public class Cleric extends DndClass {
 		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 	}
 
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -158,4 +158,10 @@ public class Invoker extends DndClass {
 	public void setDivineCovenant(DivineCovenant divineCovenant) {
 		this.divineCovenant = divineCovenant;
 	}
+
+	@Override
+	public int getArmorClassBonus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
