@@ -1,7 +1,6 @@
 package com.jimmie.encounters;
 
 import java.util.ArrayList;
-
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -13,7 +12,9 @@ import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
 import com.jimmie.util.Utils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KoboldLairOutsideEncounter extends Encounter {
 	public KoboldLairOutsideEncounter() {
 		/* Set up the monsters */
@@ -91,16 +92,24 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 	
 		/* Set up the player characters */
-		Character elfAvenger = Utils.loadCharacter("Aelar");
+		Character elfAvenger = Utils.loadCharacter("Arannis");
 		elfAvenger.setCurrentPosition(new Position(3,19));
-		Character kellen = Utils.loadCharacter("Jim");
+		Character kellen = Utils.loadCharacter("Arannis");
 		kellen.setCurrentPosition(new Position(1,21));
-		Character glock = Utils.loadCharacter("Jim");
+		Character glock = Utils.loadCharacter("Arannis");
 		glock.setCurrentPosition(new Position(1,19));
-		Character halfOrcFighter = Utils.loadCharacter("Jim");
+		Character halfOrcFighter = Utils.loadCharacter("Arannis");
 		halfOrcFighter.setCurrentPosition(new Position(3,18));
-		Character zanros = Utils.loadCharacter("Jim");
+		Character zanros = Utils.loadCharacter("Arannis");
 		zanros.setCurrentPosition(new Position(2,20));
+		
+		
+		// Arannis doesn't have his image set up.
+		elfAvenger.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
+		kellen.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
+		glock.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
+		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
+		zanros.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
 		
 		characters = new ArrayList<Character>();
 		characters.add(elfAvenger);

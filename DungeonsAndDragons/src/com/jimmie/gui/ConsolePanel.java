@@ -11,6 +11,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ConsolePanel extends JPanel implements PropertyChangeListener, ActionListener {
 	private static final long serialVersionUID = 1234567890L;
 	JTextArea textArea = null;

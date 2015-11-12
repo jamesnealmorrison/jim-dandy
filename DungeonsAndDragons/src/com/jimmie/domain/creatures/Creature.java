@@ -151,6 +151,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected String displayName;
 
 	public String getDisplayName() {
+		if (displayName == null) {
+			return name;
+		}
 		return displayName;
 	}
 

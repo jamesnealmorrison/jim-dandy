@@ -17,9 +17,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.springframework.stereotype.Component;
+
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.map.Map;
 
+@Component
 public class BattlefieldPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final int SQUARE_SIZE = 69;
@@ -28,7 +31,7 @@ public class BattlefieldPanel extends JPanel {
 	private BufferedImage img;
 	private File imageSrc;
 	
-	public BattlefieldPanel(Map map, List<Creature> creatures) {
+	public void init(Map map, List<Creature> creatures) {
 		this.setMap(map);
 		Dimension dimension = new Dimension((map.getWidth())*SQUARE_SIZE,(map.getHeight())*SQUARE_SIZE);
 		this.setPreferredSize(dimension);
