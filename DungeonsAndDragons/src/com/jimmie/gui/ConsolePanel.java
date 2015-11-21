@@ -20,7 +20,7 @@ public class ConsolePanel extends JPanel implements PropertyChangeListener, Acti
 	JTextField textField = null;
 	String textFieldValue = null;
 
-	ConsolePanel()
+	public ConsolePanel()
 	{
 		this.setLayout(new BorderLayout(5,5));
 		textArea = new JTextArea(10, 20);

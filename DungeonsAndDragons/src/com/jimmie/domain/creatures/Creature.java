@@ -86,7 +86,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 		skills.add(skill);
 	}
-
+	
 	protected TemporaryBonus temporaryArmorClassBonus;
 	protected TemporaryBonus temporaryReflexBonus;
 	protected TemporaryBonus temporaryFortitudeBonus;
@@ -547,7 +547,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				/* Also need a list of creatures that are adjacent before the move. */
 				List<Creature> adjacentCreaturesBeforeMove = encounter.getAllAdjacentCreatures(this);
 
-				move(direction, encounter);
+				moveCreature(direction, encounter);
 				distanceLeft--;
 
 				/* Get a list of adjacentCreatures after the move. */
@@ -746,7 +746,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public void move(String direction, Encounter encounter) {
+	public void moveCreature(String direction, Encounter encounter) {
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
@@ -916,8 +916,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		if (pursuer != null) {
 			/* If I didn't end my turn adjacent to my pursuer, they get to shift. */
 			if (!(this.isAdjacentTo(pursuer))) {
-				System.out.println("Pursuer (" + pursuer.getName() + ") gets to shift " + (pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1) + " squares.");
-				System.out.println("Please note: You must end closer to " + this.getName() + ".  This is not enforced in the code though");
+				Utils.print("Pursuer (" + pursuer.getName() + ") gets to shift " + (pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1) + " squares.");
+				Utils.print("Please note: You must end closer to " + this.getName() + ".  This is not enforced in the code though");
 				pursuer.shift(pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1, true, encounter);
 			}
 			/* At the end of turn, the bond of pursuit is over. */
@@ -1818,7 +1818,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				move(direction, encounter);
+				moveCreature(direction, encounter);
 				distanceLeft--;
 			}
 		}

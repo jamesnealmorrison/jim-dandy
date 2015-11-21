@@ -177,7 +177,7 @@ public class PrintCharacterSheet {
 		try {
 			outputFile = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\outputImage.JPG");
 			ImageIO.write(img, "jpg", outputFile);
-			System.out.println("Wrote it");
+			Utils.print("Wrote it");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

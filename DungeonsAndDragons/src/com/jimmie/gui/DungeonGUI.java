@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.jimmie.DungeonConfig;
+import com.jimmie.KoboldLairOutsideEncounterConfig;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.IntegratedCommandConsole;
 import com.jimmie.util.Utils;
@@ -68,7 +69,6 @@ public class DungeonGUI extends JPanel {
 
 	public void setEncounter(Encounter encounter) {
 		this.encounter = encounter;
-		System.out.println("Setting encounter to " + encounter);
 	}
 
 	public void init() {
@@ -82,6 +82,7 @@ public class DungeonGUI extends JPanel {
 		/* Set up the encounter. */
 		// encounter = new KoboldLairOutsideEncounter();
 
+		encounter.init();
 		partyPanel.init(encounter.getCreatures());
 		battlefieldPanel.init(encounter.getMap(), encounter.getCreatures());
 		battleMapScrollPane = new JScrollPane();
@@ -125,7 +126,7 @@ public class DungeonGUI extends JPanel {
 	public static void main(String[] args)
 	{
 		@SuppressWarnings("resource")
-		ApplicationContext context = new AnnotationConfigApplicationContext(DungeonConfig.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(KoboldLairOutsideEncounterConfig.class);
 		
 		frame = new JFrame("Dungeon GUI");      
 

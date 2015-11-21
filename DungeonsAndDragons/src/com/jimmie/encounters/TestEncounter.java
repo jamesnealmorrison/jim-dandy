@@ -109,4 +109,10 @@ public class TestEncounter extends Encounter {
 		
 		runEncounter();
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
 }

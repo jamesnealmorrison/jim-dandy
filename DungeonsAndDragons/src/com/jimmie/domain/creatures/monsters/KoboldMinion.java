@@ -2,7 +2,6 @@ package com.jimmie.domain.creatures.monsters;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -19,7 +18,6 @@ public class KoboldMinion extends Kobold {
 	@Override
 	public void startOfTurn() {
 		super.startOfTurn();
-		Utils.print("In KoboldMinion.startOfTurn");
 	}
 
 	/**

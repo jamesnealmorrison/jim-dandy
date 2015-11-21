@@ -3,7 +3,6 @@ package com.jimmie.encounters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.SkillType;
@@ -17,7 +16,7 @@ import com.jimmie.util.SkillCheck;
 import com.jimmie.util.TurnMaster;
 import com.jimmie.util.Utils;
 
-public class Encounter {
+public abstract class Encounter {
 	protected Map map;
 
 	public Map getMap() {
@@ -63,7 +62,6 @@ public class Encounter {
 		Dice.setRollType(Dice.AUTOMATED);
 		do {
 			currentParticipant = TurnMaster.getNextParticipant();
-
 			Utils.print("Up next: " + currentParticipant.getName());
 
 			runATurn(currentParticipant);
@@ -618,7 +616,7 @@ public class Encounter {
 		if (attackerPosition.getX() == targetPosition.getX()) {
 			if (!isVerticalLineClear(attackerPosition,
 					targetPosition)) {
-				System.out.println("Superior Cover: -5");
+				Utils.print("Superior Cover: -5");
 				return -5;
 			}
 		}
@@ -627,7 +625,7 @@ public class Encounter {
 		if (attackerPosition.getY() == targetPosition.getY()) {
 			if (!isHorizontalLineClear(attackerPosition,
 					targetPosition)) {
-				System.out.println("Superior Cover: -5");
+				Utils.print("Superior Cover: -5");
 				return -5;
 			}
 		}
@@ -645,20 +643,20 @@ public class Encounter {
 					currentLinesBlocked++;
 				}
 			}
-			System.out.println("Lines blocked = " + currentLinesBlocked);
+			Utils.print("Lines blocked = " + currentLinesBlocked);
 			if (currentLinesBlocked < fewestLinesBlocked) {
 				fewestLinesBlocked = currentLinesBlocked;
 			}
 		}
 		/* How much cover did they have? */
 		if (fewestLinesBlocked == 0) {
-			System.out.println("Clear shot!  No penalty.");
+			Utils.print("Clear shot!  No penalty.");
 			return 0;
 		} else if (fewestLinesBlocked < 3) {
-			System.out.println("Target has cover!  -2 penalty.");
+			Utils.print("Target has cover!  -2 penalty.");
 			return -2;
 		} else {
-			System.out.println("Target has superior cover! -5 penalty.");
+			Utils.print("Target has superior cover! -5 penalty.");
 			return -5;
 		}
 		
@@ -1144,4 +1142,6 @@ public class Encounter {
 	public boolean isSacredCircle(Position pos) {
 		return map.isSacredCircle(pos);
 	}
+
+	public abstract void init();
 }

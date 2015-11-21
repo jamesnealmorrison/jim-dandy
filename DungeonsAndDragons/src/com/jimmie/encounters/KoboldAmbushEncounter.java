@@ -920,4 +920,10 @@ public class KoboldAmbushEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(30,20), LocationType.FOLIAGE));
 		map.addLocation(new MapLocation(new Position(30,21), LocationType.FOLIAGE));		
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -134,7 +134,7 @@ public class KoboldSlinger extends Kobold {
 
 			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL_DAMAGE, encounter, true);
 			
-System.out.println("STILL NEED TO IMPLEMENT SPECIAL SHOT and general rounds!!!!!!!");			
+Utils.print("STILL NEED TO IMPLEMENT SPECIAL SHOT and general rounds!!!!!!!");			
 		} else {
 			Utils.print("You missed " + target.getName());
 		}

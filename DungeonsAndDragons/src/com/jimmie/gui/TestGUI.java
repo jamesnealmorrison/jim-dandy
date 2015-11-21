@@ -85,7 +85,7 @@ public class TestGUI extends JPanel {
 	      }
 	      catch (Exception e)
 	      {
-	         System.out.println("Something went horribly wrong.");
+	         Utils.print("Something went horribly wrong.");
 	         e.printStackTrace();
 	      }      
 	      console = new IntegratedCommandConsole();

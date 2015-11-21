@@ -182,7 +182,7 @@ public class Avenger extends DndClass {
 		} else {
 			shiftDistance = 2;
 		}
-		System.out.println("You may shift " + shiftDistance + " before the attack.");
+		Utils.print("You may shift " + shiftDistance + " before the attack.");
 		owner.shift(shiftDistance, true, encounter);
 		
 		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());

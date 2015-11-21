@@ -205,7 +205,7 @@ public class Bard extends DndClass {
 
 					Utils.print("Your choice?");
 					String direction = Utils.getValidInput(validDirections);
-					target.move(direction, encounter);
+					target.moveCreature(direction, encounter);
 					distanceLeft--;
 				} else if ("Attack".equalsIgnoreCase(choice)) {
 					/* Pick which ally will make the attack. */
@@ -297,7 +297,7 @@ public class Bard extends DndClass {
 
 				Utils.print("Your choice?");
 				String direction = Utils.getValidInput(validDirections);
-				target.move(direction, encounter);
+				target.moveCreature(direction, encounter);
 			}
 			
 		} else {
