@@ -3,6 +3,7 @@ package com.jimmie.encounters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.SkillType;
@@ -10,6 +11,8 @@ import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.items.weapons.Weapon;
+import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.map.Map;
 import com.jimmie.util.Dice;
 import com.jimmie.util.SkillCheck;
@@ -189,8 +192,14 @@ public abstract class Encounter {
 		/* TODO: Add other things, like traps/hazards that take turns. */
 	}
 
-	public AttackTarget chooseMeleeTarget(TurnTaker attacker, int reach) {
+	public AttackTarget chooseMeleeTarget(TurnTaker attacker, Weapon weapon) {
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
+		int reach = 1;
+		if (weapon != null) {
+			if (weapon.getWeaponProperties().contains(WeaponProperty.REACH)) {
+				reach = 2;
+			}
+		}
 
 		Utils.print("Who do you want to attack?");
 		int index = 0;
@@ -214,6 +223,53 @@ public abstract class Encounter {
 			for (Monster m : monsters) {
 				if (attacker.getCurrentPosition().isWithinReachOf(
 						m.getCurrentPosition(), reach)) {
+					index++;
+					validChoices.put(index, m);
+					Utils.print(index + ". " + m.getName());
+				}
+			}
+		}
+
+		/*
+		 * TODO: Later, when I have traps and other attackable things I can add
+		 * those here.
+		 */
+		if (index < 1) {
+			Utils.print("OOPS!  No one to choose from");
+			return null;
+		}
+
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, index);
+
+		return validChoices.get(choice);
+	}
+
+	public AttackTarget chooseMeleeTargetInRange(TurnTaker attacker, int range) {
+		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
+
+		Utils.print("Who do you want to attack?");
+		int index = 0;
+
+		if (!characters.contains(attacker)) {
+			for (Character c : characters) {
+				/* Is this character within reach? */
+				if (attacker.getCurrentPosition().isWithinReachOf(
+						c.getCurrentPosition(), range)) {
+					/* Check for invisibility. */
+					if (!c.isInvisibleTo(attacker)) {
+						index++;
+						validChoices.put(index, c);
+						Utils.print(index + ". " + c.getName());
+					}
+				}
+			}
+		}
+
+		if (!monsters.contains(attacker)) {
+			for (Monster m : monsters) {
+				if (attacker.getCurrentPosition().isWithinReachOf(
+						m.getCurrentPosition(), range)) {
 					index++;
 					validChoices.put(index, m);
 					Utils.print(index + ". " + m.getName());

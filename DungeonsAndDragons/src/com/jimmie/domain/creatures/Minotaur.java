@@ -55,13 +55,13 @@ public class Minotaur extends Race {
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
 		Utils.print("As a Minotaur you get +2 to Strength.");
-		pc.setStrength(pc.getStrength() + 2);
+		setStrengthBonus(getStrengthBonus()+2);
 
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -92,9 +92,9 @@ public class Minotaur extends Race {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		if (1 == choice) {
-			pc.setConstitution(pc.getConstitution()+2);
+			setConstitutionBonus(getConstitutionBonus()+2);
 		} else {
-			pc.setWisdom(pc.getWisdom()+2);
+			setWisdomBonus(getWisdomBonus()+2);
 		}
 	}
 

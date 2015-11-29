@@ -82,4 +82,9 @@ public class SpikedChain extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SUPERIOR_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Spiked Chain";
+	}
 }

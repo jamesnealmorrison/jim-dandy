@@ -12,10 +12,11 @@ import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.Skill;
+import com.jimmie.domain.SkillType;
 import com.jimmie.domain.creatures.Gender;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.Size;
-import com.jimmie.domain.creatures.Alignment;
 
 public class PrintCharacterSheet {
 	private static final int ROW1 = 47;
@@ -23,7 +24,34 @@ public class PrintCharacterSheet {
 	private static final int ROW3 = 106;
 	private static final int ROW3_DEFENSES = 113;
 	private static final int ROW4_DEFENSES = 159;
-		
+	private static final int ROW5_DEFENSES = 199;
+	private static final int ROW6_DEFENSES = 241;
+	private static final int ROW1_ABILITIES = 155;
+	private static final int ROW2_ABILITIES = 172;
+	private static final int ROW3_ABILITIES = 196;
+	private static final int ROW4_ABILITIES = 213;
+	private static final int ROW5_ABILITIES = 237;
+	private static final int ROW6_ABILITIES = 254;
+	private static final int ROW_HITPOINTS = 300;
+	private static final int ROW1_SKILLS = 482;
+	private static final int ROW2_SKILLS = 496;
+	private static final int ROW3_SKILLS = 510;
+	private static final int ROW4_SKILLS = 523;
+	private static final int ROW5_SKILLS = 536;
+	private static final int ROW6_SKILLS = 550;
+	private static final int ROW7_SKILLS = 563;
+	private static final int ROW8_SKILLS = 576;
+	private static final int ROW9_SKILLS = 590;
+	private static final int ROW10_SKILLS = 603;
+	private static final int ROW11_SKILLS = 617;
+	private static final int ROW12_SKILLS = 630;
+	private static final int ROW13_SKILLS = 643;
+	private static final int ROW14_SKILLS = 657;
+	private static final int ROW15_SKILLS = 670;
+	private static final int ROW16_SKILLS = 683;
+	private static final int ROW17_SKILLS = 697;
+	private static final int ROW_SPEED = ROW3;
+			
 	private static final int COL1_DEFENSES = 184;
 	private static final int COL2_DEFENSES = 234;
 	private static final int COL3_DEFENSES = 254;
@@ -32,6 +60,15 @@ public class PrintCharacterSheet {
 	private static final int COL6_DEFENSES = 303;
 	private static final int COL7_DEFENSES = 319;
 	private static final int COL8_DEFENSES = 336;
+	private static final int COL1_ABILITIES = 14;
+	private static final int COL2_ABILITIES = 102;
+	private static final int COL3_ABILITIES = 145;
+	private static final int COL1_SKILLS = 11;
+	private static final int COL2_SKILLS = 105;
+	private static final int COL3_SKILLS = 127;
+	private static final int COL4_SKILLS = 142;
+	private static final int COL5_SKILLS = 162;
+	private static final int COL1_RIGHT = 362;
 
 	private File imageSrc;
 	private File outputFile;
@@ -162,16 +199,315 @@ public class PrintCharacterSheet {
 		g2d.drawString(String.valueOf(0), COL8_DEFENSES, ROW3_DEFENSES);
 
 		
-//		g2d.drawString(String.valueOf(pc.getBaseFortitude()), COL1_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(pc.getReadiedArmor().getBonus() + pc.getReadiedShield().getBonus()), COL3_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(pc.getDndClass().getArmorClassBonus()), COL4_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(pc.getFeatArmorClassBonus()), COL5_DEFENSES, ROW4_DEFENSES);
-//		// TODO: fill these in when I implement them.
-//		g2d.drawString(String.valueOf(0), COL6_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(0), COL7_DEFENSES, ROW4_DEFENSES);
-//		g2d.drawString(String.valueOf(0), COL8_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFortitude()), COL1_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFortitudeAbilityModifier()), COL3_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getDndClass().getFortitudeBonus()), COL4_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFeatFortitudeBonus()), COL5_DEFENSES, ROW4_DEFENSES);
+		// TODO: Enhancement
+		g2d.drawString(String.valueOf(0), COL6_DEFENSES, ROW4_DEFENSES);
+		// Race bonus doesn't have a "home" on the sheet, so I'm going to add it to misc bonus 1.		
+		g2d.drawString(String.valueOf(pc.getRace().getFortitudeBonus() + pc.getFortitudeMisc1()), COL7_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFortitudeMisc2()), COL8_DEFENSES, ROW4_DEFENSES);
 
+		g2d.drawString(String.valueOf(pc.getReflex()), COL1_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getReflexAbilityModifier()), COL3_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getDndClass().getReflexBonus()), COL4_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFeatReflexBonus()), COL5_DEFENSES, ROW5_DEFENSES);
+		// TODO: Enhancement
+		g2d.drawString(String.valueOf(0), COL6_DEFENSES, ROW5_DEFENSES);
+		// Race bonus doesn't have a "home" on the sheet, so I'm going to add it to misc bonus 1.		
+		g2d.drawString(String.valueOf(pc.getRace().getReflexBonus() + pc.getReflexMisc1()), COL7_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getReflexMisc2()), COL8_DEFENSES, ROW5_DEFENSES);
+
+		g2d.drawString(String.valueOf(pc.getWill()), COL1_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getWillAbilityModifier()), COL3_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getDndClass().getWillBonus()), COL4_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFeatWillBonus()), COL5_DEFENSES, ROW6_DEFENSES);
+		// TODO: Enhancement
+		g2d.drawString(String.valueOf(0), COL6_DEFENSES, ROW6_DEFENSES);
+		// Race bonus doesn't have a "home" on the sheet, so I'm going to add it to misc bonus 1.		
+		g2d.drawString(String.valueOf(pc.getRace().getWillBonus() + pc.getWillMisc1()), COL7_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getWillMisc2()), COL8_DEFENSES, ROW6_DEFENSES);
+
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getStrength()), COL1_ABILITIES, ROW1_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW1_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH)), COL3_ABILITIES, ROW1_ABILITIES);
+
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getConstitution()), COL1_ABILITIES, ROW2_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW2_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION)), COL3_ABILITIES, ROW2_ABILITIES);
+		
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getDexterity()), COL1_ABILITIES, ROW3_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW3_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)), COL3_ABILITIES, ROW3_ABILITIES);
+		
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getIntelligence()), COL1_ABILITIES, ROW4_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW4_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)), COL3_ABILITIES, ROW4_ABILITIES);
+		
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getWisdom()), COL1_ABILITIES, ROW5_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW5_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM)), COL3_ABILITIES, ROW5_ABILITIES);
+		
+		// Race modifier is built into this one.
+		g2d.drawString(String.valueOf(pc.getCharisma()), COL1_ABILITIES, ROW6_ABILITIES);
+		// TODO: Ability Modifier
+		g2d.drawString(String.valueOf(0), COL2_ABILITIES, ROW6_ABILITIES);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA)), COL3_ABILITIES, ROW6_ABILITIES);
+
+		// Hit point row
+		g2d.drawString(String.valueOf(pc.getMaxHitPoints()), 16, ROW_HITPOINTS);
+		g2d.drawString(String.valueOf(pc.getBloodyValue()), 60, ROW_HITPOINTS);
+		g2d.drawString(String.valueOf(pc.getHealingSurgeValue()), 110, ROW_HITPOINTS);
+		g2d.drawString(String.valueOf(pc.getHealingSurgesPerDay()), 150, ROW_HITPOINTS);
+		
+		// Skills
+		Skill skill = pc.getSkill(SkillType.ACROBATICS);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW1_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW1_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW1_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW1_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW1_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW1_SKILLS);
+		
+		skill = pc.getSkill(SkillType.ARCANA);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW2_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW2_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW2_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW2_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW2_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW2_SKILLS);
+		
+		skill = pc.getSkill(SkillType.ATHLETICS);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW3_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW3_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW3_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW3_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW3_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW3_SKILLS);
+		
+		skill = pc.getSkill(SkillType.BLUFF);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW4_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW4_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW4_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW4_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW4_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW4_SKILLS);
+		
+		skill = pc.getSkill(SkillType.DIPLOMACY);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW5_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW5_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW5_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW5_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW5_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW5_SKILLS);
+		
+		skill = pc.getSkill(SkillType.DUNGEONEERING);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW6_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW6_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW6_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW6_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW6_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW6_SKILLS);
+		
+		skill = pc.getSkill(SkillType.ENDURANCE);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW7_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW7_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW7_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW7_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW7_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW7_SKILLS);
+		
+		skill = pc.getSkill(SkillType.HEAL);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW8_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW8_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW8_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW8_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW8_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW8_SKILLS);
+		
+		skill = pc.getSkill(SkillType.HISTORY);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW9_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW9_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW9_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW9_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW9_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW9_SKILLS);
+		
+		skill = pc.getSkill(SkillType.INSIGHT);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW10_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW10_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW10_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW10_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW10_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW10_SKILLS);
+		
+		skill = pc.getSkill(SkillType.INTIMIDATE);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW11_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW11_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW11_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW11_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW11_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW11_SKILLS);
+		
+		skill = pc.getSkill(SkillType.NATURE);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW12_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW12_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW12_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW12_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW12_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW12_SKILLS);
+		
+		skill = pc.getSkill(SkillType.PERCEPTION);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW13_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW13_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW13_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW13_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW13_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW13_SKILLS);
+		
+		skill = pc.getSkill(SkillType.RELIGION);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW14_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW14_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW14_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW14_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW14_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW14_SKILLS);
+		
+		skill = pc.getSkill(SkillType.STEALTH);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW15_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW15_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW15_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW15_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW15_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW15_SKILLS);
+		
+		skill = pc.getSkill(SkillType.STREETWISE);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW16_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW16_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW16_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW16_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW16_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW16_SKILLS);
+		
+		skill = pc.getSkill(SkillType.THIEVERY);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(skill.getSkillType())), COL1_SKILLS, ROW17_SKILLS);
+		g2d.drawString(String.valueOf(pc.getAbilityModifierPlusHalfLevel(skill.getAbilityType())), COL2_SKILLS, ROW17_SKILLS);
+		if (skill.isTrained()) {
+			g2d.drawString(String.valueOf(5), COL3_SKILLS, ROW17_SKILLS);			
+		} else {
+			g2d.drawString(String.valueOf(0), COL3_SKILLS, ROW17_SKILLS);						
+		}
+		if (skill.hasArmorPenalty()) {
+			g2d.drawString(String.valueOf(pc.getReadiedArmor().getSkillPenalty()), COL4_SKILLS, ROW17_SKILLS);
+		}
+		g2d.drawString(String.valueOf(skill.getMisc()), COL5_SKILLS, ROW17_SKILLS);
+
+		// Speed
+		g2d.drawString(String.valueOf(pc.getSpeed()), COL1_RIGHT, ROW_SPEED);
+		g2d.drawString(String.valueOf(pc.getBaseSpeed()), 451, ROW_SPEED);
+		g2d.drawString(String.valueOf(pc.getReadiedArmor().getSpeedPenalty()), 469, ROW_SPEED);
+		g2d.drawString(String.valueOf(0), 489, ROW_SPEED);
+		g2d.drawString(String.valueOf(0), 508, ROW_SPEED);
+		
+		// Senses
+		g2d.drawString(String.valueOf(10+pc.getSkillModifier(SkillType.INSIGHT)), COL1_RIGHT-3, 157);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(SkillType.INSIGHT)), 498, 157);
+		g2d.drawString(String.valueOf(10+pc.getSkillModifier(SkillType.PERCEPTION)), COL1_RIGHT-3, 175);
+		g2d.drawString(String.valueOf(pc.getSkillModifier(SkillType.PERCEPTION)), 498, 175);
 		
 		
 		try {

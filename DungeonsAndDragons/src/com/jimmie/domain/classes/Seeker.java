@@ -80,17 +80,8 @@ public class Seeker extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_RANGED);
 		
 		Utils.print("Adding bonus of +1 Reflex, Will");
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);

@@ -13,7 +13,7 @@ public interface AttackTarget {
 	void markByMisdirectedMark(Creature owner, Creature misdirectedOwner, DurationType durationType);
 	void grantCombatAdvantageViaWardensFury(Creature owner);
 	void setTemporaryAttackRollModifier(Creature owner, DurationType durationType, int attackRollModifier);
-	int getFortitude(Encounter encounter, Creature attacker);
+	int getFortitude();
 	int getReflex(Creature attacker);
 	int getWill(Creature attacker);
 	boolean isStunned();
@@ -27,4 +27,5 @@ public interface AttackTarget {
 	void knockProne();
 	void pull(String pullDirection);
 	void slide(String direction);
+	int getCurrentHitPoints();
 }

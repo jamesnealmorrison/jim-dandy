@@ -56,7 +56,7 @@ public class Human extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -92,22 +92,22 @@ public class Human extends Race {
 		
 		switch (choice) {
 		case 1 :
-			pc.setStrength(pc.getStrength() + 2);
+			setStrengthBonus(getStrengthBonus()+2);
 			break;
 		case 2 :
-			pc.setConstitution(pc.getConstitution() + 2);
+			setConstitutionBonus(getConstitutionBonus()+2);
 			break;
 		case 3 :
-			pc.setDexterity(pc.getDexterity() + 2);
+			setDexterityBonus(getDexterityBonus()+2);
 			break;
 		case 4 :
-			pc.setIntelligence(pc.getIntelligence() + 2);
+			setIntelligenceBonus(getIntelligenceBonus()+2);
 			break;
 		case 5 :
-			pc.setWisdom(pc.getWisdom() + 2);
+			setWisdomBonus(getWisdomBonus()+2);
 			break;
 		case 6 :
-			pc.setCharisma(pc.getCharisma() + 2);
+			setCharismaBonus(getCharismaBonus()+2);
 			break;
 		}
 	}

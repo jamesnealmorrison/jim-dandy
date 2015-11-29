@@ -79,17 +79,8 @@ public class Ardent extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
 		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);

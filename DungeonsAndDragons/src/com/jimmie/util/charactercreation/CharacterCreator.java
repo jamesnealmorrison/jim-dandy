@@ -85,7 +85,7 @@ public class CharacterCreator {
 		race.makeRacialAbilityScoreAdjustments(pc, dndClass);
 		
 		dndClass.makeClassChoicesAfterAbilityScores(pc);
-		
+// TODO: I haven't created some of the powers that AUTOMATICALLY get selected for a class.  Things like Channel Divinity for the Cleric class.		
 		
 		// Skills now.
 		List<String> trainedSkills = dndClass.selectInitialSkills();

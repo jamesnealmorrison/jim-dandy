@@ -62,7 +62,7 @@ public class Eladrin extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -151,8 +151,8 @@ public class Eladrin extends Race {
 		
 		pc.addWeaponTypeProficiency(WeaponType.LONGSWORD);
 
-		Utils.print("As an Eladrin, you get a +1 bonus to your will defense.  Adding that to misc 1.");
-		pc.setWillMisc1(pc.getWillMisc1()+1);
+		Utils.print("As an Eladrin, you get a +1 bonus to your will defense.");
+		setWillBonus(getWillBonus()+1);
 		
 		// TODO: +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step
 		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step.");
@@ -163,9 +163,8 @@ public class Eladrin extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As an Eladrin you get +2 to Dexterity and Intelligence.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		
+		setDexterityBonus(getDexterityBonus()+2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);		
 	}
 
 }

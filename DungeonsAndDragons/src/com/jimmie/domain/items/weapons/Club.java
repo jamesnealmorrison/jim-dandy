@@ -82,4 +82,9 @@ public class Club extends Weapon {
 		return WeaponHandType.ONE_HANDED;
 	}
 
+	@Override
+	public String getName() {
+		return "Club";
+	}
+
 }

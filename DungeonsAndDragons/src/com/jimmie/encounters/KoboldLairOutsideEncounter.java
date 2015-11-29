@@ -1,6 +1,7 @@
 package com.jimmie.encounters;
 
 import java.util.ArrayList;
+
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -8,6 +9,9 @@ import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.items.weapons.Hand;
+import com.jimmie.domain.items.weapons.ReadiedWeapon;
+import com.jimmie.domain.items.weapons.WeaponHandType;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
@@ -19,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class KoboldLairOutsideEncounter extends Encounter {
 	@Autowired
 	private KoboldMinion m1;
-	@Autowired
+/*	@Autowired
 	private KoboldMinion m2;
 	@Autowired
 	private KoboldMinion m3;
@@ -51,15 +55,17 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	private Character glock;
 	@Autowired
 	private Character halfOrcFighter;
+*/
 	@Autowired
-	private Character zanros;
+	private Character fargrim;
 	
 	@Override
 	public void init() {
 		/* Set up the monsters */
-		((KoboldMinion) m1).setName("Kobold Minion 1");
-		((KoboldMinion) m1).setDisplayName("M1");
-		((KoboldMinion) m1).setCurrentPosition(new Position(4,4));
+		m1.setName("Kobold Minion 1");
+		m1.setDisplayName("M1");
+		m1.setCurrentPosition(new Position(4,4));
+/*
 		m2.setName("Kobold Minion 2");
 		m2.setDisplayName("M2");
 		m2.setCurrentPosition(new Position(5,3));
@@ -102,10 +108,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		s.setName("Kobold Slinger");
 		s.setDisplayName("S");
 		s.setCurrentPosition(new Position(14,15));
+*/
+		
 		monsters = new ArrayList<Monster>();		
 		
-		monsters.add(((KoboldMinion) m1));		
-		monsters.add(m2);		
+		monsters.add(m1);		
+/*		monsters.add(m2);		
 		monsters.add(m3);		
 		monsters.add(m4);		
 		monsters.add(m5);		
@@ -118,30 +126,41 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		monsters.add(k);
 		monsters.add(d);
 		monsters.add(s);
-
+*/
 		
 	
 		/* Set up the player characters */
-		elfAvenger.setCurrentPosition(new Position(3,19));
+/*		elfAvenger.setCurrentPosition(new Position(3,19));
 		kellen.setCurrentPosition(new Position(1,21));
 		glock.setCurrentPosition(new Position(1,19));
 		halfOrcFighter.setCurrentPosition(new Position(3,18));
-		zanros.setCurrentPosition(new Position(8,15));
-		
+*/		
+		fargrim.setCurrentPosition(new Position(6,8));
+		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(fargrim.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		fargrim.addReadiedWeapon(readiedWeapon);
 		
 		// Arannis doesn't have his image set up.
-		elfAvenger.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
+/*		elfAvenger.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
 		kellen.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
 		glock.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
 		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
-		zanros.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
+*/
+		fargrim.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
 		
 		characters = new ArrayList<Character>();
+/*
 		characters.add(elfAvenger);
 		characters.add(kellen);
 		characters.add(glock);
 		characters.add(halfOrcFighter);
-		characters.add(zanros);
+*/		
+		characters.add(fargrim);
 		
 		map = new Map();
 		map.setWidth(15);
@@ -470,7 +489,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	public void setM1(KoboldMinion m1) {
 		this.m1 = m1;
 	}
-
+/*
 	public KoboldMinion getM2() {
 		return m2;
 	}
@@ -599,13 +618,13 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	public void setHalfOrcFighter(Character halfOrcFighter) {
 		this.halfOrcFighter = halfOrcFighter;
 	}
-
-	public Character getZanros() {
-		return zanros;
+*/
+	public Character getFargrim() {
+		return fargrim;
 	}
 
-	public void setZanros(Character zanros) {
-		this.zanros = zanros;
+	public void setFargrim(Character fargrim) {
+		this.fargrim = fargrim;
 	}
 
 }

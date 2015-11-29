@@ -82,4 +82,9 @@ public class Sling extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SIMPLE_RANGED;
 	}
+
+	@Override
+	public String getName() {
+		return "Sling";
+	}
 }

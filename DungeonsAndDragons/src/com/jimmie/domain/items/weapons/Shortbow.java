@@ -83,4 +83,9 @@ public class Shortbow extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.MILITARY_RANGED;
 	}
+
+	@Override
+	public String getName() {
+		return "Shortbow";
+	}
 }

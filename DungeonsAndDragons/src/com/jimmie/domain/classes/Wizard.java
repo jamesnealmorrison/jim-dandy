@@ -76,11 +76,7 @@ public class Wizard extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.QUARTERSTAFF);
 		
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 		
 		Utils.print("Setting hit points per level gained = 4");
 		pc.setHitPointsPerLevelGained(4);

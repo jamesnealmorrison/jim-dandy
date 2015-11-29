@@ -83,4 +83,9 @@ public class Longspear extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.MILITARY_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Longspear";
+	}
 }

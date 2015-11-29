@@ -67,7 +67,7 @@ public class Elf extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 7.");
-		pc.setSpeed(7);
+		pc.setBaseSpeed(7);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -95,7 +95,7 @@ public class Elf extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As an Elf you get +2 to Dexterity and Wisdom.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);		
+		setDexterityBonus(getDexterityBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
 	}
 }

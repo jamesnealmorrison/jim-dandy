@@ -58,7 +58,7 @@ public class Tiefling extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -82,8 +82,8 @@ public class Tiefling extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Tiefling you get +2 to Intelligence and Charisma.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
 	}
 
 }

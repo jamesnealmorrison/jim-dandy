@@ -58,7 +58,7 @@ public class Dragonborn extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -85,10 +85,8 @@ public class Dragonborn extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Dragonborn you get +2 to Strength and Charisma.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
-		
-		
+		setStrengthBonus(getStrengthBonus()+2);
+		setCharismaBonus(getCharismaBonus()+2);		
 	}
 
 }

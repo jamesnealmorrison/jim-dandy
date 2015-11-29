@@ -59,7 +59,7 @@ public class Dwarf extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 5.");
-		pc.setSpeed(5);
+		pc.setBaseSpeed(5);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -87,9 +87,8 @@ public class Dwarf extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Dwarf you get +2 to Constitution and Wisdom.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
-
+		setConstitutionBonus(getConstitutionBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
 	}
 
 }

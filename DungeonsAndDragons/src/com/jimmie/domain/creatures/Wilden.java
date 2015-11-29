@@ -58,7 +58,7 @@ public class Wilden extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -79,29 +79,11 @@ public class Wilden extends Race {
 		Utils.print("3. Will");
 		int choice = Utils.getValidIntInputInRange(1, 3);
 		if (1 == choice) {
-			/* Make sure the misc bonus isn't already taken. */
-			if (pc.getFortitudeMisc1() == 0) {
-				pc.setFortitudeMisc1(1);
-			} else {
-				/* Just add it to the misc2 then */
-				pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-			}
+			setFortitudeBonus(getFortitudeBonus()+1);
 		} else if (2 == choice) {
-			/* Make sure the misc bonus isn't already taken. */
-			if (pc.getReflexMisc1() == 0) {
-				pc.setReflexMisc1(1);
-			} else {
-				/* Just add it to the misc2 then */
-				pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-			}
+			setReflexBonus(getReflexBonus()+1);
 		} else if (3 == choice) {
-			/* Make sure the misc bonus isn't already taken. */
-			if (pc.getWillMisc1() == 0) {
-				pc.setWillMisc1(1);
-			} else {
-				/* Just add it to the misc2 then */
-				pc.setWillMisc2(pc.getWillMisc2() + 1);
-			}
+			setWillBonus(getWillBonus()+1);
 		}
 
 		// TODO: Fey Origin, Natures Aspect
@@ -114,7 +96,7 @@ public class Wilden extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Wilden you get +2 to Wisdom.");
-		pc.setWisdom(pc.getWisdom() + 2);
+		setWisdomBonus(getWisdomBonus()+2);
 
 		Utils.print("As a Wilden, you get to choose to add +2 to Constitution or Dexterity.");
 		Utils.print("1. Constitution");
@@ -122,9 +104,9 @@ public class Wilden extends Race {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		if (1 == choice) {
-			pc.setConstitution(pc.getConstitution()+2);
+			setConstitutionBonus(getConstitutionBonus()+2);
 		} else {
-			pc.setDexterity(pc.getDexterity()+2);
+			setDexterityBonus(getDexterityBonus()+2);
 		}
 	}
 

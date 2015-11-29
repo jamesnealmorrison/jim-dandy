@@ -1,19 +1,15 @@
 package com.jimmie.domain.creatures;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
-import com.jimmie.domain.DamageType;
-import com.jimmie.domain.DiceType;
-import com.jimmie.domain.DurationType;
 import com.jimmie.domain.NotEnoughCurrencyException;
-import com.jimmie.domain.PowerId;
 import com.jimmie.domain.Resistance;
 import com.jimmie.domain.Ritual;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
-import com.jimmie.domain.TemporaryBonus;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
@@ -31,19 +27,21 @@ import com.jimmie.domain.items.armor.ArmorType;
 import com.jimmie.domain.items.armor.ClothArmor;
 import com.jimmie.domain.items.armor.NoShield;
 import com.jimmie.domain.items.armor.Shield;
+import com.jimmie.domain.items.weapons.Hand;
+import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.domain.items.weapons.Unarmed;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponGroup;
 import com.jimmie.domain.items.weapons.WeaponHandType;
+import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.AtWillPower;
-import com.jimmie.util.Dice;
-import com.jimmie.util.EncounterPower;
-import com.jimmie.util.StandardAction;
+import com.jimmie.powers.AidAnother;
+import com.jimmie.powers.MeleeBasicAttack;
+import com.jimmie.powers.SecondWind;
+import com.jimmie.powers.SpendActionPoint;
 import com.jimmie.util.Utils;
-import com.jimmie.domain.AttackType;
 
 public abstract class Character extends Creature {
 	private Armor readiedArmor;
@@ -74,8 +72,7 @@ public abstract class Character extends Creature {
 		return (10+getLevel()/2 + getReadiedArmor().getBonus()  + dndClass.getArmorClassBonus() + getReadiedShield().getBonus());
 		// TODO: Enhancement and two miscellaneous????
 	}
-	
-	@Override
+
 	public int getArmorClass(Creature attacker) {
 		int armorClass = getBaseArmorClass();
 
@@ -206,21 +203,17 @@ public abstract class Character extends Creature {
 	public int getFortitudeMisc1() {
 		return fortitudeMisc1;
 	}
-	public void setFortitudeMisc1(int fortitudeMisc1) {
-		this.fortitudeMisc1 = fortitudeMisc1;
-	}
+//	public void setFortitudeMisc1(int fortitudeMisc1) {
+//		this.fortitudeMisc1 = fortitudeMisc1;
+//	}
 	public int getFortitudeMisc2() {
 		return fortitudeMisc2;
 	}
-	public void setFortitudeMisc2(int fortitudeMisc2) {
-		this.fortitudeMisc2 = fortitudeMisc2;
-	}
+//	public void setFortitudeMisc2(int fortitudeMisc2) {
+//		this.fortitudeMisc2 = fortitudeMisc2;
+//	}
 	public int getReflexMisc1() {
 		return reflexMisc1;
-	}
-	@Override
-	public int getFortitude(Encounter encounter, Creature attacker) {
-		return super.getFortitude(encounter, attacker) + getFortitudeMisc1() + getFortitudeMisc1();
 	}
 
 	@Override
@@ -261,10 +254,7 @@ public abstract class Character extends Creature {
 		this.speedMisc = speedMisc;
 	}
 	public int getHealingSurgeValue() {
-		return healingSurgeValue;
-	}
-	public void setHealingSurgeValue(int healingSurgeValue) {
-		this.healingSurgeValue = healingSurgeValue;
+		return maxHitPoints / 4;
 	}
 	public int getHealingSurgesPerDay() {
 		return healingSurgesPerDay;
@@ -360,7 +350,6 @@ public abstract class Character extends Creature {
 	protected int willMisc1 = 0;
 	protected int willMisc2 = 0;
 	protected int speedMisc = 0;
-	protected int healingSurgeValue = 0;
 	protected int healingSurgesPerDay = 0;
 	protected int currentSurgeUses = 0;
 	protected boolean usedSecondWind = false;
@@ -373,7 +362,7 @@ public abstract class Character extends Creature {
 	protected String background;
 	protected List<CompanionOrAlly> companionsAndAllies;
 	protected List<String> sessionAndCampaignNotes;
-	private Weapon readiedWeapon;
+	private HashMap<Hand, ReadiedWeapon> readiedWeapons;
 	private List<Weapon> weapons;
 	private Implement readiedImplement;
 	private List<WeaponType> weaponTypeProficiencies;
@@ -424,16 +413,35 @@ public abstract class Character extends Creature {
 		this.armorGroupProficiencies = armorGroupProficiencies;
 	}
 
-	public void setReadiedWeapon(Weapon readiedWeapon) {
-		this.readiedWeapon = readiedWeapon;
+	public void addReadiedWeapon(ReadiedWeapon readiedWeapon) {
+		// See if they are trying to put a weapon WITHOUT the off-hand keyword into their off hand.
+		if ((readiedWeapon.getHand() == Hand.OFF_HAND) && !(readiedWeapon.getWeapon().getWeaponProperties().contains(WeaponProperty.OFF_HAND))) {
+			Utils.print("Sorry.  You are trying to use a weapon in your off hand that CAN NOT be used as an off hand weapon.");
+			// TODO: Some feat might allow this.
+		}
+		
+		if (readiedWeapons == null) {
+			readiedWeapons = new HashMap<Hand, ReadiedWeapon>();
+		}
+		// See if they are trying to wield a two-handed weapon.
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			// Remove all weapons first.
+			readiedWeapons = new HashMap<Hand, ReadiedWeapon>();
+			// Since it's two handed, make sure the hand is set to both (defensive programming).
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+			readiedWeapons.put(readiedWeapon.getHand(), readiedWeapon);
+			return;
+		}
+		// See if they already have a weapon in that hand and remove it.
+		if (readiedWeapons.containsKey(readiedWeapon.getHand())) {
+			readiedWeapons.remove(readiedWeapon.getHand());
+		}
+		readiedWeapons.put(readiedWeapon.getHand(), readiedWeapon);
+		
 	}
 	@Override
 	public int getInitiative() {
 		return getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY) + getInitiativeMisc();
-	}
-
-	public void addPower(PowerId powerId) {
-		powers.add(powerId);
 	}
 
 	public void addWeaponTypeProficiency(WeaponType weaponType) {
@@ -478,68 +486,10 @@ public abstract class Character extends Creature {
 		weaponCategoryProficiencies = new ArrayList<WeaponCategory>();
 		armorTypeProficiencies = new ArrayList<ArmorType>();
 		armorGroupProficiencies = new ArrayList<ArmorGroup>();
-		addPower(PowerId.BASIC_MELEE_ATTACK);
-		addPower(PowerId.SPEND_ACTION_POINT);
-		addPower(PowerId.SECOND_WIND);
-		addPower(PowerId.AID_ANOTHER);
-	}
-
-	@StandardAction(powerId = PowerId.BASIC_MELEE_ATTACK, isBasicAttack = true, weaponTag = true, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
-	@AtWillPower
-	public void basicMeleeAttack(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getNormalRange());
-
-		if (target != null) {
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(this, target, encounter, getCurrentPosition());
-			int roll = diceRoll + getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
-			int targetArmorClass = target.getArmorClass(this);
-			Utils.print("Your target has an AC of " + targetArmorClass);
-
-			if (roll >= targetArmorClass) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
-
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					heal(target.getStirringShoutCharismaModifier());
-				}
-
-				int damageRolls = this.getReadiedWeapon().getDamageRolls();
-				DiceType damageDiceType = this.getReadiedWeapon().getDamageDice();
-
-				/* Book says at level 21 increase damage to 2[W]. */
-				if (getLevel() >= 21) {
-					damageRolls = damageRolls * 2;
-				}
-				int avengerBonus = 0;
-				if (Avenger.class.isInstance(dndClass)) {
-					if (((Avenger) dndClass).isAspectOfMightEncounterBonus() == true) {
-						avengerBonus = 2;
-						Utils.print("Because of your Aspect Of Might bonus, you get a two bonus to this damage.  I'll add it for you!");
-					}
-				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, getReadiedWeapon().getDamageBonus() + avengerBonus, getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), race), DamageType.NORMAL_DAMAGE, encounter, true);
-			} else {
-				Utils.print("You missed " + target.getName());
-			}
-
-			/* If this is a fighter, then they have "Combat Challenge", and can mark the target. */
-			if (Fighter.class.isInstance(dndClass)) {
-				/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-				 * I can't think of a reason I wouldn't WANT to mark the target.
-				 */
-				target.markByCombatChallenge(this, DurationType.END_OF_NEXT_TURN);
-				Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
-			}
-		}
-
+		addPower(new MeleeBasicAttack());
+		addPower(new SpendActionPoint());
+		addPower(new SecondWind());
+		addPower(new AidAnother());
 	}
 
 	/* In this method, I will have general other bonus that are hard to define anywhere else. */
@@ -549,25 +499,63 @@ public abstract class Character extends Creature {
 		/* See if they have Fighter Weapon Talent. */
 		if (Fighter.class.isInstance(dndClass)) {
 
-			if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.ONE_HANDED_WEAPONS) && (getReadiedWeapon().getHandType() == WeaponHandType.ONE_HANDED)) {
+			if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.ONE_HANDED_WEAPONS) && (getReadiedWeapon().getWeapon().getHandType() == WeaponHandType.ONE_HANDED)) {
 				total = total + 1;
-			} else if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.TWO_HANDED_WEAPONS) && (getReadiedWeapon().getHandType() == WeaponHandType.TWO_HANDED)) {
+			} else if ((((Fighter) dndClass).getWeaponTalent() == WeaponTalent.TWO_HANDED_WEAPONS) && (getReadiedWeapon().getWeapon().getHandType() == WeaponHandType.TWO_HANDED)) {
 				total = total + 1;
 			}
 		}
+		
+		// TODO: I think this is probably the best place to put a check for the off hand penalty.
 
 		total = total + super.getOtherAttackModifier(targets, encounter);
 
 		return total;
 	}
 
-	public Weapon getReadiedWeapon() {
-		if (readiedWeapon == null) {
-			readiedWeapon = new Unarmed();
+	@Override
+	public ReadiedWeapon getReadiedWeapon() {		
+		if (readiedWeapons == null) {
+			Weapon weapon = new Unarmed();
+			ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+			readiedWeapon.setWeapon(weapon);
+			addReadiedWeapon(readiedWeapon);
 		}
-		return readiedWeapon;
+		
+		if (readiedWeapons.size() > 1) {
+			Utils.print(getName() + " is carrying more than one weapon.  Choose which weapon to use.");
+			Utils.print("1. " + readiedWeapons.get(Hand.MAIN_HAND).getWeapon().getName() + " in the main hand.");
+			Utils.print("2. " + readiedWeapons.get(Hand.OFF_HAND).getWeapon().getName() + " in the off hand.");
+			Utils.print("Your choice:");
+			int choice = Utils.getValidIntInputInRange(1, 2);
+			if (choice == 1) {
+				return readiedWeapons.get(Hand.MAIN_HAND);
+			} else {
+				return readiedWeapons.get(Hand.OFF_HAND);
+			}
+		}
+		
+		if (readiedWeapons.containsKey(Hand.BOTH_HANDS)) {
+			return readiedWeapons.get(Hand.BOTH_HANDS);
+		}
+		
+		// NOTE: This assumes that no one would every be using a weapon ONLY in thier off hand.  That person should die anyway.  :-)
+		return readiedWeapons.get(Hand.MAIN_HAND);
 	}
 
+	@Override
+	public HashMap<Hand,ReadiedWeapon> getReadiedWeapons() {
+		if (readiedWeapons == null) {
+			Weapon weapon = new Unarmed();
+			ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+			readiedWeapon.setWeapon(weapon);
+			addReadiedWeapon(readiedWeapon);			
+		}
+		return readiedWeapons;
+	}
+	
 	public Implement getReadiedImplement() {
 		return readiedImplement;
 	}
@@ -576,8 +564,9 @@ public abstract class Character extends Creature {
 		this.dndClass = dndClass;
 	}
 
+	@Override
 	public int getWeaponProficiencyBonus() {
-		Weapon weapon = getReadiedWeapon();
+		Weapon weapon = getReadiedWeapon().getWeapon();
 
 		// check for type or category proficiency is simple.
 		if ((weaponTypeProficiencies.contains(weapon.getWeaponType())) || (weaponCategoryProficiencies.contains(weapon.getWeaponCategory()))) {
@@ -613,15 +602,6 @@ public abstract class Character extends Creature {
 		}
 	}
 
-	public void setTemporaryArmorClassBonus(int bonus, int bonusStartTurn,
-			DurationType duration, Creature source) {
-		temporaryArmorClassBonus = new TemporaryBonus();
-		temporaryArmorClassBonus.setBonus(bonus);
-		temporaryArmorClassBonus.setStartTurn(bonusStartTurn);
-		temporaryArmorClassBonus.setDuration(duration);
-		temporaryArmorClassBonus.setSource(source);
-	}
-
 	@Override
 	public void initializeForEncounter() {
 		super.initializeForEncounter();
@@ -648,15 +628,6 @@ public abstract class Character extends Creature {
 		usedSecondWind = false;
 	}
 
-	public void setTemporaryReflexBonus(int bonus, int bonusStartTurn,
-			DurationType duration, Creature source) {
-		temporaryReflexBonus = new TemporaryBonus();
-		temporaryReflexBonus.setBonus(bonus);
-		temporaryReflexBonus.setStartTurn(bonusStartTurn);
-		temporaryReflexBonus.setDuration(duration);
-		temporaryReflexBonus.setSource(source);
-	}
-
 	private Shield readiedShield;
 	private List<Shield> shields;
 
@@ -681,113 +652,10 @@ public abstract class Character extends Creature {
 
 	public void useHealingSurge() {
 		if (currentSurgeUses < this.healingSurgesPerDay) {
-			heal(healingSurgeValue);
+			heal(getHealingSurgeValue());
 			currentSurgeUses++;
 		} else {
 			Utils.print("OOPS!  You can't use any more healing surges.");
-		}
-	}
-
-	public void heal(int hitPoints) {
-		int tempHitPoints = currentHitPoints + hitPoints;
-		if (tempHitPoints >= this.maxHitPoints) {
-			currentHitPoints = maxHitPoints;
-			Utils.print("Fully healed.  Hit Points = " + currentHitPoints);
-		} else {
-			currentHitPoints = tempHitPoints;
-			Utils.print("Partially healed.  Hit Points = " + currentHitPoints);
-		}
-	}
-
-	@StandardAction(powerId = PowerId.SECOND_WIND, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.NONE)
-	@EncounterPower
-	public void secondWind(Encounter encounter) {
-		if (!usedSecondWind) {
-			useHealingSurge();
-			usedSecondWind = true;
-			temporaryArmorClassBonus = new TemporaryBonus();
-			temporaryArmorClassBonus.setBonus(2);
-			temporaryArmorClassBonus.setDuration(DurationType.START_OF_NEXT_TURN);
-			temporaryArmorClassBonus.setSource(this);
-			temporaryArmorClassBonus.setStartTurn(this.getCurrentTurn());
-
-			temporaryWillBonus = new TemporaryBonus();
-			temporaryWillBonus.setBonus(2);
-			temporaryWillBonus.setDuration(DurationType.START_OF_NEXT_TURN);
-			temporaryWillBonus.setSource(this);
-			temporaryWillBonus.setStartTurn(this.getCurrentTurn());
-
-			temporaryFortitudeBonus = new TemporaryBonus();
-			temporaryFortitudeBonus.setBonus(2);
-			temporaryFortitudeBonus.setDuration(DurationType.START_OF_NEXT_TURN);
-			temporaryFortitudeBonus.setSource(this);
-			temporaryFortitudeBonus.setStartTurn(this.getCurrentTurn());
-
-			temporaryReflexBonus = new TemporaryBonus();
-			temporaryReflexBonus.setBonus(2);
-			temporaryReflexBonus.setDuration(DurationType.START_OF_NEXT_TURN);
-			temporaryReflexBonus.setSource(this);
-			temporaryReflexBonus.setStartTurn(this.getCurrentTurn());
-		} else {
-			Utils.print("You have already used your second wind in this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
-		}
-	}
-
-	@StandardAction(powerId = PowerId.AID_ANOTHER, isBasicAttack = false, weaponTag = false, powerSource = PowerSource.NONE, attackType = AttackType.MELEE)
-	@AtWillPower
-	public void aidAnother(Encounter encounter) {
-
-		Utils.print("Pick the target that you want to help your ally against.");
-		AttackTarget target = encounter.chooseMeleeTarget(this, getReadiedWeapon().getNormalRange());
-
-		if (target != null) {
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(this, target, encounter, getCurrentPosition());
-			int roll = diceRoll + getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + getWeaponProficiencyBonus() + getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
-			Utils.print("The 'Aid Another' action is against a DC of 10.");
-
-			if (roll >= 10) {
-				/* A HIT! */
-				Utils.print("You are successfully aiding against " + target.getName());
-
-				TemporaryAidAnotherBonus temporaryAidAnotherBonus = new TemporaryAidAnotherBonus();
-				temporaryAidAnotherBonus.setBonus(2);
-				temporaryAidAnotherBonus.setStartTurn(this.getCurrentTurn());
-				temporaryAidAnotherBonus.setDuration(DurationType.END_OF_NEXT_TURN);
-				temporaryAidAnotherBonus.setSource(this);
-				temporaryAidAnotherBonus.setTarget(target);
-
-				Utils.print("Now choose the ally you are going to aid.");
-				Creature ally = encounter.chooseAnyAlly(this);
-
-				Utils.print("Now choose whether to add 2 to " + ally.getName() + "'s next attack (attack), or to their defenses (defense).");
-				List<String> validChoices = new ArrayList<String>();
-				validChoices.add("attack");
-				validChoices.add("defense");
-				String choice = Utils.getValidInput(validChoices);
-				if ("attack".equalsIgnoreCase(choice)) {
-					temporaryAidAnotherBonus.setType(TemporaryAidAnotherBonus.ATTACK);				
-				} else {
-					temporaryAidAnotherBonus.setType(TemporaryAidAnotherBonus.DEFENSE);				
-				}
-				ally.setTemporaryAidAnotherBonus(temporaryAidAnotherBonus);
-			} else {
-				Utils.print("You missed " + target.getName());
-			}
-
-			/* If this is a fighter, then they have "Combat Challenge", and can mark the target. */
-			if (Fighter.class.isInstance(dndClass)) {
-				/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-				 * I can't think of a reason I wouldn't WANT to mark the target.
-				 */
-				target.markByCombatChallenge(this, DurationType.END_OF_NEXT_TURN);
-				Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
-			}
 		}
 	}
 
@@ -865,5 +733,9 @@ public abstract class Character extends Creature {
 			weapons = new ArrayList<Weapon>();
 		}
 		weapons.add(weapon);
+	}
+
+	public void setUsedSecondWind(boolean b) {
+		usedSecondWind = b;
 	}
 }

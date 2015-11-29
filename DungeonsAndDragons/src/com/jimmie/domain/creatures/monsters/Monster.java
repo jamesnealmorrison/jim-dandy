@@ -29,6 +29,13 @@ public abstract class Monster extends Creature {
 	protected CreatureType type;
 	protected List<MonsterKeyword> keywords;
 	protected int armorClass;
+	protected int fortitude;
+	public int getFortitude() {
+		return fortitude;
+	}
+	public void setFortitude(int fortitude) {
+		this.fortitude = fortitude;
+	}
 	public int getArmorClass(Creature attacker) {
 		int bonus = 0;
 		/* See if there is a temporary bonus to the armor class. */

@@ -75,11 +75,7 @@ public class Barbarian extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
 		
 		Utils.print("Adding bonus of +2 Fortitude");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(2);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 2);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 2);
 
 		Utils.print("Setting hit points per level gained = 6");
 		pc.setHitPointsPerLevelGained(6);

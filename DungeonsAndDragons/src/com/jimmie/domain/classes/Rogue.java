@@ -91,11 +91,7 @@ public class Rogue extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.SHORTSWORD);
 		
 		Utils.print("Adding bonus of +2 Reflex");
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(2);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 2);
-		}
+		setReflexBonus(getReflexBonus() + 2);
 		
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);

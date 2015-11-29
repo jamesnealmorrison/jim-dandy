@@ -58,7 +58,7 @@ public class Goliath extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -83,8 +83,8 @@ public class Goliath extends Race {
 		Skill nature = pc.getSkill(SkillType.NATURE);
 		nature.setMisc(nature.getMisc()+2);
 		
-		Utils.print("As a Goliath, you get a +1 Will.  Adding it to the misc 1.");
-		pc.setWillMisc1(pc.getWillMisc1()+1);
+		Utils.print("As a Goliath, you get a +1 Will.");
+		setWillBonus(getWillBonus()+1);
 		
 		// TODO: Powerful Athlete, Stone's Endurance.
 		Utils.print("NOTE: I have not yet coded Powerful Athlete, Stone's Endurance.");
@@ -95,7 +95,7 @@ public class Goliath extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Goliath you get +2 to Strength and Constitution.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setStrength(pc.getStrength() + 2);
+		setStrengthBonus(getStrengthBonus()+2);
+		setConstitutionBonus(getConstitutionBonus()+2);
 	}
 }

@@ -1,0 +1,5 @@
+package com.jimmie.domain;
+
+public enum EffectType {
+	CHARM, CONJURATION, FEAR, HEALING, ILLUSION, POISON, POLYMORPH, RELIABLE, SLEEP, STANCE, TELEPORTATION, ZONE, NONE
+}

@@ -61,7 +61,7 @@ public class Shardmind extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -152,7 +152,7 @@ public class Shardmind extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Shardmind you get +2 to Intelligence.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);
 
 		Utils.print("As a Shardmind, you get to choose to add +2 to Wisdom or Charisma.");
 		Utils.print("1. Wisdom");
@@ -160,9 +160,9 @@ public class Shardmind extends Race {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		if (1 == choice) {
-			pc.setWisdom(pc.getWisdom()+2);
+			setWisdomBonus(getWisdomBonus()+2);
 		} else {
-			pc.setCharisma(pc.getCharisma()+2);
+			setCharismaBonus(getCharismaBonus()+2);
 		}
 	}
 

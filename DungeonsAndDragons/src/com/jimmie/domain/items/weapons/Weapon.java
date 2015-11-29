@@ -37,4 +37,25 @@ public abstract class Weapon implements Serializable {
 	public abstract List<WeaponProperty> getWeaponProperties();
 	
 	public abstract WeaponCategory getWeaponCategory();
+	
+	public abstract String getName();
+
+	public boolean isMeleeWeapon() {
+		if ((WeaponCategory.IMPROVISED_MELEE == getWeaponCategory()) || (WeaponCategory.MILITARY_MELEE == getWeaponCategory()) ||
+				(WeaponCategory.SIMPLE_MELEE == getWeaponCategory()) || (WeaponCategory.SUPERIOR_MELEE == getWeaponCategory())) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isRangedWeapon() {
+		if ((WeaponCategory.IMPROVISED_RANGED == getWeaponCategory()) || (WeaponCategory.MILITARY_RANGED == getWeaponCategory()) ||
+				(WeaponCategory.SIMPLE_RANGED == getWeaponCategory()) || (WeaponCategory.SUPERIOR_RANGED == getWeaponCategory())) {
+			return true;
+		}
+		if ((getWeaponProperties().contains(WeaponProperty.HEAVY_THROWN)) || (getWeaponProperties().contains(WeaponProperty.LIGHT_THROWN))) {
+			return true;
+		}
+		return false;
+	}
 }

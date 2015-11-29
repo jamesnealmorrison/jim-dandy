@@ -59,7 +59,7 @@ public class Shifter extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -104,12 +104,12 @@ public class Shifter extends Race {
 			DndClass dndClass) {
 		if (shifterType.equalsIgnoreCase("Longtooth")) {
 			Utils.print("As a Longtooth Shifter you get +2 to Strength and Wisdom.");
-			pc.setStrength(pc.getStrength() + 2);
-			pc.setWisdom(pc.getWisdom() + 2);
+			setStrengthBonus(getStrengthBonus()+2);
+			setWisdomBonus(getWisdomBonus()+2);
 		} else {
 			Utils.print("As a Razorclaw Shifter you get +2 to Dexterity and Wisdom.");
-			pc.setDexterity(pc.getDexterity() + 2);
-			pc.setWisdom(pc.getWisdom() + 2);
+			setDexterityBonus(getDexterityBonus()+2);
+			setWisdomBonus(getWisdomBonus()+2);
 		}
 	}
 

@@ -82,4 +82,9 @@ public class BastardSword extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SUPERIOR_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Bastard Sword";
+	}
 }

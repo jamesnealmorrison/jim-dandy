@@ -55,13 +55,13 @@ public class Githzerai extends Race {
 		pc.setWeight(Utils.getValidIntInputInRange(0, 1000));
 		
 		Utils.print("As a Githzerai you get +2 to Wisdom.");
-		pc.setWisdom(pc.getWisdom() + 2);
+		setWisdomBonus(getWisdomBonus()+2);
 
 		Utils.print("Setting size to Medium.");
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -95,9 +95,9 @@ public class Githzerai extends Race {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		if (1 == choice) {
-			pc.setDexterity(pc.getDexterity()+2);
+			setDexterityBonus(getDexterityBonus()+2);
 		} else {
-			pc.setIntelligence(pc.getIntelligence()+2);
+			setIntelligenceBonus(getIntelligenceBonus()+2);
 		}		
 	}
 

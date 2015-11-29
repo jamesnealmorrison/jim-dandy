@@ -61,7 +61,7 @@ public class Deva extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -86,9 +86,8 @@ public class Deva extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Dwarf you get +2 to Intelligence and Wisdom.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
-		
+		setIntelligenceBonus(getIntelligenceBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
 	}
 
 }

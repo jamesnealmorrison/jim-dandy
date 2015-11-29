@@ -88,7 +88,7 @@ public class Dice {
 	
 	/* attackOriginSquare should never be null.  Just pass the attacker's current position if that's where the attack
 	 * originates from. */
-	public int attackRoll(Object attacker, AttackTarget target, Encounter encounter, Position attackOriginSquare) {
+	public int attackRoll(Creature attacker, AttackTarget target, Encounter encounter, Position attackOriginSquare) {
 		int diceRoll1 = basicRoll();
 		int diceRoll2 = 0;
 		int modifier = 0;
@@ -97,9 +97,9 @@ public class Dice {
 		if (Character.class.isAssignableFrom(attacker.getClass())) {
 			DndClass dndClass = ((Character) attacker).getDndClass();
 			if (Avenger.class.isInstance(dndClass)) {
-				if (((Avenger) dndClass).getOathOfEnmityTarget() != null) {
+				if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker) != null) {
 					/* Did you choose your oath of enmity target? */
-					if (((Avenger) dndClass).getOathOfEnmityTarget().equals(target)) {
+					if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker).equals(target)) {
 						/* If the oath of enmity target is the only one adjacent. */
 						if (!encounter.areAnyOtherEnemiesAdjacentBesidesTarget((Creature)attacker, target)) {
 							diceRoll2 = basicRoll();
@@ -123,9 +123,9 @@ public class Dice {
 					if (character.getCurrentPosition().isWithinReachOf(((Character)attacker).getCurrentPosition(), 10)) {
 					DndClass dndClass = character.getDndClass();
 					if (Avenger.class.isInstance(dndClass)) {
-						if (((Avenger) dndClass).getOathOfEnmityTarget() != null) {
+						if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker) != null) {
 							/* Did you choose the oath of enmity target? */
-							if (((Avenger) dndClass).getOathOfEnmityTarget().equals(target)) {
+							if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker).equals(target)) {
 								/* If the avenger can use the Divine Guidance power. */
 								if (!((Avenger) dndClass).isUsedChannelDivinity()) {
 									/* Ask if they want to. */

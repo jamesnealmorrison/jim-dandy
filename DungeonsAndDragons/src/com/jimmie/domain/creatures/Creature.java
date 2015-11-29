@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +11,10 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AlternativeMovementMode;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.CombatAdvantage;
 import com.jimmie.domain.CombatAdvantageType;
 import com.jimmie.domain.Condition;
@@ -27,7 +27,6 @@ import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.Position;
-import com.jimmie.domain.PowerId;
 import com.jimmie.domain.Prone;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.Skill;
@@ -42,16 +41,15 @@ import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.items.armor.Armor;
+import com.jimmie.domain.items.weapons.Hand;
+import com.jimmie.domain.items.weapons.ReadiedWeapon;
+import com.jimmie.domain.items.weapons.Weapon;
+import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.AtWillPower;
-import com.jimmie.util.DailyPower;
+import com.jimmie.powers.AttackPower;
+import com.jimmie.powers.Power;
 import com.jimmie.util.Dice;
-import com.jimmie.util.EncounterPower;
-import com.jimmie.util.FreeAction;
-import com.jimmie.util.MinorAction;
-import com.jimmie.util.RequiresShield;
 import com.jimmie.util.SkillCheck;
-import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
 public abstract class Creature implements Serializable, TurnTaker, AttackTarget {
@@ -59,7 +57,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
 		damageVulnerabilities = new HashMap<DamageType, Integer>();		
-		powers = new ArrayList<PowerId>();
+		powers = new ArrayList<Power>();
 		/* Initialize skills. */
 		addSkill(new Skill(SkillType.ACROBATICS));
 		addSkill(new Skill(SkillType.ARCANA));
@@ -94,14 +92,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected TemporaryAidAnotherBonus temporaryAidAnotherBonus;
 	private String imagePath;
 	protected Role role;
+	protected boolean usedSecondWind = false;
 
 	public TemporaryAidAnotherBonus getTemporaryAidAnotherBonus() {
 		return temporaryAidAnotherBonus;
-	}
-
-	public void setTemporaryAidAnotherBonus(
-			TemporaryAidAnotherBonus temporaryAidAnotherBonus) {
-		this.temporaryAidAnotherBonus = temporaryAidAnotherBonus;
 	}
 
 	Creature pursuer = null;
@@ -201,6 +195,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		initiativeRoll = roll + initiative;
 		usedActionPoint = false;
 		setCurrentTurn(0);
+		
+		// Initialize powers.
+		for (Power power : powers) {
+			power.initializeForEncounter();
+		}
 	}
 
 	public void initializeForNewDay() {
@@ -276,56 +275,20 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		usedStandardAction = true;
 
 		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
+		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
 
-		/* Use reflection to find valid standard actions for this creature. */
 		if (getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
+			for (Power power : getPowers()) {
+				if (power.getActionType() == ActionType.STANDARD) {
 					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
+					if ((power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this))) {
 						/* Skip it. */
 						continue;
 					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
 					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
+					validActions.put(index, power);
+					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
 				}
 			}
 		}
@@ -333,99 +296,36 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
+		Power chosenPower = validActions.get(choice);
 
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		chosenPower.process(encounter, this);
 	}
 
 	public void useFreeAction(Encounter encounter) {
 		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
+		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
 
-		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && this.getPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
+			for (Power power : getPowers()) {
+				if (power.getActionType() == ActionType.FREE) {
 					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
+					if ((power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this))) {
 						/* Skip it. */
 						continue;
 					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
 					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
+					validActions.put(index, power);
+					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
 				}
 			}
 		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
 
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
+		Power chosenPower = validActions.get(choice);
 
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		chosenPower.process(encounter, this);
 	}
 
 	public abstract boolean isShieldReadied();
@@ -470,7 +370,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
 				/* Should be able to cast the marker to a character. */
 				if (Character.class.isInstance(mark.getMarker())) {
-					((Character) (mark.getMarker())).basicMeleeAttack(encounter);
+					Power basicMeleeAttack = mark.getMarker().getBasicMeleeAttack();
+					basicMeleeAttack.process(encounter, mark.getMarker());
 				}
 			}
 
@@ -590,6 +491,32 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	}
 
+	private Power getBasicMeleeAttack() {
+		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
+		int count = 0;
+		for (Power power : getPowers()) {
+			if (AttackPower.class.isAssignableFrom(power.getClass())) {
+				if (power.isBasicAttack() && ((AttackPower)power).isMeleeAttack()) {
+					// If it's a melee weapon attack, make sure they have a melee weapon readied.
+					AttackType attackType = ((AttackPower)power).getAttackType();
+					if ((attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.MELEE_WEAPON)) {
+						if (getReadiedWeapon().getWeapon().isMeleeWeapon()) {
+							count++;
+							basicMeleeAttacks.put(count, power);							
+						}
+					}
+				}
+			}
+		}
+		
+		if (count == 1) {
+			return basicMeleeAttacks.get(1);
+		} else {
+			// TODO: Implement choosing from multiples.
+		}
+		return basicMeleeAttacks.get(1);
+	}
+
 	private boolean performSkillCheck(SkillCheck skillCheck, Encounter encounter) {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.basicRoll();
@@ -609,7 +536,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	}
 
-	private int getSkillModifier(SkillType skillType) {
+	public int getSkillModifier(SkillType skillType) {
 		int baseSkillLevel = 0;
 		
 		// Grab the specified skill.
@@ -625,7 +552,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if (skill.hasArmorPenalty()) {
 				if (Character.class.isAssignableFrom(this.getClass())) {
 					Armor armor = ((Character) this).getReadiedArmor();
-					baseSkillLevel -= armor.getSkillPenalty(); 
+					baseSkillLevel += armor.getSkillPenalty(); 
 				}
 			}
 			baseSkillLevel += skill.getMisc();
@@ -663,86 +590,32 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return null;
 	}
 
-	private void performOpportunityAttack(Creature creature, Encounter encounter) {
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
+	private void performOpportunityAttack(Creature target, Encounter encounter) {
+		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
-		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					StandardAction standardAction = method.getAnnotation(StandardAction.class);
-					if (standardAction.isBasicAttack()) {
+			for (Power power : getPowers()) {
+				if (power.getActionType() == ActionType.STANDARD) {
+					if (power.isBasicAttack()) {
 						/* Still might have to meet other requirements to use this power now. */
-						if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
+						if (power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this)) {
 							/* Skip it. */
 							continue;
 						}
-						String actionType = null;
-						if (method.isAnnotationPresent(AtWillPower.class)) {
-							actionType = "At Will";
-						} else if (method.isAnnotationPresent(EncounterPower.class)) {
-							actionType = "Encounter";
-						} else if (method.isAnnotationPresent(DailyPower.class)) {
-							actionType = "Daily";
-						}
 						index++;
-						validActions.put(index, method);
-						correspondingValidObjects.put(index, this);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
+						validActions.put(index, power);
+						Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
 					}
 				}
 			}
 		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					StandardAction standardAction = method.getAnnotation(StandardAction.class);
-					if (standardAction.isBasicAttack()) {
-						/* Still might have to meet other requirements to use this power now. */
-						if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-							/* Skip it. */
-							continue;
-						}
-						String actionType = null;
-						if (method.isAnnotationPresent(AtWillPower.class)) {
-							actionType = "At Will";
-						} else if (method.isAnnotationPresent(EncounterPower.class)) {
-							actionType = "Encounter";
-						} else if (method.isAnnotationPresent(DailyPower.class)) {
-							actionType = "Daily";
-						}
-						index++;
-						validActions.put(index, method);
-						correspondingValidObjects.put(index, dndClass);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
-					}
-				}
-			}
-		}
-
 
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
+		Power chosenPower = validActions.get(choice);
 
-		if (chosenMethod != null) {
-			try {
-				Utils.print("Make sure you choose " + creature.getName() + " in the next question, since I haven't automated that yet.");
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		Utils.print("Make sure you choose " + target.getName() + " in the next question, since I haven't automated that yet.");
+		chosenPower.process(encounter, this);
 	}
 
 
@@ -750,7 +623,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
-			hurt(5, DamageType.FORCE_DAMAGE, encounter, true);
+			hurt(5, DamageType.FORCE, encounter, true);
 			hitByTelekineticAnchor = false;
 		}
 
@@ -794,79 +667,29 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 
 		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
+		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
 
-		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && this.getPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
+			for (Power power : getPowers()) {
+				if (power.getActionType() == ActionType.MINOR) {
 					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
+					if (power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this)) {
 						/* Skip it. */
 						continue;
 					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
 					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
+					validActions.put(index, power);
+					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
 				}
 			}
 		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
 
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
+		Power chosenPower = validActions.get(choice);
 
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		chosenPower.process(encounter, this);
 	}
 
 	public void startOfTurn() {
@@ -930,11 +753,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected Size size;
 	protected int currentHitPoints;
 	protected int maxHitPoints;
-	protected int fortitude;
 	protected int reflex;
 	protected int will;
 	protected int actionPoints;
-	protected List<PowerId> powers;
+	protected List<Power> powers;
 	protected Alignment alignment;
 	protected List<String> languages;
 	protected List<Skill> skills;
@@ -947,7 +769,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected List<Equipment> equipment;
 	protected int initiative;
 	protected List<Sense> senses;
-	protected int speed;
+	protected int baseSpeed;
 	public List<AlternativeMovementMode> getAlternativeMovementModes() {
 		return alternativeMovementModes;
 	}
@@ -1031,10 +853,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	public abstract int getArmorClass(Creature attacker);
 
-	public int getFortitude(Encounter encounter, Creature attacker) {
+// This will all be rewritten when I do AOP	
+/*
+ 	public int getFortitude(Encounter encounter, Creature attacker) {
+
 		int bonus = 0;
 
-		/* See if I am standing next to a Warden that is using "Form of the Willow Sentinel." */
+		// See if I am standing next to a Warden that is using "Form of the Willow Sentinel." 
 		List<Creature> adjacentAllies = encounter.getAdjacentAllies(this);
 		for (Creature adjacentAlly : adjacentAllies) {
 			if (Character.class.isAssignableFrom(adjacentAlly.getClass())) {
@@ -1048,20 +873,20 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			}
 		}
 
-		/* See if there is a temporary bonus to the fortitude. */
+		// See if there is a temporary bonus to the fortitude.
 		if (temporaryFortitudeBonus != null) {
 			if (temporaryFortitudeBonus.stillApplies()) {
 				Utils.print(name + " is supposed to get a bonus to fortitude until the start of " + temporaryFortitudeBonus.getSource().getName() + "'s next turn.");
 				bonus = bonus + temporaryFortitudeBonus.getBonus();
 				Utils.print("Bonus still applies.");
 			} else {
-				/* Bonus is over.  Reset the bonus. */
+				// Bonus is over.  Reset the bonus.
 				temporaryFortitudeBonus = null;
 				Utils.print("Bonus no longer applies.  Resetting bonus.");
 			}
 		}
 
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
+		// See if there is a temporary defense bonus due to the "Aid another" bonus.
 		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
 			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
 				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
@@ -1070,20 +895,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				temporaryAidAnotherBonus = null;
 				Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
 			} else {
-				/* Bonus is over.  Reset the bonus. */
+				// Bonus is over.  Reset the bonus. 
 				temporaryAidAnotherBonus = null;
 				Utils.print("Bonus no longer applies.  Resetting bonus.");
 			}
 		}
 
-		return fortitude + bonus;
+		return getBaseFortitude() + bonus;
 	}
-
-	public void setFortitude(int fortitude) {
-		this.fortitude = fortitude;
-	}
-
-
+*/
 	public int getReflex(Creature attacker) {
 		int bonus = 0;
 		/* See if there is a temporary bonus to the will. */
@@ -1173,18 +993,18 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public List<PowerId> getPowers() {
+	public List<Power> getPowers() {
 		return powers;
 	}
 
 
-	public void setPowers(List<PowerId> powers) {
+	public void setPowers(List<Power> powers) {
 		this.powers = powers;
 	}
 
-	public void addPower(PowerId power) {
+	public void addPower(Power power) {
 		if (powers == null) {
-			powers = new ArrayList<PowerId>();
+			powers = new ArrayList<Power>();
 		}
 		powers.add(power);
 	}
@@ -1334,25 +1154,25 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		senses.add(sense);
 	}
 
+	public int getBaseSpeed() {
+		return baseSpeed;
+	}
+	
 	public int getSpeed() {
-		return speed;
+		return baseSpeed;
 	}
 
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	public void setBaseSpeed(int speed) {
+		this.baseSpeed = speed;
 	}
-
 
 	public boolean isBloodied() {
 		return (currentHitPoints <= getBloodyValue());
 	}
 
-
 	public Position getCurrentPosition() {
 		return currentPosition;
 	}
-
 
 	public void setCurrentPosition(Position currentPosition) {
 		this.currentPosition = currentPosition;
@@ -1688,7 +1508,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
 				/* Should be able to cast the marker to a character. */
 				if (Character.class.isInstance(mark.getMarker())) {
-					((Character) (mark.getMarker())).basicMeleeAttack(encounter);
+					Power power = mark.getMarker().getBasicMeleeAttack();
+					power.process(encounter, mark.getMarker());
 				}
 			}
 
@@ -1795,7 +1616,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
 			/* Should be able to cast the marker to a character. */
 			if (Character.class.isInstance(mark.getMarker())) {
-				((Character) (mark.getMarker())).basicMeleeAttack(encounter);
+				Power power = mark.getMarker().getBasicMeleeAttack();
+				power.process(encounter, mark.getMarker());
 			}
 		}
 
@@ -1888,25 +1710,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		currentConditions.add(new Prone());
 	}
 
-	@FreeAction(powerId = PowerId.SPEND_ACTION_POINT)
-	@EncounterPower
-	public void spendActionPoint(Encounter encounter) {
-		/* Only let them do this if they have already used a standard action. */
-		if (this.canTakeStandardAction()) {
-			Utils.print("You really shouldn't spend an action point until you've already used your normal standard action.");
-			return;
-		}
-		if (!usedActionPoint) {
-			if (actionPoints > 0) {
-				actionPoints--;
-			}
-			this.setUsedStandardAction(false);
-			usedActionPoint = true;
-		} else {
-			Utils.print("You have already spent an action point this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
-		}
-	}
-
 	public BufferedImage getImage() {
 		BufferedImage image = null;
 		try {
@@ -1926,5 +1729,90 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public ReadiedWeapon getReadiedWeapon() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getReadiedWeapon() method");
+		return null;
+	}
+
+	public HashMap<Hand,ReadiedWeapon> getReadiedWeapons() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getReadiedWeapons() method");
+		return null;
+	}
+
+	public int getWeaponProficiencyBonus() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getWeaponProficiencyBonus() method");
+		return 0;
+	}
+
+	public void heal(int hitPoints) {
+		int tempHitPoints = currentHitPoints + hitPoints;
+		if (tempHitPoints >= this.maxHitPoints) {
+			currentHitPoints = maxHitPoints;
+			Utils.print("Fully healed.  Hit Points = " + currentHitPoints);
+		} else {
+			currentHitPoints = tempHitPoints;
+			Utils.print("Partially healed.  Hit Points = " + currentHitPoints);
+		}
+	}
+
+	public boolean hasUsedActionPoint() {
+		return usedActionPoint;
+	}
+
+	public void setUsedActionPoint(boolean b) {
+		usedActionPoint = b;
+	}
+
+	public boolean usedSecondWind() {
+		return usedSecondWind;
+	}
+
+	public void setTemporaryReflexBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source) {
+		temporaryReflexBonus = new TemporaryBonus();
+		temporaryReflexBonus.setBonus(bonus);
+		temporaryReflexBonus.setStartTurn(bonusStartTurn);
+		temporaryReflexBonus.setDuration(duration);
+		temporaryReflexBonus.setSource(source);
+	}
+
+	public void setTemporaryWillBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source) {
+		temporaryWillBonus = new TemporaryBonus();
+		temporaryWillBonus.setBonus(bonus);
+		temporaryWillBonus.setStartTurn(bonusStartTurn);
+		temporaryWillBonus.setDuration(duration);
+		temporaryWillBonus.setSource(source);
+	}
+
+	public void setTemporaryFortitudeBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source) {
+		temporaryFortitudeBonus = new TemporaryBonus();
+		temporaryFortitudeBonus.setBonus(bonus);
+		temporaryFortitudeBonus.setStartTurn(bonusStartTurn);
+		temporaryFortitudeBonus.setDuration(duration);
+		temporaryFortitudeBonus.setSource(source);
+	}
+
+	public void setTemporaryAidAnotherBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source, AttackTarget target, int bonusType) {
+		temporaryAidAnotherBonus = new TemporaryAidAnotherBonus();
+		temporaryAidAnotherBonus.setBonus(bonus);
+		temporaryAidAnotherBonus.setStartTurn(bonusStartTurn);
+		temporaryAidAnotherBonus.setDuration(duration);
+		temporaryAidAnotherBonus.setSource(source);
+		temporaryAidAnotherBonus.setTarget(target);
+		temporaryAidAnotherBonus.setType(bonusType);
+	}
+
+	public void setTemporaryArmorClassBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source) {
+		temporaryArmorClassBonus = new TemporaryBonus();
+		temporaryArmorClassBonus.setBonus(bonus);
+		temporaryArmorClassBonus.setStartTurn(bonusStartTurn);
+		temporaryArmorClassBonus.setDuration(duration);
+		temporaryArmorClassBonus.setSource(source);
 	}
 }

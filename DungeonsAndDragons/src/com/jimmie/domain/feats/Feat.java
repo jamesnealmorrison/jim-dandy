@@ -19,4 +19,16 @@ public abstract class Feat implements Serializable {
 		// TODO: The expectation is that I'll override this in any feat that has an armor class bonus.
 		return 0;
 	}
+	public int getFortitudeBonus() {
+		// TODO: The expectation is that I'll override this in any feat that has a fortitude bonus.
+		return 0;
+	}
+	public int getReflexBonus() {
+		// TODO: The expectation is that I'll override this in any feat that has a reflex bonus.
+		return 0;
+	}
+	public int getWillBonus() {
+		// TODO: The expectation is that I'll override this in any feat that has a will bonus.
+		return 0;
+	}
 }

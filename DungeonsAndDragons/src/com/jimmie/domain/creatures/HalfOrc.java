@@ -81,7 +81,7 @@ public class HalfOrc extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -104,8 +104,7 @@ public class HalfOrc extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Half-Orc you get +2 to Strength and Dexterity.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setDexterity(pc.getDexterity() + 2);
-		
+		setStrengthBonus(getStrengthBonus()+2);
+		setDexterityBonus(getDexterityBonus()+2);
 	}
 }

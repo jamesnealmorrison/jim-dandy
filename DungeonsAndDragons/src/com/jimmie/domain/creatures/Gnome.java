@@ -68,7 +68,7 @@ public class Gnome extends Race {
 		pc.setSize(Size.SMALL);
 		
 		Utils.print("Setting speed to 5.");
-		pc.setSpeed(5);
+		pc.setBaseSpeed(5);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -91,7 +91,7 @@ public class Gnome extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Gnome you get +2 to Charisma and Intelligence.");
-		pc.setCharisma(pc.getCharisma() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
+		setCharismaBonus(getCharismaBonus()+2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);
 	}
 }

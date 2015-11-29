@@ -53,7 +53,7 @@ public class KoboldLairOutsideEncounterConfig {
 		KoboldMinion m1 = new KoboldMinion();
 		return m1;
 	}
-	@Bean
+/*	@Bean
 	public KoboldMinion m2() {
 		return new KoboldMinion();
 	}
@@ -117,8 +117,9 @@ public class KoboldLairOutsideEncounterConfig {
 	public Character halfOrcFighter() {
 		return Utils.loadCharacter("Arannis");
 	}
+*/	
 	@Bean
-	public Character zanros() {
-		return Utils.loadCharacter("Arannis");
+	public Character fargrim() {
+		return Utils.loadCharacter("Fargrim");
 	}
 }
