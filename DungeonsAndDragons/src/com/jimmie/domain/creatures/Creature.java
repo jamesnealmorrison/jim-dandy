@@ -598,7 +598,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (power.getActionType() == ActionType.STANDARD) {
 					if (power.isBasicAttack()) {
 						/* Still might have to meet other requirements to use this power now. */
-						if (power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this)) {
+						if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
 							/* Skip it. */
 							continue;
 						}

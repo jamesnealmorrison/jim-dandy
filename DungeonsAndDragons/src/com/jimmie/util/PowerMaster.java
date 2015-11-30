@@ -64,6 +64,63 @@ public class PowerMaster {
 		powers.add(new SplitTheTree());
 		powers.add(new SuddenStrike());
 		
+		// Rogue
+		powers.add(new DeftStrike());
+		powers.add(new PiercingStrike());
+		powers.add(new RiposteStrike());
+		powers.add(new SlyFlourish());
+		powers.add(new DazingStrike());
+		powers.add(new KingsCastle());
+		powers.add(new PositioningStrike());
+		powers.add(new TorturousStrike());
+		powers.add(new BlindingBarrage());
+		powers.add(new EasyTarget());
+		powers.add(new TrickStrike());
+
+		// Warlock
+		powers.add(new DireRadiance());
+		powers.add(new EldritchBlast());
+		powers.add(new Eyebite());
+		powers.add(new HellishRebuke());
+		powers.add(new DiabolicGrasp());
+		powers.add(new DreadfulWord());
+		powers.add(new VampiricEmbrace());
+		powers.add(new Witchfire());
+		powers.add(new ArmorOfAgathys());
+		powers.add(new CurseOfTheDarkDream());
+		powers.add(new DreadStar());
+		powers.add(new FlamesOfPhlegethos());
+		
+		// Warlord
+		powers.add(new CommandersStrike());
+		powers.add(new FuriousSmash());
+		powers.add(new VipersStrike());
+		powers.add(new WolfPackTactics());
+		powers.add(new GuardingAttack());
+		powers.add(new HammerAndAnvil());
+		powers.add(new LeafOnTheWind());
+		powers.add(new WarlordsFavor());
+		powers.add(new BastionOfDefense());
+		powers.add(new LeadTheAttack());
+		powers.add(new PinTheFoe());
+		powers.add(new WhiteRavenOnslaught());
+
+		// Wizard
+		powers.add(new CloudOfDaggers());
+		powers.add(new MagicMissile());
+		powers.add(new RayOfFrost());
+		powers.add(new ScorchingBurst());
+		powers.add(new Thunderwave());
+		powers.add(new BurningHands());
+		powers.add(new ChillStrike());
+		powers.add(new ForceOrb());
+		powers.add(new IcyTerrain());
+		powers.add(new RayOfEnfeeblement());
+		powers.add(new AcidArrow());
+		powers.add(new FlamingSphere());
+		powers.add(new FreezingCloud());
+		powers.add(new Sleep());
+		
 		powers.add(new AngelicAlacrity());
 		powers.add(new AspectOfMight());
 		powers.add(new BondOfPursuit());
