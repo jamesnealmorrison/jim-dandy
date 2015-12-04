@@ -36,12 +36,6 @@ public class Shardmind extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following names:");
 		Utils.print("Names: Amata, Arshaka, Arwia, Balashi, Bashanu, Belessunu, Dipana, Erishti, Eshunu, Hunzu,");

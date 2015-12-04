@@ -16,17 +16,12 @@ import com.jimmie.gui.BattlefieldPanel;
 import com.jimmie.gui.ConsolePanel;
 import com.jimmie.gui.DungeonGUI;
 import com.jimmie.gui.PartyPanel;
-import com.jimmie.util.CreatureAspect;
 import com.jimmie.util.Utils;
 
 @Configuration
 //@ComponentScan
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class KoboldLairOutsideEncounterConfig {
-	@Bean
-	public CreatureAspect creatureAspect() {
-		return new CreatureAspect();
-	}
 	@Bean
 	public DungeonGUI dungeonGUI() {
 		return new DungeonGUI();
@@ -121,5 +116,10 @@ public class KoboldLairOutsideEncounterConfig {
 	@Bean
 	public Character fargrim() {
 		return Utils.loadCharacter("Fargrim");
+	}
+
+	@Bean
+	public Character brocc() {
+		return Utils.loadCharacter("Brocc");
 	}
 }

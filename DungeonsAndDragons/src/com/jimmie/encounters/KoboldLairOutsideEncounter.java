@@ -58,6 +58,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 */
 	@Autowired
 	private Character fargrim;
+	@Autowired
+	private Character brocc;
 	
 	@Override
 	public void init() {
@@ -144,6 +146,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 			readiedWeapon.setHand(Hand.MAIN_HAND);
 		}
 		fargrim.addReadiedWeapon(readiedWeapon);
+
+		brocc.setCurrentPosition(new Position(5,7));
 		
 		// Arannis doesn't have his image set up.
 /*		elfAvenger.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
@@ -152,6 +156,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
 */
 		fargrim.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
+		brocc.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
 		
 		characters = new ArrayList<Character>();
 /*
@@ -161,6 +166,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		characters.add(halfOrcFighter);
 */		
 		characters.add(fargrim);
+		characters.add(brocc);
 		
 		map = new Map();
 		map.setWidth(15);
@@ -625,6 +631,14 @@ public class KoboldLairOutsideEncounter extends Encounter {
 
 	public void setFargrim(Character fargrim) {
 		this.fargrim = fargrim;
+	}
+
+	public Character getBrocc() {
+		return brocc;
+	}
+
+	public void setBrocc(Character brocc) {
+		this.brocc = brocc;
 	}
 
 }

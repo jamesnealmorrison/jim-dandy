@@ -37,12 +37,6 @@ public class Eladrin extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Aesthetic, Arannis, Berrian, Dayereth, Erevan, Galinndan, Hadarai, Immeral, Mindartis, Paelias, Quarion, Riardon, Soveliss");

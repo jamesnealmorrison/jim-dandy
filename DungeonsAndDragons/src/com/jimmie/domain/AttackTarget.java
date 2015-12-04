@@ -21,7 +21,7 @@ public interface AttackTarget {
 	void hitByBondOfPursuit(Creature pursuer);
 	void hitByStirringShout(int charismaModifier);
 	void hitByTelekineticAnchor();
-	void moveCreature(String direction, Encounter encounter);
+	void moveCreature(String direction, Encounter encounter, MovementType movementType);
 	boolean isHitByStirringShout();
 	int getStirringShoutCharismaModifier();
 	void knockProne();

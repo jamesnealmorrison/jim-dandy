@@ -33,12 +33,6 @@ public class Wilden extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Banmarden, Fiddenmar, Durmindin, Kettenbar, Midnorten, Rodmennar, Vennerzad");

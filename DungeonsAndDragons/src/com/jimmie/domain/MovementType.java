@@ -1,5 +1,5 @@
 package com.jimmie.domain;
 
 public enum MovementType {
-	WALKING, SHIFTING
+	WALKING, SHIFTING, SLIDE
 }

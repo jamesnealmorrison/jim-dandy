@@ -16,6 +16,14 @@ public class Gnome extends Race {
 	private static final long serialVersionUID = 1L;
 	private boolean usedFadeAway;
 
+	public boolean isUsedFadeAway() {
+		return usedFadeAway;
+	}
+
+	public void setUsedFadeAway(boolean usedFadeAway) {
+		this.usedFadeAway = usedFadeAway;
+	}
+
 	@Override
 	public int getRacialDamageBonus() {
 		// TODO Auto-generated method stub
@@ -24,27 +32,12 @@ public class Gnome extends Race {
 
 	@Override
 	public void initializeForEncounter() {
-		// TODO Auto-generated method stub
-		
+		usedFadeAway = false;
 	}
 
 	@Override
 	public void initializeForNewDay() {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		if (!usedFadeAway) {
-			Utils.print("As a gnome you can use your Fade Away power now to turn invisible for one turn.  Do you want to?");
-			String choice = Utils.getYesOrNoInput();
-			if ("Y".equalsIgnoreCase(choice)) {
-				usedFadeAway = true;
-				owner.setTemporaryInvisibility(owner, DurationType.END_OF_NEXT_TURN, null);
-
-			}
-		}
 		
 	}
 
@@ -94,4 +87,5 @@ public class Gnome extends Race {
 		setCharismaBonus(getCharismaBonus()+2);
 		setIntelligenceBonus(getIntelligenceBonus()+2);
 	}
+
 }

@@ -62,7 +62,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 	@Override
 	public int getRangeNumber1() {
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 	@Override
 	public AttackType getAttackType() {
-		return AttackType.MELEE_1;
+		return AttackType.MELEE_NUMBER;
 	}
 
 	@SuppressWarnings("rawtypes")

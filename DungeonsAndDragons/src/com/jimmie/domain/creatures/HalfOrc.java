@@ -24,6 +24,14 @@ public class HalfOrc extends Race {
 	private boolean usedFuriousAssault;
 	private boolean usedHalfOrcResilience;
 
+	public boolean isUsedHalfOrcResilience() {
+		return usedHalfOrcResilience;
+	}
+
+	public void setUsedHalfOrcResilience(boolean usedHalfOrcResilience) {
+		this.usedHalfOrcResilience = usedHalfOrcResilience;
+	}
+
 	@Override
 	public int getRacialDamageBonus() {
 		/* Can they use furious assault? */
@@ -47,18 +55,6 @@ public class HalfOrc extends Race {
 	public void initializeForNewDay() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void processAfterHurtEffects(Creature owner) {
-		/* Have they used half orc resilience yet? */
-		if (!usedHalfOrcResilience) {
-			if (owner.isBloodied()) {
-				Utils.print("This is the first time " + owner.getName() + " has been bloodied during this encounter.  Half orc resilience gives them 5 temporary hit points.");
-				owner.setTemporaryHitPoints(5);
-				usedHalfOrcResilience = true;
-			}
-		}
 	}
 
 	@Override

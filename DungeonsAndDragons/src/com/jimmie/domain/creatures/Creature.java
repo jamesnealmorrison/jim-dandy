@@ -7,9 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AlternativeMovementMode;
@@ -38,13 +36,10 @@ import com.jimmie.domain.TemporaryInvisibility;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Warden;
-import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.items.armor.Armor;
 import com.jimmie.domain.items.weapons.Hand;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
-import com.jimmie.domain.items.weapons.Weapon;
-import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.AttackPower;
 import com.jimmie.powers.Power;
@@ -282,7 +277,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			for (Power power : getPowers()) {
 				if (power.getActionType() == ActionType.STANDARD) {
 					/* Still might have to meet other requirements to use this power now. */
-					if ((power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this))) {
+					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
 						/* Skip it. */
 						continue;
 					}
@@ -310,7 +305,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			for (Power power : getPowers()) {
 				if (power.getActionType() == ActionType.FREE) {
 					/* Still might have to meet other requirements to use this power now. */
-					if ((power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this))) {
+					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
 						/* Skip it. */
 						continue;
 					}
@@ -365,16 +360,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		} else if ("Shift".equalsIgnoreCase(choice)) {
 			movementType = MovementType.SHIFTING;
 			distanceLeft = 1;
-			if (isMarked() && (mark.getTypeOfMark() == MarkType.COMBAT_CHALLENGE)) {
-				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
-				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
-				/* Should be able to cast the marker to a character. */
-				if (Character.class.isInstance(mark.getMarker())) {
-					Power basicMeleeAttack = mark.getMarker().getBasicMeleeAttack();
-					basicMeleeAttack.process(encounter, mark.getMarker());
-				}
-			}
-
 		}
 
 		while (distanceLeft > 0) {
@@ -424,74 +409,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					}
 				}
 
-
-
-				/* Before moving, see if it triggers an opportunity attack. */
-				if (movementType != MovementType.SHIFTING) {
-					List<Creature> adjacentEnemies = encounter.getAdjacentEnemies(this);
-					if (adjacentEnemies != null) {
-						for (Creature adjacentEnemy : adjacentEnemies) {
-							/* I may be invisible to them, though.  Check. */
-							if (this.isInvisibleTo(adjacentEnemy)) {
-								Utils.print("This would have provoked an opportunity attack from " + adjacentEnemy.getName() + " but I am invisible to them now. ");
-							} else {
-								Utils.print(adjacentEnemy.getName() + " gets to perform an opportunity attack on " + name + " because " + name + " left a square adjacent to " + adjacentEnemy.getName() + " without shifting.");
-								adjacentEnemy.performOpportunityAttack(this, encounter);
-							}
-						}
-					}
-				}
-				/* Did this trigger a Dragonshield Tactics by shifting away from a dragonshield? */
-				/* Start by getting a list of adjacent kobold dragonshields from before the move. */
-				List<Creature> adjacentDragonshieldsBeforeMove = encounter.getSpecificTypeOfAdjacentEnemies(this, KoboldDragonshield.class);
-
-				/* Also need a list of creatures that are adjacent before the move. */
-				List<Creature> adjacentCreaturesBeforeMove = encounter.getAllAdjacentCreatures(this);
-
-				moveCreature(direction, encounter);
+				moveCreature(direction, encounter, movementType);
 				distanceLeft--;
 
-				/* Get a list of adjacentCreatures after the move. */
-				List<Creature> adjacentCreaturesAfterMove = encounter.getAllAdjacentCreatures(this);
-
-				/* Also need a list of adjacent dragonshields after the move. */
-				List<Creature> adjacentDragonshieldsAfterMove = encounter.getSpecificTypeOfAdjacentEnemies(this, KoboldDragonshield.class);
-
-				/* If the move was a shift, see which dragonshields are no longer adjacent.  In other words,
-				 * did they shift away from any dragonshields?
-				 */
-				if (movementType.equals(MovementType.SHIFTING)) {
-					if (adjacentDragonshieldsBeforeMove != null) {
-						for (Creature adjacentDragonshieldBeforeMove : adjacentDragonshieldsBeforeMove) {
-							if ((adjacentCreaturesAfterMove == null) || (!adjacentCreaturesAfterMove.contains(adjacentDragonshieldBeforeMove))) {
-								Utils.print(this.getName() + " moved away from " + adjacentDragonshieldBeforeMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
-								if (!((KoboldDragonshield) adjacentDragonshieldBeforeMove).isUsedDragonshieldTactics()) {
-									((KoboldDragonshield) adjacentDragonshieldBeforeMove).useDragonshieldTactics(encounter);
-								}
-							}
-						}
-					}
-				}
-
-				/* Now check for dragonshields who weren't adjacent before the move, but are now (i.e. did they
-				 * move next to a dragonshield?
-				 */
-				if (adjacentDragonshieldsAfterMove != null) {
-					for (Creature adjacentDragonshieldAfterMove : adjacentDragonshieldsAfterMove) {
-						if ((adjacentCreaturesBeforeMove == null) || (!adjacentCreaturesBeforeMove.contains(adjacentDragonshieldAfterMove))) {
-							Utils.print(this.getName() + " moved next to " + adjacentDragonshieldAfterMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
-							if (!((KoboldDragonshield) adjacentDragonshieldAfterMove).isUsedDragonshieldTactics()) {
-								((KoboldDragonshield) adjacentDragonshieldAfterMove).useDragonshieldTactics(encounter);
-							}
-						}
-					}
-				}
 			}
 		}
 
 	}
 
-	private Power getBasicMeleeAttack() {
+	public Power getBasicMeleeAttack() {
 		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
 		int count = 0;
 		for (Power power : getPowers()) {
@@ -590,7 +516,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return null;
 	}
 
-	private void performOpportunityAttack(Creature target, Encounter encounter) {
+	public void performOpportunityAttack(Creature target, Encounter encounter) {
 		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
 		if (this.getPowers() != null) {
@@ -619,7 +545,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public void moveCreature(String direction, Encounter encounter) {
+	public void moveCreature(String direction, Encounter encounter, MovementType movementType) {
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
@@ -674,7 +600,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			for (Power power : getPowers()) {
 				if (power.getActionType() == ActionType.MINOR) {
 					/* Still might have to meet other requirements to use this power now. */
-					if (power.meetsPrerequisitesToChoosePower(this) && power.meetsRequirementsToUsePower(this)) {
+					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
 						/* Skip it. */
 						continue;
 					}
@@ -1229,11 +1155,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				encounter.removeCreature(this);
 			}
 		}
-
-		/* Some races have effects that take place after they get hurt. */
-		if (race != null) {
-			race.processAfterHurtEffects(this);
-		}
 	}
 
 	private int getDamageResistance(DamageType damageType) {
@@ -1273,6 +1194,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected DndClass dndClass;
 	private boolean turnOver;
 	private Mark mark;
+
 	private int temporaryHitPoints;
 	private CombatAdvantage combatAdvantage;
 	private TemporaryAttackRollModifier temporaryAttackRollModifier;
@@ -1538,7 +1460,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	private boolean isMarked() {
+	public boolean isMarked() {
 		if (mark != null) {
 			if (mark.stillApplies()) {
 				return true;
@@ -1640,7 +1562,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				moveCreature(direction, encounter);
+				moveCreature(direction, encounter, MovementType.SHIFTING);
 				distanceLeft--;
 			}
 		}
@@ -1814,5 +1736,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryArmorClassBonus.setStartTurn(bonusStartTurn);
 		temporaryArmorClassBonus.setDuration(duration);
 		temporaryArmorClassBonus.setSource(source);
+	}
+
+	public Mark getMark() {
+		return mark;
+	}
+
+	public void setMark(Mark mark) {
+		this.mark = mark;
 	}
 }

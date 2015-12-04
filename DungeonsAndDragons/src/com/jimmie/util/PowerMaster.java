@@ -121,13 +121,128 @@ public class PowerMaster {
 		powers.add(new FreezingCloud());
 		powers.add(new Sleep());
 		
-		powers.add(new AngelicAlacrity());
-		powers.add(new AspectOfMight());
+		// Book 2
+		// Avenger
 		powers.add(new BondOfPursuit());
-		powers.add(new MisdirectedMark());
-		powers.add(new OathOfEnmity());
+		powers.add(new BondOfRetribution());
+		powers.add(new OverwhelmingStrike());
 		powers.add(new RadiantVengeance());
+		powers.add(new AngelicAlacrity());
+		powers.add(new AvengingEcho());
+		powers.add(new SharedMadness());
+		powers.add(new WhirlwindCharge());
+		powers.add(new AspectOfMight());
+		powers.add(new OathOfTheFinalDuel());
+		powers.add(new RenewingStrike());
+		powers.add(new TempleOfLight());
 		
+		// Barbarian
+		powers.add(new DevastatingStrike());
+		powers.add(new HowlingStrike());
+		powers.add(new PressingStrike());
+		powers.add(new RecuperatingStrike());
+		powers.add(new AvalancheStrike());
+		powers.add(new Bloodletting());
+		powers.add(new GreatCleave());
+		powers.add(new VaultTheFallen());
+		powers.add(new BloodhuntRage());
+		powers.add(new MacetailsRage());
+		powers.add(new RageDrakesFrenzy());
+		powers.add(new SwiftPantherRage());
+
+		// Bard
+		powers.add(new GuidingStrike());
+		powers.add(new MisdirectedMark());
+		powers.add(new ViciousMockery());
+		powers.add(new WarSongStrike());
+		powers.add(new Blunder());
+		powers.add(new FastFriends());
+		powers.add(new InspiringRefrain());
+		powers.add(new ShoutOfTriumph());
+		powers.add(new EchoesOfTheGuardian());
+		powers.add(new SlayersSong());
+		powers.add(new StirringShout());
+		powers.add(new VerseOfTriumph());
+		
+		// Druid
+		powers.add(new CallOfTheBeast());
+		powers.add(new ChillWind());
+		powers.add(new FlameSeed());
+		powers.add(new GraspingClaws());
+		powers.add(new Pounce());
+		powers.add(new SavageRend());
+		powers.add(new StormSpike());
+		powers.add(new ThornWhip());
+		powers.add(new CullTheHerd());
+		powers.add(new DartingBite());
+		powers.add(new FrostFlash());
+		powers.add(new TwistingVines());
+		powers.add(new FaerieFire());
+		powers.add(new FiresOfLife());
+		powers.add(new SavageFrenzy());
+		powers.add(new WindPrison());
+		
+		// Invoker
+		powers.add(new AvengingLight());
+		powers.add(new DivineBolts());
+		powers.add(new GraspingShards());
+		powers.add(new SunStrike());
+		powers.add(new VanguardsLightning());
+		powers.add(new AstralTerror());
+		powers.add(new BladesOfAstralFire());
+		powers.add(new SpearOfTheInquisitor());
+		powers.add(new ThunderOfJudgment());
+		powers.add(new AngelicEchelon());
+		powers.add(new BindingInvocationOfChains());
+		powers.add(new PurgingFlame());
+		powers.add(new SummonAngelOfFire());
+		
+		// Shaman
+		powers.add(new DefendingStrike());
+		powers.add(new HauntingSpirits());
+		powers.add(new ProtectingStrike());
+		powers.add(new StalkersStrike());
+		powers.add(new WatchersStrike());
+		powers.add(new WrathOfWinter());
+		powers.add(new CallToTheAncestralWarrior());
+		powers.add(new CallToTheAncientDefender());
+		powers.add(new ThunderBearsWarding());
+		powers.add(new TwinPanthers());
+		powers.add(new BlessingOfTheSevenWinds());
+		powers.add(new CleansingWindOfTheNorth());
+		powers.add(new SpiritOfTheHealingFlood());
+		powers.add(new WrathOfTheSpiritWorld());
+		
+		// Sorcerer
+		powers.add(new AcidOrb());
+		powers.add(new BurningSpray());
+		powers.add(new ChaosBolt());
+		powers.add(new Dragonfrost());
+		powers.add(new StormWalk());
+		powers.add(new BedevilingBurst());
+		powers.add(new ExplosivePyre());
+		powers.add(new Frostbind());
+		powers.add(new TempestBreath());
+		powers.add(new ThunderSlam());
+		powers.add(new ChromaticOrb());
+		powers.add(new DazzlingRay());
+		powers.add(new DragonfangBolt());
+		powers.add(new LightningBreath());
+		
+		// Warden
+		powers.add(new EarthShieldStrike());
+		powers.add(new StrengthOfStone());
+		powers.add(new ThornStrike());
+		powers.add(new WeightOfEarth());
+		powers.add(new EarthSpikes());
+		powers.add(new HungryEarth());
+		powers.add(new ThunderRamAssault());
+		powers.add(new WildbloodFrenzy());
+		powers.add(new FormOfTheFearsomeRam());
+		powers.add(new FormOfTheRelentlessPanther());
+		powers.add(new FormOfTheWillowSentinel());
+		powers.add(new FormOfWintersHerald());
+
 		return powers;
 	}
 
