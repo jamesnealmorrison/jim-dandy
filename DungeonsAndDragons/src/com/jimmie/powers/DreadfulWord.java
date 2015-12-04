@@ -52,8 +52,10 @@ public class DreadfulWord extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.PSYCHIC;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.PSYCHIC);
+		return damageTypes;
 	}
 
 	@Override

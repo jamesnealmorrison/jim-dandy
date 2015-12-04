@@ -242,6 +242,89 @@ public class PowerMaster {
 		powers.add(new FormOfTheRelentlessPanther());
 		powers.add(new FormOfTheWillowSentinel());
 		powers.add(new FormOfWintersHerald());
+		
+		// Ardent
+		powers.add(new DemoralizingStrike());
+		powers.add(new EnergizingStrike());
+		powers.add(new FocusingStrike());
+		powers.add(new IreStrike());
+		powers.add(new PsionicShield());
+		powers.add(new AdrenalineStrike());
+		powers.add(new BattlebornAcuity());
+		powers.add(new ImplantedSuggestion());
+		powers.add(new MentalTurmoil());
+		powers.add(new WormholePlunge());
+		
+		// Battlemind
+		powers.add(new DemonDance());
+		powers.add(new IronFist());
+		powers.add(new BullsStrength());
+		powers.add(new TwistedEye());
+		powers.add(new WhirlingDefense());
+		powers.add(new AlliesToEnemies());
+		powers.add(new AspectOfElevatedHarmony());
+		powers.add(new PsionicAnchor());
+		powers.add(new SteelUnityStrike());
+		
+		// Monk
+		// TODO: Set up a movement power for EACH one of the "FULL DISCIPLINE" powers (for example, CranesWingsMovement)
+		// Those movement powers need to be automatically put into the Monk class. BUT the "meetsRequirements" method will
+		// check if they have the corresponding power.  For example, EVERY monk will have CranesWingsMovement power,
+		// but ONLY Monks that have CranesWings power will be able to use CranesWingsMovement.
+		powers.add(new CranesWings());
+		powers.add(new DancingCobra());
+		powers.add(new DragonsTail());
+		powers.add(new FiveStorms());
+		powers.add(new AwakenTheSlumberingHurt());
+		powers.add(new DrunkenMonkey());
+		powers.add(new OpenTheGateOfBattle());
+		powers.add(new RisingStorm());
+		powers.add(new HarmoniousThunder());
+		powers.add(new MasterfulSpiral());
+		powers.add(new SpinningLeopardManeuver());
+		powers.add(new WhirlingMantisStep());
+		
+		// Psion
+		powers.add(new Dishearten());
+		powers.add(new ForcePunch());
+		powers.add(new KineticTrawl());
+		powers.add(new MemoryHole());
+		powers.add(new MindThrust());
+		powers.add(new HandOfCaution());
+		powers.add(new MentalTrauma());
+		powers.add(new RaveningThought());
+		powers.add(new TelekineticAnchor());
+		
+		// Runepriest
+		powers.add(new WordOfBinding());
+		powers.add(new WordOfDiminishment());
+		powers.add(new WordOfExchange());
+		powers.add(new WordOfShielding());
+		powers.add(new AnvilOfBattle());
+		powers.add(new DivineRuneOfThunder());
+		powers.add(new ExecutionersCall());
+		powers.add(new FlamesOfPurity());
+		powers.add(new RuneOfEndlessFire());
+		powers.add(new RuneOfIronsRebuke());
+		powers.add(new RuneOfTheUndeniableDawn());
+		powers.add(new RuneOfTwilightsBeacon());
+		
+		// Seeker
+		powers.add(new BitingSwarm());
+		powers.add(new ElementalSpirits());
+		powers.add(new GrapplingSpirits());
+		powers.add(new GuardianHarrier());
+		powers.add(new ThornCloudShot());
+		powers.add(new FlickeringArrow());
+		powers.add(new MischiefSpirits());
+		powers.add(new PossessingSpirits());
+		powers.add(new SerpentArrow());
+		powers.add(new SpiderSpirits());
+		powers.add(new FungalBlooms());
+		powers.add(new RimeStrike());
+		powers.add(new SpiritRider());
+		powers.add(new StormOfSpiritShards());
+		powers.add(new SwarmingBats());
 
 		return powers;
 	}

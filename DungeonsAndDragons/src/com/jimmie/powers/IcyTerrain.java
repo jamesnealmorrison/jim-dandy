@@ -52,8 +52,10 @@ public class IcyTerrain extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.COLD;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.COLD);
+		return damageTypes;
 	}
 
 	@Override

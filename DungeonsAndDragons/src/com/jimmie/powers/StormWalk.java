@@ -51,8 +51,10 @@ public class StormWalk extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.THUNDER;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.THUNDER);
+		return damageTypes;
 	}
 
 	@Override

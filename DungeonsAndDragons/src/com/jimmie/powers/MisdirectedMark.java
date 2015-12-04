@@ -59,8 +59,10 @@ public class MisdirectedMark extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.NORMAL;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.NORMAL);
+		return damageTypes;
 	}
 
 	@Override

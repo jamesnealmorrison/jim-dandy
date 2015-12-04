@@ -51,8 +51,10 @@ public class AcidOrb extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.ACID;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.ACID);
+		return damageTypes;
 	}
 
 	@Override

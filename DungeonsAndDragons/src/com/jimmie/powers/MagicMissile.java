@@ -52,8 +52,10 @@ public class MagicMissile extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.FORCE;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.FORCE);
+		return damageTypes;
 	}
 
 	@Override

@@ -51,8 +51,10 @@ public class FiresOfLife extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.FIRE;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.FIRE);
+		return damageTypes;
 	}
 
 	@Override

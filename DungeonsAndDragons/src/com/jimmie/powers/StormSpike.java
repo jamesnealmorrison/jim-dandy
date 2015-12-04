@@ -51,8 +51,10 @@ public class StormSpike extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.LIGHTNING;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.LIGHTNING);
+		return damageTypes;
 	}
 
 	@Override

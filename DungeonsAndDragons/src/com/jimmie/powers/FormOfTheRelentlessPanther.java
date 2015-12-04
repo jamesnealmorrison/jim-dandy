@@ -51,8 +51,10 @@ public class FormOfTheRelentlessPanther extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.NONE;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.NONE);
+		return damageTypes;
 	}
 
 	@Override

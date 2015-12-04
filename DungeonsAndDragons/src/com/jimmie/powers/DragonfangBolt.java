@@ -51,8 +51,10 @@ public class DragonfangBolt extends AttackPower {
 	}
 
 	@Override
-	public DamageType getDamageType() {
-		return DamageType.POISON;
+	public List<DamageType> getDamageType() {
+		List<DamageType> damageTypes = new ArrayList<DamageType>();
+		damageTypes.add(DamageType.POISON);
+		return damageTypes;
 	}
 
 	@Override
