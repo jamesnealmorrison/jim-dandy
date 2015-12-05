@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.InfernalWrath;
 import com.jimmie.util.Utils;
 
 public class Tiefling extends Race {
@@ -68,8 +69,11 @@ public class Tiefling extends Race {
 		Skill stealth = pc.getSkill(SkillType.STEALTH);
 		stealth.setMisc(stealth.getMisc()+2);
 		
-		// TODO: Bloodhunt, Fire Resistance, Infernal Wrath.
-		Utils.print("NOTE: I have not yet coded Bloodhunt, Fire Resistance, Infernal Wrath.");
+		pc.addPower(new InfernalWrath());
+		
+		// TODO: Bloodhunt, Fire Resistance.
+		Utils.print("NOTE: I have not yet coded Bloodhunt, Fire Resistance.");
+		
 	}
 
 	@Override

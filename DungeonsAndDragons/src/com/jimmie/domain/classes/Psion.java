@@ -9,6 +9,10 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.Distract;
+import com.jimmie.powers.FarHand;
+import com.jimmie.powers.ForcefulPunch;
+import com.jimmie.powers.SendThoughts;
 import com.jimmie.util.Utils;
 
 public class Psion extends DndClass {
@@ -115,12 +119,16 @@ public class Psion extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setDisciplineFocus(PsionDiscipline.TELEKINESIS_FOCUS);
+			pc.addPower(new FarHand());
+			pc.addPower(new ForcefulPunch());
 		} else {
 			setDisciplineFocus(PsionDiscipline.TELEPATHY_FOCUS);
+			pc.addPower(new Distract());
+			pc.addPower(new SendThoughts());
 		}
 		
-		// TODO: Discipline Focus, Psionic Augmentation, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Discipline Focus, Psionic Augmentation, Ritual Casting, Implements.");
+		// TODO: Psionic Augmentation, Ritual Casting, Implements
+		Utils.print("NOTE: I have not yet coded Psionic Augmentation, Ritual Casting, Implements.");
 	}
 
 	@Override

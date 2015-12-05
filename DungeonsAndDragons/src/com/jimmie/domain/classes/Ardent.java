@@ -9,6 +9,9 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ArdentAlacrity;
+import com.jimmie.powers.ArdentOutrage;
+import com.jimmie.powers.ArdentSurge;
 import com.jimmie.util.Utils;
 
 public class Ardent extends DndClass {
@@ -114,12 +117,16 @@ public class Ardent extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setArdentMantle(ArdentMantle.MANTLE_OF_CLARITY);
+			pc.addPower(new ArdentAlacrity());
 		} else {
 			setArdentMantle(ArdentMantle.MANTLE_OF_ELATION);
+			pc.addPower(new ArdentOutrage());
 		}
 		
-		// TODO: Ardent Mantle, Ardent Surge, Psionic Augmentation
-		Utils.print("NOTE: I have not yet coded Ardent Mantle, Ardent Surge, Psionic Augmentation.");
+		pc.addPower(new ArdentSurge());
+		
+		// TODO: Ardent Surge, Psionic Augmentation
+		Utils.print("NOTE: I have not yet coded Ardent Surge, Psionic Augmentation.");
 	}
 
 	@Override

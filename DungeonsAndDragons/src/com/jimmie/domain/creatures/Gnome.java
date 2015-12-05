@@ -1,11 +1,11 @@
 package com.jimmie.domain.creatures;
 
-import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.FadeAway;
 import com.jimmie.util.Utils;
 
 public class Gnome extends Race {
@@ -76,8 +76,10 @@ public class Gnome extends Race {
 		Skill stealth = pc.getSkill(SkillType.STEALTH);
 		stealth.setMisc(stealth.getMisc()+2);
 		
-		// TODO: Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.
-		Utils.print("NOTE: I have not yet coded Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.");
+		pc.addPower(new FadeAway());
+		
+		// TODO: Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning.
+		Utils.print("NOTE: I have not yet coded Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning.");
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.ElvenAccuracy;
 import com.jimmie.util.Utils;
 
 public class Elf extends Race {
@@ -80,9 +81,11 @@ public class Elf extends Race {
 		
 		pc.addWeaponTypeProficiency(WeaponType.LONGBOW);
 		pc.addWeaponTypeProficiency(WeaponType.SHORTBOW);
+
+		pc.addPower(new ElvenAccuracy());
 		
-		// TODO: Fey Origin, Group Awareness, Wild Step, Elven Accuracy
-		Utils.print("NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step, Elven Accuracy.");
+		// TODO: Fey Origin, Group Awareness, Wild Step
+		Utils.print("NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step.");
 	}
 
 	@Override

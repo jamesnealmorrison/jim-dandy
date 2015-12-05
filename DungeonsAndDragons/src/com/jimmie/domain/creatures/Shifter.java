@@ -5,6 +5,8 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.LongtoothShifting;
+import com.jimmie.powers.RazorclawShifting;
 import com.jimmie.util.Utils;
 
 public class Shifter extends Race {
@@ -77,8 +79,8 @@ public class Shifter extends Race {
 			Skill endurance = pc.getSkill(SkillType.ENDURANCE);
 			endurance.setMisc(endurance.getMisc()+2);
 			
-			// TODO: Longtooth Shifting
-			Utils.print("NOTE: I have not yet coded the Longtooth Shifting.");
+			pc.addPower(new LongtoothShifting());
+			
 		} else {
 			shifterType = "Razorclaw";
 			Utils.print("As a Razorclaw Shifter, you get +2 Athletics and Stealth");
@@ -88,8 +90,7 @@ public class Shifter extends Race {
 			Skill stealth = pc.getSkill(SkillType.STEALTH);
 			stealth.setMisc(stealth.getMisc()+2);
 			
-			// TODO: Razorclaw Shifting
-			Utils.print("NOTE: I have not yet coded the Razorclaw Shifting.");
+			pc.addPower(new RazorclawShifting());			
 		}
 	}
 

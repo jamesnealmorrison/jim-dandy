@@ -9,6 +9,7 @@ import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.FeyStep;
 import com.jimmie.util.Utils;
 
 public class Eladrin extends Race {
@@ -149,7 +150,9 @@ public class Eladrin extends Race {
 		setWillBonus(getWillBonus()+1);
 		
 		// TODO: +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step
-		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step.");
+		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance.");
+		
+		pc.addPower(new FeyStep());
 	
 	}
 

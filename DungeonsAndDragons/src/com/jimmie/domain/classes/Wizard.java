@@ -9,6 +9,10 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.GhostSound;
+import com.jimmie.powers.Light;
+import com.jimmie.powers.MageHand;
+import com.jimmie.powers.Prestidigitation;
 import com.jimmie.util.Utils;
 
 public class Wizard extends DndClass {
@@ -117,8 +121,13 @@ public class Wizard extends DndClass {
 			setArcaneImplement(ArcaneImplement.WAND_OF_ACCURACY);
 		}
 		
-		// TODO: Arcane Implement Mastery, Cantrips, Ritual Casting, Spellbook
-		Utils.print("NOTE: I have not yet coded Arcane Implement Mastery, Cantrips, Ritual Casting, Spellbook");
+		pc.addPower(new GhostSound());
+		pc.addPower(new Light());
+		pc.addPower(new MageHand());
+		pc.addPower(new Prestidigitation());
+		
+		// TODO: Arcane Implement Mastery, Ritual Casting, Spellbook
+		Utils.print("NOTE: I have not yet coded Arcane Implement Mastery, Ritual Casting, Spellbook");
 	}
 
 	@Override

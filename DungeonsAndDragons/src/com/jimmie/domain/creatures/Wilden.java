@@ -1,10 +1,14 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.NaturesAspect;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.PursuitOfTheHunter;
+import com.jimmie.powers.VoyageOfTheAncients;
+import com.jimmie.powers.WrathOfTheDestroyer;
 import com.jimmie.util.Utils;
 
 public class Wilden extends Race {
@@ -13,6 +17,7 @@ public class Wilden extends Race {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private NaturesAspect naturesAspect;
 
 	@Override
 	public int getRacialDamageBonus() {
@@ -28,8 +33,23 @@ public class Wilden extends Race {
 
 	@Override
 	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-
+		Utils.print("During an extended rest, this Wilden gets to choose which aspect to manifest.");
+		Utils.print("1. Aspect of the Ancients");
+		Utils.print("2. Aspect of the Destroyer");
+		Utils.print("3. Aspect of the Hunter");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 3);
+		switch (choice) {
+		case 1 : 
+			naturesAspect = NaturesAspect.ASPECT_OF_THE_ANCIENTS;
+			break;
+		case 2 :
+			naturesAspect = NaturesAspect.ASPECT_OF_THE_DESTROYER;
+			break;
+		case 3 :
+			naturesAspect = NaturesAspect.ASPECT_OF_THE_HUNTER;
+			break;
+		}
 	}
 
 	@Override
@@ -79,9 +99,13 @@ public class Wilden extends Race {
 		} else if (3 == choice) {
 			setWillBonus(getWillBonus()+1);
 		}
+		
+		pc.addPower(new VoyageOfTheAncients());
+		pc.addPower(new WrathOfTheDestroyer());
+		pc.addPower(new PursuitOfTheHunter());
 
-		// TODO: Fey Origin, Natures Aspect
-		Utils.print("NOTE: I have not yet coded Fey Origin, Natures Aspect.");
+		// TODO: Fey Origin
+		Utils.print("NOTE: I have not yet coded Fey Origin.");
 
 		
 	}
@@ -102,6 +126,10 @@ public class Wilden extends Race {
 		} else {
 			setDexterityBonus(getDexterityBonus()+2);
 		}
+	}
+
+	public NaturesAspect getNaturesAspect() {
+		return naturesAspect;
 	}
 
 }

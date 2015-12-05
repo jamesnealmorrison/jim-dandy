@@ -9,6 +9,7 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.RuneOfMending;
 import com.jimmie.util.Utils;
 
 public class Runepriest extends DndClass {
@@ -122,8 +123,10 @@ public class Runepriest extends DndClass {
 			setRunicArtistry(RunicArtistry.WRATHFUL_HAMMER);
 		}
 		
-		// TODO: Rune Master, Rune of Mending, Runic Artistry
-		Utils.print("NOTE: I have not yet coded Rune Master, Rune of Mending, Runic Artistry.");
+		pc.addPower(new RuneOfMending());
+		
+		// TODO: Rune Master, Runic Artistry
+		Utils.print("NOTE: I have not yet coded Rune Master, Runic Artistry.");
 	}
 
 	@Override

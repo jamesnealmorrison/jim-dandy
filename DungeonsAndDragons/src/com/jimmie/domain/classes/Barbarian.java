@@ -9,6 +9,9 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.RageStrike;
+import com.jimmie.powers.RoarOfTriumph;
+import com.jimmie.powers.SwiftCharge;
 import com.jimmie.util.Utils;
 
 public class Barbarian extends DndClass {
@@ -111,12 +114,16 @@ public class Barbarian extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setFeralMight(FeralMight.RAGEBLOOD_VIGOR);
+			pc.addPower(new SwiftCharge());
 		} else {
 			setFeralMight(FeralMight.THANEBORN_TRIUMPH);
+			pc.addPower(new RoarOfTriumph());
 		}
 		
-		// TODO: Barbarian Agility, Feral Might, Rage Strike, Rampage
-		Utils.print("NOTE: I have not yet coded Barbarian Agility, Feral Might, Rage Strike, Rampage.");
+		pc.addPower(new RageStrike());
+		
+		// TODO: Barbarian Agility, Rampage
+		Utils.print("NOTE: I have not yet coded Barbarian Agility, Rampage.");
 	}
 
 	@Override

@@ -9,6 +9,10 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityDivineMettle;
+import com.jimmie.powers.ChannelDivinityDivineStrength;
+import com.jimmie.powers.DivineChallenge;
+import com.jimmie.powers.LayOnHands;
 import com.jimmie.util.Utils;
 
 public class Paladin extends DndClass {
@@ -112,8 +116,13 @@ public class Paladin extends DndClass {
 			Utils.print("Suggested Daily Power: Radiant Delirium");
 		}
 		
-		// TODO: Implement, Choosing deities, Channel Divinity, Divine Challenge, Lay on Hands
-		Utils.print("NOTE: I have not yet coded Implement, Choosing deities, Channel Divinity, Divine Challenge, Lay on Hands");
+		pc.addPower(new ChannelDivinityDivineMettle());
+		pc.addPower(new ChannelDivinityDivineStrength());
+		pc.addPower(new DivineChallenge());
+		pc.addPower(new LayOnHands());
+		
+		// TODO: Implement, Choosing deities
+		Utils.print("NOTE: I have not yet coded Implement");
 	}
 
 	@Override

@@ -10,6 +10,11 @@ import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.CallSpiritCompanion;
+import com.jimmie.powers.HealingSpirit;
+import com.jimmie.powers.SpeakWithSpirits;
+import com.jimmie.powers.SpiritsFangs;
+import com.jimmie.powers.SpiritsShield;
 import com.jimmie.util.Utils;
 
 public class Shaman extends DndClass {
@@ -117,12 +122,18 @@ public class Shaman extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setCompanionSpirit(CompanionSpirit.PROTECTOR);
+			pc.addPower(new SpiritsShield());
 		} else {
 			setCompanionSpirit(CompanionSpirit.STALKER);
+			pc.addPower(new SpiritsFangs());
 		}
 		
-		// TODO: Companion Spirit, Healing Spirit, Speak with Spirits, Implements
-		Utils.print("NOTE: I have not yet coded Companion Spirit, Healing Spirit, Speak with Spirits, Implements.");
+		pc.addPower(new CallSpiritCompanion());
+		pc.addPower(new HealingSpirit());
+		pc.addPower(new SpeakWithSpirits());
+		
+		// TODO: Implements
+		Utils.print("NOTE: I have not yet coded Implements.");
 	}
 
 	@Override

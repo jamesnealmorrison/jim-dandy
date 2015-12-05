@@ -9,6 +9,9 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityArmorOfWrath;
+import com.jimmie.powers.ChannelDivinityPreserversRebuke;
+import com.jimmie.powers.ChannelDivinityRebukeUndead;
 import com.jimmie.util.Utils;
 
 public class Invoker extends DndClass {
@@ -117,12 +120,16 @@ public class Invoker extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setDivineCovenant(DivineCovenant.PRESERVATION);
+			pc.addPower(new ChannelDivinityPreserversRebuke());
 		} else {
 			setDivineCovenant(DivineCovenant.WRATH);
+			pc.addPower(new ChannelDivinityArmorOfWrath());
 		}
 		
-		// TODO: Channel Divinity, Divine Covenant, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Channel Divinity, Divine Covenant, Ritual Casting, Implements.");
+		pc.addPower(new ChannelDivinityRebukeUndead());
+		
+		// TODO: Divine Covenant, Ritual Casting, Implements
+		Utils.print("NOTE: I have not yet coded Divine Covenant, Ritual Casting, Implements.");
 	}
 
 	@Override

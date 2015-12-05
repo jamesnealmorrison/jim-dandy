@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.MemoryOfAThousandLifetimes;
 import com.jimmie.util.Utils;
 
 public class Deva extends Race {
@@ -71,8 +72,10 @@ public class Deva extends Race {
 		Skill religion = pc.getSkill(SkillType.RELIGION);
 		religion.setMisc(religion.getMisc()+2);
 		
-		// TODO: Astral Majesty, Astral Resistance, Immortal Origin, Memory of a Thousand Lifetimes.
-		Utils.print("NOTE: I have not yet coded Astral Majesty, Astral Resistance, Immortal Origin, Memory of a Thousand Lifetimes.");		
+		pc.addPower(new MemoryOfAThousandLifetimes());
+		
+		// TODO: Astral Majesty, Astral Resistance, Immortal Origin.
+		Utils.print("NOTE: I have not yet coded Astral Majesty, Astral Resistance, Immortal Origin.");		
 		
 	}
 

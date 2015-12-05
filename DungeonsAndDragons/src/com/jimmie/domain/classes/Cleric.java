@@ -9,6 +9,9 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityDivineFortune;
+import com.jimmie.powers.ChannelDivinityTurnUndead;
+import com.jimmie.powers.HealingWord;
 import com.jimmie.util.Utils;
 
 public class Cleric extends DndClass {
@@ -104,8 +107,13 @@ public class Cleric extends DndClass {
 			Utils.print("Suggested Daily Power: Beacon of Hope");
 		}
 		
-		// TODO: Channel divinity, Healer's Lore, Healing Word, Ritual Casting, Implement
-		Utils.print("NOTE: I have not yet implemented Channel divinity, Healer's Lore, Healing Word, Ritual Casting, Implement.");
+		pc.addPower(new ChannelDivinityDivineFortune());
+		pc.addPower(new ChannelDivinityTurnUndead());
+		pc.addPower(new HealingWord());
+		
+		// TODO: Healer's Lore, Ritual Casting, Implement 
+		// TODO: Still need to make sure the feats for channel divinity are available for Clerics and Paladins, etc.
+		Utils.print("NOTE: I have not yet implemented Healer's Lore, Ritual Casting, Implement.");
 		
 		// TODO: Selecting deities.
 		Utils.print("NOTE: I also have not yet implemented anything related to deities.");

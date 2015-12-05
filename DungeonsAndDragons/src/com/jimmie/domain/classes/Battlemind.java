@@ -9,6 +9,11 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.BattleResilience;
+import com.jimmie.powers.BattlemindsDemand;
+import com.jimmie.powers.BlurredStep;
+import com.jimmie.powers.MindSpike;
+import com.jimmie.powers.SpeedOfThought;
 import com.jimmie.util.Utils;
 
 public class Battlemind extends DndClass {
@@ -115,9 +120,15 @@ public class Battlemind extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setPsionicStudy(PsionicStudy.BATTLE_RESILIENCE);
+			pc.addPower(new BattleResilience());
 		} else {
 			setPsionicStudy(PsionicStudy.SPEED_OF_THOUGHT);
+			pc.addPower(new SpeedOfThought());
 		}
+		
+		pc.addPower(new BattlemindsDemand());
+		pc.addPower(new BlurredStep());
+		pc.addPower(new MindSpike());
 		
 		// TODO: Psionic Augmentation, Psionic Defense, Psionic Study
 		Utils.print("NOTE: I have not yet coded Psionic Augmentation, Psionic Defense, Psionic Study.");

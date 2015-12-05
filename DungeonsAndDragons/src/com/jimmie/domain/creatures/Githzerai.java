@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.IronMind;
 import com.jimmie.util.Utils;
 
 public class Githzerai extends Race {
@@ -73,8 +74,10 @@ public class Githzerai extends Race {
 		Utils.print("Adding +2 racial bonus to initiative checks.");
 		pc.setInitiativeMisc(pc.getInitiativeMisc() + 2);
 		
-		// TODO: Defended Mind, Shifting Fortunes, Iron Mind.
-		Utils.print("NOTE: I have not yet coded Defended Mind, Shifting Fortunes, Iron Mind.");
+		pc.addPower(new IronMind());
+		
+		// TODO: Defended Mind, Shifting Fortunes.
+		Utils.print("NOTE: I have not yet coded Defended Mind, Shifting Fortunes.");
 
 		
 		

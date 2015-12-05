@@ -9,6 +9,8 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.CenteredFlurryOfBlows;
+import com.jimmie.powers.StoneFistFlurryOfBlows;
 import com.jimmie.util.Utils;
 
 public class Monk extends DndClass {
@@ -119,8 +121,10 @@ public class Monk extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setMonasticTradition(MonasticTradition.CENTERED_BREATH);
+			pc.addPower(new CenteredFlurryOfBlows());
 		} else {
 			setMonasticTradition(MonasticTradition.STONE_FIST);
+			pc.addPower(new StoneFistFlurryOfBlows());
 		}
 		
 		// TODO: Barbarian Agility, Feral Might, Rage Strike, Rampage

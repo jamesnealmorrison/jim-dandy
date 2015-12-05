@@ -13,6 +13,8 @@ import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.powers.WardensFury;
+import com.jimmie.powers.WardensGrasp;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
@@ -227,6 +229,9 @@ public class Warden extends DndClass {
 		} else {
 			setGuardianMight(GuardianMight.WILDBLOOD);
 		}
+		
+		pc.addPower(new WardensFury());
+		pc.addPower(new WardensGrasp());
 		
 		// TODO: Font of Life, Guardian Might, Nature's Wrath 
 		Utils.print("NOTE: I have not yet coded Font of Life, Guardian Might, Nature's Wrath.");

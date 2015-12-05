@@ -11,6 +11,8 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityAbjureUndead;
+import com.jimmie.powers.ChannelDivinityDivineGuidance;
 import com.jimmie.powers.OathOfEnmity;
 import com.jimmie.powers.Power;
 import com.jimmie.util.Utils;
@@ -149,8 +151,12 @@ public class Avenger extends DndClass {
 			censure = AvengersCensure.CENSURE_OF_RETRIBUTION;
 		}
 		
-		// TODO: Armor of Faith, Avenger's Censure, Channel Divinity, Oath of Enmity, Deities, implements
-		Utils.print("NOTE: I have not yet coded Armor of Faith, Avenger's Censure, Channel Divinity, Oath of Enmity, Deities, implements");
+		pc.addPower(new OathOfEnmity());
+		pc.addPower(new ChannelDivinityAbjureUndead());
+		pc.addPower(new ChannelDivinityDivineGuidance());
+		
+		// TODO: Armor of Faith, Avenger's Censure, Deities, implements
+		Utils.print("NOTE: I have not yet coded Armor of Faith, Avenger's Censure, Deities, implements");
 	}
 
 	@Override

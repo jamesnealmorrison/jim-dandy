@@ -9,6 +9,7 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.WildShape;
 import com.jimmie.util.Utils;
 
 public class Druid extends DndClass {
@@ -121,8 +122,10 @@ public class Druid extends DndClass {
 			setPrimalAspect(PrimalAspect.PRIMAL_PREDATOR);
 		}
 		
-		// TODO: Balance of Nature, Primal Aspect, Ritual Casting, Wild Shape, Implements
-		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting, Wild Shape, Implements.");
+		pc.addPower(new WildShape());
+		
+		// TODO: Balance of Nature, Primal Aspect, Ritual Casting, Implements
+		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting, Implements.");
 	}
 
 	@Override

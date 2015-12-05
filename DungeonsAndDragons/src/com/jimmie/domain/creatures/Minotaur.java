@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.GoringCharge;
 import com.jimmie.util.Utils;
 
 public class Minotaur extends Race {
@@ -72,8 +73,10 @@ public class Minotaur extends Race {
 		Skill perception = pc.getSkill(SkillType.PERCEPTION);
 		perception.setMisc(perception.getMisc()+2);
 		
-		// TODO: Vitality, Ferocity, Heedless Charge, Goring Charge."
-		Utils.print("NOTE: I have not yet coded Vitality, Ferocity, Heedless Charge, Goring Charge.");
+		pc.addPower(new GoringCharge());
+		
+		// TODO: Vitality, Ferocity, Heedless Charge."
+		Utils.print("NOTE: I have not yet coded Vitality, Ferocity, Heedless Charge.");
 		
 	}
 

@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.StonesEndurance;
 import com.jimmie.util.Utils;
 
 public class Goliath extends Race {
@@ -80,8 +81,10 @@ public class Goliath extends Race {
 		Utils.print("As a Goliath, you get a +1 Will.");
 		setWillBonus(getWillBonus()+1);
 		
-		// TODO: Powerful Athlete, Stone's Endurance.
-		Utils.print("NOTE: I have not yet coded Powerful Athlete, Stone's Endurance.");
+		pc.addPower(new StonesEndurance());
+		
+		// TODO: Powerful Athlete.
+		Utils.print("NOTE: I have not yet coded Powerful Athlete.");
 		
 	}
 

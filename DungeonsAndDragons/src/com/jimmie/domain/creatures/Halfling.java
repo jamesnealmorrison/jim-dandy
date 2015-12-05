@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.SecondChance;
 import com.jimmie.util.Utils;
 
 public class Halfling extends Race {
@@ -68,6 +69,8 @@ public class Halfling extends Race {
 		
 		Skill thievery = pc.getSkill(SkillType.THIEVERY);
 		thievery.setMisc(thievery.getMisc()+2);
+		
+		pc.addPower(new SecondChance());
 		
 		// TODO: Bold, Nimble Reaction, Second Chance.
 		Utils.print("NOTE: I have not yet coded Bold, Nimble Reaction, Second Chance.");

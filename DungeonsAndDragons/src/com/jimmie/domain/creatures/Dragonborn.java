@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.DragonBreath;
 import com.jimmie.util.Utils;
 
 public class Dragonborn extends Race {
@@ -69,10 +70,10 @@ public class Dragonborn extends Race {
 		
 		// TODO Implement Dragonborn fury and draconic heritage.
 		Utils.print("NOTE: I have not yet coded the dragonborn fury and draconic heritage.");
+
+		DragonBreath dragonBreath = new DragonBreath();
+		pc.addPower(dragonBreath);
 		
-		
-		// TODO Choices for dragon breath.
-		Utils.print("NOTE: I have not yet coded the choices for dragon breath.");
 	}
 
 	@Override

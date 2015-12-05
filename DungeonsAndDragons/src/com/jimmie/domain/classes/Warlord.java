@@ -9,6 +9,7 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.InspiringWord;
 import com.jimmie.util.Utils;
 
 public class Warlord extends DndClass {
@@ -116,8 +117,10 @@ public class Warlord extends DndClass {
 			setCommandingPresence(CommandingPresence.TACTICAL_PRESENCE);
 		}
 		
-		// TODO: Combat Leader, Commanding Presence, Inspiring Word
-		Utils.print("NOTE: I have not yet coded Combat Leader, Commanding Presence, Inspiring Word.");
+		pc.addPower(new InspiringWord());
+		
+		// TODO: Combat Leader, Commanding Presence
+		Utils.print("NOTE: I have not yet coded Combat Leader, Commanding Presence.");
 	}
 
 	@Override

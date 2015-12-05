@@ -11,6 +11,8 @@ import com.jimmie.util.Utils;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.MajesticWord;
+import com.jimmie.powers.WordsOfFriendship;
 
 public class Bard extends DndClass {
 	/* TODO: Haven't implemented Words of friendship yet. */
@@ -137,8 +139,11 @@ public class Bard extends DndClass {
 			setBardicVirtue(BardicVirtue.VIRTUE_OF_VALOR);
 		}
 		
-		// TODO: Bardic Training, Bardic Virtue, Majestic Word, Multiclass Versatility, Skill Versatility, Song of Rest, Words of Friendship
-		Utils.print("NOTE: I have not yet coded Bardic Training, Bardic Virtue, Majestic Word, Multiclass Versatility, Skill Versatility, Song of Rest, Words of Friendship.");
+		pc.addPower(new MajesticWord());
+		pc.addPower(new WordsOfFriendship());
+		
+		// TODO: Bardic Training, Bardic Virtue, Multiclass Versatility, Skill Versatility, Song of Rest
+		Utils.print("NOTE: I have not yet coded Bardic Training, Bardic Virtue, Multiclass Versatility, Skill Versatility, Song of Rest.");
 	}
 
 	@Override

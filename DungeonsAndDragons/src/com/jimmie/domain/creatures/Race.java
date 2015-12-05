@@ -1,29 +1,15 @@
 package com.jimmie.domain.creatures;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.jimmie.domain.classes.DndClass;
 
 public abstract class Race implements Serializable {
-	private List<String> myPowers;
 	private int fortitudeBonus = 0;
 	private int willBonus = 0;
 	private int reflexBonus = 0;
 	
 	public Race() {
-		myPowers = new ArrayList<String>();
-	}
-	public void addPower(String powerId) {
-		myPowers.add(powerId);
-	}
-
-	public List<String> getMyPowers() {
-		return myPowers;
-	}
-	public void setMyPowers(List<String> myPowers) {
-		this.myPowers = myPowers;
 	}
 	public Character getOwner() {
 		return owner;

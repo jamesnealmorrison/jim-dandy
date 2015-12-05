@@ -6,6 +6,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.FuriousAssault;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
@@ -92,8 +93,10 @@ public class HalfOrc extends Race {
 		Skill endurance = pc.getSkill(SkillType.ENDURANCE);
 		endurance.setMisc(endurance.getMisc()+2);
 		
-		// TODO: Half-Orc Resilience, Swift Charge, Furious Assault.
-		Utils.print("NOTE: I have not yet coded Half-Orc Resilience, Swift Charge, Furious Assault.");
+		pc.addPower(new FuriousAssault());
+		
+		// TODO: Half-Orc Resilience, Swift Charge.
+		Utils.print("NOTE: I have not yet coded Half-Orc Resilience, Swift Charge.");
 	}
 
 	@Override

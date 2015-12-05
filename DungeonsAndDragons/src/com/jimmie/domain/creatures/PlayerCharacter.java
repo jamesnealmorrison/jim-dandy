@@ -147,13 +147,13 @@ public class PlayerCharacter extends Character implements Serializable {
 		if (dndClass != null) {
 			// Choose two At Will powers 
 			HashMap<Integer, Power> choices = new HashMap<Integer, Power>();
-			int i = 1;
+			int i = 0;
 			Utils.print("Choose two At Will Powers:");
 			for (Power power : allPowers) {
 				if ((power.getPowerUsage() == PowerUsage.AT_WILL) && (power.canBeSelected(this))) {
+					i++;
 					choices.put(i, power);
 					Utils.print(i + ". " + power.getName());
-					i++;
 				}
 			}
 			
@@ -170,18 +170,18 @@ public class PlayerCharacter extends Character implements Serializable {
 
 			// Choose one encounter power 
 			choices = new HashMap<Integer, Power>();
-			i = 1;
+			i = 0;
 			Utils.print("Choose an Encounter Power:");
 			for (Power power : allPowers) {
-				if ((power.getPowerUsage() == PowerUsage.ENCOUNTER) && (power.canBeSelected(this))) {
+				if (((power.getPowerUsage() == PowerUsage.ENCOUNTER) || (power.getPowerUsage() == PowerUsage.ENCOUNTER_SPECIAL)) && (power.canBeSelected(this))) {
+					i++;
 					choices.put(i, power);
 					Utils.print(i + ". " + power.getName());
-					i++;
 				}
 			}
 			
 			if (i < 1) {
-				Utils.print("There are no encounter powers to choose from.  Something went wrong.");
+				Utils.print("There are no encounter powers to choose from.");
 			} else {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, i);
@@ -191,13 +191,13 @@ public class PlayerCharacter extends Character implements Serializable {
 
 			// Choose one daily power 
 			choices = new HashMap<Integer, Power>();
-			i = 1;
+			i = 0;
 			Utils.print("Choose a Daily Power:");
 			for (Power power : allPowers) {
-				if ((power.getPowerUsage() == PowerUsage.DAILY) && (power.canBeSelected(this))) {
+				if (((power.getPowerUsage() == PowerUsage.DAILY) || (power.getPowerUsage() == PowerUsage.DAILY_SPECIAL)) && (power.canBeSelected(this))) {
+					i++;
 					choices.put(i, power);
 					Utils.print(i + ". " + power.getName());
-					i++;
 				}
 			}
 			
