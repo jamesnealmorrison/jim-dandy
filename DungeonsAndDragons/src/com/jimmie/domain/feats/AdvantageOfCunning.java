@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Bard;
+import com.jimmie.domain.classes.BardicVirtue;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class AdvantageOfCunning extends Feat {
@@ -21,20 +23,21 @@ public class AdvantageOfCunning extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Slide enemy into ally's vacated space";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Bard.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Bard) pc.getDndClass()).getBardicVirtue() == BardicVirtue.VIRTUE_OF_CUNNING) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

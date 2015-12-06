@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Barbarian;
+import com.jimmie.domain.classes.FeralMight;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ImprovedRoarOfTriumph extends Feat {
@@ -21,20 +23,21 @@ public class ImprovedRoarOfTriumph extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Roar of triumph burst is larger grants you +2 damage";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Barbarian.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Barbarian) pc.getDndClass()).getFeralMight() == FeralMight.THANEBORN_TRIUMPH) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

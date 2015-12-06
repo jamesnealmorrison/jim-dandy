@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.SkillType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class CombatMedic extends Feat {
@@ -21,20 +22,19 @@ public class CombatMedic extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Stabalize the dying as minor action, +2 to Heal checks";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (pc.getSkill(SkillType.HEAL).isTrained()) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

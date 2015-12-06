@@ -15,7 +15,15 @@ public class Shifter extends Race {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String shifterType;
+	private ShifterType shifterType;
+
+	public ShifterType getShifterType() {
+		return shifterType;
+	}
+
+	public void setShifterType(ShifterType shifterType) {
+		this.shifterType = shifterType;
+	}
 
 	@Override
 	public int getRacialDamageBonus() {
@@ -71,7 +79,7 @@ public class Shifter extends Race {
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		
 		if (choice == 1) {
-			shifterType = "Longtooth";
+			shifterType = ShifterType.LONGTOOTH;
 			Utils.print("As a Longtooth Shifter, you get +2 Athletics and Endurance");
 			Skill athletics = pc.getSkill(SkillType.ATHLETICS);
 			athletics.setMisc(athletics.getMisc()+2);
@@ -82,7 +90,7 @@ public class Shifter extends Race {
 			pc.addPower(new LongtoothShifting());
 			
 		} else {
-			shifterType = "Razorclaw";
+			shifterType = ShifterType.RAZORCLAW;
 			Utils.print("As a Razorclaw Shifter, you get +2 Athletics and Stealth");
 			Skill athletics = pc.getSkill(SkillType.ATHLETICS);
 			athletics.setMisc(athletics.getMisc()+2);
@@ -97,7 +105,7 @@ public class Shifter extends Race {
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
-		if (shifterType.equalsIgnoreCase("Longtooth")) {
+		if (shifterType == ShifterType.LONGTOOTH) {
 			Utils.print("As a Longtooth Shifter you get +2 to Strength and Wisdom.");
 			setStrengthBonus(getStrengthBonus()+2);
 			setWisdomBonus(getWisdomBonus()+2);

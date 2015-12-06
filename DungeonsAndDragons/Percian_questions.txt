@@ -1,0 +1,555 @@
+What Race is your character?
+Races from book 1:
+1. Dragonborn
+2. Dwarf
+3. Eladrin
+4. Elf
+5. Half-Elf
+6. Halfling
+7. Human
+8. Tiefling
+Races from book 2:
+9. Deva
+10. Gnome
+11. Goliath
+12. Half-Orc
+13. Shifter
+Races from book 3:
+14. Githzerai
+15. Minotaur
+16. Shardmind
+17. Wilden
+Your choice?
+4
+According to the book, an Elf favors the ranger, rogue, cleric, avenger, druid, invoker, shaman, monk, runepriest, and seeker classes.
+What Class is your character?
+Classes from book 1:
+1. Cleric
+2. Fighter
+3. Paladin
+4. Ranger
+5. Rogue
+6. Warlock
+7. Warlord
+8. Wizard
+Classes from book 2:
+9. Avenger
+10. Barbarian
+11. Bard
+12. Druid
+13. Invoker
+14. Shaman
+15. Sorcerer
+16. Warden
+Classes from book 3:
+17. Ardent
+18. Battlemind
+19. Monk
+20. Psion
+21. Runepriest
+22. Seeker
+Your choice?
+15
+What is your character's name? From the book it suggests the following male and female names:
+Male Names: Adran, Aelar, Beiro, Carric, Erdan, Gennal, Heian, Lucan, Peren, Rolen, Theren, Varis
+Female Names: Adrie, Birel, Chaedi, Dara, Enna, Faral, Irann, Keyleth, Lia, Mialee, Shava, Thia, Valna
+Your name?
+Percian
+What Height is your character?  The book suggests 5' 4" - 6' 0" (64" - 72")
+Your choice (in inches):
+70
+What Weight is your character?  The book suggests 130 - 170 lb
+Your choice (in pounds):
+140
+Setting size to Medium.
+Setting speed to 7.
+Adding low-light vision to senses.
+As an Elf, you get +2 Nature and Perception
+As an Elf, you get a weapon proficiency in longbow and shortbow.
+NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step.
+How old is your character?
+42
+Is you character Male (M) or Female(F)?
+m
+What alignment is your character?
+1. Good
+2. Lawful Good
+3. Evil
+4. Chaotic Evil
+5. Unaligned
+1
+What deity do you choose for character?
+1. Avandra
+2. Bahamut
+3. Corellon
+4. Erathis
+5. Ioun
+6. Kord
+7. Melora
+8. Moradin
+9. Pelor
+10. The Raven Queen
+11. Sehanine
+12. None
+12
+Type whatever you want to show up under Adventuring Company or Other Affiliation:  (Keep it kind of short.  There's not too much space)
+Jim's Adventuring Group
+Setting role to Striker.
+Setting power Source to Arcane.
+Adding Armor Proficiencies: Cloth
+Adding Weapon Proficiencies: Simple Melee, Simple Ranged
+Adding bonus of +2 Will
+Setting hit points per level gained = 5
+Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.
+Which build option would you like to see?
+1. Chaos Sorcerer: You can be reckless and hard to control.
+2. Dragon Sorcerer: You command the ancient arcane power that flows through dragons.
+Your choice:
+1
+Make Charisma your primary score and Dexterity your secondary score.
+Suggested Class Feature: Wild Magic
+Suggested Feat: Arcane Spellfury
+Suggested Skills: Arcana, Bluff, Endurance, Insight
+Suggested At-Will Powers: Chaos Bolt, Storm Walk
+Suggested Encounter Power: Bedeviling Burst
+Suggested Daily Power: Dazzling Ray
+Choose between the following Spell Source:
+1. Dragon Magic
+2. Wild Magic.
+Your choice:
+2
+NOTE: I have not yet coded Spell Source, Implements.
+Time to generate ability scores.
+Choose which method you want to use:
+1. Standard Array
+2. Customizing Scores
+3. Rolling Scores
+Your choice?
+1
+With this method, you will assign the following scores to your abilities: 16, 14, 13, 12, 11, 10
+Which one do you want to assign to Strength?
+16
+14
+13
+12
+11
+10
+Your choice?
+12
+Which one do you want to assign to Constitution?
+16
+14
+13
+11
+10
+Your choice?
+11
+Which one do you want to assign to Dexterity?
+16
+14
+13
+10
+Your choice?
+14
+Which one do you want to assign to Intelligence?
+16
+13
+10
+Your choice?
+13
+Which one do you want to assign to Wisdom?
+16
+10
+Your choice?
+10
+Assiging 16 to Charisma.
+As an Elf you get +2 to Dexterity and Wisdom.
+Setting hit points to 23
+Setting healing surges per day = 68
+Automatically trained in Arcana.
+Choose 3 of the following
+Athletics
+Bluff
+Diplomacy
+Dungeoneering
+Endurance
+History
+Insight
+Intimidate
+Nature
+Your choice:
+bluff
+Athletics
+Diplomacy
+Dungeoneering
+Endurance
+History
+Insight
+Intimidate
+Nature
+Your choice:
+endurance
+Athletics
+Diplomacy
+Dungeoneering
+History
+Insight
+Intimidate
+Nature
+Your choice:
+insight
+Please select one of the following Feats:
+1. Alertness
+     No combat advantage when surprised, +2 to Perception
+2. Armor Proficiency Leather
+     Training with leather armor
+3. Astral Fire
+     +1 damage with fire or radiant power
+4. Combat Reflexes
+     +1 to opportunity attacks
+5. Defensive Mobility
+     +2 to AC against opportunity attacks
+6. Durable
+     Increase number of healing surges by 2.
+7. Elven Precision
+     +2 to reroll with elven accuracy
+8. Far Shot
+     Increase projectile weapon range by 5 squares
+9. Improved Initiative
+     +4 to initiative checks
+10. Jack of All Trades
+     +2 to untrained skill checks
+11. Light Step
+     Add to overland speed of group, +1 to Acrobatics and Stealth
+12. Linguist
+     Learn three new languages
+13. Mounted Combat
+     Gain access to the special abilities of your mount
+14. Nimble Blade
+     +1 to attacks with light blade and combat advantage
+15. Quick Draw
+     Draw a weapon with attack action, +2 to initiative
+16. Ritual Caster
+     Master and perform rituals
+17. Skill Focus
+     +3 to checks with chosen skill
+18. Skill Training
+     Gain training in one skill
+19. Toughness
+     Gain 5 additional hit points per tier
+20. Two Weapon Fighting
+     +1 damage while holding a melee weapon in each hand
+21. Weapon Focus
+     +1 damage with chosen weapon group
+22. Weapon Proficiency
+     Gain proficiency with the weapon of your choice
+23. Wintertouched
+     Gain combat advantage against foe vulnerable to cold
+24. Coordinated Explosion
+     +1 to attack rolls with blast or burst if ally is in area
+25. Distant Advantage
+     Gain combat advantage with ranged and area attacks against flanked enemies
+26. Echoes of Thunder
+     +1 damage after you hit with thunder power
+27. Implement Expertise
+     +1 to attack rolls with chosen implement
+28. Melee Training
+     Change ability used for melee basic weapon attacks
+29. Oncoming Storm
+     Hit with lightning power to gain +1 on thunder attacks
+30. Restful Healing
+     Maximize healing between encounters
+31. Speed Loader
+     Load crossbow as free action instead of minor
+32. Surging Flame
+     Fire-resistant target takes extra damage from fire powers
+33. Timely Respite
+     Second wind or total defense grants saving throw
+34. Weapon Expertise
+     +1 to attacks with weapon group
+35. Arcane Spellfury
+     +1 to attack rolls after hitting with sorcerer at-will attack
+36. Disciplined Wild Soul
+     Roll twice to determine Wild Soul damage type
+37. Sorcerous Blade Channeling
+     Use dagger to make ranged attacks as melee attacks
+Your choice:
+35
+Choose two At Will Powers:
+1. Acid Orb
+2. Burning Spray
+3. Chaos Bolt
+4. Dragonfrost
+5. Storm Walk
+Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
+3
+Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
+5
+Choose an Encounter Power:
+1. Bedeviling Burst
+2. Explosive Pyre
+3. Frostbind
+4. Tempest Breath
+5. Thunder Slam
+Your choice:
+1
+Choose a Daily Power:
+1. Chromatic Orb
+2. Dazzling Ray
+3. Dragonfang Bolt
+4. Lightning Breath
+Your choice:
+2
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     0
+Platinum pieces: 1
+Astral diamonds: 0
+Welcome to the store.
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     0
+Platinum pieces: 1
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+1
+Please select some armor to purchase:
+Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
+1. CLOTH: 1 GOLD_PIECE
+2. LEATHER: 25 GOLD_PIECE
+3. HIDE: 30 GOLD_PIECE
+4. CHAINMAIL: 40 GOLD_PIECE
+5. SCALE: 45 GOLD_PIECE
+6. PLATE: 50 GOLD_PIECE
+7. LIGHT_SHIELD: 5 GOLD_PIECE
+8. HEAVY_SHIELD: 10 GOLD_PIECE
+Your choice:
+1
+Are you done spending money?
+n
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     99
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+2
+Please select a weapon to purchase:
+Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
+1. CLUB: 1 GOLD_PIECE
+2. DAGGER: 1 GOLD_PIECE
+3. JAVELIN: 5 GOLD_PIECE
+4. MACE: 5 GOLD_PIECE
+5. SICKLE: 5 GOLD_PIECE
+6. SPEAR: 5 GOLD_PIECE
+7. GREATCLUB: 1 GOLD_PIECE
+8. MORNINGSTAR: 10 GOLD_PIECE
+9. QUARTERSTAFF: 5 GOLD_PIECE
+10. SCYTHE: 5 GOLD_PIECE
+11. BATTLEAXE: 15 GOLD_PIECE
+12. FLAIL: 10 GOLD_PIECE
+13. HANDAXE: 5 GOLD_PIECE
+14. LONGSWORD: 15 GOLD_PIECE
+15. SCIMITAR: 10 GOLD_PIECE
+16. SHORTSWORD: 10 GOLD_PIECE
+17. THROWING_HAMMER: 5 GOLD_PIECE
+18. WARHAMMER: 15 GOLD_PIECE
+19. WAR_PICK: 15 GOLD_PIECE
+20. FALCHION: 25 GOLD_PIECE
+21. FALCHION: 25 GOLD_PIECE
+22. GREATAXE: 30 GOLD_PIECE
+23. GREATSWORD: 30 GOLD_PIECE
+24. HALBERD: 25 GOLD_PIECE
+25. HEAVY_FLAIL: 25 GOLD_PIECE
+26. LONGSPEAR: 10 GOLD_PIECE
+27. MAUL: 30 GOLD_PIECE
+28. BASTARD_SWORD: 30 GOLD_PIECE
+29. KATAR: 3 GOLD_PIECE
+30. RAPIER: 25 GOLD_PIECE
+31. SPIKED_CHAIN: 30 GOLD_PIECE
+32. HAND_CROSSBOW: 25 GOLD_PIECE
+33. SLING: 1 GOLD_PIECE
+34. CROSSBOW: 25 GOLD_PIECE
+35. LONGBOW: 30 GOLD_PIECE
+36. SHORTBOW: 25 GOLD_PIECE
+37. SHURIKEN: 1 GOLD_PIECE
+Your choice:
+2
+Are you done spending money?
+n
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     98
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+2
+Please select a weapon to purchase:
+Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
+1. CLUB: 1 GOLD_PIECE
+2. DAGGER: 1 GOLD_PIECE
+3. JAVELIN: 5 GOLD_PIECE
+4. MACE: 5 GOLD_PIECE
+5. SICKLE: 5 GOLD_PIECE
+6. SPEAR: 5 GOLD_PIECE
+7. GREATCLUB: 1 GOLD_PIECE
+8. MORNINGSTAR: 10 GOLD_PIECE
+9. QUARTERSTAFF: 5 GOLD_PIECE
+10. SCYTHE: 5 GOLD_PIECE
+11. BATTLEAXE: 15 GOLD_PIECE
+12. FLAIL: 10 GOLD_PIECE
+13. HANDAXE: 5 GOLD_PIECE
+14. LONGSWORD: 15 GOLD_PIECE
+15. SCIMITAR: 10 GOLD_PIECE
+16. SHORTSWORD: 10 GOLD_PIECE
+17. THROWING_HAMMER: 5 GOLD_PIECE
+18. WARHAMMER: 15 GOLD_PIECE
+19. WAR_PICK: 15 GOLD_PIECE
+20. FALCHION: 25 GOLD_PIECE
+21. FALCHION: 25 GOLD_PIECE
+22. GREATAXE: 30 GOLD_PIECE
+23. GREATSWORD: 30 GOLD_PIECE
+24. HALBERD: 25 GOLD_PIECE
+25. HEAVY_FLAIL: 25 GOLD_PIECE
+26. LONGSPEAR: 10 GOLD_PIECE
+27. MAUL: 30 GOLD_PIECE
+28. BASTARD_SWORD: 30 GOLD_PIECE
+29. KATAR: 3 GOLD_PIECE
+30. RAPIER: 25 GOLD_PIECE
+31. SPIKED_CHAIN: 30 GOLD_PIECE
+32. HAND_CROSSBOW: 25 GOLD_PIECE
+33. SLING: 1 GOLD_PIECE
+34. CROSSBOW: 25 GOLD_PIECE
+35. LONGBOW: 30 GOLD_PIECE
+36. SHORTBOW: 25 GOLD_PIECE
+37. SHURIKEN: 1 GOLD_PIECE
+Your choice:
+2
+Are you done spending money?
+n
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     97
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
+Your choice:
+1
+Are you done spending money?
+n
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     82
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
+Your choice:
+15
+Are you done spending money?
+y
+Percian has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     77
+Platinum pieces: 0
+Astral diamonds: 0

@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Barbarian;
+import com.jimmie.domain.classes.FeralMight;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ImprovedRagebloodVigor extends Feat {
@@ -21,20 +23,21 @@ public class ImprovedRagebloodVigor extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Gain 5 extra temporary hp from Rageblood Vigor";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Barbarian.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Barbarian) pc.getDndClass()).getFeralMight() == FeralMight.RAGEBLOOD_VIGOR) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

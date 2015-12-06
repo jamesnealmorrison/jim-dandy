@@ -21,20 +21,25 @@ public class TwoWeaponThreat extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+3 damage on opportunity attacks with two melee weapons";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (pc.getDexterity() >= 13) {
+			if (pc.getFeats() != null) {
+				for (Feat feat : pc.getFeats()) {
+					if (feat.getType() == FeatType.TWO_WEAPON_FIGHTING) {
+						return true;
+					}
+				}
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

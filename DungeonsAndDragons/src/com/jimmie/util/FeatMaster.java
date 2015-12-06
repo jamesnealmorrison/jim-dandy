@@ -11,6 +11,7 @@ public class FeatMaster {
 		// TODO: The books may have feats I missed, like the first book has some pages for paragon, epic and multiclass feats.  :-(
 		List<Feat> feats = new ArrayList<Feat>();
 		
+		// Book 1 Heroic
 		feats.add(new ActionSurge());
 		feats.add(new AgileHunter());
 		feats.add(new Alertness());
@@ -92,6 +93,13 @@ public class FeatMaster {
 		feats.add(new WeaponFocus());
 		feats.add(new WeaponProficiency());
 		feats.add(new Wintertouched());
+		
+		// Book 1 Paragon Tier Feats
+		
+		// Book 1 Epic Tier Feats
+		
+		
+		// Book 2 Heroic Tier Feats
 		feats.add(new AngerUnleashed());
 		feats.add(new AuspiciousLineage());
 		feats.add(new BlurringClaws());
@@ -142,6 +150,26 @@ public class FeatMaster {
 		feats.add(new InvokerDefense());
 		feats.add(new ResonatingCovenant());
 		feats.add(new ScouringWrath());
+		feats.add(new ProtectorSpiritAdept());
+		feats.add(new SharedHealingSpirit());
+		feats.add(new SpiritSpeaker());
+		feats.add(new StalkerSpiritAdept());
+		feats.add(new ArcaneSpellfury());
+		feats.add(new DisciplinedWildSoul());
+		feats.add(new ImprovedDragonSoul());
+		feats.add(new SorcerousBladeChanneling());
+		feats.add(new CrushingEarthstrength());
+		feats.add(new RevitalizingFontOfLife());
+		feats.add(new SuddenRoots());
+		feats.add(new WildbloodCunning());
+		// missing some from page 188
+		
+		// Book 2 Paragon Tier Feats
+		
+		// Book 2 Epic Tier Feats
+		
+		
+		// Book 3 Heroic Tier Feats
 		feats.add(new AlhahnsMindfulRelocation());
 		feats.add(new BattleHardened());
 		feats.add(new BattleCasterDefense());
@@ -213,6 +241,8 @@ public class FeatMaster {
 		feats.add(new ExchangePower());
 		feats.add(new OrbitingObject());
 		feats.add(new PreciseMind());
+		feats.add(new RuneOfEloquence());
+		feats.add(new RuneOfHope());
 		feats.add(new RuneOfVengeance());
 		feats.add(new RuneOfZeal());
 		feats.add(new BloodiedElusion());

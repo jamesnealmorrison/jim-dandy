@@ -1,5 +1,10 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Avenger;
+import com.jimmie.domain.classes.Cleric;
+import com.jimmie.domain.classes.Invoker;
+import com.jimmie.domain.classes.Paladin;
+import com.jimmie.domain.creatures.Deity;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class KordsFavor extends Feat {
@@ -26,7 +31,14 @@ public class KordsFavor extends Feat {
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if ((Avenger.class.isAssignableFrom(pc.getDndClass().getClass())) ||
+				(Cleric.class.isAssignableFrom(pc.getDndClass().getClass())) ||
+				(Invoker.class.isAssignableFrom(pc.getDndClass().getClass())) ||
+				(Paladin.class.isAssignableFrom(pc.getDndClass().getClass()))) {
+			if (pc.getDeity() == Deity.KORD) {
+				return true;
+			}
+		}
 		return false;
 	}
 

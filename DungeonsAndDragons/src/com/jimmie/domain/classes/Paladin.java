@@ -108,7 +108,7 @@ public class Paladin extends DndClass {
 			Utils.print("Suggested Encounter Power: Radiant Smite");
 			Utils.print("Suggested Daily Power: Paladin's Judgment");
 		} else {
-			Utils.print("Make Strength your primary score and Charisma or Strength your secondary score.  Wisdom is third. Choose powers that help allies and a few with damage.");
+			Utils.print("Make Charisma your primary score and Strength your secondary score.  Wisdom is third. Choose powers that help allies and a few with damage.");
 			Utils.print("Suggested Feat: Healing Hands (Human feat: Action Surge)");
 			Utils.print("Suggested Skills: Diplomacy, Heal, Insight, Religion");
 			Utils.print("Suggested At-Will Powers: Bolstering Strike, Enfeebling Strike");

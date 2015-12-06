@@ -1,6 +1,12 @@
 package com.jimmie.domain.items.weapons;
 
-public class ReadiedWeapon {
+import java.io.Serializable;
+
+public class ReadiedWeapon implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Weapon weapon;
 	private Hand hand;
 	public Weapon getWeapon() {

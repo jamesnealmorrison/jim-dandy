@@ -15,6 +15,7 @@ import com.jimmie.domain.items.weapons.WeaponHandType;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
+import com.jimmie.util.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class KoboldLairOutsideEncounter extends Encounter {
 	@Autowired
 	private KoboldMinion m1;
-/*	@Autowired
+	@Autowired
 	private KoboldMinion m2;
 	@Autowired
 	private KoboldMinion m3;
@@ -48,26 +49,23 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	@Autowired
 	private KoboldSlinger s;
 	@Autowired
-	private Character elfAvenger;
+	private Character gamal;
 	@Autowired
-	private Character kellen;
+	private Character percian;
 	@Autowired
-	private Character glock;
+	private Character keothi;
 	@Autowired
+	private Character travok;
+/*	@Autowired
 	private Character halfOrcFighter;
-*/
-	@Autowired
-	private Character fargrim;
-	@Autowired
-	private Character brocc;
-	
+*/	
 	@Override
 	public void init() {
 		/* Set up the monsters */
 		m1.setName("Kobold Minion 1");
 		m1.setDisplayName("M1");
 		m1.setCurrentPosition(new Position(4,4));
-/*
+
 		m2.setName("Kobold Minion 2");
 		m2.setDisplayName("M2");
 		m2.setCurrentPosition(new Position(5,3));
@@ -110,12 +108,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		s.setName("Kobold Slinger");
 		s.setDisplayName("S");
 		s.setCurrentPosition(new Position(14,15));
-*/
+
 		
 		monsters = new ArrayList<Monster>();		
 		
 		monsters.add(m1);		
-/*		monsters.add(m2);		
+		monsters.add(m2);		
 		monsters.add(m3);		
 		monsters.add(m4);		
 		monsters.add(m5);		
@@ -128,45 +126,79 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		monsters.add(k);
 		monsters.add(d);
 		monsters.add(s);
-*/
+
 		
 	
 		/* Set up the player characters */
-/*		elfAvenger.setCurrentPosition(new Position(3,19));
-		kellen.setCurrentPosition(new Position(1,21));
-		glock.setCurrentPosition(new Position(1,19));
-		halfOrcFighter.setCurrentPosition(new Position(3,18));
-*/		
-		fargrim.setCurrentPosition(new Position(6,8));
-		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
-		readiedWeapon.setWeapon(fargrim.getWeapons().get(0));
+		gamal.setCurrentPosition(new Position(3,20));
+/*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
 		} else {
 			readiedWeapon.setHand(Hand.MAIN_HAND);
 		}
-		fargrim.addReadiedWeapon(readiedWeapon);
-
-		brocc.setCurrentPosition(new Position(5,7));
-		
-		// Arannis doesn't have his image set up.
-/*		elfAvenger.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
-		kellen.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
-		glock.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
-		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
+		gamal.addReadiedWeapon(readiedWeapon);
+		gamal.setReadiedArmor(gamal.getArmor().get(0));
 */
-		fargrim.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
-		brocc.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
+		percian.setCurrentPosition(new Position(1,21));
+/*		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		percian.addReadiedWeapon(readiedWeapon);
+		percian.setReadiedArmor(percian.getArmor().get(0));
+*/
+		keothi.setCurrentPosition(new Position(3,18));
+/*		
+		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		keothi.addReadiedWeapon(readiedWeapon);
+		keothi.setReadiedArmor(keothi.getArmor().get(0));
+*/
+		travok.setCurrentPosition(new Position(1,19));
+/*
+		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		travok.addReadiedWeapon(readiedWeapon);
+		travok.setReadiedArmor(travok.getArmor().get(0));
+*/
+		
+//		halfOrcFighter.setCurrentPosition(new Position(4,19));
+		
+
+//		gamal.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DevaRunepriest.JPG");
+//		percian.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfSorcerer.JPG");
+//		keothi.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
+//		travok.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DwarfPaladin.JPG");
+//		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
+
+//		Utils.saveCharacter(gamal);
+//		Utils.saveCharacter(percian);
+//		Utils.saveCharacter(keothi);
+//		Utils.saveCharacter(travok);
+		
 		
 		characters = new ArrayList<Character>();
-/*
-		characters.add(elfAvenger);
-		characters.add(kellen);
-		characters.add(glock);
-		characters.add(halfOrcFighter);
-*/		
-		characters.add(fargrim);
-		characters.add(brocc);
+
+		characters.add(gamal);
+		characters.add(percian);
+		characters.add(keothi);
+		characters.add(travok);
+//		characters.add(halfOrcFighter);
 		
 		map = new Map();
 		map.setWidth(15);
@@ -495,7 +527,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	public void setM1(KoboldMinion m1) {
 		this.m1 = m1;
 	}
-/*
+
 	public KoboldMinion getM2() {
 		return m2;
 	}
@@ -593,30 +625,30 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		this.s = s;
 	}
 
-	public Character getElfAvenger() {
-		return elfAvenger;
+	public Character getGamal() {
+		return gamal;
 	}
 
-	public void setElfAvenger(Character elfAvenger) {
-		this.elfAvenger = elfAvenger;
+	public void setGamal(Character gamal) {
+		this.gamal = gamal;
 	}
 
-	public Character getKellen() {
-		return kellen;
+	public Character getKeothi() {
+		return keothi;
 	}
 
-	public void setKellen(Character kellen) {
-		this.kellen = kellen;
+	public void setKeothi(Character keothi) {
+		this.keothi = keothi;
 	}
 
-	public Character getGlock() {
-		return glock;
+	public Character getTravok() {
+		return travok;
 	}
 
-	public void setGlock(Character glock) {
-		this.glock = glock;
+	public void setTravok(Character travok) {
+		this.travok = travok;
 	}
-
+/*
 	public Character getHalfOrcFighter() {
 		return halfOrcFighter;
 	}
@@ -625,20 +657,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		this.halfOrcFighter = halfOrcFighter;
 	}
 */
-	public Character getFargrim() {
-		return fargrim;
+	public Character getPercian() {
+		return percian;
 	}
 
-	public void setFargrim(Character fargrim) {
-		this.fargrim = fargrim;
-	}
-
-	public Character getBrocc() {
-		return brocc;
-	}
-
-	public void setBrocc(Character brocc) {
-		this.brocc = brocc;
+	public void setPercian(Character percian) {
+		this.percian = percian;
 	}
 
 }

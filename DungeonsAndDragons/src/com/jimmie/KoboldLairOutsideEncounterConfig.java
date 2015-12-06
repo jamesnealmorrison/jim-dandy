@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -48,7 +47,7 @@ public class KoboldLairOutsideEncounterConfig {
 		KoboldMinion m1 = new KoboldMinion();
 		return m1;
 	}
-/*	@Bean
+	@Bean
 	public KoboldMinion m2() {
 		return new KoboldMinion();
 	}
@@ -96,30 +95,24 @@ public class KoboldLairOutsideEncounterConfig {
 	public KoboldSlinger s() {
 		return new KoboldSlinger();
 	}
+	
 	@Bean
-	public Character elfAvenger() {
-		return Utils.loadCharacter("Arannis");
-	}
-	@Bean
-	public Character kellen() {
-		return Utils.loadCharacter("Arannis");
-	}
-	@Bean
-	public Character glock() {
-		return Utils.loadCharacter("Arannis");
-	}
-	@Bean
-	public Character halfOrcFighter() {
-		return Utils.loadCharacter("Arannis");
-	}
-*/	
-	@Bean
-	public Character fargrim() {
-		return Utils.loadCharacter("Fargrim");
+	public Character percian() {
+		return Utils.loadCharacter("Percian");
 	}
 
 	@Bean
-	public Character brocc() {
-		return Utils.loadCharacter("Brocc");
+	public Character gamal() {
+		return Utils.loadCharacter("Gamal");
+	}
+
+	@Bean
+	public Character keothi() {
+		return Utils.loadCharacter("Keothi");
+	}
+	
+	@Bean
+	public Character travok() {
+		return Utils.loadCharacter("Travok");
 	}
 }
