@@ -111,6 +111,10 @@ public class GreatCleave extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		for (ReadiedWeapon readiedWeapon : user.getReadiedWeapons().values()) {
 			// The book makes it sound like you are still using a weapon, even though it's a close burst.
 			if (readiedWeapon.getWeapon().isMeleeWeapon()) {

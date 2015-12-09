@@ -21,8 +21,7 @@ public class HybridTalent extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Gain a hybrid talent option for one of your hybrid class entries";
 	}
 
 	@Override

@@ -216,6 +216,10 @@ public class ThunderRamAssault extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		for (ReadiedWeapon readiedWeapon : user.getReadiedWeapons().values()) {
 			if (readiedWeapon.getWeapon().isMeleeWeapon()) {
 				return true;

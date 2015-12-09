@@ -110,7 +110,10 @@ public class FormOfTheRelentlessPanther extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		// TODO: I should change all of these methods to check if they are encounter/daily powers and if they are used or not.
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		return true;
 	}
 

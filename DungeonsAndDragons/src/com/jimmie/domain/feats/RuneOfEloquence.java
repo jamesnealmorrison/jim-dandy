@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class RuneOfEloquence extends Feat {
@@ -11,25 +12,24 @@ public class RuneOfEloquence extends Feat {
 
 	@Override
 	public FeatType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return FeatType.RUNE_OF_ELOQUENCE;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Rune of Eloquence";
 	}
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Bonus to Bluff and Diplomacy equal to your number of rune feats";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Runepriest.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 

@@ -111,6 +111,10 @@ public class SwarmingBats extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		// TODO: Not sure if I really need a ranged weapon.  It's an area burst, but it has the "weapon" keyword.
 		for (ReadiedWeapon readiedWeapon : user.getReadiedWeapons().values()) {
 			if (readiedWeapon.getWeapon().isRangedWeapon()) {

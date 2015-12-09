@@ -113,6 +113,10 @@ public class TwoFangedStrike extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		if (user.getReadiedWeapons().size() > 1) {
 			Weapon weapon1 = user.getReadiedWeapons().get(Hand.MAIN_HAND).getWeapon();
 			Weapon weapon2 = user.getReadiedWeapons().get(Hand.OFF_HAND).getWeapon();

@@ -17,20 +17,15 @@ public class Goliath extends Race {
 
 	@Override
 	public int getRacialDamageBonus() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void initializeForEncounter() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

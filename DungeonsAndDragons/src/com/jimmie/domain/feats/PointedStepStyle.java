@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.MonasticTradition;
+import com.jimmie.domain.classes.Monk;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class PointedStepStyle extends Feat {
@@ -21,20 +23,21 @@ public class PointedStepStyle extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Attack from 2 squares away when using spear with Flurry of Blows";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Monk.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Monk) pc.getDndClass()).getMonasticTradition() == MonasticTradition.CENTERED_BREATH) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

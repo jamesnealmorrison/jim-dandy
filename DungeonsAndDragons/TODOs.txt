@@ -1,0 +1,7 @@
+Goliath: Haven't implemented powerful athlete yet, because I won't often be doing jump or climb checks for now. But other than that Goliath should be 100% implemented.
+
+
+
+Warden:
+Need to finish implementing Font Of Life when I start having effects with saving throws.
+Earthstrength is completely implemented and tested.  :-)

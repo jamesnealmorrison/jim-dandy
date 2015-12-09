@@ -83,9 +83,9 @@ public class SecondWind extends Power {
 			Utils.print(user.getDisplayName() + " is not a character.  Not sure how you got to this second wind power.");
 		} else {
 			Character player = (Character) user;
-			if (!player.usedSecondWind()) {
+			if (timesUsed == 0) {
+				timesUsed++;
 				player.useHealingSurge();
-				player.setUsedSecondWind(true);
 				player.setTemporaryArmorClassBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
 
 				player.setTemporaryWillBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
@@ -121,6 +121,10 @@ public class SecondWind extends Power {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		return true;
 	}
 }

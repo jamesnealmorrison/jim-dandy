@@ -184,6 +184,11 @@ public class MajesticWord extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// This can be used twice per encounter.
+		// TODO - but I didn't implement "once per round" yet.
+		if (timesUsed > 1) {
+			return false;
+		}
 		return true;
 	}
 

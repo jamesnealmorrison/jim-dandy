@@ -190,7 +190,7 @@ public class PrintCharacterSheet {
 		
 		g2d.drawString(String.valueOf(pc.getBaseArmorClass()), COL1_DEFENSES, ROW3_DEFENSES);
 		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW3_DEFENSES);
-		g2d.drawString(String.valueOf(pc.getReadiedArmor().getBonus() + pc.getReadiedShield().getBonus()), COL3_DEFENSES, ROW3_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getReadiedArmor().getBonus() + pc.getReadiedShield().getBonus() + pc.getArmorAbilityBonus()), COL3_DEFENSES, ROW3_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getDndClass().getArmorClassBonus()), COL4_DEFENSES, ROW3_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getFeatArmorClassBonus()), COL5_DEFENSES, ROW3_DEFENSES);
 		// TODO: fill these in when I implement them.
@@ -534,7 +534,7 @@ public class PrintCharacterSheet {
 	}
 
 	private PlayerCharacter getCharacterToPrint() {
-		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Arannis");
+		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Keothi");
 		pc.setReadiedArmor(pc.getArmor().get(1));
 		return pc;
 	}

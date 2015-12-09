@@ -111,6 +111,10 @@ public class RageStrike extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Can be used twice per day.
+		if (timesUsed > 1) {
+			return false;
+		}
 		// TODO: It also says I must be raging or have at least one unused barbarian rage power.
 		for (ReadiedWeapon readiedWeapon : user.getReadiedWeapons().values()) {
 			if (readiedWeapon.getWeapon().isMeleeWeapon()) {

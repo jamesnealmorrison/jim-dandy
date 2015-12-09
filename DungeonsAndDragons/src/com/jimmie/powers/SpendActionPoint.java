@@ -81,12 +81,12 @@ public class SpendActionPoint extends Power {
 			Utils.print("You really shouldn't spend an action point until you've already used your normal standard action.");
 			return;
 		}
-		if (!user.hasUsedActionPoint()) {
+		if (timesUsed == 0) {
+			timesUsed++;
 			if (user.getActionPoints() > 0) {
 				user.setActionPoints(user.getActionPoints()-1);
 			}
 			user.setUsedStandardAction(false);
-			user.setUsedActionPoint(true);
 		} else {
 			Utils.print("You have already spent an action point this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
 		}
@@ -117,6 +117,10 @@ public class SpendActionPoint extends Power {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		return true;
 	}
 }

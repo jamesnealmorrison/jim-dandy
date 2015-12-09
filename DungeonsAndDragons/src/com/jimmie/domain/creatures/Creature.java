@@ -32,6 +32,7 @@ import com.jimmie.domain.SkillType;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.TemporaryAttackRollModifier;
 import com.jimmie.domain.TemporaryBonus;
+import com.jimmie.domain.TemporaryDamageResistance;
 import com.jimmie.domain.TemporaryInvisibility;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.DndClass;
@@ -48,7 +49,6 @@ import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
 
 public abstract class Creature implements Serializable, TurnTaker, AttackTarget {
-	private boolean usedActionPoint;
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
 		damageVulnerabilities = new HashMap<DamageType, Integer>();		
@@ -84,6 +84,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected TemporaryBonus temporaryReflexBonus;
 	protected TemporaryBonus temporaryFortitudeBonus;
 	protected TemporaryBonus temporaryWillBonus;
+	protected TemporaryDamageResistance temporaryDamageResistance;
 	protected TemporaryAidAnotherBonus temporaryAidAnotherBonus;
 	private String imagePath;
 	protected Role role;
@@ -188,7 +189,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int roll = d.basicRoll();
 		initiativeRoll = roll + initiative;
-		usedActionPoint = false;
 		setCurrentTurn(0);
 		
 		// Initialize powers.
@@ -262,67 +262,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return (int) (Math.floor(ability/2) - 5);
 	}
 	
-	public void useStandardAction(Encounter encounter) {
-		if (!canTakeStandardAction()) {
-			Utils.print("I don't know how you got in this method (useStandardAction), but you can't!!!");
-			return;
-		}
-		usedStandardAction = true;
-
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
-		int index = 0;
-
-		if (getPowers() != null) {
-			for (Power power : getPowers()) {
-				if (power.getActionType() == ActionType.STANDARD) {
-					/* Still might have to meet other requirements to use this power now. */
-					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
-						/* Skip it. */
-						continue;
-					}
-					index++;
-					validActions.put(index, power);
-					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
-				}
-			}
-		}
-
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Power chosenPower = validActions.get(choice);
-
-		chosenPower.process(encounter, this);
-	}
-
-	public void useFreeAction(Encounter encounter) {
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
-		int index = 0;
-
-		if (this.getPowers() != null) {
-			for (Power power : getPowers()) {
-				if (power.getActionType() == ActionType.FREE) {
-					/* Still might have to meet other requirements to use this power now. */
-					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
-						/* Skip it. */
-						continue;
-					}
-					index++;
-					validActions.put(index, power);
-					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
-				}
-			}
-		}
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Power chosenPower = validActions.get(choice);
-
-		chosenPower.process(encounter, this);
-	}
-
 	public abstract boolean isShieldReadied();
 
 	public void useMoveAction(Encounter encounter) {
@@ -577,45 +516,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			currentPosition.setX(currentPosition.getX()-1);
 			currentPosition.setY(currentPosition.getY()-1);
 		}
-	}
-
-	public void useMinorAction(Encounter encounter) {
-		if (!canTakeMinorAction()) {
-			Utils.print("I don't know how you got in this method (useMinorAction), but you can't!!!");
-			return;
-		}
-		if (!usedMinorAction) {
-			usedMinorAction = true;
-		} else if (!usedMoveAction) {
-			usedMoveAction = true;
-		} else if (!usedStandardAction) {
-			usedStandardAction = true;
-		}
-
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
-		int index = 0;
-
-		if (this.getPowers() != null) {
-			for (Power power : getPowers()) {
-				if (power.getActionType() == ActionType.MINOR) {
-					/* Still might have to meet other requirements to use this power now. */
-					if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
-						/* Skip it. */
-						continue;
-					}
-					index++;
-					validActions.put(index, power);
-					Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
-				}
-			}
-		}
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Power chosenPower = validActions.get(choice);
-
-		chosenPower.process(encounter, this);
 	}
 
 	public void startOfTurn() {
@@ -1163,6 +1063,17 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		if (damageResistances.containsKey(damageType)) {
 			resistance = damageResistances.get(damageType);
 		}
+		
+		// Check for temporary damage resistance.
+		if (temporaryDamageResistance != null) {
+			if (temporaryDamageResistance.stillApplies()) {
+				if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
+					resistance += temporaryDamageResistance.getBonus();
+				}
+			} else {
+				temporaryDamageResistance = null;
+			}
+		}
 		return resistance;
 	}
 
@@ -1679,14 +1590,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 	}
 
-	public boolean hasUsedActionPoint() {
-		return usedActionPoint;
-	}
-
-	public void setUsedActionPoint(boolean b) {
-		usedActionPoint = b;
-	}
-
 	public boolean usedSecondWind() {
 		return usedSecondWind;
 	}
@@ -1729,6 +1632,16 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryAidAnotherBonus.setType(bonusType);
 	}
 
+	public void setTemporaryDamageResistance(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source, DamageType damageType) {
+		temporaryDamageResistance = new TemporaryDamageResistance();
+		temporaryDamageResistance.setBonus(bonus);
+		temporaryDamageResistance.setStartTurn(bonusStartTurn);
+		temporaryDamageResistance.setDuration(duration);
+		temporaryDamageResistance.setSource(source);
+		temporaryDamageResistance.setDamageType(damageType);
+	}
+
 	public void setTemporaryArmorClassBonus(int bonus, int bonusStartTurn,
 			DurationType duration, Creature source) {
 		temporaryArmorClassBonus = new TemporaryBonus();
@@ -1745,4 +1658,25 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public void setMark(Mark mark) {
 		this.mark = mark;
 	}
+
+	public void useAction(ActionType actionType) {
+		if (actionType == ActionType.MINOR) {
+			if (!usedMinorAction) {
+				usedMinorAction = true;
+			} else if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}			
+		} else if (actionType == ActionType.MOVE) {
+			if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}			
+		} else if (actionType == ActionType.STANDARD) {
+			usedStandardAction = true;
+		}
+	}
+	
 }

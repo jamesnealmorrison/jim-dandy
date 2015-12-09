@@ -13,8 +13,6 @@ import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
-import com.jimmie.domain.classes.GuardianMight;
-import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.classes.WeaponTalent;
 import com.jimmie.domain.items.CoinType;
 import com.jimmie.domain.items.Coins;
@@ -69,41 +67,31 @@ public abstract class Character extends Creature {
 	}
 
 	public int getBaseArmorClass() {
-		return (10+getLevel()/2 + getReadiedArmor().getBonus()  + dndClass.getArmorClassBonus() + getReadiedShield().getBonus());
+		int total = (10+getLevel()/2 + getReadiedArmor().getBonus() + getArmorAbilityBonus()  + dndClass.getArmorClassBonus() + getReadiedShield().getBonus());
+		return total;
 		// TODO: Enhancement and two miscellaneous????
+	}
+
+	public int getArmorAbilityBonus() {
+		// The book says (on page 212 of book 1) that light armor lets you add your intelligence or dexterity modifier to it (whichever is greater).
+		if (getReadiedArmor().isLightArmor()) {
+			if (getAbilityModifier(AbilityType.INTELLIGENCE) > getAbilityModifier(AbilityType.DEXTERITY)) {
+				return getAbilityModifier(AbilityType.INTELLIGENCE);
+			} else {
+				return getAbilityModifier(AbilityType.DEXTERITY);
+			}
+		}
+		return 0;
 	}
 
 	public int getArmorClass(Creature attacker) {
 		int armorClass = getBaseArmorClass();
 
-		/* Light armor lets you add intelligence or dexterity modifier, whichever is greater. */
-		if (getReadiedArmor().isLightArmor()) {
-			if (Warden.class.isInstance(dndClass)) {
-				if (((Warden) dndClass).getGuardianMight() == GuardianMight.EARTHSTRENGTH) {
-					if ((getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE)) &&
-							(getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY))) {
-						armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION);
-					} else {
-						if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
-							armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
-						} else {
-							armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
-						}					
-					}
-				}
-			} else {
-				if (getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) > getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)) {
-					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
-				} else {
-					armorClass = armorClass + getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY);
-				}
-			}
-			/* Avenger's have "Armor of Faith". */
-			if (Avenger.class.isInstance(dndClass)) {
-				/* But they only get the bonus if wearing light armor AND not using a shield. */
-				if (getReadiedArmor().isLightArmor() && (NoShield.class.isInstance(getReadiedShield()))) {
-					armorClass = armorClass + 3;
-				}
+		/* Avenger's have "Armor of Faith". */
+		if (Avenger.class.isInstance(dndClass)) {
+			/* But they only get the bonus if wearing light armor AND not using a shield. */
+			if (getReadiedArmor().isLightArmor() && (NoShield.class.isInstance(getReadiedShield()))) {
+				armorClass = armorClass + 3;
 			}
 		}
 
@@ -352,7 +340,6 @@ public abstract class Character extends Creature {
 	protected int speedMisc = 0;
 	protected int healingSurgesPerDay = 0;
 	protected int currentSurgeUses = 0;
-	protected boolean usedSecondWind = false;
 	protected int deathSavingThrowFailures = 0;
 	protected String deathSavingThrowMods; // Not sure what this is.
 	protected List<Resistance> resistances;
@@ -733,9 +720,5 @@ public abstract class Character extends Creature {
 			weapons = new ArrayList<Weapon>();
 		}
 		weapons.add(weapon);
-	}
-
-	public void setUsedSecondWind(boolean b) {
-		usedSecondWind = b;
 	}
 }

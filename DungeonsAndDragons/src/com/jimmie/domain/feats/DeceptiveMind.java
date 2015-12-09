@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Battlemind;
+import com.jimmie.domain.classes.PsionicStudy;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class DeceptiveMind extends Feat {
@@ -21,20 +23,21 @@ public class DeceptiveMind extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+2 to all defenses when using battle resilience";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Battlemind.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Battlemind) pc.getDndClass()).getPsionicStudy() == PsionicStudy.BATTLE_RESILIENCE) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

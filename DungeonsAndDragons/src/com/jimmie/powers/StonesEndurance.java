@@ -6,13 +6,13 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Goliath;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Utils;
 
 public class StonesEndurance extends AttackPower {
 	/**
@@ -81,7 +81,8 @@ public class StonesEndurance extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		user.setTemporaryDamageResistance(5, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, DamageType.ALL);
+		timesUsed++;
 	}
 
 	@Override
@@ -110,6 +111,10 @@ public class StonesEndurance extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		return true;
 	}
 

@@ -111,6 +111,10 @@ public class WrathOfTheDestroyer extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		if ((Wilden.class.isAssignableFrom(user.getRace().getClass()))) {
 			if (((Wilden)user.getRace()).getNaturesAspect() == NaturesAspect.ASPECT_OF_THE_DESTROYER) {
 				return true;

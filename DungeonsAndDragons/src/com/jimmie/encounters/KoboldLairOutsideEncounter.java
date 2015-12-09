@@ -9,13 +9,9 @@ import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.creatures.Character;
-import com.jimmie.domain.items.weapons.Hand;
-import com.jimmie.domain.items.weapons.ReadiedWeapon;
-import com.jimmie.domain.items.weapons.WeaponHandType;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
-import com.jimmie.util.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -92,7 +88,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		m9.setCurrentPosition(new Position(13,9));
 		m10.setName("Kobold Minion 10");
 		m10.setDisplayName("M10");
-		m10.setCurrentPosition(new Position(14,13));
+//		m10.setCurrentPosition(new Position(14,13));
+		m10.setCurrentPosition(new Position(5,17));
 
 		KoboldSkirmisher k = new KoboldSkirmisher();
 		k.setName("Kobold Skirmisher");
@@ -112,20 +109,20 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		monsters = new ArrayList<Monster>();		
 		
-		monsters.add(m1);		
-		monsters.add(m2);		
-		monsters.add(m3);		
-		monsters.add(m4);		
-		monsters.add(m5);		
-		monsters.add(m6);		
-		monsters.add(m7);		
-		monsters.add(m8);		
-		monsters.add(m9);		
+//		monsters.add(m1);		
+//		monsters.add(m2);		
+//		monsters.add(m3);		
+//		monsters.add(m4);		
+//		monsters.add(m5);		
+//		monsters.add(m6);		
+//		monsters.add(m7);		
+//		monsters.add(m8);		
+//		monsters.add(m9);		
 		monsters.add(m10);
 		
-		monsters.add(k);
-		monsters.add(d);
-		monsters.add(s);
+//		monsters.add(k);
+//		monsters.add(d);
+//		monsters.add(s);
 
 		
 	
@@ -194,10 +191,10 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		characters = new ArrayList<Character>();
 
-		characters.add(gamal);
-		characters.add(percian);
+//		characters.add(gamal);
+//		characters.add(percian);
 		characters.add(keothi);
-		characters.add(travok);
+//		characters.add(travok);
 //		characters.add(halfOrcFighter);
 		
 		map = new Map();

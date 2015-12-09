@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.SkillType;
@@ -14,6 +15,7 @@ import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.map.Map;
+import com.jimmie.powers.Power;
 import com.jimmie.util.Dice;
 import com.jimmie.util.SkillCheck;
 import com.jimmie.util.TurnMaster;
@@ -80,45 +82,71 @@ public abstract class Encounter {
 	}
 
 	private void runATurn(TurnTaker participant) {
-		List<String> validActions = new ArrayList<String>();
 
 		participant.startOfTurn();
-		String choice = null;
-		do {
-			//displayCharacterLocations();
-			/* In this version of the game, the participant can't do much. */
-			Utils.print("What does " + participant.getName() + " want to do? ");
-			Utils.print("Possible choices are:");
-			if (participant.canTakeMoveAction()) {
-				Utils.print("Move Action (Move)");
-				validActions.add("Move");
-			}
-			if (participant.canTakeMinorAction()) {
-				Utils.print("Minor Action (Minor)");
-				validActions.add("Minor");
-			}
-			if (participant.canTakeStandardAction()) {
-				Utils.print("Standard Action (Standard)");
-				validActions.add("Standard");
-			}
-			Utils.print("Free Action (Free)");
-			validActions.add("Free");
-			Utils.print("Skip Turn (Skip)");
-			validActions.add("Skip");
-			
-			Utils.print("Your choice?");
-			choice = Utils.getValidInput(validActions);
+		boolean skipTurn = false;
 
-			if ("Free".equalsIgnoreCase(choice)) {
-				participant.useFreeAction(this);
-			} else if ("Minor".equalsIgnoreCase(choice)) {
-				participant.useMinorAction(this);
-			} else if ("Move".equalsIgnoreCase(choice)) {
-				participant.useMoveAction(this);
-			} else if ("Standard".equalsIgnoreCase(choice)) {
-				participant.useStandardAction(this);
+		do {
+			HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
+			int index = 0;
+			int moveChoice = 0;
+			int skipChoice = 0;
+
+			if (Creature.class.isAssignableFrom(participant.getClass())) {
+				Utils.print("What does " + participant.getName() + " want to do? ");
+				Utils.print("Possible choices are:");
+				Creature c = (Creature) participant;
+				// Move is special
+				if (participant.canTakeMoveAction()) {
+					index++;
+					moveChoice = index;
+					Utils.print(index + ". Move (Move action)");
+				}
+				if (participant.getPowers() != null) {
+					for (Power power : participant.getPowers()) {
+						if ((power.getActionType() == ActionType.FREE) && (power.meetsPrerequisitesToChoosePower(c)) 
+								&& (power.meetsRequirementsToUsePower(c))) {
+							index++;
+							validActions.put(index, power);
+							Utils.print(index + ". " + power.getName() + " (Free - " + power.getPowerUsage() + ")");
+						} else if ((power.getActionType() == ActionType.MINOR) && (participant.canTakeMinorAction()) &&
+								(power.meetsPrerequisitesToChoosePower(c)) && (power.meetsRequirementsToUsePower(c))) {
+							index++;
+							validActions.put(index, power);
+							Utils.print(index + ". " + power.getName() + " (Minor action - " + power.getPowerUsage() + ")");
+						} else if ((power.getActionType() == ActionType.MOVE) && (participant.canTakeMoveAction()) &&
+								(power.meetsPrerequisitesToChoosePower(c)) && (power.meetsRequirementsToUsePower(c))) {
+							index++;
+							validActions.put(index, power);
+							Utils.print(index + ". " + power.getName() + " (Move action - " + power.getPowerUsage() + ")");
+						} else if ((power.getActionType() == ActionType.STANDARD) && (participant.canTakeStandardAction()) &&
+								(power.meetsPrerequisitesToChoosePower(c)) && (power.meetsRequirementsToUsePower(c))) {
+							index++;
+							validActions.put(index, power);
+							Utils.print(index + ". " + power.getName() + " (Standard action - " + power.getPowerUsage() + ")");
+						}
+					}
+				}
+				
+				index++;
+				Utils.print(index + ". Skip turn");
+				skipChoice = index;
+				
+				Utils.print("Your choice:");
+				int choice = Utils.getValidIntInputInRange(1, index);
+				if (choice == moveChoice) {
+					participant.useMoveAction(this);
+				} else if (choice == skipChoice) {
+					skipTurn = true;					
+				} else {
+					Power chosenPower = validActions.get(choice);
+					chosenPower.process(this, c);
+					// Mark the character has having taken the appropriate action.
+					c.useAction(chosenPower.getActionType());
+				}
 			}
-		} while (!("Skip".equalsIgnoreCase(choice))
+			
+		} while (!(skipTurn)
 				|| (!isTurnOver(participant)));
 
 		participant.endOfTurn(this);

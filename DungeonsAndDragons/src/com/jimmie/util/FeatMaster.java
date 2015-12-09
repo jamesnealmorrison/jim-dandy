@@ -249,7 +249,7 @@ public class FeatMaster {
 		feats.add(new ImprovedInevitableShot());
 		feats.add(new InescapableShot());
 		feats.add(new SpiritbondDefense());
-		feats.add(new StrenghenedBond());
+		feats.add(new StrengthenedBond());
 		
 		return feats;
 	}

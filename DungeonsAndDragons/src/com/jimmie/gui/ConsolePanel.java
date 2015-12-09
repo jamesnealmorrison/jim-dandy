@@ -1,6 +1,7 @@
 package com.jimmie.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -23,6 +24,8 @@ public class ConsolePanel extends JPanel implements PropertyChangeListener, Acti
 	public ConsolePanel()
 	{
 		this.setLayout(new BorderLayout(5,5));
+// This used to not be here at all:
+		this.setPreferredSize(new Dimension(100,300));
 		textArea = new JTextArea(10, 20);
 		textArea.setEditable(false);
 		JScrollPane scrollPaneForConsole = new JScrollPane(textArea);

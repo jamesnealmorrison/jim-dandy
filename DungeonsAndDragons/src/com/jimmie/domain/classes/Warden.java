@@ -34,8 +34,6 @@ public class Warden extends DndClass {
 
 	@Override
 	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-		
 	}
 
 

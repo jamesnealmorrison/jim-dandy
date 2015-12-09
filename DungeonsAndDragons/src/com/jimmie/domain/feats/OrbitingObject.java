@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Psion;
+import com.jimmie.domain.classes.PsionDiscipline;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class OrbitingObject extends Feat {
@@ -21,13 +23,16 @@ public class OrbitingObject extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Sustain far hand for free if target is adjacent or in your space";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Psion.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Psion) pc.getDndClass()).getDisciplineFocus() == PsionDiscipline.TELEKINESIS_FOCUS) {
+				return true;
+			}
+		}
 		return false;
 	}
 

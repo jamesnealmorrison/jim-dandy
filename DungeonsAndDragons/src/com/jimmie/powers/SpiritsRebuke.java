@@ -112,6 +112,10 @@ public class SpiritsRebuke extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Has it been used during this encounter already?
+		if (timesUsed > 0) {
+			return false;
+		}
 		for (ReadiedWeapon readiedWeapon : user.getReadiedWeapons().values()) {
 			if ((readiedWeapon.getWeapon().getWeaponProperties().contains(WeaponProperty.LIGHT_THROWN)) ||
 					(readiedWeapon.getWeapon().getWeaponProperties().contains(WeaponProperty.HEAVY_THROWN))) {
