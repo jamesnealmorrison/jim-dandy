@@ -12,7 +12,6 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
-import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -83,13 +82,12 @@ public class AidAnother extends Power {
 	@Override
 	public void process(Encounter encounter, Creature user) {
 		Utils.print("Pick the target that you want to help your ally against.");
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-		if (target != null) {
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
+		if ((targets != null) && (!targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
+			int diceRoll = d.roll();
 			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -117,15 +115,6 @@ public class AidAnother extends Power {
 				ally.setTemporaryAidAnotherBonus(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, target, bonusType);
 			} else {
 				Utils.print("You missed " + target.getName());
-			}
-
-			/* If this is a fighter, then they have "Combat Challenge", and can mark the target. */
-			if (Fighter.class.isInstance(user.getDndClass())) {
-				/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-				 * I can't think of a reason I wouldn't WANT to mark the target.
-				 */
-				target.markByCombatChallenge(user, DurationType.END_OF_NEXT_TURN);
-				Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
 			}
 		}
 	}

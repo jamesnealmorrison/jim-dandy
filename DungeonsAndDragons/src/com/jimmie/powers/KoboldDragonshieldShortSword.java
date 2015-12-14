@@ -81,50 +81,51 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTargetInRange(user, 1);
+		List<AttackTarget> targets = encounter.chooseMeleeTargetInRange(user, 1);
 
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + 7 + user.getOtherAttackModifier(targets, encounter);
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + 7 + user.getOtherAttackModifier(targets, encounter);
 
-		/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
-		 * adjacent to the target.
-		 */
-		List<Creature> adjacentCreatures = encounter.getAllAdjacentCreatures((Creature)target);
+			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
+			 * adjacent to the target.
+			 */
+			List<Creature> adjacentCreatures = encounter.getAllAdjacentCreatures((Creature)target);
 
-		/* Count how many kobolds are in the list (not myself though). */
-		int count = 0;
-		for (Creature adjacentCreature : adjacentCreatures) {
-			if ((adjacentCreature != user) && (Kobold.class.isAssignableFrom(adjacentCreature.getClass()))) {
-				count++;
+			/* Count how many kobolds are in the list (not myself though). */
+			int count = 0;
+			for (Creature adjacentCreature : adjacentCreatures) {
+				if ((adjacentCreature != user) && (Kobold.class.isAssignableFrom(adjacentCreature.getClass()))) {
+					count++;
+				}
 			}
-		}
-		if (count > 0) {
-			Utils.print("There are " + count + " kobolds adjacent to " + target.getName() +" so BONUS!");
-		}
-		roll = roll + count;
+			if (count > 0) {
+				Utils.print("There are " + count + " kobolds adjacent to " + target.getName() +" so BONUS!");
+			}
+			roll = roll + count;
 
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
 
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
 
-			int damageRolls = 1;
-			DiceType damageDiceType = DiceType.SIX_SIDED;
+				int damageRolls = 1;
+				DiceType damageDiceType = DiceType.SIX_SIDED;
 
-			int weaponBonus = 3;
+				int weaponBonus = 3;
 
-			int attributeBonus = 0;
+				int attributeBonus = 0;
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, encounter, true);
-		} else {
-			Utils.print("You missed " + target.getName());
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, encounter, true, user);
+			} else {
+				Utils.print("You missed " + target.getName());
+			}
 		}
 	}
 

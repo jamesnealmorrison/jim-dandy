@@ -2,10 +2,16 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
+import com.jimmie.domain.CombatAdvantageType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Warden;
@@ -13,6 +19,7 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class WardensFury extends AttackPower {
@@ -82,7 +89,41 @@ public class WardensFury extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
+
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetFortitude = target.getFortitude();
+			Utils.print("Your target has a fortitude of " + targetFortitude);
+
+			if (roll >= targetFortitude) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					((Creature) target).setTemporaryCombatAdvantage(user, DurationType.END_OF_NEXT_TURN, CombatAdvantageType.WARDENS_FURY, user.getCurrentTurn());
+				}
+				Utils.print("This is not completely implemented yet, though.");
+			} else {
+				Utils.print("You missed " + target.getName());
+			}
+
+		}
 	}
 
 	@Override

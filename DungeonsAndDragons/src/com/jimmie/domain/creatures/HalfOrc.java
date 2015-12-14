@@ -43,7 +43,7 @@ public class HalfOrc extends Race {
 			if ("Y".equalsIgnoreCase(choice)) {
 				usedFuriousAssault = true;
 				Dice dice = new Dice(DiceType.EIGHT_SIDED);
-				return dice.basicRoll();
+				return dice.roll();
 			} else {
 				return 0;
 			}

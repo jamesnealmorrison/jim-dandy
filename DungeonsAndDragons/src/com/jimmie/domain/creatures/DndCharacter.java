@@ -2,14 +2,18 @@ package com.jimmie.domain.creatures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.NotEnoughCurrencyException;
 import com.jimmie.domain.Resistance;
 import com.jimmie.domain.Ritual;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
+import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Fighter;
@@ -41,7 +45,7 @@ import com.jimmie.powers.SecondWind;
 import com.jimmie.powers.SpendActionPoint;
 import com.jimmie.util.Utils;
 
-public abstract class Character extends Creature {
+public abstract class DndCharacter extends Creature {
 	private Armor readiedArmor;
 	private List<Armor> armor;
 	private List<Gear> gear;
@@ -96,32 +100,41 @@ public abstract class Character extends Creature {
 		}
 
 		/* See if there is a temporary bonus to the armor class. */
-		if (temporaryArmorClassBonus != null) {
-			if (temporaryArmorClassBonus.stillApplies()) {
-				Utils.print(name + " is supposed to get a bonus to armor class until the end of " + temporaryArmorClassBonus.getSource().getName() + "'s next turn.");
-				armorClass = armorClass + temporaryArmorClassBonus.getBonus();
-				Utils.print("Bonus still applies.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryArmorClassBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
+		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+
+			if (tempEffect.getEffectType() == TemporaryEffectType.ARMOR_CLASS_MODIFIER) {
+				if (tempEffect.stillApplies()) {
+					Utils.print(name + " is supposed to get a bonus to armor class until the end of " + tempEffect.getSource().getName() + "'s next turn.");
+					armorClass = armorClass + tempEffect.getModifier();
+					Utils.print("Armor Class Modifier still applies.");
+				} else {
+					/* Bonus is over.  Reset the bonus. */
+					it.remove();
+					Utils.print("Armor Class Modifier no longer applies.  Removint.");
+				}
+			} 
+			
+			/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
+			if (TemporaryAidAnotherBonus.class.isAssignableFrom(tempEffect.getClass())) {
+				TemporaryAidAnotherBonus temporaryAidAnotherBonus = (TemporaryAidAnotherBonus) tempEffect;
+				if (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE) {
+					if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
+						Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getModifier() + " to defense against this attack by " + attacker.getName() + ".");
+						armorClass = armorClass + temporaryAidAnotherBonus.getModifier();
+						Utils.print("Bonus still applies.");
+						temporaryAidAnotherBonus = null;
+						Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
+					} else {
+						/* Bonus is over.  Reset the bonus. */
+						it.remove();
+						Utils.print("Bonus no longer applies.  Resetting bonus.");
+					}
+				} 				
 			}
 		}
 
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
-			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
-				armorClass = armorClass + temporaryAidAnotherBonus.getBonus();
-				Utils.print("Bonus still applies.");
-				temporaryAidAnotherBonus = null;
-				Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryAidAnotherBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
+		
 
 		return armorClass;
 	}
@@ -357,6 +370,7 @@ public abstract class Character extends Creature {
 	private List<WeaponCategory> weaponCategoryProficiencies;
 	private List<ArmorType> armorTypeProficiencies;
 	protected List<ArmorGroup> armorGroupProficiencies;
+	protected List<ImplementType> implementProficiencies;
 
 	public List<WeaponType> getWeaponTypeProficiencies() {
 		return weaponTypeProficiencies;
@@ -398,6 +412,14 @@ public abstract class Character extends Creature {
 
 	public void setArmorGroupProficiencies(List<ArmorGroup> armorGroupProficiencies) {
 		this.armorGroupProficiencies = armorGroupProficiencies;
+	}
+
+	public List<ImplementType> getImplementProficiencies() {
+		return implementProficiencies;
+	}
+
+	public void setImplementProficiencies(List<ImplementType> implementProficiencies) {
+		this.implementProficiencies = implementProficiencies;
 	}
 
 	public void addReadiedWeapon(ReadiedWeapon readiedWeapon) {
@@ -465,14 +487,22 @@ public abstract class Character extends Creature {
 		}
 		armorGroupProficiencies.add(armorGroup);
 	}
+	
+	public void addImplementProficiency(ImplementType implement) {
+		if (implementProficiencies == null) {
+			implementProficiencies = new ArrayList<ImplementType>();
+		}
+		implementProficiencies.add(implement);
+	}
 
-	public Character() {
+	public DndCharacter() {
 		super();
 		weaponTypeProficiencies = new ArrayList<WeaponType>();
 		weaponGroupProficiencies = new ArrayList<WeaponGroup>();
 		weaponCategoryProficiencies = new ArrayList<WeaponCategory>();
 		armorTypeProficiencies = new ArrayList<ArmorType>();
 		armorGroupProficiencies = new ArrayList<ArmorGroup>();
+		implementProficiencies = new ArrayList<ImplementType>();
 		addPower(new MeleeBasicAttack());
 		addPower(new SpendActionPoint());
 		addPower(new SecondWind());
@@ -543,6 +573,10 @@ public abstract class Character extends Creature {
 		return readiedWeapons;
 	}
 	
+	public void setReadiedImplement(Implement readiedImplement) {
+		this.readiedImplement = readiedImplement;
+	}
+
 	public Implement getReadiedImplement() {
 		return readiedImplement;
 	}
@@ -581,8 +615,11 @@ public abstract class Character extends Creature {
 
 	public int getImplementDamageBonus() {
 		Implement implement = getReadiedImplement();
-
+		
 		if (implement != null) {
+			if (!getImplementProficiencies().contains(implement.getImplementType())) {
+				return 0;
+			}
 			return implement.getDamageBonus();
 		} else {
 			return 0;

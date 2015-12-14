@@ -11,7 +11,7 @@ import com.jimmie.domain.SkillType;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.Monster;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.map.Map;
@@ -31,7 +31,7 @@ public abstract class Encounter {
 	public void setMap(Map map) {
 		this.map = map;
 	}
-	
+
 	public List<Creature> getCreatures() {
 		List<Creature> creatures = new ArrayList<Creature>();
 		creatures.addAll(characters);
@@ -39,11 +39,11 @@ public abstract class Encounter {
 		return creatures;
 	}
 
-	public List<Character> getCharacters() {
+	public List<DndCharacter> getCharacters() {
 		return characters;
 	}
 
-	public void setCharacters(List<Character> characters) {
+	public void setCharacters(List<DndCharacter> characters) {
 		this.characters = characters;
 	}
 
@@ -55,26 +55,26 @@ public abstract class Encounter {
 		this.monsters = monsters;
 	}
 
-	protected List<Character> characters; /*
-										 * This is the list of player characters
-										 * and NPC's. ie the good guys.
-										 */
+	protected List<DndCharacter> characters; /*
+	 * This is the list of player characters
+	 * and NPC's. ie the good guys.
+	 */
 	protected List<Monster> monsters;
 	TurnTaker currentParticipant;
 
 	public void runEncounter() {
+		Dice.setRollType(Dice.USER_ENTERED);
 		setupEncounter();
-		Dice.setRollType(Dice.AUTOMATED);
 		do {
 			currentParticipant = TurnMaster.getNextParticipant();
 			Utils.print("Up next: " + currentParticipant.getName());
 
 			runATurn(currentParticipant);
-			
+
 			Utils.print("Save Encounter?");
 			String choice = Utils.getYesOrNoInput();
 			if ("Y".equalsIgnoreCase(choice)) {
-				for (Character c : characters) {
+				for (DndCharacter c : characters) {
 					Utils.saveCharacter(c);
 				}
 			}
@@ -127,11 +127,11 @@ public abstract class Encounter {
 						}
 					}
 				}
-				
+
 				index++;
 				Utils.print(index + ". Skip turn");
 				skipChoice = index;
-				
+
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, index);
 				if (choice == moveChoice) {
@@ -145,14 +145,14 @@ public abstract class Encounter {
 					c.useAction(chosenPower.getActionType());
 				}
 			}
-			
+
 		} while (!(skipTurn)
 				|| (!isTurnOver(participant)));
 
 		participant.endOfTurn(this);
 	}
 
-/*	private void displayCharacterLocations() {
+	/*	private void displayCharacterLocations() {
 		Utils.print("Current Locations:");
 		for (Character character : characters) {
 			Utils.print(character.getName() + " is at ("
@@ -165,7 +165,7 @@ public abstract class Encounter {
 					+ monster.getCurrentPosition().getY() + ")");
 		}
 	}
-*/
+	 */
 	public boolean isTurnOver(TurnTaker participant) {
 		/*
 		 * For now, just ask. Later, I can change this to have logic to see if
@@ -208,7 +208,7 @@ public abstract class Encounter {
 		 */
 
 		/* Add all the characters to the turnmaster. */
-		for (Character c : characters) {
+		for (DndCharacter c : characters) {
 			TurnMaster.addParticipant(c);
 		}
 
@@ -220,7 +220,7 @@ public abstract class Encounter {
 		/* TODO: Add other things, like traps/hazards that take turns. */
 	}
 
-	public AttackTarget chooseMeleeTarget(TurnTaker attacker, Weapon weapon) {
+	public List<AttackTarget> chooseMeleeTarget(TurnTaker attacker, Weapon weapon) {
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 		int reach = 1;
 		if (weapon != null) {
@@ -233,7 +233,7 @@ public abstract class Encounter {
 		int index = 0;
 
 		if (!characters.contains(attacker)) {
-			for (Character c : characters) {
+			for (DndCharacter c : characters) {
 				/* Is this character within reach? */
 				if (attacker.getCurrentPosition().isWithinReachOf(
 						c.getCurrentPosition(), reach)) {
@@ -270,17 +270,19 @@ public abstract class Encounter {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
 
-		return validChoices.get(choice);
+		List<AttackTarget> targets = new ArrayList<AttackTarget>();
+		targets.add(validChoices.get(choice));
+		return targets;
 	}
 
-	public AttackTarget chooseMeleeTargetInRange(TurnTaker attacker, int range) {
+	public List<AttackTarget> chooseMeleeTargetInRange(TurnTaker attacker, int range) {
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 
 		Utils.print("Who do you want to attack?");
 		int index = 0;
 
 		if (!characters.contains(attacker)) {
-			for (Character c : characters) {
+			for (DndCharacter c : characters) {
 				/* Is this character within reach? */
 				if (attacker.getCurrentPosition().isWithinReachOf(
 						c.getCurrentPosition(), range)) {
@@ -317,7 +319,9 @@ public abstract class Encounter {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
 
-		return validChoices.get(choice);
+		List<AttackTarget> targets = new ArrayList<AttackTarget>();
+		targets.add(validChoices.get(choice));
+		return targets;
 	}
 
 	public String getPushDirection(Position pusher, Position pushee) {
@@ -389,7 +393,7 @@ public abstract class Encounter {
 				allies.put(index, monster);
 			}
 		} else {
-			for (Character character : characters) {
+			for (DndCharacter character : characters) {
 				index++;
 				allies.put(index, character);
 			}
@@ -454,7 +458,7 @@ public abstract class Encounter {
 	 * to you (for oath of enmity, for example).
 	 */
 	public boolean areAnyOtherEnemiesAdjacentBesidesTarget(Creature owner,
-			AttackTarget enemy) {
+			List<AttackTarget> targets) {
 		/* Get list of adjacent enemies. */
 		List<Creature> adjacentEnemies = getAdjacentEnemies(owner);
 
@@ -465,7 +469,7 @@ public abstract class Encounter {
 		if ((adjacentEnemies != null) && (adjacentEnemies.size() > 1)) {
 			return true;
 		} else {
-			if (adjacentEnemies.get(0).equals(enemy)) {
+			if (targets.contains(adjacentEnemies.get(0))) {
 				return false;
 			} else {
 				return true;
@@ -475,7 +479,7 @@ public abstract class Encounter {
 
 	public List<Creature> getAdjacentEnemies(Creature creature) {
 		List<Creature> adjacentEnemies = new ArrayList<Creature>();
-		if (Character.class.isInstance(creature)) {
+		if (DndCharacter.class.isInstance(creature)) {
 			for (Monster monster : monsters) {
 				if (monster.getCurrentPosition().isWithinReachOf(
 						creature.getCurrentPosition(), 1)) {
@@ -483,7 +487,7 @@ public abstract class Encounter {
 				}
 			}
 		} else {
-			for (Character character : characters) {
+			for (DndCharacter character : characters) {
 				if (character.getCurrentPosition().isWithinReachOf(
 						creature.getCurrentPosition(), 1)) {
 					adjacentEnemies.add(character);
@@ -507,7 +511,7 @@ public abstract class Encounter {
 				}
 			}
 		} else {
-			for (Character character : characters) {
+			for (DndCharacter character : characters) {
 				if (character.getCurrentPosition().isWithinReachOf(
 						creature.getCurrentPosition(), 1)) {
 					adjacentAllies.add(character);
@@ -537,7 +541,7 @@ public abstract class Encounter {
 
 	public List<Creature> getAdjacentCharacters(Position target) {
 		List<Creature> adjacentCharacters = new ArrayList<Creature>();
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			if (character.getCurrentPosition().isWithinReachOf(target, 1)) {
 				adjacentCharacters.add(character);
 			}
@@ -565,7 +569,7 @@ public abstract class Encounter {
 
 	public List<Creature> getCharactersWithinRangeOf(Position target, int range) {
 		List<Creature> adjacentCharacters = new ArrayList<Creature>();
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			if (character.getCurrentPosition().isWithinReachOf(target, range)) {
 				adjacentCharacters.add(character);
 			}
@@ -585,7 +589,7 @@ public abstract class Encounter {
 				adjacentCreatures.add(monster);
 			}
 		}
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			if (character.getCurrentPosition().isWithinReachOf(
 					creature.getCurrentPosition(), 1)) {
 				adjacentCreatures.add(character);
@@ -608,7 +612,7 @@ public abstract class Encounter {
 				adjacentCreatures.add(monster);
 			}
 		}
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			if ((creatureType.isInstance(character))
 					&& (character.getCurrentPosition().isWithinReachOf(
 							creature.getCurrentPosition(), 1))) {
@@ -622,7 +626,7 @@ public abstract class Encounter {
 		}
 	}
 
-	public AttackTarget chooseRangedTarget(Creature attacker, int range, int longRange) {
+	public List<AttackTarget> chooseRangedTarget(TurnTaker attacker, int range, int longRange) {
 		/* TODO: Need to add logic for visibility/cover/etc. */
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 
@@ -630,7 +634,7 @@ public abstract class Encounter {
 		int index = 0;
 
 		if (!characters.contains(attacker)) {
-			for (Character c : characters) {
+			for (DndCharacter c : characters) {
 				/* Is this character within reach? */
 				if (attacker.getCurrentPosition().isWithinReachOf(
 						c.getCurrentPosition(), range)) {
@@ -677,13 +681,15 @@ public abstract class Encounter {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
 
-		return validChoices.get(choice);
+		List<AttackTarget> targets = new ArrayList<AttackTarget>();
+		targets.add(validChoices.get(choice));
+		return targets;
 	}
-	
+
 	/* TODO: Check for enemies providing cover. */
 	public int getCoverPenalty(Position attackerPosition, Position targetPosition) {
 		int fewestLinesBlocked = 4;
-		
+
 		List<String> attackerCorners = new ArrayList<String>();
 		List<String> targetCorners = new ArrayList<String>();
 		attackerCorners.add("NW");
@@ -722,7 +728,7 @@ public abstract class Encounter {
 			for (String targetCorner : targetCorners) {
 				Position tCornerPos = getCornerPosition(
 						targetPosition, targetCorner);
-				
+
 				if (!isCornerLineClear(aCornerPos, tCornerPos)) {
 					currentLinesBlocked++;
 				}
@@ -743,7 +749,7 @@ public abstract class Encounter {
 			Utils.print("Target has superior cover! -5 penalty.");
 			return -5;
 		}
-		
+
 	}
 
 	private boolean hasLineOfSight(Position attackerPosition, Position targetPosition) {
@@ -925,7 +931,7 @@ public abstract class Encounter {
 				/* Or we could be approaching a whole X. */
 				wholeX = Math.ceil(currentX);
 			}
-		
+
 			/* We could have just gone slightly greater than the most recent whole Y. */
 			if (floatingPortionOfY < 0.000001) {
 				wholeY = Math.floor(currentY);
@@ -933,10 +939,10 @@ public abstract class Encounter {
 				/* Or we could be approaching a whole Y. */
 				wholeY = Math.ceil(currentY);
 			}
-			
+
 			/* Are we "on" a corner? (But don't check when on an endpoint of the line. */
 			if ((wholeX != 0.0) && (wholeY != 0.0) && (wholeX != p2.getX()) && (wholeY != p2.getY())
-					 && (wholeX != p1.getX()) && (wholeY != p1.getY())) {
+					&& (wholeX != p1.getX()) && (wholeY != p1.getY())) {
 				/* Now check the 4 surrounding squares.  I THINK I don't need to check for map edges
 				 * because that would be an endpoint of the line anyway, right?
 				 */
@@ -1025,7 +1031,7 @@ public abstract class Encounter {
 				adjacentCreatures.add(monster);
 			}
 		}
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			if (character.getCurrentPosition().isWithinBlast(lowerLeftX,
 					lowerLeftY, size)) {
 				adjacentCreatures.add(character);
@@ -1047,7 +1053,7 @@ public abstract class Encounter {
 				creatures.add(monster);
 			}
 		}
-		for (Character character : characters) {
+		for (DndCharacter character : characters) {
 			Position p = new Position(x, y);
 			if (character.getCurrentPosition().isWithinReachOf(p, size)) {
 				creatures.add(character);

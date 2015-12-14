@@ -5,7 +5,8 @@ import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -108,6 +109,9 @@ public class Avenger extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Holy symbol");
+		pc.addImplementProficiency(ImplementType.HOLY_SYMBOL);
+
 		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex, +1 Will");
 		setFortitudeBonus(getFortitudeBonus() + 1);
 		setReflexBonus(getReflexBonus() + 1);
@@ -155,8 +159,8 @@ public class Avenger extends DndClass {
 		pc.addPower(new ChannelDivinityAbjureUndead());
 		pc.addPower(new ChannelDivinityDivineGuidance());
 		
-		// TODO: Armor of Faith, Avenger's Censure, Deities, implements
-		Utils.print("NOTE: I have not yet coded Armor of Faith, Avenger's Censure, Deities, implements");
+		// TODO: Armor of Faith, Avenger's Censure, Deities
+		Utils.print("NOTE: I have not yet coded Armor of Faith, Avenger's Censure, Deities");
 	}
 
 	@Override
@@ -177,7 +181,7 @@ public class Avenger extends DndClass {
 		return 0;
 	}
 
-	public AttackTarget getOathOfEnmityTarget(Character attacker) {
+	public AttackTarget getOathOfEnmityTarget(DndCharacter attacker) {
 		// Find the Oath Of Enmity power
 		for (Power power : attacker.getPowers()) {
 			if (OathOfEnmity.class.isAssignableFrom(power.getClass())) {

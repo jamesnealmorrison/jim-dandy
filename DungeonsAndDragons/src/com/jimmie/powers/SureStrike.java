@@ -10,7 +10,6 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
-import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Fighter;
@@ -88,47 +87,35 @@ public class SureStrike extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter) + 2;
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				user.heal(target.getStirringShoutCharismaModifier());
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter) + 2;
+
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (user.getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user.getRace()), DamageType.NORMAL, encounter, true, user);
+			} else {
+				Utils.print("You missed " + target.getName());
 			}
-
-			int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-			DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (user.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user.getRace()), DamageType.NORMAL, encounter, true);
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
-		
-		/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-		 * I can't think of a reason I wouldn't WANT to mark the target.
-		 */
-		target.markByCombatChallenge(user, DurationType.END_OF_NEXT_TURN);
-		Utils.print(target.getName() + " is now marked by " + user.getName() + " until the end of my next turn because I have Combat Challenge.");
-		
+		}		
 	}
 
 	@Override

@@ -2,19 +2,23 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.MarkType;
 import com.jimmie.domain.PowerUsage;
-import com.jimmie.domain.classes.Invoker;
+import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
-public class ChannelDivinityArmorOfWrath extends AttackPower {
+public class NaturesWrath extends AttackPower {
+
 	/**
 	 * 
 	 */
@@ -27,7 +31,7 @@ public class ChannelDivinityArmorOfWrath extends AttackPower {
 
 	@Override
 	public String getName() {
-		return "Channel Divinity: Armor Of Wrath";
+		return "Nature's Wrath";
 	}
 
 	@Override
@@ -37,12 +41,12 @@ public class ChannelDivinityArmorOfWrath extends AttackPower {
 
 	@Override
 	public PowerUsage getPowerUsage() {
-		return PowerUsage.ENCOUNTER;
+		return PowerUsage.AT_WILL;
 	}
 
 	@Override
 	public PowerSource getPowerSource() {
-		return PowerSource.DIVINE;
+		return PowerSource.PRIMAL;
 	}
 
 	@Override
@@ -53,18 +57,18 @@ public class ChannelDivinityArmorOfWrath extends AttackPower {
 	@Override
 	public List<DamageType> getDamageType() {
 		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.RADIANT);
+		damageTypes.add(DamageType.NONE);
 		return damageTypes;
 	}
 
 	@Override
 	public ActionType getActionType() {
-		return ActionType.IMMEDIATE_REACTION;
+		return ActionType.FREE;
 	}
 
 	@Override
 	public int getRangeNumber1() {
-		return 5;
+		return 1;
 	}
 
 	@Override
@@ -81,7 +85,26 @@ public class ChannelDivinityArmorOfWrath extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<Creature> adjEnemies = encounter.getAdjacentEnemies(user);
+		
+		for (Creature enemy : adjEnemies) {
+			enemy.mark(user, DurationType.END_OF_NEXT_TURN, MarkType.NATURES_WRATH, user.getCurrentTurn());
+			Utils.print(enemy.getName() + " is now marked by " + getName() + " until the end of my next turn.");
+		}
+		timesUsed++;
+	}
+
+	@Override
+	public boolean meetsPrerequisitesToChoosePower(Creature user) {
+		return true;
+	}
+
+	@Override
+	public boolean meetsRequirementsToUsePower(Creature user) {
+		if (timesUsed == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -99,23 +122,13 @@ public class ChannelDivinityArmorOfWrath extends AttackPower {
 	@Override
 	public List<Class> getClassesThatCanUsePower() {
 		List<Class> classes = new ArrayList<Class>();
-		classes.add(Invoker.class);
+		classes.add(Warden.class);
 		return classes;
 	}
-
+	
 	@Override
-	public boolean meetsPrerequisitesToChoosePower(Creature user) {
-		return true;
-	}
-
-	@Override
-	public boolean meetsRequirementsToUsePower(Creature user) {
-		// Only one Channel Divinity power can be used per encounter
-		// Has it been used during this encounter already?
-		if (user.getChannelDivinityUses() > 0) {
-			return false;
-		}
-		return true;
+	public void initializeForStartOfTurn() {
+		timesUsed = 0;
 	}
 
 }

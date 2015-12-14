@@ -2,6 +2,7 @@ package com.jimmie.util.aspects;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.GuardianMight;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
@@ -18,7 +19,7 @@ public aspect SecondWindAspect {
 			if (Warden.class.isAssignableFrom(creature.getDndClass().getClass())) {
 				if (((Warden) creature.getDndClass()).getGuardianMight() == GuardianMight.EARTHSTRENGTH) {
 					Utils.print("Because you have earthstrength, giving a temporary bonus of " + creature.getAbilityModifier(AbilityType.CONSTITUTION) + " to your AC.");
-					creature.setTemporaryArmorClassBonus(creature.getAbilityModifier(AbilityType.CONSTITUTION), creature.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, creature);
+					creature.setTemporaryEffect(creature.getAbilityModifier(AbilityType.CONSTITUTION), creature.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, creature, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
 				}
 			}
 		}

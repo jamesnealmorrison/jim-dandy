@@ -84,7 +84,7 @@ public class ForcefulPunch extends AttackPower {
 	public void process(Encounter encounter, Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			AttackTarget target = encounter.chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
 
 			int targetSlideDistance = 0;
 			if (user.getLevel() < 11) {
@@ -115,7 +115,7 @@ public class ForcefulPunch extends AttackPower {
 					break;
 				}
 
-				target.slide(direction);
+				targets.get(0).slide(direction);
 			}
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Forceful Push in this encounter.");

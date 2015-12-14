@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -79,6 +80,9 @@ public class Cleric extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Holy symbol");
+		pc.addImplementProficiency(ImplementType.HOLY_SYMBOL);
+		
 		Utils.print("Adding bonus of +2 Will");
 		setWillBonus(getWillBonus() + 2);
 		
@@ -111,9 +115,9 @@ public class Cleric extends DndClass {
 		pc.addPower(new ChannelDivinityTurnUndead());
 		pc.addPower(new HealingWord());
 		
-		// TODO: Healer's Lore, Ritual Casting, Implement 
+		// TODO: Healer's Lore, Ritual Casting 
 		// TODO: Still need to make sure the feats for channel divinity are available for Clerics and Paladins, etc.
-		Utils.print("NOTE: I have not yet implemented Healer's Lore, Ritual Casting, Implement.");
+		Utils.print("NOTE: I have not yet implemented Healer's Lore, Ritual Casting.");
 		
 		// TODO: Selecting deities.
 		Utils.print("NOTE: I also have not yet implemented anything related to deities.");

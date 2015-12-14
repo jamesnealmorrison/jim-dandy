@@ -13,6 +13,7 @@ import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.powers.NaturesWrath;
 import com.jimmie.powers.WardensFury;
 import com.jimmie.powers.WardensGrasp;
 import com.jimmie.util.Dice;
@@ -36,54 +37,13 @@ public class Warden extends DndClass {
 	public void initializeForNewDay() {
 	}
 
-
-	/* This does not have annotation.  It gets called directly. */
-	public void wardensFury(Encounter encounter, AttackTarget target) {
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetFortitude = target.getFortitude();
-		Utils.print("Your target has an Fortitude of " + targetFortitude);
-		
-		if (roll >= targetFortitude) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				owner.heal(target.getStirringShoutCharismaModifier());
-			}
-
-			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (owner.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, true);
-			
-			Utils.print(target.getName() + " grants combat advantage to " + owner.getName() + " and allies until the end of " + owner.getName() + "'s next turn.");
-			target.grantCombatAdvantageViaWardensFury(owner);
-			Utils.print("This is not completely implemented yet, though.");
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
-	}
-
 	/* This does not have annotation.  It gets called directly. */
 	public int formOfTheWillowSentinelAttack(Encounter encounter, AttackTarget target) {
 		setUsedFormOfTheWillowSentinelAttack(true);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
+		int diceRoll = d.roll();
 		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getOtherAttackModifier(targets, encounter);
 		
 		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -104,7 +64,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, true, owner);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
@@ -113,7 +73,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, false);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, false, owner);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
 			return -2;
@@ -230,6 +190,9 @@ public class Warden extends DndClass {
 		
 		pc.addPower(new WardensFury());
 		pc.addPower(new WardensGrasp());
+		
+		// Implementing "Nature's Wrath" as a power.
+		pc.addPower(new NaturesWrath());
 		
 		// TODO: Font of Life, Guardian Might, Nature's Wrath 
 		Utils.print("NOTE: I have not yet coded Font of Life, Guardian Might, Nature's Wrath.");

@@ -1,7 +1,43 @@
+RACES*************************************
+
 Goliath: Haven't implemented powerful athlete yet, because I won't often be doing jump or climb checks for now. But other than that Goliath should be 100% implemented.
 
+Dwarf: Haven't implemented Cast-Iron Stomach yet, because I haven't ran across a creature that poisons yet. Haven't done encumbered speed because I haven't coded any encumbrances yet.
+Haven't implemented Stand Your Ground yet.  I'll implement it when I have the first critter that has a power that pushes, pulls, slides or knocks someone prone.
 
+
+CLASSES***********************************
 
 Warden:
 Need to finish implementing Font Of Life when I start having effects with saving throws.
 Earthstrength is completely implemented and tested.  :-)
+Wildblood: Implemented the first paragraph, about light armor.  But haven't implemented the second paragraph about second wind.  Put it in the second wind aspect, when I do.
+Nature's Wrath is fully implemented and tested.
+Warden's Fury is fully implemented/tested.
+Warden's Grasp is implemented and tested EXCEPT for the "cannot shift until the end of its next turn" part.
+Earth Shield Strike, Strength Of Stone, Thunder Ram Assault, and Form of the Willow Sentinel were implemented previously.  Should be retested.
+Not implementing other powers for Warden yet, since my character doesn't have them.
+Idea: There will probably end up being a lot of powers that should target a creature we already know, but don't need to select.  Create an aspect that will advice the choose method and automatically put the creature instead of asking which one, maybe.
+
+
+Paladin:
+Still need to implement Divine Mettle.  Waiting until after saving throws are implemented.
+Divine Strength.  Need to make sure it doesn't apply to more than one attack.  Right now I just have the duration set to the start of the next turn.
+Divine Challenge.  Done except for checking if you attacked the creature during your turn and penalizing by not letting you use it the next turn if you didn't engage the target.
+
+
+
+Sorcerer:
+Need to implement daggers as Implements.
+
+
+
+
+Monk:
+Need to implement Implements: Ki focuses
+
+
+General*************************************
+Expand the store to include gear from book 2 (p 197)
+Modify powers' meetsRequirementsToUsePower method to see if you have an enemy that you can attack with it,
+so menus are more context sensitive.

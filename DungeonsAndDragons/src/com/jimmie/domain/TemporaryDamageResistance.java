@@ -1,6 +1,6 @@
 package com.jimmie.domain;
 
-public class TemporaryDamageResistance extends TemporaryBonus {
+public class TemporaryDamageResistance extends TemporaryEffect {
 	private DamageType damageType;
 
 	public DamageType getDamageType() {

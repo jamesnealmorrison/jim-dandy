@@ -10,11 +10,9 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
-import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Avenger;
-import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
@@ -90,13 +88,12 @@ public class MeleeBasicAttack extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-		if (target != null) {
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
+			int diceRoll = d.roll();
 			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -107,12 +104,6 @@ public class MeleeBasicAttack extends AttackPower {
 			if (roll >= targetArmorClass) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
-
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
-				}
 
 				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
 				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
@@ -128,18 +119,9 @@ public class MeleeBasicAttack extends AttackPower {
 						Utils.print("Because of your Aspect Of Might bonus, you get a two bonus to this damage.  I'll add it for you!");
 					}
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
-			}
-
-			/* If this is a fighter, then they have "Combat Challenge", and can mark the target. */
-			if (Fighter.class.isInstance(user.getDndClass())) {
-				/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-				 * I can't think of a reason I wouldn't WANT to mark the target.
-				 */
-				target.markByCombatChallenge(user, DurationType.END_OF_NEXT_TURN);
-				Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
 			}
 		}
 	}

@@ -9,11 +9,12 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 
 public class SecondWind extends Power {
 
@@ -21,6 +22,12 @@ public class SecondWind extends Power {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private ActionType actionType = ActionType.STANDARD;
+
+	@Override
+	public void setActionType(ActionType actionType) {
+		this.actionType = actionType;
+	}
 
 	@Override
 	public String getName() {
@@ -56,7 +63,7 @@ public class SecondWind extends Power {
 
 	@Override
 	public ActionType getActionType() {
-		return ActionType.STANDARD;
+		return actionType ;
 	}
 
 	@Override
@@ -79,18 +86,18 @@ public class SecondWind extends Power {
 	@Override
 	public void process(Encounter encounter, Creature user) {
 		// Second winds should only be available to characters
-		if (!Character.class.isAssignableFrom(user.getClass())) {
+		if (!DndCharacter.class.isAssignableFrom(user.getClass())) {
 			Utils.print(user.getDisplayName() + " is not a character.  Not sure how you got to this second wind power.");
 		} else {
-			Character player = (Character) user;
+			DndCharacter player = (DndCharacter) user;
 			if (timesUsed == 0) {
 				timesUsed++;
 				player.useHealingSurge();
-				player.setTemporaryArmorClassBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
 
-				player.setTemporaryWillBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
-				player.setTemporaryReflexBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
-				player.setTemporaryFortitudeBonus(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.WILL_MODIFIER);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.REFLEX_MODIFIER);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORTITUDE_MODIFIER);
 			} else {
 				Utils.print("You have already used your second wind in this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
 			}

@@ -2,12 +2,16 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
@@ -81,7 +85,15 @@ public class ChannelDivinityDivineStrength extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		// Only one Channel Divinity power can be used per encounter
+		// Has it been used during this encounter already?
+		if (user.getChannelDivinityUses() == 0) {
+			user.setChannelDivinityUses(1);
+			user.setTemporaryEffect(user.getAbilityModifier(AbilityType.STRENGTH), user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER);
+		} else {
+			Utils.print("Sorry, you can't really use this power.  You already used a Channel Divinity Power this encounter.");
+		}
+		
 	}
 
 	@Override
@@ -110,8 +122,9 @@ public class ChannelDivinityDivineStrength extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Only one Channel Divinity power can be used per encounter
 		// Has it been used during this encounter already?
-		if (timesUsed > 0) {
+		if (user.getChannelDivinityUses() > 0) {
 			return false;
 		}
 		return true;

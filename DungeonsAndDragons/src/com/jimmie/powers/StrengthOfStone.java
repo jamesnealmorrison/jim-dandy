@@ -87,45 +87,40 @@ public class StrengthOfStone extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				user.heal(target.getStirringShoutCharismaModifier());
-			}
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-			DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (user.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (user.getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+
+				Utils.print(user.getName() + " gets 3 temporary HP");
+				/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */
+				if (user.getTemporaryHitPoints() < 3) {
+					user.setTemporaryHitPoints(3);
+				}
+			} else {
+				Utils.print("You missed " + target.getName());
 			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true);
-			
-			Utils.print(user.getName() + " gets 3 temporary HP");
-			/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */
-			if (user.getTemporaryHitPoints() < 3) {
-			   user.setTemporaryHitPoints(3);
-			}
-		} else {
-			Utils.print("You missed " + target.getName());
 		}
 	}
 

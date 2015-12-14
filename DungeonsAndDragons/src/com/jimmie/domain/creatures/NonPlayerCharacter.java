@@ -1,6 +1,6 @@
 package com.jimmie.domain.creatures;
 
-public class NonPlayerCharacter extends Character {
+public class NonPlayerCharacter extends DndCharacter {
 
 	/**
 	 * 

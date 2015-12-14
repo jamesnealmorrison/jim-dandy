@@ -90,57 +90,46 @@ public class AspectOfMight extends AttackPower {
 	public void process(Encounter encounter, Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
+				Dice d = new Dice(DiceType.TWENTY_SIDED);
+				int diceRoll = d.roll();
+				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			int targetArmorClass = target.getArmorClass(user);
-			Utils.print("Your target has an AC of " + targetArmorClass);
+				int targetArmorClass = target.getArmorClass(user);
+				Utils.print("Your target has an AC of " + targetArmorClass);
 
-			if (roll >= targetArmorClass) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
+				if (roll >= targetArmorClass) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
 
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
+					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+					damageRolls = damageRolls * 3;
+
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+
+				} else {
+					Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
+					Utils.print("You successfully hit " + target.getName());
+
+					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+					damageRolls = damageRolls * 3;
+
+					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, false, user);
+
 				}
-
-				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
-
-				damageRolls = damageRolls * 3;
-
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true);
-
-			} else {
-				Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
-				Utils.print("You successfully hit " + target.getName());
-
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
+				Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");
+				if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {
+					((Avenger) user.getDndClass()).setAspectOfMightEncounterBonus(true);
 				}
-
-				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
-
-				damageRolls = damageRolls * 3;
-
-				target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, false);
-
-			}
-			Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");
-			if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {
-				((Avenger) user.getDndClass()).setAspectOfMightEncounterBonus(true);
 			}
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Aspect of Might today.");

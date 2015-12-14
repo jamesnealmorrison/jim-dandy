@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -81,6 +82,10 @@ public class Invoker extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Rods, Staffs");
+		pc.addImplementProficiency(ImplementType.ROD);
+		pc.addImplementProficiency(ImplementType.STAFF);
+
 		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex +1 Will");
 		setFortitudeBonus(getFortitudeBonus() + 1);
 		setReflexBonus(getReflexBonus() + 1);
@@ -128,8 +133,8 @@ public class Invoker extends DndClass {
 		
 		pc.addPower(new ChannelDivinityRebukeUndead());
 		
-		// TODO: Divine Covenant, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Divine Covenant, Ritual Casting, Implements.");
+		// TODO: Divine Covenant, Ritual Casting
+		Utils.print("NOTE: I have not yet coded Divine Covenant, Ritual Casting.");
 	}
 
 	@Override

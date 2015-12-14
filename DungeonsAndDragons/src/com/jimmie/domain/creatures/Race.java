@@ -11,11 +11,11 @@ public abstract class Race implements Serializable {
 	
 	public Race() {
 	}
-	public Character getOwner() {
+	public DndCharacter getOwner() {
 		return owner;
 	}
-	protected Character owner; // Pointer back to the player character
-	public void setOwner(Character owner) {
+	protected DndCharacter owner; // Pointer back to the player character
+	public void setOwner(DndCharacter owner) {
 		this.owner = owner;
 	}
 	private static final long serialVersionUID = 1L;

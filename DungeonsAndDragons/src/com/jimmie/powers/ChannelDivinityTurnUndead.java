@@ -110,8 +110,9 @@ public class ChannelDivinityTurnUndead extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		// Only one Channel Divinity power can be used per encounter
 		// Has it been used during this encounter already?
-		if (timesUsed > 0) {
+		if (user.getChannelDivinityUses() > 0) {
 			return false;
 		}
 		return true;

@@ -91,97 +91,85 @@ public class ThunderRamAssault extends AttackPower {
 	public void process(Encounter encounter, Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
+				Dice d = new Dice(DiceType.TWENTY_SIDED);
+				int diceRoll = d.roll();
+				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			int targetArmorClass = target.getArmorClass(user);
-			Utils.print("Your target has an AC of " + targetArmorClass);
+				int targetArmorClass = target.getArmorClass(user);
+				Utils.print("Your target has an AC of " + targetArmorClass);
 
-			if (roll >= targetArmorClass) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
+				if (roll >= targetArmorClass) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
 
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
-				}
+					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+					/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.THUNDER, encounter, true, user);
 
-				/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.THUNDER, encounter, true);
-
-				DndClass dndClass = user.getDndClass();
-				GuardianMight guardianMight = null;
-				if (Warden.class.isAssignableFrom(dndClass.getClass())) {
-					guardianMight = ((Warden) dndClass).getGuardianMight();
-				}
-				/* If you chose the Earth Strength build, you can push the primary target. */
-				if (guardianMight == GuardianMight.EARTHSTRENGTH) {
-					String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
-					for (int i = 0; i < user.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
-						target.push(pushDirection);
+					DndClass dndClass = user.getDndClass();
+					GuardianMight guardianMight = null;
+					if (Warden.class.isAssignableFrom(dndClass.getClass())) {
+						guardianMight = ((Warden) dndClass).getGuardianMight();
 					}
-				}
-
-				int lowerLeftX = 0;
-				int lowerLeftY = 0;
-
-				Utils.print("Please enter the lower left X coordinate of the blast. No validation is done here, so do it right!");
-				lowerLeftX = Utils.getValidIntInputInRange(1, 50);
-
-				Utils.print("Please enter the lower left Y coordinate of the blast. No validation is done here, so do it right!");
-				lowerLeftY = Utils.getValidIntInputInRange(1, 50);
-
-				List<Creature> blastTargets = encounter.getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
-
-				Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
-				int secondaryDamage = secondaryDice.basicRoll();
-
-				for (Creature secondaryTarget : blastTargets) {
-					List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
-					secondaryTargets.add(secondaryTarget);
-					d = new Dice(DiceType.TWENTY_SIDED);
-					diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-					roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(secondaryTargets, encounter);
-
-					Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
-					int secondaryTargetFortitude = secondaryTarget.getFortitude();
-					Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
-
-					if (roll >= secondaryTargetFortitude) {
-						/* A HIT! */
-						Utils.print("You successfully hit " + secondaryTarget.getName());
-
-						/* See if this target was hit by Stirring Shout. */
-						if (secondaryTarget.isHitByStirringShout()) {
-							Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-							user.heal(target.getStirringShoutCharismaModifier());
+					/* If you chose the Earth Strength build, you can push the primary target. */
+					if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+						String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+						for (int i = 0; i < user.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
+							target.push(pushDirection);
 						}
-
-
-						secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, encounter, true);
-
-						/* If you chose the Earth Strength build, you can push the primary target. */
-						String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
-						secondaryTarget.push(pushDirection);
-					} else {
-						Utils.print("Sorry.  You missed " + secondaryTarget.getName());
 					}
-				}
 
-			} else {
-				Utils.print("You missed " + target.getName());
+					int lowerLeftX = 0;
+					int lowerLeftY = 0;
+
+					Utils.print("Please enter the lower left X coordinate of the blast. No validation is done here, so do it right!");
+					lowerLeftX = Utils.getValidIntInputInRange(1, 50);
+
+					Utils.print("Please enter the lower left Y coordinate of the blast. No validation is done here, so do it right!");
+					lowerLeftY = Utils.getValidIntInputInRange(1, 50);
+
+					List<Creature> blastTargets = encounter.getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
+
+					Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
+					int secondaryDamage = secondaryDice.roll();
+
+					for (Creature secondaryTarget : blastTargets) {
+						List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
+						secondaryTargets.add(secondaryTarget);
+						d = new Dice(DiceType.TWENTY_SIDED);
+						diceRoll = d.roll();
+						roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(secondaryTargets, encounter);
+
+						Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+						int secondaryTargetFortitude = secondaryTarget.getFortitude();
+						Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
+
+						if (roll >= secondaryTargetFortitude) {
+							/* A HIT! */
+							Utils.print("You successfully hit " + secondaryTarget.getName());
+
+							secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, encounter, true, user);
+
+							/* If you chose the Earth Strength build, you can push the primary target. */
+							String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
+							secondaryTarget.push(pushDirection);
+						} else {
+							Utils.print("Sorry.  You missed " + secondaryTarget.getName());
+						}
+					}
+
+				} else {
+					Utils.print("You missed " + target.getName());
+				}
 			}
 		}else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Thunder Ram Assault in this encounter.");

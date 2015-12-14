@@ -1,0 +1,205 @@
+Dice.attackRoll before I butchered it:
+
+	public int attackRoll(Creature attacker, List<AttackTarget> targets, Encounter encounter, Position attackOriginSquare) {
+		int diceRoll1 = basicRoll();
+		int diceRoll2 = 0;
+		int modifier = 0;
+		
+		/* Check to see if this roll is because of an avenger attacking his oath of enmity target. */
+		if (Character.class.isAssignableFrom(attacker.getClass())) {
+			DndClass dndClass = ((Character) attacker).getDndClass();
+			if (Avenger.class.isInstance(dndClass)) {
+				if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker) != null) {
+					/* Did you choose your oath of enmity target? */
+					if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker).equals(targets)) {
+						/* If the oath of enmity target is the only one adjacent. */
+						if (!encounter.areAnyOtherEnemiesAdjacentBesidesTarget((Creature)attacker, targets)) {
+							diceRoll2 = basicRoll();
+							Utils.print("Because of your Oath Of Enmity power, you can roll twice in this instance.");
+							Utils.print("You rolled a " + diceRoll1 + " and a " + diceRoll2 + ".  Using the bigger number.");
+							if (diceRoll2 > diceRoll1) {
+								diceRoll1 = diceRoll2;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/* Check to see if this roll is because of anyone attacking an avenger's oath of enmity target. */
+		/* If so, the avenger may be able to use their "Divine Guidance" power. */
+		if (Character.class.isAssignableFrom(attacker.getClass())) {
+			for (Character character : encounter.getCharacters()) {
+				if (!character.equals(attacker)) {
+					/* Need to be within 10 squares of avenger. */
+					if (character.getCurrentPosition().isWithinReachOf(((Character)attacker).getCurrentPosition(), 10)) {
+					DndClass dndClass = character.getDndClass();
+					if (Avenger.class.isInstance(dndClass)) {
+						if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker) != null) {
+							/* Did you choose the oath of enmity target? */
+							if (((Avenger) dndClass).getOathOfEnmityTarget((Character) attacker).equals(targets)) {
+								/* If the avenger can use the Divine Guidance power. */
+								if (!((Avenger) dndClass).isUsedChannelDivinity()) {
+									/* Ask if they want to. */
+									Utils.print(character.getName() + "'s oath of enmity target is being attacked, and they can use Divine Guidance to let you reroll.");
+									Utils.print("Does the avenger want to use this power to let you reroll?");
+									String choice = Utils.getYesOrNoInput();
+									if ("Y".equals(choice)) {
+										diceRoll2 = basicRoll();
+										Utils.print("You rolled a " + diceRoll1 + " and a " + diceRoll2 + ".  Using the bigger number.");
+										if (diceRoll2 > diceRoll1) {
+											diceRoll1 = diceRoll2;
+										}
+										((Avenger)dndClass).setUsedChannelDivinity(true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		}
+		
+		/* Check to see if the attacker is standing next to a Warden using the Form of the Willow Sentinel power. */
+		/* If so, the Warden may be able to do an immediate interrupt. */
+		if (Creature.class.isAssignableFrom(attacker.getClass())) {
+			List<Creature> adjacentEnemies = encounter.getAdjacentEnemies((Creature)attacker);
+			if (adjacentEnemies != null) {
+			for (Creature adjacentEnemy : adjacentEnemies) {
+				if (adjacentEnemy != targets) {
+				if (Character.class.isAssignableFrom(adjacentEnemy.getClass())) {
+					DndClass dndClass = ((Character) adjacentEnemy).getDndClass();
+					if (Warden.class.isInstance(dndClass)) {
+						if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
+							if (!((Warden) dndClass).isUsedFormOfTheWillowSentinelAttack()) {
+								Utils.print(((Creature) attacker).getName() + " is currently adjacent to a Warden that is using Form of the Willow Sentinel who has not yet interrupted an attack.");
+								Utils.print("Does " + adjacentEnemy.getName() + " want to use this attack now?");
+								String choice = Utils.getYesOrNoInput();
+								if ("Y".equalsIgnoreCase(choice)) {
+									modifier = modifier + ((Warden) dndClass).formOfTheWillowSentinelAttack(encounter, (Creature) attacker);
+								}
+							}
+						}
+					}
+				}
+			}
+			}
+			}
+		}		
+		
+		/* See if the attacker is an elf and can reroll the attack roll. */
+		if (Creature.class.isAssignableFrom(attacker.getClass())) {
+			Race race = ((Creature) attacker).getRace();
+			if (Elf.class.isInstance(race)) {
+				if (!((Elf) race).isUsedElvenAccuracy()) {
+				Utils.print("This Elf has not yet used Elven Accuracy in this encounter.  They can reroll if they want.");
+				Utils.print("Do you want to use this power?");
+				String choice = Utils.getYesOrNoInput();
+				if ("Y".equalsIgnoreCase(choice)) {
+					((Elf) race).setUsedElvenAccuracy(true);
+					/* Just call this method recursively. */
+					diceRoll1 = attackRoll(attacker, targets, encounter, attackOriginSquare);
+				}
+			}
+		}
+		}
+		
+		/* See if there is a temporary attack bonus due to the "Aid another" bonus. */
+		if (Character.class.isAssignableFrom(attacker.getClass())) {
+			TemporaryAidAnotherBonus temporaryAidAnotherBonus= ((Character) attacker).getTemporaryAidAnotherBonus();
+		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.ATTACK)) {
+			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == targets)) {
+				Utils.print("You are supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to attack against " + targets.getName() + ".");
+					modifier = modifier + temporaryAidAnotherBonus.getBonus();
+					Utils.print("Bonus still applies.");
+					temporaryAidAnotherBonus = null;
+					Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
+			} else {
+				/* Bonus is over.  Reset the bonus. */
+				temporaryAidAnotherBonus = null;
+				Utils.print("Bonus no longer applies.  Resetting bonus.");
+			}
+		}
+		}
+		
+		if (Creature.class.isAssignableFrom(attacker.getClass())) {
+			if (encounter.isSacredCircle(((Creature) attacker).getCurrentPosition())) {
+				modifier = modifier + 1;
+			}
+		}
+		
+		/* Does the target have cover? */
+		if (attackOriginSquare != null) {
+			modifier = modifier + encounter.getCoverPenalty(attackOriginSquare, targets.getCurrentPosition());
+		}
+				
+		return diceRoll1 + modifier;
+	}
+
+
+
+// Stuff I took out from Encounter.getOtherAttackModifier that needs to be put in an aspect.
+
+		if (isMarked() && !targets.contains(mark.getMarker())) {
+			Utils.print(getName() + " is currently marked by " + mark.getMarker().getName() + " and takes a -2 penalty because " + mark.getMarker().getName() + " is not being attacked.");
+			total = total - 2;
+
+			/* If I am marked by "Combat challenge", then the fighter that marked me gets to make a melee basic attack against me
+			 * as an immediate interrupt.
+			 */
+			if (mark.getMarkType() == MarkType.COMBAT_CHALLENGE) {
+				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
+				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
+				/* Should be able to cast the marker to a character. */
+				if (Character.class.isInstance(mark.getMarker())) {
+					Power power = mark.getMarker().getBasicMeleeAttack();
+					power.process(encounter, mark.getMarker());
+				}
+			}
+
+			/* If I am marked by "Nature's Wrath", then the warden that marked me gets to make a Warden's Fury against me
+			 * as an immediate interrupt.
+			 */
+			if (mark.getMarkType() == MarkType.NATURES_WRATH) {
+				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a Warden's Fury attack against me because they marked me with Nature's Wrath.");
+				/* Should be able to cast the marker to a warden. */
+				if (Warden.class.isInstance(mark.getMarker().getDndClass())) {
+					((Warden) (mark.getMarker().getDndClass())).wardensFury(encounter, this);
+				}
+			}
+		}
+
+
+removed from encounter.shift:
+		if (isMarked() && (mark.getMarkType() == MarkType.COMBAT_CHALLENGE)) {
+			Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
+			Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
+			/* Should be able to cast the marker to a character. */
+			if (Character.class.isInstance(mark.getMarker())) {
+				Power power = mark.getMarker().getBasicMeleeAttack();
+				power.process(encounter, mark.getMarker());
+			}
+		}
+
+
+Removed from several powers:
+			/* If this is a fighter, then they have "Combat Challenge", and can mark the target. */
+			if (Fighter.class.isInstance(user.getDndClass())) {
+				/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
+				 * I can't think of a reason I wouldn't WANT to mark the target.
+				 */
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					((Creature)target).mark(user, DurationType.END_OF_NEXT_TURN, MarkType.COMBAT_CHALLENGE, user.getCurrentTurn());
+					Utils.print(target.getName() + " is now marked by " + getName() + " until the end of my next turn because I have Combat Challenge.");
+				}
+			}
+
+
+Removed from many powers:
+				/* See if this target was hit by Stirring Shout. */
+				if (target.isHitByStirringShout()) {
+					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
+					user.heal(target.getStirringShoutCharismaModifier());
+				}
+

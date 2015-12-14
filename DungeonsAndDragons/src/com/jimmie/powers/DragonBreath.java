@@ -172,4 +172,12 @@ public class DragonBreath extends AttackPower {
 		return true;
 	}
 
+	public AbilityType getAbilityType() {
+		return abilityType;
+	}
+
+	public void setAbilityType(AbilityType abilityType) {
+		this.abilityType = abilityType;
+	}
+
 }

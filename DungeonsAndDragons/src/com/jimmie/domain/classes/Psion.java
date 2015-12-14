@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -83,6 +84,10 @@ public class Psion extends DndClass {
 		Utils.print("Adding Weapon Proficiencies: Simple Melee, Simple Ranged");
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
+
+		Utils.print("Adding Implement Proficiencies: Orbs, Staffs");
+		pc.addImplementProficiency(ImplementType.ORB);
+		pc.addImplementProficiency(ImplementType.STAFF);
 		
 		Utils.print("Adding bonus of +2 Will");
 		setWillBonus(getWillBonus() + 2);
@@ -127,8 +132,8 @@ public class Psion extends DndClass {
 			pc.addPower(new SendThoughts());
 		}
 		
-		// TODO: Psionic Augmentation, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Psionic Augmentation, Ritual Casting, Implements.");
+		// TODO: Psionic Augmentation, Ritual Casting
+		Utils.print("NOTE: I have not yet coded Psionic Augmentation, Ritual Casting.");
 	}
 
 	@Override

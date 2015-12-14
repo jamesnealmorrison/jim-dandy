@@ -14,7 +14,7 @@ import com.jimmie.domain.MovementType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Dice;
@@ -100,7 +100,7 @@ public class MajesticWord extends AttackPower {
 				range = 15;
 			}
 
-			Character target = (Character) encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), range);
+			DndCharacter target = (DndCharacter) encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), range);
 			
 			target.useHealingSurge();
 			int extraRolls = 0;
@@ -123,7 +123,7 @@ public class MajesticWord extends AttackPower {
 
 			for (int i = 0; i < extraRolls; i++) {
 			    Dice d = new Dice(DiceType.SIX_SIDED);
-     			extraHitPoints = extraHitPoints + d.basicRoll();
+     			extraHitPoints = extraHitPoints + d.roll();
 			}		
 			
 			target.heal(extraHitPoints);

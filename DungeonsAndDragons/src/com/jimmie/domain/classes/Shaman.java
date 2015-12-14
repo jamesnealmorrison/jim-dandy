@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -84,6 +85,9 @@ public class Shaman extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponTypeProficiency(WeaponType.LONGSPEAR);
 		
+		Utils.print("Adding Implement Proficiencies: Totem");
+		pc.addImplementProficiency(ImplementType.TOTEM);
+
 		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
 		setFortitudeBonus(getFortitudeBonus() + 1);
 		setWillBonus(getWillBonus() + 1);
@@ -132,8 +136,6 @@ public class Shaman extends DndClass {
 		pc.addPower(new HealingSpirit());
 		pc.addPower(new SpeakWithSpirits());
 		
-		// TODO: Implements
-		Utils.print("NOTE: I have not yet coded Implements.");
 	}
 
 	@Override

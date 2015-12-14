@@ -5,7 +5,7 @@ import java.util.List;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.encounters.Encounter;
@@ -24,15 +24,19 @@ public aspect MovementAspect {
 			creature = (Creature) o;
 
 			if (movementType == MovementType.SHIFTING) {
-				Mark mark = creature.getMark();
-				if (creature.isMarked() && (mark.getTypeOfMark() == MarkType.COMBAT_CHALLENGE)) {
+				if (creature.isMarked()) {
 
-					Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
-					Utils.print("Make sure to pick me (" + creature.getName() + ") when it asks who to attack.");
-					/* Should be able to cast the marker to a character. */
-					if (Character.class.isInstance(mark.getMarker())) {
-						Power basicMeleeAttack = mark.getMarker().getBasicMeleeAttack();
-						basicMeleeAttack.process(encounter, mark.getMarker());
+					for (Mark mark : creature.getMarks()) {
+						if (mark.getMarkType() == MarkType.COMBAT_CHALLENGE) {
+							Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
+							Utils.print("Make sure to pick me (" + creature.getName() + ") when it asks who to attack.");
+							/* Should be able to cast the marker to a character. */
+							if (DndCharacter.class.isInstance(mark.getMarker())) {
+								Power basicMeleeAttack = mark.getMarker().getBasicMeleeAttack();
+								basicMeleeAttack.process(encounter, mark.getMarker());
+							}
+						}
+						
 					}
 				}
 			}

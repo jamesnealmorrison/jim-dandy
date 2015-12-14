@@ -13,7 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Bard;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -89,49 +89,44 @@ public class StirringShout extends AttackPower {
 	public void process(Encounter encounter, Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			
-			Character c = null;
-			if (Character.class.isAssignableFrom(user.getClass())) {
-				c = (Character) user;
+
+			DndCharacter c = null;
+			if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+				c = (DndCharacter) user;
 			}
 
 
-			AttackTarget target = encounter.chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
 
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
+				Dice d = new Dice(DiceType.TWENTY_SIDED);
+				int diceRoll = d.roll();
+				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			int targetWill = target.getWill(user);
-			Utils.print("Your target has a Will of " + targetWill);
+				int targetWill = target.getWill(user);
+				Utils.print("Your target has a Will of " + targetWill);
 
-			if (roll >= targetWill) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
+				if (roll >= targetWill) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
 
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
+					int damageRolls = 2;
+					DiceType damageDiceType = DiceType.SIX_SIDED;
+
+					/* Book says at level 21 increase damage to 2d8. */
+					if (user.getLevel() >= 21) {
+						damageRolls = damageRolls * 2;
+					}
+					/* TODO: Supposed to be psychic damage.  Haven't implemented that yet. */
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.PSYCHIC, encounter, true, user);
+
+					target.hitByStirringShout(user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA));
+				} else {
+					Utils.print("You missed " + target.getName());
 				}
-
-				int damageRolls = 2;
-				DiceType damageDiceType = DiceType.SIX_SIDED;
-
-				/* Book says at level 21 increase damage to 2d8. */
-				if (user.getLevel() >= 21) {
-					damageRolls = damageRolls * 2;
-				}
-				/* TODO: Supposed to be psychic damage.  Haven't implemented that yet. */
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.PSYCHIC, encounter, true);
-
-				target.hitByStirringShout(user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA));
-			} else {
-				Utils.print("You missed " + target.getName());
 			}
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Stirring Shout in this encounter.");

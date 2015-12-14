@@ -2,14 +2,19 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.MovementType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
@@ -81,7 +86,35 @@ public class WardensGrasp extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 0);
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+
+			Utils.print("You get to slide " + target.getName() + " 1 square.");
+			Utils.print("What direction do you want to slide them (N, E, S, W, NE, NW, SE, SW)?");
+			List<String> validDirections = new ArrayList<String>();
+
+			validDirections.add("N");
+			validDirections.add("E");
+			validDirections.add("S");
+			validDirections.add("W");
+			validDirections.add("NE");
+			validDirections.add("NW");
+			validDirections.add("SE");
+			validDirections.add("SW");
+
+			Utils.print("Your choice?");
+			String direction = Utils.getValidInput(validDirections);
+			target.moveCreature(direction, encounter, MovementType.SLIDE);
+
+			Utils.print("Setting them to slow");
+			if (Creature.class.isAssignableFrom(target.getClass())) {
+				Creature creature = (Creature) target;
+				creature.setTemporaryCondition(creature, DurationType.START_OF_NEXT_TURN, CreatureConditionType.SLOWED, creature.getCurrentTurn());
+			}
+
+		}
 	}
 
 	@Override

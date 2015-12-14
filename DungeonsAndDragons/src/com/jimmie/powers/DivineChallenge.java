@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.MarkType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
@@ -19,6 +22,8 @@ public class DivineChallenge extends AttackPower {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private boolean takenOneTimePenalty = false;
+	private Creature markedCreature;
 
 	@Override
 	public AttackType getAttackType() {
@@ -81,7 +86,18 @@ public class DivineChallenge extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 5);
+		
+		for (AttackTarget target : targets) {
+			if (Creature.class.isAssignableFrom(target.getClass())) {
+				Creature c = (Creature) target;
+				c.mark(user, DurationType.SPECIAL, MarkType.DIVINE_CHALLENGE, user.getCurrentTurn());
+				Utils.print(target.getName() + " is now marked by " + getName() + " until " + getName() + " marks another target or fails to engage " + target.getName());
+				markedCreature = c;
+			}
+		}
+		takenOneTimePenalty = false;
+		timesUsed++;
 	}
 
 	@Override
@@ -111,6 +127,22 @@ public class DivineChallenge extends AttackPower {
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
 		return true;
+	}
+
+	public boolean hasTakenOneTimePenalty() {
+		return takenOneTimePenalty;
+	}
+
+	public void setTakenOneTimePenalty(boolean takenOneTimePenalty) {
+		this.takenOneTimePenalty = takenOneTimePenalty;
+	}
+
+	public Creature getMarkedCreature() {
+		return markedCreature;
+	}
+
+	public void setMarkedCreature(Creature markedCreature) {
+		this.markedCreature = markedCreature;
 	}
 
 }

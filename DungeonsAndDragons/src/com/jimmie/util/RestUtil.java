@@ -3,7 +3,7 @@ package com.jimmie.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 
 public class RestUtil {
 	/**
@@ -15,16 +15,16 @@ public class RestUtil {
 		restUtil.run();
 	}
 	
-	protected List<Character> characters;
+	protected List<DndCharacter> characters;
 	
 	private void run() {
-		Character elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
-		Character kellen = Utils.loadCharacter("Kellen Wordsmith");
-		Character glock = Utils.loadCharacter("Glock Elmhurst");
-		Character halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
-		Character zanros = Utils.loadCharacter("Zanros Hawklight");
+		DndCharacter elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
+		DndCharacter kellen = Utils.loadCharacter("Kellen Wordsmith");
+		DndCharacter glock = Utils.loadCharacter("Glock Elmhurst");
+		DndCharacter halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
+		DndCharacter zanros = Utils.loadCharacter("Zanros Hawklight");
 		
-		characters = new ArrayList<Character>();
+		characters = new ArrayList<DndCharacter>();
 		characters.add(elfAvenger);
 		characters.add(kellen);
 		characters.add(glock);
@@ -38,7 +38,7 @@ public class RestUtil {
 		int choice = Utils.getValidIntInputInRange(1,2);
 		if (choice == 1) {
 			/* Extended Rest. */
-			for (Character c : characters) {
+			for (DndCharacter c : characters) {
 				c.setCurrentHitPoints(c.getMaxHitPoints());
 				c.setActionPoints(1);
 				c.setCurrentSurgeUses(0);
@@ -49,7 +49,7 @@ public class RestUtil {
 		} else {
 			Utils.print("Jim, do the characters get another action point (i.e. have they completed two encounters without an extended rest)?");
 			String actionPoint = Utils.getYesOrNoInput();
-			for (Character c : characters) {
+			for (DndCharacter c : characters) {
 				Utils.print(c.getName() + " currently has " + c.getCurrentHitPoints() + " out of " + c.getMaxHitPoints() + " hit points.");
 				Utils.print(c.getName() + " has " + (c.getHealingSurgesPerDay() - c.getCurrentSurgeUses()) + " healing surges left and each one restores " + c.getHealingSurgeValue() + " hp.");
 				Utils.print("How many do you want to use?");
@@ -66,7 +66,7 @@ public class RestUtil {
 		}
 
 		/* Now save them. */
-		for (Character c : characters) {
+		for (DndCharacter c : characters) {
 			Utils.saveCharacter(c);
 		}
 	}

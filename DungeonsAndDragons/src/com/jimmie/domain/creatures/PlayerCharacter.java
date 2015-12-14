@@ -19,7 +19,7 @@ import com.jimmie.util.FeatMaster;
 import com.jimmie.util.PowerMaster;
 import com.jimmie.util.Utils;
 
-public class PlayerCharacter extends Character implements Serializable {
+public class PlayerCharacter extends DndCharacter implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ParagonPath paragonPath;
 	private EpicDestiny epicDestiny;

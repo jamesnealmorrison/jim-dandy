@@ -14,7 +14,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Psion;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -92,9 +92,9 @@ public class MemoryHole extends AttackPower {
 		int augment = 0;
 		int range = 0;
 		
-		Character c = null;
-		if (Character.class.isAssignableFrom(user.getClass())) {
-			c = (Character) user;
+		DndCharacter c = null;
+		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+			c = (DndCharacter) user;
 		}		
 		
 		Psion psion = null;
@@ -145,7 +145,7 @@ public class MemoryHole extends AttackPower {
  		int damage = 0;
  		
  		for (int rolls = 0; rolls < damageRolls; rolls++) {
- 		    damage = damage + damageDice.basicRoll();
+ 		    damage = damage + damageDice.roll();
  		}
  		damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 		
@@ -156,7 +156,7 @@ public class MemoryHole extends AttackPower {
 		}
 		for (AttackTarget target : targets) {
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
+			int diceRoll = d.roll();
 			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
 			
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -168,13 +168,7 @@ public class MemoryHole extends AttackPower {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				/* See if this target was hit by Stirring Shout. */
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
-				}
-		
-				target.hurt(damage, DamageType.PSYCHIC, encounter, true);
+				target.hurt(damage, DamageType.PSYCHIC, encounter, true, user);
 				
 				hitTargets.add((Creature) target);
 				Utils.print("You just became invisible to " + target.getName());

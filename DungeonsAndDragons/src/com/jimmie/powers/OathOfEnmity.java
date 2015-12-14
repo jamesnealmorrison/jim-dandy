@@ -94,9 +94,9 @@ public class OathOfEnmity extends AttackPower {
 			timesUsed++;
 
 		/* This is supposed to be a close burst 10, but the ranged will work for it. */
-		AttackTarget target = encounter.chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
 		
-		oathOfEnmityTarget = target;
+		oathOfEnmityTarget = targets.get(0);
 
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Oath of Enmity in this encounter.");

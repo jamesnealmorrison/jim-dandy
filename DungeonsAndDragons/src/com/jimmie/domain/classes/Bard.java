@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -21,21 +22,14 @@ public class Bard extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private boolean usedBlunder;
-	private int majesticWordUses;
-	private boolean usedStirringShout;
 	private BardicVirtue bardicVirtue;
 
 	@Override
 	public void initializeForEncounter() {
-		usedBlunder = false;
-		majesticWordUses = 0;
 	}
 
 	@Override
 	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-		usedStirringShout = false;
 	}
 
 
@@ -97,6 +91,9 @@ public class Bard extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Wands");
+		pc.addImplementProficiency(ImplementType.WAND);
+
 		Utils.print("Adding bonus of +1 Reflex, +1 Will");
 		setReflexBonus(getReflexBonus() + 1);
 		setWillBonus(getWillBonus() + 1);

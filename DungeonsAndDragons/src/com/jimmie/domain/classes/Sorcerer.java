@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -78,6 +79,10 @@ public class Sorcerer extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Daggers, Staffs");
+		pc.addImplementProficiency(ImplementType.DAGGER);
+		pc.addImplementProficiency(ImplementType.STAFF);
+
 		Utils.print("Adding bonus of +2 Will");
 		setWillBonus(getWillBonus() + 2);
 
@@ -119,8 +124,8 @@ public class Sorcerer extends DndClass {
 			setSpellSource(SorcererSpellSource.WILD_MAGIC);
 		}
 		
-		// TODO: Spell Source, Implements
-		Utils.print("NOTE: I have not yet coded Spell Source, Implements.");
+		// TODO: Spell Source
+		Utils.print("NOTE: I have not yet coded Spell Source.");
 	}
 
 	@Override

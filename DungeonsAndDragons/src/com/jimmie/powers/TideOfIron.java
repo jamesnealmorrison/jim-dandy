@@ -12,10 +12,11 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
@@ -87,54 +88,44 @@ public class TideOfIron extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				user.heal(target.getStirringShoutCharismaModifier());
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (user.getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+
+				/* Push the target. */
+				String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+				target.push(pushDirection);
+				Utils.print("I think I am also supposed to be able to occupy the space the creature was in, but I haven't implemented that yet.  SORRY!");
+
+				/* I get an AC/REF bonus of +1 until the end of my next turn. */
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER);
+			} else {
+				Utils.print("You missed " + target.getName());
 			}
-
-			int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-			DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (user.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true);
-			
-			/* Push the target. */
-			String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
-			target.push(pushDirection);
-			Utils.print("I think I am also supposed to be able to occupy the space the creature was in, but I haven't implemented that yet.  SORRY!");
-			
-			/* I get an AC/REF bonus of +1 until the end of my next turn. */
-			user.setTemporaryArmorClassBonus(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user);
-			user.setTemporaryReflexBonus(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user);
-		} else {
-			Utils.print("You missed " + target.getName());
 		}
-		/* Hit or miss, I can mark the target.  For now, I'm going to assume that I want to every time.
-		 * I can't think of a reason I wouldn't WANT to mark the target.
-		 */
-		target.markByCombatChallenge(user, DurationType.END_OF_NEXT_TURN);
-		Utils.print(target.getName() + " is now marked by " + user.getName() + " until the end of my next turn because I have Combat Challenge.");
 	}
 
 	@Override
@@ -163,8 +154,8 @@ public class TideOfIron extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		if (Character.class.isAssignableFrom(user.getClass())) {
-			if (((Character) user).getReadiedShield() != null) {
+		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+			if (((DndCharacter) user).getReadiedShield() != null) {
 				return true;
 			}
 		}

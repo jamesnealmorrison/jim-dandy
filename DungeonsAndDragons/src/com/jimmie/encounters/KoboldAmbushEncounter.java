@@ -7,7 +7,7 @@ import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldWyrmpriest;
 import com.jimmie.util.Utils;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
@@ -272,13 +272,13 @@ public class KoboldAmbushEncounter extends Encounter {
 		zanros.initializeForNewDay();
 		Utils.saveCharacter(zanros);
 */		
-		Character elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
-		Character kellen = Utils.loadCharacter("Kellen Wordsmith");
-		Character glock = Utils.loadCharacter("Glock Elmhurst");
-		Character halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
-		Character zanros = Utils.loadCharacter("Zanros Hawklight");
+		DndCharacter elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
+		DndCharacter kellen = Utils.loadCharacter("Kellen Wordsmith");
+		DndCharacter glock = Utils.loadCharacter("Glock Elmhurst");
+		DndCharacter halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
+		DndCharacter zanros = Utils.loadCharacter("Zanros Hawklight");
 		
-		characters = new ArrayList<Character>();
+		characters = new ArrayList<DndCharacter>();
 		characters.add(elfAvenger);
 		characters.add(kellen);
 		characters.add(glock);

@@ -88,55 +88,48 @@ public class BondOfPursuit extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-		int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-			
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				user.heal(target.getStirringShoutCharismaModifier());
-			}
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
 
-			int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-			DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (user.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			
-			boolean aspectOfMightEncounterBonus = false;
-			if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {
-				aspectOfMightEncounterBonus = ((Avenger) user.getDndClass()).isAspectOfMightEncounterBonus();
-			}
-			
-			if (aspectOfMightEncounterBonus == false) {
-    		  target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true);
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (user.getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+
+				boolean aspectOfMightEncounterBonus = false;
+				if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {
+					aspectOfMightEncounterBonus = ((Avenger) user.getDndClass()).isAspectOfMightEncounterBonus();
+				}
+
+				if (aspectOfMightEncounterBonus == false) {
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				} else {
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					Utils.print("You got an aspect of might bonus of two to this damage roll.");
+				}
+
+				target.hitByBondOfPursuit(user);
 			} else {
-                target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true);
-				Utils.print("You got an aspect of might bonus of two to this damage roll.");
+				Utils.print("You missed " + target.getName());
 			}
-			
-			target.hitByBondOfPursuit(user);
-			
-			
-		} else {
-			Utils.print("You missed " + target.getName());
 		}
 	}
 

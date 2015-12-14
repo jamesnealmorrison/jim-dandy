@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
@@ -97,22 +97,22 @@ public class KoboldLairOutsideEncounterConfig {
 	}
 	
 	@Bean
-	public Character percian() {
+	public DndCharacter percian() {
 		return Utils.loadCharacter("Percian");
 	}
 
 	@Bean
-	public Character gamal() {
+	public DndCharacter gamal() {
 		return Utils.loadCharacter("Gamal");
 	}
 
 	@Bean
-	public Character keothi() {
+	public DndCharacter keothi() {
 		return Utils.loadCharacter("Keothi");
 	}
 	
 	@Bean
-	public Character travok() {
+	public DndCharacter travok() {
 		return Utils.loadCharacter("Travok");
 	}
 }

@@ -8,7 +8,7 @@ import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
@@ -45,13 +45,13 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	@Autowired
 	private KoboldSlinger s;
 	@Autowired
-	private Character gamal;
+	private DndCharacter gamal;
 	@Autowired
-	private Character percian;
+	private DndCharacter percian;
 	@Autowired
-	private Character keothi;
+	private DndCharacter keothi;
 	@Autowired
-	private Character travok;
+	private DndCharacter travok;
 /*	@Autowired
 	private Character halfOrcFighter;
 */	
@@ -88,8 +88,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		m9.setCurrentPosition(new Position(13,9));
 		m10.setName("Kobold Minion 10");
 		m10.setDisplayName("M10");
-//		m10.setCurrentPosition(new Position(14,13));
-		m10.setCurrentPosition(new Position(5,17));
+		m10.setCurrentPosition(new Position(14,13));
 
 		KoboldSkirmisher k = new KoboldSkirmisher();
 		k.setName("Kobold Skirmisher");
@@ -118,11 +117,11 @@ public class KoboldLairOutsideEncounter extends Encounter {
 //		monsters.add(m7);		
 //		monsters.add(m8);		
 //		monsters.add(m9);		
-		monsters.add(m10);
+//		monsters.add(m10);
 		
 //		monsters.add(k);
 //		monsters.add(d);
-//		monsters.add(s);
+		monsters.add(s);
 
 		
 	
@@ -149,7 +148,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		percian.addReadiedWeapon(readiedWeapon);
 		percian.setReadiedArmor(percian.getArmor().get(0));
 */
-		keothi.setCurrentPosition(new Position(3,18));
+// Original position		keothi.setCurrentPosition(new Position(3,18));
+		keothi.setCurrentPosition(new Position(13,13));
 /*		
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
@@ -161,7 +161,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		keothi.addReadiedWeapon(readiedWeapon);
 		keothi.setReadiedArmor(keothi.getArmor().get(0));
 */
-		travok.setCurrentPosition(new Position(1,19));
+		// Original position		travok.setCurrentPosition(new Position(1,19));
+		travok.setCurrentPosition(new Position(12,14));
 /*
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
@@ -172,6 +173,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 		travok.addReadiedWeapon(readiedWeapon);
 		travok.setReadiedArmor(travok.getArmor().get(0));
+		
+		for (Gear gear : travok.getGear()) {
+			if (HolySymbol.class.isAssignableFrom(gear.getClass())) {
+				travok.setReadiedImplement((Implement) gear);
+			}
+		}
 */
 		
 //		halfOrcFighter.setCurrentPosition(new Position(4,19));
@@ -189,12 +196,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 //		Utils.saveCharacter(travok);
 		
 		
-		characters = new ArrayList<Character>();
+		characters = new ArrayList<DndCharacter>();
 
 //		characters.add(gamal);
 //		characters.add(percian);
 		characters.add(keothi);
-//		characters.add(travok);
+		characters.add(travok);
 //		characters.add(halfOrcFighter);
 		
 		map = new Map();
@@ -622,27 +629,27 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		this.s = s;
 	}
 
-	public Character getGamal() {
+	public DndCharacter getGamal() {
 		return gamal;
 	}
 
-	public void setGamal(Character gamal) {
+	public void setGamal(DndCharacter gamal) {
 		this.gamal = gamal;
 	}
 
-	public Character getKeothi() {
+	public DndCharacter getKeothi() {
 		return keothi;
 	}
 
-	public void setKeothi(Character keothi) {
+	public void setKeothi(DndCharacter keothi) {
 		this.keothi = keothi;
 	}
 
-	public Character getTravok() {
+	public DndCharacter getTravok() {
 		return travok;
 	}
 
-	public void setTravok(Character travok) {
+	public void setTravok(DndCharacter travok) {
 		this.travok = travok;
 	}
 /*
@@ -654,11 +661,11 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		this.halfOrcFighter = halfOrcFighter;
 	}
 */
-	public Character getPercian() {
+	public DndCharacter getPercian() {
 		return percian;
 	}
 
-	public void setPercian(Character percian) {
+	public void setPercian(DndCharacter percian) {
 		this.percian = percian;
 	}
 

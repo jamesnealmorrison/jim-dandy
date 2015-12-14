@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -79,6 +80,11 @@ public class Wizard extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.DAGGER);
 		pc.addWeaponTypeProficiency(WeaponType.QUARTERSTAFF);
 		
+		Utils.print("Adding Implement Proficiencies: Orbs, Staffs, Wands");
+		pc.addImplementProficiency(ImplementType.ORB);
+		pc.addImplementProficiency(ImplementType.STAFF);
+		pc.addImplementProficiency(ImplementType.WAND);
+
 		Utils.print("Adding bonus of +2 Will");
 		setWillBonus(getWillBonus() + 2);
 		

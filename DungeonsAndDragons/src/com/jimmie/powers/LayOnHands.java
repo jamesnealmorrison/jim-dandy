@@ -13,6 +13,7 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
+import com.jimmie.domain.creatures.DndCharacter;
 
 
 public class LayOnHands extends AttackPower {
@@ -113,6 +114,11 @@ public class LayOnHands extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		return true;
+		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+			if (((DndCharacter) user).getCurrentSurgeUses() < ((DndCharacter) user).getHealingSurgesPerDay()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

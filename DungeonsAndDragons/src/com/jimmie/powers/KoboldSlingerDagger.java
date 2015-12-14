@@ -80,33 +80,34 @@ public class KoboldSlingerDagger extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseMeleeTargetInRange(user, 1);
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + 5 + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+		List<AttackTarget> targets = encounter.chooseMeleeTargetInRange(user, 1);
 
-			int damageRolls = 1;
-			DiceType damageDiceType = DiceType.FOUR_SIDED;
-			
-			int weaponBonus = 3;
-			
-			int attributeBonus = 0;
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + 5 + user.getOtherAttackModifier(targets, encounter);
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, encounter, true);
-		} else {
-			Utils.print("You missed " + target.getName());
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = 1;
+				DiceType damageDiceType = DiceType.FOUR_SIDED;
+
+				int weaponBonus = 3;
+
+				int attributeBonus = 0;
+
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, encounter, true, user);
+			} else {
+				Utils.print("You missed " + target.getName());
+			}
 		}
 	}
 

@@ -33,7 +33,7 @@ public class DamageEffect extends Effect {
 		int total = 0;
 		
 		for (int i = 0; i < numberOfDice; i++) {
-			total = total + d.basicRoll();
+			total = total + d.roll();
 		}
 		total = total + modifier;
 		return total;

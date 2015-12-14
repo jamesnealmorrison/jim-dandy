@@ -8,12 +8,15 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jimmie.domain.CombatAdvantageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.TemporaryCombatAdvantage;
+import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Race;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.gui.DungeonGUI;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 
 public class Utils {
 	static IntegratedCommandConsole icc = null;
@@ -251,7 +254,7 @@ public class Utils {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.basicRoll();
+			int currentRoll = damageDice.roll();
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -276,7 +279,7 @@ public class Utils {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.basicRoll();
+			int currentRoll = damageDice.roll();
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -312,6 +315,25 @@ public class Utils {
 		if (source.isInvisibleTo(target)) {
 			return true;
 		}
+		
+		for (Iterator<TemporaryEffect> it = target.getTemporaryEffects().iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+			if (TemporaryCombatAdvantage.class.isAssignableFrom(tempEffect.getClass())) {
+				TemporaryCombatAdvantage temporaryCombatAdvantage = (TemporaryCombatAdvantage) tempEffect;
+
+				if  (temporaryCombatAdvantage.stillApplies()) {
+					// Warden's Fury combat advantage applies to everyone.  For other types I may need to check who has the combat advantage.
+					if (CombatAdvantageType.WARDENS_FURY == temporaryCombatAdvantage.getTypeOfCombatAdvantage()) {
+						Utils.print("Granting combat advantage because of Warden's Fury");
+						return true;
+					}
+				} else {
+					Utils.print("Temporary Combat Advantage no longer applies. Removing.");
+					it.remove();
+				}
+			}
+		}
+
 		return false;
 	}
 
@@ -354,7 +376,7 @@ public class Utils {
 		return false;
 	}
 	
-	public static void saveCharacter(Character c) {
+	public static void saveCharacter(DndCharacter c) {
 		String fileName = c.getName();
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -368,14 +390,14 @@ public class Utils {
 		}
 	}
 	
-	public static Character loadCharacter(String filename) {
+	public static DndCharacter loadCharacter(String filename) {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
-		Character c = null;
+		DndCharacter c = null;
 		try {
 			fis = new FileInputStream(filename);
 			in = new ObjectInputStream(fis);
-			c = (Character) in.readObject();
+			c = (DndCharacter) in.readObject();
 			in.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -406,7 +428,7 @@ public class Utils {
 		}
 	}
 
-	public static void printCoins(Character c) {
+	public static void printCoins(DndCharacter c) {
 		print(c.getName() + " has the following coins:");
 		print("Copper pieces:   " + c.getCoins().getCopperPieces());
 		print("Silver pieces:   " + c.getCoins().getSilverPieces());

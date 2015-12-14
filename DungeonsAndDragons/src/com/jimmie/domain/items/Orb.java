@@ -1,6 +1,8 @@
 package com.jimmie.domain.items;
 
-public class Orb extends Gear {
+import com.jimmie.domain.ImplementType;
+
+public class Orb extends Implement {
 	/**
 	 * 
 	 */
@@ -19,5 +21,21 @@ public class Orb extends Gear {
 	@Override
 	public GearType getGearType() {
 		return GearType.ORB;
+	}
+
+	@Override
+	public int getAttackBonus() {
+		// According to the book, a non-magical implement gives you no bonus. 
+		return 0;
+	}
+
+	@Override
+	public int getDamageBonus() {
+		return 0;
+	}
+
+	@Override
+	public ImplementType getImplementType() {
+		return ImplementType.ORB;
 	}
 }

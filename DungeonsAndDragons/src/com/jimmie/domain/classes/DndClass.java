@@ -2,7 +2,7 @@ package com.jimmie.domain.classes;
 
 import java.io.Serializable;
 import java.util.List;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public abstract class DndClass implements Serializable {
@@ -15,11 +15,11 @@ public abstract class DndClass implements Serializable {
 	private int willBonus = 0;
 	private int reflexBonus = 0;
 	
-	public Character getOwner() {
+	public DndCharacter getOwner() {
 		return owner;
 	}
-	protected Character owner; // Pointer back to the player character
-	public void setOwner(Character owner) {
+	protected DndCharacter owner; // Pointer back to the player character
+	public void setOwner(DndCharacter owner) {
 		this.owner = owner;
 	}
 	public abstract void initializeForEncounter();

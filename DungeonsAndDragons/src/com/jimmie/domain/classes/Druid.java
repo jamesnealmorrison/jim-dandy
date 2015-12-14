@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -80,6 +81,10 @@ public class Druid extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Staff, Totem");
+		pc.addImplementProficiency(ImplementType.STAFF);
+		pc.addImplementProficiency(ImplementType.TOTEM);
+
 		Utils.print("Adding bonus of +1 Reflex, +1 Will");
 		setReflexBonus(getReflexBonus() + 1);
 		setWillBonus(getWillBonus() + 1);
@@ -124,8 +129,8 @@ public class Druid extends DndClass {
 		
 		pc.addPower(new WildShape());
 		
-		// TODO: Balance of Nature, Primal Aspect, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting, Implements.");
+		// TODO: Balance of Nature, Primal Aspect, Ritual Casting
+		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting.");
 	}
 
 	@Override

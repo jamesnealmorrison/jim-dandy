@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -74,6 +75,10 @@ public class Warlock extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Rods, Wands");
+		pc.addImplementProficiency(ImplementType.ROD);
+		pc.addImplementProficiency(ImplementType.WAND);
+
 		Utils.print("Adding bonus of +1 Reflex, +1 Will");
 		setReflexBonus(getReflexBonus() + 1);
 		setWillBonus(getWillBonus() + 1);
@@ -119,8 +124,8 @@ public class Warlock extends DndClass {
 			setEldritchPact(EldritchPact.STAR_PACT);
 		}
 		
-		// TODO: Eldritch Blast, Eldritch Pact, Prime Shot, Warlock's Curse, Implements
-		Utils.print("NOTE: I have not yet coded Eldritch Blast, Eldritch Pact, Prime Shot, Warlock's Curse, Implements");
+		// TODO: Eldritch Blast, Eldritch Pact, Prime Shot, Warlock's Curse
+		Utils.print("NOTE: I have not yet coded Eldritch Blast, Eldritch Pact, Prime Shot, Warlock's Curse");
 	}
 
 	@Override

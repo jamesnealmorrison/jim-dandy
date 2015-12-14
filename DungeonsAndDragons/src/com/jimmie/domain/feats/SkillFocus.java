@@ -63,4 +63,12 @@ public class SkillFocus extends Feat {
 		focusedSkill = Utils.getValidInput(choices);
 	}
 
+	public String getFocusedSkill() {
+		return focusedSkill;
+	}
+
+	public void setFocusedSkill(String focusedSkill) {
+		this.focusedSkill = focusedSkill;
+	}
+
 }

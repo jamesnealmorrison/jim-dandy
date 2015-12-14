@@ -1,0 +1,6 @@
+package com.jimmie.domain;
+
+public enum TemporaryEffectType {
+	REFLEX_MODIFIER, WILL_MODIFIER, ARMOR_CLASS_MODIFIER, DAMAGE_MODIFIER, FORTITUDE_MODIFIER, ATTACK_ROLL_MODIFIER
+
+}

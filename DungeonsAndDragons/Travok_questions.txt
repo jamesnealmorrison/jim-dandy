@@ -66,7 +66,8 @@ Setting speed to 5.
 Adding low-light vision to senses.
 As a Dwarf, you get +2 Dungeoneering and Endurance
 As a Dwarf, you get a weapon proficiency in warhammer and throwing hammer.
-NOTE: I have not yet coded cast-iron stomach, dwarven resilience, encumbered speed or stand your ground.
+Dwarven Resilience: Setting Second Wind power to minor action.
+NOTE: I have not yet coded cast-iron stomach, encumbered speed or stand your ground.
 How old is your character?
 78
 Is you character Male (M) or Female(F)?
@@ -254,6 +255,70 @@ Please select one of the following Feats:
      Second wind or total defense grants saving throw
 35. Weapon Expertise
      +1 to attacks with weapon group
+36. Battle Hardened
+     +5 to saving throws against fear, +2 to initiative checks
+37. Battle Caster Defense
+     +4 AC against opportunity attacks after you use ranged or area power
+38. Battering Shield
+     Push or slide target 1 additional square when using shield
+39. Beguiling Enchantment
+     Enemy -2 to attacks after you hit it with charm power
+40. Cascading Rush
+     Push adjacent enemy before or after bull rush
+41. Combat Intuition
+     +2 to opportunity attacks against enemy you miss
+42. Deadly Draw
+     Combat advantage against enemy you pull or slide adjacent
+43. Directed Bull Rush
+     Slide your bull rush target instead of pushing
+44. Focused Mind
+     +4 to saving throws against dazing and stunning effects
+45. Grounding Shot
+     Your ranged attacks hit and damage prone targets more easily
+46. Hafted Defense
+     +1 AC and Reflex while wielding polearm or staff in two hands
+47. Hammering Iron
+     Push target after opportunity attack when using hammer
+48. Headman's Chop
+     5 extra damage to prone target when using axe or heavy blade
+49. Impending Victory
+     +1 attack with at-will powers against bloodied creatures
+50. Low Crawl
+     You can shift while prone
+51. Lucky Start
+     Make first attack roll twice if your initiative check is highest
+52. Nimble Runner
+     +2 Reflex when you run, and don't grant combat advantage
+53. Opportunistic Shove
+     Bull rush when you make opportunity attack
+54. Polearm Flanker
+     Flank from 1 square away when using polearm
+55. Rapid Assault
+     +2 or more damage on your first attack during an encounter
+56. Shifting Defense
+     Shift 1 square when you use total defense
+57. Spring Step
+     Shift 1 square when you stand up
+58. Steady Feet
+     Ignore 1 square of difficult terrain when you walk
+59. Strike and Shove
+     Push target after critical hit with melee attack
+60. Superior Implement Training
+     Use one superior implement of a type open to your class
+61. Teamwork Defense
+     +1 AC when adjacent to ally who also has this feat
+62. Unarmored Agility
+     +2 AC while wearing cloth armor or no armor
+63. Unfailing Vigor
+     Spend a healing surge if you roll 18-20 on death saving throw
+64. Versatile Expertise
+     Bonus to attacks with weapons and implements of your choice
+65. Vicious Advantage
+     Gain combat advantage against slowed or immobilized targets
+66. Warding Defense
+     Allies benefit when you use total defense and wield a shield
+67. Watchful Redoubt
+     +1 attack when you use total defense
 Your choice:
 10
 Choose two At Will Powers:
@@ -334,18 +399,6 @@ Please note that the following choices do NOT take into consideration what your 
 7. LIGHT_SHIELD: 5 GOLD_PIECE
 8. HEAVY_SHIELD: 10 GOLD_PIECE
 Your choice:
-0
-Didn't understand your input.  Please try again.
-0
-Didn't understand your input.  Please try again.
-
-Not a number, dork!  Setting to 0.
-Didn't understand your input.  Please try again.
-
-Not a number, dork!  Setting to 0.
-Didn't understand your input.  Please try again.
-0
-Didn't understand your input.  Please try again.
 7
 Are you done spending money?
 n
@@ -415,54 +468,51 @@ What do you want to look at now?
 2. Weapons
 3. Gear
 Your choice:
-2
-Please select a weapon to purchase:
-Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
-1. CLUB: 1 GOLD_PIECE
-2. DAGGER: 1 GOLD_PIECE
-3. JAVELIN: 5 GOLD_PIECE
-4. MACE: 5 GOLD_PIECE
-5. SICKLE: 5 GOLD_PIECE
-6. SPEAR: 5 GOLD_PIECE
-7. GREATCLUB: 1 GOLD_PIECE
-8. MORNINGSTAR: 10 GOLD_PIECE
-9. QUARTERSTAFF: 5 GOLD_PIECE
-10. SCYTHE: 5 GOLD_PIECE
-11. BATTLEAXE: 15 GOLD_PIECE
-12. FLAIL: 10 GOLD_PIECE
-13. HANDAXE: 5 GOLD_PIECE
-14. LONGSWORD: 15 GOLD_PIECE
-15. SCIMITAR: 10 GOLD_PIECE
-16. SHORTSWORD: 10 GOLD_PIECE
-17. THROWING_HAMMER: 5 GOLD_PIECE
-18. WARHAMMER: 15 GOLD_PIECE
-19. WAR_PICK: 15 GOLD_PIECE
-20. FALCHION: 25 GOLD_PIECE
-21. FALCHION: 25 GOLD_PIECE
-22. GREATAXE: 30 GOLD_PIECE
-23. GREATSWORD: 30 GOLD_PIECE
-24. HALBERD: 25 GOLD_PIECE
-25. HEAVY_FLAIL: 25 GOLD_PIECE
-26. LONGSPEAR: 10 GOLD_PIECE
-27. MAUL: 30 GOLD_PIECE
-28. BASTARD_SWORD: 30 GOLD_PIECE
-29. KATAR: 3 GOLD_PIECE
-30. RAPIER: 25 GOLD_PIECE
-31. SPIKED_CHAIN: 30 GOLD_PIECE
-32. HAND_CROSSBOW: 25 GOLD_PIECE
-33. SLING: 1 GOLD_PIECE
-34. CROSSBOW: 25 GOLD_PIECE
-35. LONGBOW: 30 GOLD_PIECE
-36. SHORTBOW: 25 GOLD_PIECE
-37. SHURIKEN: 1 GOLD_PIECE
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
 Your choice:
-32
+1
 Are you done spending money?
 n
 Travok has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     15
+Gold pieces:     25
 Platinum pieces: 0
 Astral diamonds: 0
 What do you want to look at now?
@@ -508,11 +558,12 @@ Please select an item to purchase:
 34. THIEVES_TOOLS: 20 GOLD_PIECE
 35. TORCH: 1 SILVER_PIECE
 Your choice:
-1
-You are out of money now.
+27
+Are you done spending money?
+y
 Travok has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     0
+Gold pieces:     15
 Platinum pieces: 0
 Astral diamonds: 0

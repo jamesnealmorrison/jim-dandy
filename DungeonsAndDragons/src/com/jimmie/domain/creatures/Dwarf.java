@@ -1,11 +1,14 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.ActionType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.Power;
+import com.jimmie.powers.SecondWind;
 import com.jimmie.util.Utils;
 
 public class Dwarf extends Race {
@@ -73,8 +76,15 @@ public class Dwarf extends Race {
 		pc.addWeaponTypeProficiency(WeaponType.WARHAMMER);
 		pc.addWeaponTypeProficiency(WeaponType.THROWING_HAMMER);
 		
-		// TODO: Cast-iron stomach, dwarven resilience, encumbered speed, stand your ground.
-		Utils.print("NOTE: I have not yet coded cast-iron stomach, dwarven resilience, encumbered speed or stand your ground.");
+		Utils.print("Dwarven Resilience: Setting Second Wind power to minor action.");
+		for (Power power : pc.getPowers()) {
+			if (SecondWind.class.isAssignableFrom(power.getClass())) {
+				power.setActionType(ActionType.MINOR);
+			}
+		}
+		
+		// TODO: Cast-iron stomach, encumbered speed, stand your ground.
+		Utils.print("NOTE: I have not yet coded cast-iron stomach, encumbered speed or stand your ground.");
 	}
 
 	@Override

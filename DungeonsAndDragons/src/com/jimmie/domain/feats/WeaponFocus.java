@@ -57,4 +57,12 @@ public class WeaponFocus extends Feat {
 		focusedWeapon = Utils.getValidInput(choices);
 	}
 
+	public String getFocusedWeapon() {
+		return focusedWeapon;
+	}
+
+	public void setFocusedWeapon(String focusedWeapon) {
+		this.focusedWeapon = focusedWeapon;
+	}
+
 }

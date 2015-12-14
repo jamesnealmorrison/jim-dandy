@@ -37,6 +37,9 @@ public abstract class Power implements Serializable {
 	public void initializeForEncounter() {
 		timesUsed  = 0;
 	}
+	public void initializeForStartOfTurn() {
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean canBeSelected(PlayerCharacter pc) {
 		// First check if they are a high enough level.
@@ -68,4 +71,7 @@ public abstract class Power implements Serializable {
 	public abstract List<Class> getRacesThatCanUsePower();
 	@SuppressWarnings("rawtypes")
 	public abstract List<Class> getClassesThatCanUsePower();
+	public void setActionType(ActionType actionType) {
+		// Doesn't do anything.  Just meant to be overridden.		
+	}
 }

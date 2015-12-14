@@ -18,7 +18,7 @@ import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class KoboldMinionJavelin extends AttackPower {
-	
+
 	/**
 	 * 
 	 */
@@ -80,26 +80,27 @@ public class KoboldMinionJavelin extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		AttackTarget target = encounter.chooseRangedTarget(user, 10, 20);
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + 5 + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(user);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 20);
 
-			target.hurt(4, DamageType.NORMAL, encounter, true);
-		} else {
-			Utils.print("You missed " + target.getName());
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + 5 + user.getOtherAttackModifier(targets, encounter);
+
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			if (roll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				target.hurt(4, DamageType.NORMAL, encounter, true, user);
+			} else {
+				Utils.print("You missed " + target.getName());
+			}
 		}
 	}
 

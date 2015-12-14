@@ -109,43 +109,38 @@ public class AngelicAlacrity extends AttackPower {
 			Utils.print("You may shift " + shiftDistance + " before the attack.");
 			user.shift(shiftDistance, true, encounter);
 
-			AttackTarget target = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-			List<AttackTarget> targets = new ArrayList<AttackTarget>();
-			targets.add(target);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
+				Dice d = new Dice(DiceType.TWENTY_SIDED);
+				int diceRoll = d.roll();
+				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			int targetArmorClass = target.getArmorClass(user);
-			Utils.print("Your target has an AC of " + targetArmorClass);
+				int targetArmorClass = target.getArmorClass(user);
+				Utils.print("Your target has an AC of " + targetArmorClass);
 
-			if (roll >= targetArmorClass) {
-				// A HIT!
-				Utils.print("You successfully hit " + target.getName());
+				if (roll >= targetArmorClass) {
+					// A HIT!
+					Utils.print("You successfully hit " + target.getName());
 
-				// See if this target was hit by Stirring Shout.
-				if (target.isHitByStirringShout()) {
-					Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-					user.heal(target.getStirringShoutCharismaModifier());
-				}
+					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+					damageRolls = damageRolls * 2;
 
-				damageRolls = damageRolls * 2;
+					if (aspectOfMightEncounterBonus == false) {
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					} else {
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+						Utils.print("You got an aspect of might bonus of two to this damage roll.");
+					}
 
-				if (aspectOfMightEncounterBonus == false) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true);
-					Utils.print("You got an aspect of might bonus of two to this damage roll.");
+					Utils.print("You missed " + target.getName());
 				}
-
-			} else {
-				Utils.print("You missed " + target.getName());
 			}
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Angelic Alacrity in this encounter.");

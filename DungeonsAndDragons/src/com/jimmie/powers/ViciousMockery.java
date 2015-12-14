@@ -13,8 +13,9 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Bard;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -88,48 +89,43 @@ public class ViciousMockery extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Character c = null;
-		if (Character.class.isAssignableFrom(user.getClass())) {
-			c = (Character) user;
+		DndCharacter c = null;
+		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+			c = (DndCharacter) user;
 		}
-		
-		AttackTarget target = encounter.chooseRangedTarget(user, 10, 10);
-		
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(user, target, encounter, user.getCurrentPosition());
-		int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetWill = target.getWill(user);
-		Utils.print("Your target has a Will of " + targetWill);
-		
-		if (roll >= targetWill) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
 
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				user.heal(target.getStirringShoutCharismaModifier());
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			Dice d = new Dice(DiceType.TWENTY_SIDED);
+			int diceRoll = d.roll();
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
+
+			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+			int targetWill = target.getWill(user);
+			Utils.print("Your target has a Will of " + targetWill);
+
+			if (roll >= targetWill) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = 1;
+				DiceType damageDiceType = DiceType.SIX_SIDED;
+
+				/* Book says at level 21 increase damage to 2d8. */
+				if (user.getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+
+				/* The target takes a -2 penalty to attack rolls until the end of my next turn. */
+				c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+				Utils.print(target.getName() + " will take a -2 attack roll penalty until the end of " + user.getName() + "'s next turn.");
+			} else {
+				Utils.print("You missed " + target.getName());
 			}
-
-			int damageRolls = 1;
-			DiceType damageDiceType = DiceType.SIX_SIDED;
-
-			/* Book says at level 21 increase damage to 2d8. */
-			if (user.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true);
-
-			/* The target takes a -2 penalty to attack rolls until the end of my next turn. */
-			target.setTemporaryAttackRollModifier(user, DurationType.END_OF_NEXT_TURN, -2);
-			Utils.print(target.getName() + " will take a -2 attack roll penalty until the end of " + user.getName() + "'s next turn.");
-		} else {
-			Utils.print("You missed " + target.getName());
 		}
 	}
 

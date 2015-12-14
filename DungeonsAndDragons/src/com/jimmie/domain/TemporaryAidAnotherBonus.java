@@ -1,6 +1,6 @@
 package com.jimmie.domain;
 
-public class TemporaryAidAnotherBonus extends TemporaryBonus {
+public class TemporaryAidAnotherBonus extends TemporaryEffect {
 	public static final int ATTACK = 1;
 	public static final int DEFENSE = 2;
 	AttackTarget target;

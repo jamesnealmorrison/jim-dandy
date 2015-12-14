@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -86,6 +87,9 @@ public class Paladin extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
 		
+		Utils.print("Adding Implement Proficiencies: Holy symbol");
+		pc.addImplementProficiency(ImplementType.HOLY_SYMBOL);
+
 		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex, +1 Will");
 		setFortitudeBonus(getFortitudeBonus() + 1);
 		setReflexBonus(getReflexBonus() + 1);
@@ -121,8 +125,6 @@ public class Paladin extends DndClass {
 		pc.addPower(new DivineChallenge());
 		pc.addPower(new LayOnHands());
 		
-		// TODO: Implement, Choosing deities
-		Utils.print("NOTE: I have not yet coded Implement");
 	}
 
 	@Override
