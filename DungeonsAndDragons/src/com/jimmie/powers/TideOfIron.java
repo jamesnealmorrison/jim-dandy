@@ -16,8 +16,9 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Fighter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.domain.creatures.DndCharacter;
+
 import com.jimmie.util.Utils;
 
 public class TideOfIron extends AttackPower {
@@ -86,15 +87,15 @@ public class TideOfIron extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 		
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -107,10 +108,10 @@ public class TideOfIron extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
 
 				/* Push the target. */
-				String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+				String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
 				target.push(pushDirection);
 				Utils.print("I think I am also supposed to be able to occupy the space the creature was in, but I haven't implemented that yet.  SORRY!");
 

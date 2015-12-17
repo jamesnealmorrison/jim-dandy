@@ -22,6 +22,7 @@ import com.jimmie.util.TurnMaster;
 import com.jimmie.util.Utils;
 
 public abstract class Encounter {
+	private static Encounter encounter;
 	protected Map map;
 
 	public Map getMap() {
@@ -135,12 +136,12 @@ public abstract class Encounter {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, index);
 				if (choice == moveChoice) {
-					participant.useMoveAction(this);
+					participant.useMoveAction();
 				} else if (choice == skipChoice) {
 					skipTurn = true;					
 				} else {
 					Power chosenPower = validActions.get(choice);
-					chosenPower.process(this, c);
+					chosenPower.process(c);
 					// Mark the character has having taken the appropriate action.
 					c.useAction(chosenPower.getActionType());
 				}
@@ -149,7 +150,7 @@ public abstract class Encounter {
 		} while (!(skipTurn)
 				|| (!isTurnOver(participant)));
 
-		participant.endOfTurn(this);
+		participant.endOfTurn();
 	}
 
 	/*	private void displayCharacterLocations() {
@@ -1234,4 +1235,13 @@ public abstract class Encounter {
 	}
 
 	public abstract void init();
+
+	public static void setEncounter(Encounter e) {
+		encounter = e;
+		
+	}
+
+	public static Encounter getEncounter() {
+		return encounter;
+	}
 }

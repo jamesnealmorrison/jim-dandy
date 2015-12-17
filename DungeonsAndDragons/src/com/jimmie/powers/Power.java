@@ -11,7 +11,7 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 
 public abstract class Power implements Serializable {
 	/**
@@ -30,7 +30,7 @@ public abstract class Power implements Serializable {
 	public abstract int getRangeNumber1(); // This is for ranged/close/area.  The first number.  e.g. close burst 3
 	public abstract int getRangeNumber2(); // This is for area.  The second number.  e.g. area burst 2 within 5 squares
 	public abstract List<EffectType> getEffectTypes();
-	public abstract void process(Encounter encounter, Creature user);
+	public abstract void process(Creature user);
 	public abstract boolean meetsPrerequisitesToChoosePower(Creature user);
 	public abstract boolean meetsRequirementsToUsePower(Creature user);
 	public abstract boolean isBasicAttack();

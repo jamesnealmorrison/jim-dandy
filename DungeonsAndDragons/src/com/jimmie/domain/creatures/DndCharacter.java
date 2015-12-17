@@ -37,7 +37,6 @@ import com.jimmie.domain.items.weapons.WeaponGroup;
 import com.jimmie.domain.items.weapons.WeaponHandType;
 import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.items.weapons.WeaponType;
-import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.AidAnother;
 import com.jimmie.powers.MeleeBasicAttack;
 import com.jimmie.powers.SecondWind;
@@ -612,7 +611,7 @@ public abstract class DndCharacter extends Creature {
 }
 
 	/* In this method, I will have general other bonus that are hard to define anywhere else. */
-	public int getOtherAttackModifier(List<AttackTarget> targets, Encounter encounter) {
+	public int getOtherAttackModifier(List<AttackTarget> targets) {
 		int total = 0;
 
 		/* See if they have Fighter Weapon Talent. */
@@ -627,7 +626,7 @@ public abstract class DndCharacter extends Creature {
 		
 		// TODO: I think this is probably the best place to put a check for the off hand penalty.
 
-		total = total + super.getOtherAttackModifier(targets, encounter);
+		total = total + super.getOtherAttackModifier(targets);
 
 		return total;
 	}

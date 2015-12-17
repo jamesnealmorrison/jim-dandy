@@ -372,7 +372,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryEffects.add(temporaryInvisibility);
 	}
 
-	public int getOtherAttackModifier(List<AttackTarget> targets, Encounter encounter) {
+	public int getOtherAttackModifier(List<AttackTarget> targets) {
 		int total = 0;
 
 		/* Check for a temporary attack roll modifier. */
@@ -399,7 +399,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		/* Do I have combat advantage against the target? */
 		/* I think I can only check this if it is a single target. */
 		if (targets.size() == 1) {
-			if (Utils.hasCombatAdvantage(this, (Creature) targets.get(0), encounter)) {
+			if (Utils.hasCombatAdvantage(this, (Creature) targets.get(0))) {
 				Utils.print(getName() + " has combat advantage over " + targets.get(0).getName() + " and recieves a +2 bonus.");
 				total = total + 2;
 			}
@@ -424,7 +424,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return false;
 	}
 
-	public void shift(int distance, boolean free, Encounter encounter) {
+	public void shift(int distance, boolean free) {
 		Utils.print(name + " is shifting " + distance + " squares.");
 
 		if (!free) {
@@ -464,7 +464,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				moveCreature(direction, encounter, MovementType.SHIFTING);
+				moveCreature(direction, MovementType.SHIFTING);
 				distanceLeft--;
 			}
 		}
@@ -774,7 +774,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	
 	public abstract boolean isShieldReadied();
 
-	public void useMoveAction(Encounter encounter) {
+	public void useMoveAction() {
 		if (!canTakeMoveAction()) {
 			Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
 			return;
@@ -830,15 +830,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				Position newPosition = encounter.getPositionRelativeTo(getCurrentPosition(), direction);
+				Position newPosition = Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction);
 				/* Do they have to perform a check to enter? */
-				if (encounter.requiresCheckToEnter(newPosition, getCurrentPosition())) {
-					int costForEntering = encounter.getCostForEnteringSquare();
+				if (Encounter.getEncounter().requiresCheckToEnter(newPosition, getCurrentPosition())) {
+					int costForEntering = Encounter.getEncounter().getCostForEnteringSquare();
 					if (distanceLeft < costForEntering) {
 						Utils.print("Sorry.  Don't have enough movement left to enter that square.");
 						continue;
 					}
-					SkillCheck skillCheck = encounter.getGenericSkillCheck();
+					SkillCheck skillCheck = Encounter.getEncounter().getGenericSkillCheck();
 					if (performSkillCheck(skillCheck)) {
 						Utils.print("You successfully passed the skill check.");
 						/* An extra 1 will be subtracted later. */
@@ -848,7 +848,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 						continue;
 					}
 				}/* Are they about to move into difficult terrain? */
-				else if (encounter.isDifficultTerrain(encounter.getPositionRelativeTo(getCurrentPosition(), direction))) {
+				else if (Encounter.getEncounter().isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction))) {
 					if (distanceLeft < 2) {
 						Utils.print("Sorry.  Can't enter that square.  It's difficult terrain.");
 						continue;
@@ -858,7 +858,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					}
 				}
 
-				moveCreature(direction, encounter, movementType);
+				moveCreature(direction, movementType);
 				distanceLeft--;
 
 			}
@@ -969,7 +969,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return null;
 	}
 
-	public void performOpportunityAttack(Creature target, Encounter encounter) {
+	public void performOpportunityAttack(Creature target) {
 		if (isDazed()) {
 			Utils.print("Sorry. Can't take an opportunity action because " + getName() + " is dazed.");
 			return;
@@ -999,16 +999,16 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		Power chosenPower = validActions.get(choice);
 
 		Utils.print("Make sure you choose " + target.getName() + " in the next question, since I haven't automated that yet.");
-		chosenPower.process(encounter, this);
+		chosenPower.process(this);
 	}
 
 
-	public void moveCreature(String direction, Encounter encounter, MovementType movementType) {
+	public void moveCreature(String direction, MovementType movementType) {
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
 			// TODO, shouldn't pass "this" in as the hurter.
-			hurt(5, DamageType.FORCE, encounter, true, this);
+			hurt(5, DamageType.FORCE, true, this);
 			hitByTelekineticAnchor = false;
 		}
 
@@ -1059,7 +1059,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}		
 	}
 
-	public void endOfTurn(Encounter encounter) {
+	public void endOfTurn() {
 		turnOver = true;
 		/* Check for bond of pursuit. */
 		if (pursuer != null) {
@@ -1067,7 +1067,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if (!(this.isAdjacentTo(pursuer))) {
 				Utils.print("Pursuer (" + pursuer.getName() + ") gets to shift " + (pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1) + " squares.");
 				Utils.print("Please note: You must end closer to " + this.getName() + ".  This is not enforced in the code though");
-				pursuer.shift(pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1, true, encounter);
+				pursuer.shift(pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1, true);
 			}
 			/* At the end of turn, the bond of pursuit is over. */
 			pursuer = null;
@@ -1083,7 +1083,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					// TODO: Implement the check to see if we attacked this creature during the turn.  For now,
 					// just do "adjacent check".
 					// TODO: Also need to implement the "can't use divine challenge on your next turn".
-					List<Creature> adjCreatures = encounter.getAllAdjacentCreatures(this);
+					List<Creature> adjCreatures = Encounter.getEncounter().getAllAdjacentCreatures(this);
 					if (!adjCreatures.contains(markedCreature)) {
 						Utils.print(getName() + " did not engage " + markedCreature.getName() + ". Removing the Divine Challenge mark.");
 						divineChallenge.setMarkedCreature(null);
@@ -1219,7 +1219,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 // This will all be rewritten when I do AOP	
 /*
- 	public int getFortitude(Encounter encounter, Creature attacker) {
+ 	public int getFortitude(Creature attacker) {
 
 		int bonus = 0;
 
@@ -1519,7 +1519,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.currentPosition = currentPosition;
 	}
 
-	public void hurt(int damage, DamageType damageType, Encounter encounter, boolean hit, Object hurter) {
+	public void hurt(int damage, DamageType damageType, boolean hit, Object hurter) {
 		/* Is this a minion? They don't get hurt by missed attacks. */
 		if ((getMaxHitPoints() == 1) && (!hit)) {
 			return;
@@ -1565,11 +1565,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if (Monster.class.isInstance(this)) {
 				currentHitPoints = 0;
 				Utils.print(name + " is dead.");
-				encounter.removeCreature(this);
+				Encounter.getEncounter().removeCreature(this);
 			} else {
 				/* For now just do the same for player characters. */
 				Utils.print(name + " is dead.");
-				encounter.removeCreature(this);
+				Encounter.getEncounter().removeCreature(this);
 			}
 		}
 	}
@@ -1959,17 +1959,16 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public int attackRollWithPowerModifier(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets,
-			Encounter encounter, int powerModifiers) {
+			int powerModifiers) {
 		Utils.print("In a bit, you will be told your total dice roll with modifiers.  But please keep in mind that it doesn't include the " + powerModifiers + " of power modifiers.");
-		int totalRoll = attackRoll(abilityType, accessoryType, targets, encounter) + powerModifiers;
+		int totalRoll = attackRoll(abilityType, accessoryType, targets) + powerModifiers;
 		Utils.print("Your real total was " + totalRoll);
 		return totalRoll;
 	}
 	
-	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets,
-			Encounter encounter) {
+	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets) {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.roll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(targets, encounter);
+		int diceRoll = d.roll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(targets);
 		
 		if (accessoryType == AccessoryType.IMPLEMENT) {
 			diceRoll += getImplementAttackBonus();

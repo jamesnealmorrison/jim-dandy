@@ -87,15 +87,15 @@ public class EarthShieldStrike extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -108,7 +108,7 @@ public class EarthShieldStrike extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
 
 				/* I get an AC bonus of +1 until the end of my next turn. */
 				Utils.print("Adding a +1 bonus to AC until the end of my next turn.");

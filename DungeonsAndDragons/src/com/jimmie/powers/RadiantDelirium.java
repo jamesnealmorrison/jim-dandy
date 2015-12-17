@@ -87,15 +87,15 @@ public class RadiantDelirium extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 5);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */
@@ -104,7 +104,7 @@ public class RadiantDelirium extends AttackPower {
 				int damageRolls = 3;
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, true, user);
 				
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Utils.print(target.getName() + " is dazed until the end of my next turn.");
@@ -122,7 +122,7 @@ public class RadiantDelirium extends AttackPower {
 				int damageRolls = 3;
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
-				target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, encounter, true, user);
+				target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, true, user);
 				
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Utils.print(target.getName() + " is dazed until the end of my next turn.");

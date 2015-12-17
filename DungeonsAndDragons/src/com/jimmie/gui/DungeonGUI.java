@@ -82,6 +82,7 @@ public class DungeonGUI extends JPanel {
 		/* Set up the encounter. */
 		// encounter = new KoboldLairOutsideEncounter();
 
+		Encounter.setEncounter(encounter);
 		encounter.init();
 		partyPanel.init(encounter.getCreatures());
 		battlefieldPanel.init(encounter.getMap(), encounter.getCreatures());

@@ -85,7 +85,7 @@ public class ForcePunch extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		/* See if they want to augment. */
 		int augment = 0;
 		int range = 0;
@@ -113,14 +113,14 @@ public class ForcePunch extends AttackPower {
 			psion.setPowerPoints(powerPoints);
 		}
 
-		List<AttackTarget> targets = encounter.chooseMeleeTargetInRange(user, 1);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, 1);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetFortitude = target.getFortitude();
 			Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
 
 			if (attackRoll >= targetFortitude) {
 				/* A HIT! */
@@ -130,9 +130,9 @@ public class ForcePunch extends AttackPower {
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
 				if (augment == 2) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.FORCE, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.FORCE, true, user);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, true, user);
 				}
 
 				int targetPushDistance = 1;
@@ -147,17 +147,17 @@ public class ForcePunch extends AttackPower {
 					Utils.print("JIM!!!!!!! YOU HAVE NOT IMPLEMENTED BEING PRONE YET!!!!!");
 				}
 
-				String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+				String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
 				for (int i = 0; i < targetPushDistance; i++) {
 					target.push(pushDirection);
 				}
 
 				/* Push each adjacent enemy 1. */
-				List<Creature> adjacentEnemies = encounter.getAdjacentEnemies(user);
+				List<Creature> adjacentEnemies = Encounter.getEncounter().getAdjacentEnemies(user);
 
 				if (adjacentEnemies != null) {
 					for (Creature adjacentEnemy : adjacentEnemies) {
-						pushDirection = encounter.getPushDirection(user.getCurrentPosition(), adjacentEnemy.getCurrentPosition());
+						pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), adjacentEnemy.getCurrentPosition());
 						adjacentEnemy.push(pushDirection);
 					}
 				}

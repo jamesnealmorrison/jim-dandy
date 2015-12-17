@@ -1,6 +1,6 @@
 package com.jimmie.domain.creatures.monsters;
 
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.powers.KoboldDragonshieldShortSword;
 import com.jimmie.powers.KoboldShifty;
 import com.jimmie.util.Utils;
@@ -73,11 +73,11 @@ public class KoboldDragonshield extends Kobold {
 		return 1;
 	}
 
-	public void useDragonshieldTactics(Encounter encounter) {
+	public void useDragonshieldTactics() {
 		Utils.print(getName() + " can use dragonshield tactics to shift 1 square.  Do you want to?");
 		String choice = Utils.getYesOrNoInput();
 		if ("Y".equalsIgnoreCase(choice)) {
-			shift(1, true, encounter);
+			shift(1, true);
 			usedDragonshieldTactics = true;
 		}
 		

@@ -87,7 +87,7 @@ public class AngelicAlacrity extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 			int shiftDistance;
@@ -106,16 +106,16 @@ public class AngelicAlacrity extends AttackPower {
 				shiftDistance = 2;
 			}
 			Utils.print("You may shift " + shiftDistance + " before the attack.");
-			user.shift(shiftDistance, true, encounter);
+			user.shift(shiftDistance, true);
 
-			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets);
 
 				if (attackRoll >= targetArmorClass) {
 					// A HIT!
@@ -127,9 +127,9 @@ public class AngelicAlacrity extends AttackPower {
 					damageRolls = damageRolls * 2;
 
 					if (aspectOfMightEncounterBonus == false) {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
 					} else {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
 						Utils.print("You got an aspect of might bonus of two to this damage roll.");
 					}
 

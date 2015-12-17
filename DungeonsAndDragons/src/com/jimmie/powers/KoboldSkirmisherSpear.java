@@ -80,19 +80,19 @@ public class KoboldSkirmisherSpear extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTargetInRange(user, 1);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, 1);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.roll();
-			int roll = diceRoll + 6 + user.getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + 6 + user.getOtherAttackModifier(targets);
 
 			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.
 			 */
-			List<Creature> adjacentCreatures = encounter.getAllAdjacentCreatures((Creature)target);
+			List<Creature> adjacentCreatures = Encounter.getEncounter().getAllAdjacentCreatures((Creature)target);
 
 			/* Count how many kobolds are in the list (not myself though). */
 			int count = 0;
@@ -126,14 +126,14 @@ public class KoboldSkirmisherSpear extends AttackPower {
 
 				/* Combat Advantage power adds 1d6 damage when the kobold skirmisher has combat advantage against the target. */
 				if (Creature.class.isInstance(target)) {
-					if (Utils.hasCombatAdvantage(user, (Creature) target, encounter)) {
+					if (Utils.hasCombatAdvantage(user, (Creature) target)) {
 						Dice dice = new Dice(DiceType.SIX_SIDED);
 						int combatAdvantageRoll = dice.roll();
 						Utils.print("Adding " + combatAdvantageRoll + " to the damage because the Kobold Skirmisher had combat advantage against " + target.getName());
 						rollForDamage = rollForDamage + combatAdvantageRoll;
 					}
 				}
-				target.hurt(rollForDamage, DamageType.NORMAL, encounter, true, user);
+				target.hurt(rollForDamage, DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 			}

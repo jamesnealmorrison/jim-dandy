@@ -10,7 +10,7 @@ import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 
 public class KoboldShifty extends Power {
 
@@ -74,8 +74,8 @@ public class KoboldShifty extends Power {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		user.shift(1, true, encounter);
+	public void process(Creature user) {
+		user.shift(1, true);
 	}
 
 	@Override

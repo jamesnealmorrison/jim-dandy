@@ -85,7 +85,7 @@ public class StirringShout extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 
@@ -95,14 +95,14 @@ public class StirringShout extends AttackPower {
 			}
 
 
-			List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 				int targetWill = target.getWill(user);
 				Utils.print("Your target has a Will of " + targetWill);
 
-				int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
 
 				if (attackRoll >= targetWill) {
 					/* A HIT! */
@@ -116,7 +116,7 @@ public class StirringShout extends AttackPower {
 						damageRolls = damageRolls * 2;
 					}
 					/* TODO: Supposed to be psychic damage.  Haven't implemented that yet. */
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.PSYCHIC, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.PSYCHIC, true, user);
 
 					target.hitByStirringShout(user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA));
 				} else {

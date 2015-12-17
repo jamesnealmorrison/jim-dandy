@@ -12,7 +12,7 @@ import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.util.Utils;
 
 public class FormOfTheWillowSentinel extends AttackPower {
@@ -81,7 +81,7 @@ public class FormOfTheWillowSentinel extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 

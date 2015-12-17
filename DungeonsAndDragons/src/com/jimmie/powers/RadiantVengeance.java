@@ -85,15 +85,15 @@ public class RadiantVengeance extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */
@@ -113,9 +113,9 @@ public class RadiantVengeance extends AttackPower {
 				}
 
 				if (aspectOfMightEncounterBonus == false) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
 					Utils.print("You got an aspect of might bonus of two to this damage roll.");
 				}
 

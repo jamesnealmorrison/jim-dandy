@@ -11,7 +11,6 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Monk;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class DragonsTail extends AttackPower {
@@ -80,7 +79,7 @@ public class DragonsTail extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		Utils.print("Sorry, but I haven't implemented this power yet.");
 	}
 

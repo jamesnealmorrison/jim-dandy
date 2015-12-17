@@ -15,7 +15,6 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class ChannelDivinityDivineStrength extends AttackPower {
@@ -84,7 +83,7 @@ public class ChannelDivinityDivineStrength extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		// Only one Channel Divinity power can be used per encounter
 		// Has it been used during this encounter already?
 		if (user.getChannelDivinityUses() == 0) {

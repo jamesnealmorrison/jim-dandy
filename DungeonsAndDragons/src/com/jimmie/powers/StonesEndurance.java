@@ -12,7 +12,7 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Goliath;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 
 public class StonesEndurance extends AttackPower {
 	/**
@@ -80,7 +80,7 @@ public class StonesEndurance extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		user.setTemporaryDamageResistance(5, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, DamageType.ALL);
 		timesUsed++;
 	}

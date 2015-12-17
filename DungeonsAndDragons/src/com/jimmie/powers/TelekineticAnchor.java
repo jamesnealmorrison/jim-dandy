@@ -85,7 +85,7 @@ public class TelekineticAnchor extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {		
+	public void process(Creature user) {		
 		if (timesUsed == 0) {
 			timesUsed++;
 			
@@ -97,7 +97,7 @@ public class TelekineticAnchor extends AttackPower {
 			int y = Utils.getValidIntInputInRange(1, 50);
 
 			/* Got to do this wierd conversion between creatures and attack targets. */
-			List<Creature> creatureTargets = encounter.getAllCreaturesInAreaBurst(x, y, 1);
+			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(x, y, 1);
 			for (Creature creature : creatureTargets) {
 				targets.add(creature);
 			}
@@ -117,13 +117,13 @@ public class TelekineticAnchor extends AttackPower {
 				int targetFortitude = target.getFortitude();
 				Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
 
 				if (attackRoll >= targetFortitude) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 
-					target.hurt(damage, DamageType.FORCE, encounter, true, user);
+					target.hurt(damage, DamageType.FORCE, true, user);
 				} else {
 					Utils.print("Sorry.  You missed " + target.getName());
 				}

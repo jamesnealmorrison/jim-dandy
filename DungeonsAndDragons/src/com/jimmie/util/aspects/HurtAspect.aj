@@ -6,14 +6,14 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.util.Utils;
 
 public aspect HurtAspect {
-	public pointcut hurt(Creature hurtee, int damage, DamageType damageType, Encounter encounter, boolean hit, Object hurter) : execution(* com.jimmie.domain.creatures.Creature.hurt(..))
-	&& args(damage, damageType, encounter, hit, hurter) && target(hurtee);
+	public pointcut hurt(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter) : execution(* com.jimmie.domain.creatures.Creature.hurt(..))
+	&& args(damage, damageType, hit, hurter) && target(hurtee);
 
-	void around(Creature hurtee, int damage, DamageType damageType, Encounter encounter, boolean hit, Object hurter) : hurt(hurtee, damage, damageType, encounter, hit, hurter) {
+	void around(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter) : hurt(hurtee, damage, damageType, hit, hurter) {
 		Utils.print("Hurter = " + hurter);
 		Utils.print("Hurtee = " + hurtee);
 
@@ -36,7 +36,7 @@ public aspect HurtAspect {
 			}
 		}
 		
-		proceed(hurtee, damage, damageType, encounter, hit, hurter);
+		proceed(hurtee, damage, damageType, hit, hurter);
 		
 		
 	}

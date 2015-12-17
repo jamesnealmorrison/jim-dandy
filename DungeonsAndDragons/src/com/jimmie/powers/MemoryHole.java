@@ -86,7 +86,7 @@ public class MemoryHole extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		/* See if they want to augment. */
 		int augment = 0;
 		int range = 0;
@@ -119,12 +119,12 @@ public class MemoryHole extends AttackPower {
 			int y = Utils.getValidIntInputInRange(1, 50);
 
 			/* Got to do this wierd conversion between creatures and attack targets. */
-			List<Creature> creatureTargets = encounter.getAllCreaturesInAreaBurst(x, y, 1);
+			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(x, y, 1);
 			for (Creature creature : creatureTargets) {
 				targets.add(creature);
 			}
 		} else {
-			Creature target = (Creature) encounter.chooseRangedTarget(user, 10, 10);
+			Creature target = (Creature) Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 			Utils.print("UMMMMM....." + target.getName() + " laughs at you because I forgot to finish programming this attack.  DORK!");
 		}
 		
@@ -152,13 +152,13 @@ public class MemoryHole extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a Will of " + targetWill);
 			
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
 			
 			if (attackRoll >= targetWill) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(damage, DamageType.PSYCHIC, encounter, true, user);
+				target.hurt(damage, DamageType.PSYCHIC, true, user);
 				
 				hitTargets.add((Creature) target);
 				Utils.print("You just became invisible to " + target.getName());

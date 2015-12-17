@@ -10,7 +10,7 @@ import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.util.Utils;
 
 public class SpendActionPoint extends Power {
@@ -75,7 +75,7 @@ public class SpendActionPoint extends Power {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		/* Only let them do this if they have already used a standard action. */
 		if (user.canTakeStandardAction()) {
 			Utils.print("You really shouldn't spend an action point until you've already used your normal standard action.");

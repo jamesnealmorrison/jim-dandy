@@ -85,10 +85,10 @@ public class CoveringAttack extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
@@ -96,7 +96,7 @@ public class CoveringAttack extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -105,13 +105,13 @@ public class CoveringAttack extends AttackPower {
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls() * 2;
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
 
 					/* An ally adjacent to the target can shift two squares. */
-					Creature ally = encounter.chooseAllyAdjacentTo(user, target.getCurrentPosition());
+					Creature ally = Encounter.getEncounter().chooseAllyAdjacentTo(user, target.getCurrentPosition());
 
 					if (ally != null) {
-						ally.shift(2, true, encounter);
+						ally.shift(2, true);
 					}
 
 				} else {

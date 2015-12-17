@@ -85,8 +85,8 @@ public class DivineChallenge extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 5);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
 		
 		for (AttackTarget target : targets) {
 			if (Creature.class.isAssignableFrom(target.getClass())) {

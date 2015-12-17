@@ -86,14 +86,14 @@ public class AspectOfMight extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets);
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
@@ -107,7 +107,7 @@ public class AspectOfMight extends AttackPower {
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
 
 				} else {
 					Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
@@ -118,7 +118,7 @@ public class AspectOfMight extends AttackPower {
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, encounter, false, user);
+					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, false, user);
 
 				}
 				Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");

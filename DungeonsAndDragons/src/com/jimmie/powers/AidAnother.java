@@ -78,22 +78,22 @@ public class AidAnother extends Power {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		Utils.print("Pick the target that you want to help your ally against.");
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && (!targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 
 			Utils.print("The 'Aid Another' action is against a DC of 10.");
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 					
 			if (attackRoll >= 10) {
 				/* A HIT! */
 				Utils.print("You are successfully aiding against " + target.getName());
 
 				Utils.print("Now choose the ally you are going to aid.");
-				Creature ally = encounter.chooseAnyAlly(user);
+				Creature ally = Encounter.getEncounter().chooseAnyAlly(user);
 
 				Utils.print("Now choose whether to add 2 to " + ally.getName() + "'s next attack (attack), or to their defenses (defense).");
 				List<String> validChoices = new ArrayList<String>();

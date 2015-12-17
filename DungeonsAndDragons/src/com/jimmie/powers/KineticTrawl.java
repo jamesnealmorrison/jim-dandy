@@ -85,7 +85,7 @@ public class KineticTrawl extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		/* See if they want to augment. */
 		int augment = 0;
 		int range = 0;
@@ -115,14 +115,14 @@ public class KineticTrawl extends AttackPower {
 			psion.setPowerPoints(powerPoints);
 		}
 
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */
@@ -140,7 +140,7 @@ public class KineticTrawl extends AttackPower {
 					damageDiceType = DiceType.TEN_SIDED;
 				}
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, true, user);
 
 				int targetPullDistance = 1;
 
@@ -149,7 +149,7 @@ public class KineticTrawl extends AttackPower {
 				}
 
 				for (int i = 0; i < targetPullDistance; i++) {
-					String pullDirection = encounter.getPullDirection(user.getCurrentPosition(), target.getCurrentPosition());
+					String pullDirection = Encounter.getEncounter().getPullDirection(user.getCurrentPosition(), target.getCurrentPosition());
 					target.pull(pullDirection);
 				}
 

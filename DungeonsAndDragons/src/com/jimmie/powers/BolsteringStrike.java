@@ -85,8 +85,8 @@ public class BolsteringStrike extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
@@ -94,7 +94,7 @@ public class BolsteringStrike extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -107,7 +107,7 @@ public class BolsteringStrike extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
 				
 				int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 				Utils.print("You get " + abilityModifier + " temporary hit points.");

@@ -17,8 +17,9 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.domain.creatures.DndCharacter;
+
 import com.jimmie.util.Utils;
 
 public class MisdirectedMark extends AttackPower {
@@ -88,19 +89,19 @@ public class MisdirectedMark extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		DndCharacter c = null;
 		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
 			c = (DndCharacter) user;
 		}
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
 
 			if (attackRoll >= targetReflex) {
 				// A HIT! 
@@ -114,13 +115,13 @@ public class MisdirectedMark extends AttackPower {
 					damageRolls = damageRolls * 2;
 				}
 				if (c != null) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
 				}
 
 				// The target is marked by an ally within 5 squares.
-				Creature misdirectedMarker = encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
+				Creature misdirectedMarker = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					((Creature)target).mark(user, DurationType.END_OF_NEXT_TURN, MarkType.MISDIRECTED_MARK, user.getCurrentTurn(), misdirectedMarker);
 					Utils.print(target.getName() + " is now marked by " + misdirectedMarker.getName() + " until the end of my next turn..");

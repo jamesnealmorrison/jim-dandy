@@ -14,7 +14,6 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.domain.items.weapons.WeaponGroup;
-import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class DazingStrike extends AttackPower {
@@ -83,7 +82,7 @@ public class DazingStrike extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		Utils.print("Sorry, but I haven't implemented this power yet.");
 	}
 

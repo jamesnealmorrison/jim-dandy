@@ -85,8 +85,8 @@ public class WardensGrasp extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 0);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 0);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
@@ -106,7 +106,7 @@ public class WardensGrasp extends AttackPower {
 
 			Utils.print("Your choice?");
 			String direction = Utils.getValidInput(validDirections);
-			target.moveCreature(direction, encounter, MovementType.SLIDE);
+			target.moveCreature(direction, MovementType.SLIDE);
 
 			Utils.print("Setting them to slow");
 			if (Creature.class.isAssignableFrom(target.getClass())) {

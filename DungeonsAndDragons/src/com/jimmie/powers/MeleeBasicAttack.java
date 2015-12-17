@@ -86,8 +86,8 @@ public class MeleeBasicAttack extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
@@ -95,7 +95,7 @@ public class MeleeBasicAttack extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -115,7 +115,7 @@ public class MeleeBasicAttack extends AttackPower {
 						Utils.print("Because of your Aspect Of Might bonus, you get a two bonus to this damage.  I'll add it for you!");
 					}
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 			}

@@ -23,10 +23,10 @@ import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffectType;
 
 public aspect ChooseTargetsAspect {
-	public pointcut chooseTargets(TurnTaker attacker, Encounter encounter) : execution(List<AttackTarget> com.jimmie.encounters.Encounter.choose*(TurnTaker, ..))
-	&& args(attacker, ..) && target(encounter);
+	public pointcut chooseTargets(TurnTaker attacker) : execution(List<AttackTarget> com.jimmie.encounters.Encounter.choose*(TurnTaker, ..))
+	&& args(attacker, ..);
 
-	after(TurnTaker attacker, Encounter encounter) returning(List<AttackTarget> targets) : chooseTargets(attacker, encounter) {
+	after(TurnTaker attacker) returning(List<AttackTarget> targets) : chooseTargets(attacker) {
 		Creature cAttacker = null;
 		if (Creature.class.isAssignableFrom(attacker.getClass())) {
 			cAttacker = (Creature) attacker;
@@ -43,7 +43,7 @@ public aspect ChooseTargetsAspect {
 								}
 							}
 							
-							List<Creature> adjacentCreatures = encounter.getMonstersWithinRangeOf(mark.getMarker().getCurrentPosition(), weaponReach);
+							List<Creature> adjacentCreatures = Encounter.getEncounter().getMonstersWithinRangeOf(mark.getMarker().getCurrentPosition(), weaponReach);
 							
 							// Warden's have both Warden's Fury and Warden's Grasp.  To me it looks like Warden's Fury is for when the enemy is adjacent and Warden's Grasp
 							// is for when they are not adjacent.  I certainly don't think you should be allowed to do both at once.  So I'm implementing it like that.
@@ -56,7 +56,7 @@ public aspect ChooseTargetsAspect {
 								Utils.print("You're going to be asked which character to attack.  Make sure you pick " + attacker.getName());
 								for (Power power : mark.getMarker().getPowers()) {
 									if (WardensFury.class.isAssignableFrom(power.getClass())) {
-										power.process(encounter, mark.getMarker());
+										power.process(mark.getMarker());
 										// Check if the critter got killed.
 										if (cAttacker.getCurrentHitPoints() <= 0) {
 											// Remove all the targets so the attack doesn't happen.
@@ -67,14 +67,14 @@ public aspect ChooseTargetsAspect {
 									}
 								}
 							} else {
-								List<Creature> creaturesWithinBurstRange = encounter.getMonstersWithinRangeOf(mark.getMarker().getCurrentPosition(), 5);
+								List<Creature> creaturesWithinBurstRange = Encounter.getEncounter().getMonstersWithinRangeOf(mark.getMarker().getCurrentPosition(), 5);
 								if ((creaturesWithinBurstRange != null) && (creaturesWithinBurstRange.contains(attacker))) {
 									// Warden's Grasp
 									Utils.print(mark.getMarker().getName() + " gets to use Warden's Grasp attack against " + attacker.getName() + " because they are making an attack that doesn't include " + mark.getMarker().getName());
 									Utils.print("You're going to be asked which character to attack.  Make sure you pick " + attacker.getName());
 									for (Power power : mark.getMarker().getPowers()) {
 										if (WardensGrasp.class.isAssignableFrom(power.getClass())) {
-											power.process(encounter, mark.getMarker());
+											power.process(mark.getMarker());
 											break;
 										}
 									}
@@ -93,7 +93,7 @@ public aspect ChooseTargetsAspect {
 									if (!divineChallenge.hasTakenOneTimePenalty()) {
 										int damage = 3 + mark.getMarker().getAbilityModifier(AbilityType.CHARISMA);
 										Utils.print(attacker.getName() + " takes a " + damage + " damage because of Divine Challenge.");
-										cAttacker.hurt(damage, DamageType.RADIANT, encounter, true, mark.getMarker());
+										cAttacker.hurt(damage, DamageType.RADIANT, true, mark.getMarker());
 										divineChallenge.setTakenOneTimePenalty(true);
 									}
 								}
@@ -109,7 +109,7 @@ public aspect ChooseTargetsAspect {
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Creature cTarget = (Creature) target;
 					// See if a runepriest is next to the target. (but the rune priest has to be an enemy of the target, otherwise I'd be granting bonuses to the monsters)
-					List<Creature> targetAdjacentEnemies = encounter.getAdjacentEnemies(cTarget);
+					List<Creature> targetAdjacentEnemies = Encounter.getEncounter().getAdjacentEnemies(cTarget);
 					for (Creature targetAdjacentEnemy : targetAdjacentEnemies) {
 						if (DndCharacter.class.isAssignableFrom(targetAdjacentEnemy.getClass())) {
 							DndCharacter charTargetAdjacentEnemy = (DndCharacter) targetAdjacentEnemy;

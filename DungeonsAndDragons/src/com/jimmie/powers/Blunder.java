@@ -88,7 +88,7 @@ public class Blunder extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 
@@ -97,14 +97,14 @@ public class Blunder extends AttackPower {
 				c = (DndCharacter) user;
 			}
 
-			List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 5);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 				int targetWill = target.getWill(user);
 				Utils.print("Your target has a Will of " + targetWill);
 
-				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, targets);
 
 				if (attackRoll >= targetWill) {
 					/* A HIT! */
@@ -113,7 +113,7 @@ public class Blunder extends AttackPower {
 					int damageRolls = 1;
 					DiceType damageDiceType = DiceType.SIX_SIDED;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
 
 					/* I get to slide the target 2 squares and allow an ally to do a basic attack against them as a free action with a +2 power bonus. */
 					Utils.print("You now get to slide " + target.getName() + " 2 squares and allow someone a free attack with a +2 bonus.");
@@ -149,19 +149,19 @@ public class Blunder extends AttackPower {
 
 							Utils.print("Your choice?");
 							String direction = Utils.getValidInput(validDirections);
-							target.moveCreature(direction, encounter, MovementType.SLIDE);
+							target.moveCreature(direction, MovementType.SLIDE);
 							distanceLeft--;
 						} else if ("Attack".equalsIgnoreCase(choice)) {
 							/* Pick which ally will make the attack. */
 							Utils.print("Please pick which ally will attack.");
-							Creature attacker = encounter.chooseAnyAlly(user);
+							Creature attacker = Encounter.getEncounter().chooseAnyAlly(user);
 
 							attacker.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
 							Utils.print("Make sure to pick me (" + target.getName() + ") when it asks who to attack.");
 							/* Should be able to cast the marker to a character. */
 							if (DndCharacter.class.isInstance(attacker)) {
 								Power power = ((DndCharacter) (attacker)).getBasicMeleeAttack();
-								power.process(encounter, attacker);
+								power.process(attacker);
 							}
 						} else if ("Stop".equalsIgnoreCase(choice)) {
 							break;

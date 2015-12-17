@@ -13,7 +13,7 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.powers.NaturesWrath;
 import com.jimmie.powers.WardensFury;
 import com.jimmie.powers.WardensGrasp;
@@ -38,14 +38,14 @@ public class Warden extends DndClass {
 	}
 
 	/* This does not have annotation.  It gets called directly. */
-	public int formOfTheWillowSentinelAttack(Encounter encounter, AttackTarget target) {
+	public int formOfTheWillowSentinelAttack(AttackTarget target) {
 		setUsedFormOfTheWillowSentinelAttack(true);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
 		int targetArmorClass = target.getArmorClass(owner);
 		Utils.print("Your target has an AC of " + targetArmorClass);
 		
-		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, targets, encounter);
+		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, targets);
 		
 		if (attackRoll >= targetArmorClass) {
 			/* A HIT! */
@@ -60,7 +60,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, true, owner);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, true, owner);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
@@ -69,7 +69,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, encounter, false, owner);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, false, owner);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
 			return -2;

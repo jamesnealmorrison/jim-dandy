@@ -88,17 +88,17 @@ public class ThunderRamAssault extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -108,7 +108,7 @@ public class ThunderRamAssault extends AttackPower {
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
 					/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.THUNDER, encounter, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.THUNDER, true, user);
 
 					DndClass dndClass = user.getDndClass();
 					GuardianMight guardianMight = null;
@@ -117,7 +117,7 @@ public class ThunderRamAssault extends AttackPower {
 					}
 					/* If you chose the Earth Strength build, you can push the primary target. */
 					if (guardianMight == GuardianMight.EARTHSTRENGTH) {
-						String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+						String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
 						for (int i = 0; i < user.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
 							target.push(pushDirection);
 						}
@@ -132,7 +132,7 @@ public class ThunderRamAssault extends AttackPower {
 					Utils.print("Please enter the lower left Y coordinate of the blast. No validation is done here, so do it right!");
 					lowerLeftY = Utils.getValidIntInputInRange(1, 50);
 
-					List<Creature> blastTargets = encounter.getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
+					List<Creature> blastTargets = Encounter.getEncounter().getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
 
 					Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
 					int secondaryDamage = secondaryDice.roll();
@@ -143,16 +143,16 @@ public class ThunderRamAssault extends AttackPower {
 						Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
 
 						secondaryTargets.add(secondaryTarget);
-						attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets, encounter);
+						attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets);
 
 						if (attackRoll >= secondaryTargetFortitude) {
 							/* A HIT! */
 							Utils.print("You successfully hit " + secondaryTarget.getName());
 
-							secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, encounter, true, user);
+							secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, true, user);
 
 							/* If you chose the Earth Strength build, you can push the primary target. */
-							String pushDirection = encounter.getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
+							String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
 							secondaryTarget.push(pushDirection);
 						} else {
 							Utils.print("Sorry.  You missed " + secondaryTarget.getName());

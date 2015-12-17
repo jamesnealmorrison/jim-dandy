@@ -13,11 +13,11 @@ import com.jimmie.powers.Power;
 import com.jimmie.util.Utils;
 
 public aspect MovementAspect {
-	public pointcut moveCreature(String direction, Encounter encounter, MovementType movementType) : execution(* com.jimmie.domain.creatures.*.moveCreature(..))
-	&& args(direction, encounter, movementType);
+	public pointcut moveCreature(String direction, MovementType movementType) : execution(* com.jimmie.domain.creatures.*.moveCreature(..))
+	&& args(direction, movementType);
 
-	void around(String direction, Encounter encounter, MovementType movementType) : moveCreature(direction, encounter, movementType) {
-		Utils.print("In advice: direction = " + direction + ". encounter = " + encounter + ". movementType = " + movementType);
+	void around(String direction, MovementType movementType) : moveCreature(direction, movementType) {
+		Utils.print("In advice: direction = " + direction + ". encounter = " + ". movementType = " + movementType);
 		Object o = thisJoinPoint.getThis();
 		Creature creature = null;
 		if (Creature.class.isAssignableFrom(o.getClass())) {
@@ -33,7 +33,7 @@ public aspect MovementAspect {
 							/* Should be able to cast the marker to a character. */
 							if (DndCharacter.class.isInstance(mark.getMarker())) {
 								Power basicMeleeAttack = mark.getMarker().getBasicMeleeAttack();
-								basicMeleeAttack.process(encounter, mark.getMarker());
+								basicMeleeAttack.process(mark.getMarker());
 							}
 						}
 						
@@ -44,7 +44,7 @@ public aspect MovementAspect {
 			
 			/* Before moving, see if it triggers an opportunity attack. */
 			if (movementType != MovementType.SHIFTING) {
-				List<Creature> adjacentEnemies = encounter.getAdjacentEnemies(creature);
+				List<Creature> adjacentEnemies = Encounter.getEncounter().getAdjacentEnemies(creature);
 				if (adjacentEnemies != null) {
 					for (Creature adjacentEnemy : adjacentEnemies) {
 						/* I may be invisible to them, though.  Check. */
@@ -52,7 +52,7 @@ public aspect MovementAspect {
 							Utils.print("This would have provoked an opportunity attack from " + adjacentEnemy.getName() + " but I am invisible to them now. ");
 						} else {
 							Utils.print(adjacentEnemy.getName() + " gets to perform an opportunity attack on " + creature.getName() + " because " + creature.getName() + " left a square adjacent to " + adjacentEnemy.getName() + " without shifting.");
-							adjacentEnemy.performOpportunityAttack(creature, encounter);
+							adjacentEnemy.performOpportunityAttack(creature);
 						}
 					}
 				}
@@ -60,19 +60,19 @@ public aspect MovementAspect {
 
 			/* Did this trigger a Dragonshield Tactics by shifting away from a dragonshield? */
 			/* Start by getting a list of adjacent kobold dragonshields from before the move. */
-			List<Creature> adjacentDragonshieldsBeforeMove = encounter.getSpecificTypeOfAdjacentEnemies(creature, KoboldDragonshield.class);
+			List<Creature> adjacentDragonshieldsBeforeMove = Encounter.getEncounter().getSpecificTypeOfAdjacentEnemies(creature, KoboldDragonshield.class);
 
 			/* Also need a list of creatures that are adjacent before the move. */
-			List<Creature> adjacentCreaturesBeforeMove = encounter.getAllAdjacentCreatures(creature);
+			List<Creature> adjacentCreaturesBeforeMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);
 
-			proceed(direction, encounter, movementType);
+			proceed(direction, movementType);
 			Utils.print("Should have moved");
 
 			/* Get a list of adjacentCreatures after the move. */
-			List<Creature> adjacentCreaturesAfterMove = encounter.getAllAdjacentCreatures(creature);
+			List<Creature> adjacentCreaturesAfterMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);
 
 			/* Also need a list of adjacent dragonshields after the move. */
-			List<Creature> adjacentDragonshieldsAfterMove = encounter.getSpecificTypeOfAdjacentEnemies(creature, KoboldDragonshield.class);
+			List<Creature> adjacentDragonshieldsAfterMove = Encounter.getEncounter().getSpecificTypeOfAdjacentEnemies(creature, KoboldDragonshield.class);
 
 			/* If the move was a shift, see which dragonshields are no longer adjacent.  In other words,
 			 * did they shift away from any dragonshields?
@@ -83,7 +83,7 @@ public aspect MovementAspect {
 						if ((adjacentCreaturesAfterMove == null) || (!adjacentCreaturesAfterMove.contains(adjacentDragonshieldBeforeMove))) {
 							Utils.print(creature.getName() + " moved away from " + adjacentDragonshieldBeforeMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
 							if (!((KoboldDragonshield) adjacentDragonshieldBeforeMove).isUsedDragonshieldTactics()) {
-								((KoboldDragonshield) adjacentDragonshieldBeforeMove).useDragonshieldTactics(encounter);
+								((KoboldDragonshield) adjacentDragonshieldBeforeMove).useDragonshieldTactics();
 							}
 						}
 					}
@@ -98,7 +98,7 @@ public aspect MovementAspect {
 					if ((adjacentCreaturesBeforeMove == null) || (!adjacentCreaturesBeforeMove.contains(adjacentDragonshieldAfterMove))) {
 						Utils.print(creature.getName() + " moved next to " + adjacentDragonshieldAfterMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
 						if (!((KoboldDragonshield) adjacentDragonshieldAfterMove).isUsedDragonshieldTactics()) {
-							((KoboldDragonshield) adjacentDragonshieldAfterMove).useDragonshieldTactics(encounter);
+							((KoboldDragonshield) adjacentDragonshieldAfterMove).useDragonshieldTactics();
 						}
 					}
 				}

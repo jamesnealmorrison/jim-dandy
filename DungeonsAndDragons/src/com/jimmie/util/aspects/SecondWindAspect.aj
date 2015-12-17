@@ -6,14 +6,14 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.GuardianMight;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.util.Utils;
 
 public aspect SecondWindAspect {
-	public pointcut secondWind(Encounter encounter, Creature creature) : execution(* com.jimmie.powers.SecondWind.process(..))
-	&& args(encounter, creature);
+	public pointcut secondWind(Creature creature) : execution(* com.jimmie.powers.SecondWind.process(..))
+	&& args(creature);
 	
-	after(Encounter encounter, Creature creature) : secondWind(encounter, creature) {
+	after(Creature creature) : secondWind(creature) {
 		// Warden Earthstrength:
 		if (creature.getDndClass() != null) {
 			if (Warden.class.isAssignableFrom(creature.getDndClass().getClass())) {

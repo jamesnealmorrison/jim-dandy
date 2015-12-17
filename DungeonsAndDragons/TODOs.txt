@@ -9,7 +9,6 @@ Deva: Astral Majesty is fully implemented and tested. Astral Resistance is coded
 Deva is pretty much implemented then.
 
 
-
 CLASSES***********************************
 
 Warden:
@@ -32,6 +31,9 @@ Lay on Hands is completely done and tested (well, except for the "minimum 1" - b
 Bolstering Strike is done and tested.
 Enfeebling Strike is done and tested.
 Shielding Smite is done and tested.
+
+
+Runepriest:
 
 
 

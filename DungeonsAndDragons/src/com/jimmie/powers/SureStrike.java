@@ -85,15 +85,15 @@ public class SureStrike extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRollWithPowerModifier(AbilityType.STRENGTH, getAccessoryType(), targets, encounter, 2);
+			int attackRoll = user.attackRollWithPowerModifier(AbilityType.STRENGTH, getAccessoryType(), targets, 2);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -106,7 +106,7 @@ public class SureStrike extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user.getRace()), DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 			}

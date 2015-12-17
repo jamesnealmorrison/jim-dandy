@@ -300,7 +300,7 @@ public class Utils {
 	}
 
 	public static boolean hasCombatAdvantage(Creature source,
-			Creature target, Encounter encounter) {
+			Creature target) {
 		/* Does the target have a condition that grants combat advantage? */
 		// TODO: Prone says only melee attacks.
 		if (target.isBlinded() || target.isDazed() || target.isDominated() || target.isDying() || target.isHelpless() || target.isProne() || target.isRestrained()
@@ -309,7 +309,7 @@ public class Utils {
 		}
 
 		/* Is the source creature flanking the target? */
-		if (Utils.isFlanking(source, target, encounter)) {
+		if (Utils.isFlanking(source, target)) {
 			return true;
 		}
 
@@ -339,13 +339,12 @@ public class Utils {
 		return false;
 	}
 
-	private static boolean isFlanking(Creature source, Creature target,
-			Encounter encounter) {
+	private static boolean isFlanking(Creature source, Creature target) {
 		/* First thing to do is find out if the source is adjacent to the target. */
 		if (source.isAdjacentTo(target)) {
 			/* Get all the other adjacent allies.  PLEASE NOTE: I'm calling the "getAdjacentEnemies method on purpose.
 			 * It finds enemies of the TARGET, which would be MY allies!!!!!!!! */
-			List<Creature> adjacentAllies = encounter.getAdjacentEnemies(target);
+			List<Creature> adjacentAllies = Encounter.getEncounter().getAdjacentEnemies(target);
 			for (Creature adjacentAlly : adjacentAllies) {
 				if (adjacentAlly.canFlank()) {
 					if ((source.getCurrentPosition().isNorthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthOf(target.getCurrentPosition()))) {

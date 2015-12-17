@@ -86,7 +86,7 @@ public class MajesticWord extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		if (timesUsed < 2) {
 			timesUsed++;
 			Utils.print("Remember you can only uses this once per round, even if you can use it twice in an encounter.  But I didn't code that so you are on the honor system.");
@@ -100,7 +100,7 @@ public class MajesticWord extends AttackPower {
 				range = 15;
 			}
 
-			DndCharacter target = (DndCharacter) encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), range);
+			DndCharacter target = (DndCharacter) Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), range);
 			
 			target.useHealingSurge();
 			int extraRolls = 0;
@@ -148,7 +148,7 @@ public class MajesticWord extends AttackPower {
 
 				Utils.print("Your choice?");
 				String direction = Utils.getValidInput(validDirections);
-				target.moveCreature(direction, encounter, MovementType.SLIDE);
+				target.moveCreature(direction, MovementType.SLIDE);
 			}
 			
 		} else {

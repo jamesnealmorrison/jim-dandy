@@ -84,8 +84,8 @@ public class NaturesWrath extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<Creature> adjEnemies = encounter.getAdjacentEnemies(user);
+	public void process(Creature user) {
+		List<Creature> adjEnemies = Encounter.getEncounter().getAdjacentEnemies(user);
 		
 		for (Creature enemy : adjEnemies) {
 			enemy.mark(user, DurationType.END_OF_NEXT_TURN, MarkType.NATURES_WRATH, user.getCurrentTurn());

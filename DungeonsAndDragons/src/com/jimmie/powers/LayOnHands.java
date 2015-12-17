@@ -86,8 +86,8 @@ public class LayOnHands extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		Creature ally = encounter.chooseAllyAdjacentTo(user, user.getCurrentPosition());
+	public void process(Creature user) {
+		Creature ally = Encounter.getEncounter().chooseAllyAdjacentTo(user, user.getCurrentPosition());
 		DndCharacter cUser = null;
 		DndCharacter cAlly = null;
 		

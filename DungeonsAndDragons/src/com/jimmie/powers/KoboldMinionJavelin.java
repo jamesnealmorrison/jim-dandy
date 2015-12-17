@@ -79,14 +79,14 @@ public class KoboldMinionJavelin extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 10, 20);
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20);
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.roll();
-			int roll = diceRoll + 5 + user.getOtherAttackModifier(targets, encounter);
+			int roll = diceRoll + 5 + user.getOtherAttackModifier(targets);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
@@ -97,7 +97,7 @@ public class KoboldMinionJavelin extends AttackPower {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(4, DamageType.NORMAL, encounter, true, user);
+				target.hurt(4, DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 			}

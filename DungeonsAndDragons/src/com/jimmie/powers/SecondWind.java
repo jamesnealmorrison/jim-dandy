@@ -12,7 +12,7 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-import com.jimmie.encounters.Encounter;
+
 import com.jimmie.util.Utils;
 import com.jimmie.domain.creatures.DndCharacter;
 
@@ -84,7 +84,7 @@ public class SecondWind extends Power {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
+	public void process(Creature user) {
 		// Second winds should only be available to characters
 		if (!DndCharacter.class.isAssignableFrom(user.getClass())) {
 			Utils.print(user.getDisplayName() + " is not a character.  Not sure how you got to this second wind power.");

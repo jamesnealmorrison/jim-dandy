@@ -88,15 +88,15 @@ public class ShieldingSmite extends AttackPower {
 	}
 
 	@Override
-	public void process(Encounter encounter, Creature user) {
-		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+	public void process(Creature user) {
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -106,7 +106,7 @@ public class ShieldingSmite extends AttackPower {
 				damageRolls = damageRolls * 2;
 				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
 
 				
 			} else {
@@ -115,7 +115,7 @@ public class ShieldingSmite extends AttackPower {
 			
 			// I believe the effect happens, hit or miss.
 			Utils.print("Choose an ally to give an AC bonus to.");
-			Creature ally = encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
+			Creature ally = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
 			int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 			Utils.print(ally.getName() + " gets an AC bonus of " + abilityModifier + " until the end of my next turn.");
 			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);

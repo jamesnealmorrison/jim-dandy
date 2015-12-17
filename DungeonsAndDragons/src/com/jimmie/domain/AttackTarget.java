@@ -1,12 +1,11 @@
 package com.jimmie.domain;
 
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.encounters.Encounter;
 
 public interface AttackTarget {
 	String getName();
 	int getArmorClass(Creature attacker);
-	void hurt(int damage, DamageType damageType, Encounter encounter, boolean hit, Object hurter);
+	void hurt(int damage, DamageType damageType, boolean hit, Object hurter);
 	Position getCurrentPosition();
 	void push(String pushDirection);
 //	void markByCombatChallenge(Creature owner, DurationType durationType);
@@ -19,7 +18,7 @@ public interface AttackTarget {
 	void hitByBondOfPursuit(Creature pursuer);
 	void hitByStirringShout(int charismaModifier);
 	void hitByTelekineticAnchor();
-	void moveCreature(String direction, Encounter encounter, MovementType movementType);
+	void moveCreature(String direction, MovementType movementType);
 	boolean isHitByStirringShout();
 	int getStirringShoutCharismaModifier();
 	void knockProne();
