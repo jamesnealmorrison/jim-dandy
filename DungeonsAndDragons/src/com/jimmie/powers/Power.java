@@ -74,4 +74,10 @@ public abstract class Power implements Serializable {
 	public void setActionType(ActionType actionType) {
 		// Doesn't do anything.  Just meant to be overridden.		
 	}
+	public int getTimesUsed() {
+		return timesUsed;
+	}
+	public void setTimesUsed(int timesUsed) {
+		this.timesUsed = timesUsed;
+	}
 }

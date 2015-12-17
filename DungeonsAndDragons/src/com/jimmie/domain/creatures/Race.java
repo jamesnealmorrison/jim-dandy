@@ -5,20 +5,17 @@ import java.io.Serializable;
 import com.jimmie.domain.classes.DndClass;
 
 public abstract class Race implements Serializable {
-	private int fortitudeBonus = 0;
-	private int willBonus = 0;
-	private int reflexBonus = 0;
-	
-	public Race() {
-	}
-	public DndCharacter getOwner() {
-		return owner;
-	}
-	protected DndCharacter owner; // Pointer back to the player character
-	public void setOwner(DndCharacter owner) {
-		this.owner = owner;
-	}
 	private static final long serialVersionUID = 1L;
+	private int fortitudeBonus;
+	private int willBonus;
+	private int reflexBonus;
+	private int strengthBonus;
+	private int constitutionBonus;
+	private int dexterityBonus;
+	private int intelligenceBonus;
+	private int wisdomBonus;
+	private int charismaBonus;
+
 	public abstract int getRacialDamageBonus();
 	public abstract void initializeForEncounter();
 	public abstract void initializeForNewDay();
@@ -79,9 +76,16 @@ public abstract class Race implements Serializable {
 	public int getCharismaBonus() {
 		return charismaBonus;
 	}
-	private int strengthBonus = 0;
-	private int constitutionBonus = 0;
-	private int dexterityBonus = 0;
-	private int intelligenceBonus = 0;
-	private int wisdomBonus = 0;
-	private int charismaBonus = 0;}
+	
+	public Race() {
+		fortitudeBonus = 0;
+		willBonus = 0;
+		reflexBonus = 0;
+		strengthBonus = 0;
+		constitutionBonus = 0;
+		dexterityBonus = 0;
+		intelligenceBonus = 0;
+		wisdomBonus = 0;
+		charismaBonus = 0;
+	}
+}

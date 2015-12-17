@@ -2,7 +2,9 @@ package com.jimmie.util.aspects;
 
 import java.util.List;
 import com.jimmie.domain.TurnTaker;
+import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.encounters.Encounter;
@@ -17,6 +19,7 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
+import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffectType;
 
 public aspect ChooseTargetsAspect {
@@ -98,7 +101,31 @@ public aspect ChooseTargetsAspect {
 						}
 					}
 				}
+			} // Attacker is marked.
+			
+			// Look for Runepriest rune of destruction
+			// First, loop through the targets.
+			for (AttackTarget target : targets) {
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					Creature cTarget = (Creature) target;
+					// See if a runepriest is next to the target. (but the rune priest has to be an enemy of the target, otherwise I'd be granting bonuses to the monsters)
+					List<Creature> targetAdjacentEnemies = encounter.getAdjacentEnemies(cTarget);
+					for (Creature targetAdjacentEnemy : targetAdjacentEnemies) {
+						if (DndCharacter.class.isAssignableFrom(targetAdjacentEnemy.getClass())) {
+							DndCharacter charTargetAdjacentEnemy = (DndCharacter) targetAdjacentEnemy;
+							if (Runepriest.class.isAssignableFrom(charTargetAdjacentEnemy.getDndClass().getClass())) {
+								Runepriest runepriest = (Runepriest) charTargetAdjacentEnemy.getDndClass();
+								if (runepriest.getRunicState() == RunicState.RUNE_OF_DESTRUCTION) {
+									Utils.print(cTarget.getName() + " is standing next to a Runepriest in the Rune of Destruction state.");
+									Utils.print(attacker.getName() + " will get a +1 bonus to the attack roll.");
+									cAttacker.setTemporaryEffect(1, cAttacker.getCurrentTurn(), DurationType.IMMEDIATE, cAttacker, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+								}
+							}
+						}
+					}
+				}
 			}
+			
 		}
 	}
 }

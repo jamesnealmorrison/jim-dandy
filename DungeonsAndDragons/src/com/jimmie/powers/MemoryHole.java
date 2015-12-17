@@ -14,7 +14,6 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Psion;
-import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -92,11 +91,6 @@ public class MemoryHole extends AttackPower {
 		int augment = 0;
 		int range = 0;
 		
-		DndCharacter c = null;
-		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
-			c = (DndCharacter) user;
-		}		
-		
 		Psion psion = null;
 		int powerPoints = 0;
 		if (Psion.class.isAssignableFrom(user.getDndClass().getClass())) {
@@ -155,16 +149,12 @@ public class MemoryHole extends AttackPower {
 			durationType = DurationType.END_OF_NEXT_TURN;
 		}
 		for (AttackTarget target : targets) {
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
-			
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-			
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a Will of " + targetWill);
 			
-			if (roll >= targetWill) {
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+			
+			if (attackRoll >= targetWill) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 

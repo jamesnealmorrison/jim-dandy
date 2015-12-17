@@ -20,7 +20,6 @@ import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class Blunder extends AttackPower {
@@ -102,16 +101,12 @@ public class Blunder extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				Dice d = new Dice(DiceType.TWENTY_SIDED);
-				int diceRoll = d.roll();
-				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
-
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 				int targetWill = target.getWill(user);
 				Utils.print("Your target has a Will of " + targetWill);
 
-				if (roll >= targetWill) {
+				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, targets, encounter);
+
+				if (attackRoll >= targetWill) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 

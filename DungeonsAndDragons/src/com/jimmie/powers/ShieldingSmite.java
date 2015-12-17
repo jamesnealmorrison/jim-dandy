@@ -3,12 +3,17 @@ package com.jimmie.powers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
@@ -84,7 +89,37 @@ public class ShieldingSmite extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = encounter.chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+
+			if (attackRoll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				damageRolls = damageRolls * 2;
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, encounter, true, user);
+
+				
+			} else {
+				Utils.print("You missed " + target.getName());
+			}
+			
+			// I believe the effect happens, hit or miss.
+			Utils.print("Choose an ally to give an AC bonus to.");
+			Creature ally = encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
+			int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
+			Utils.print(ally.getName() + " gets an AC bonus of " + abilityModifier + " until the end of my next turn.");
+			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+		}
 	}
 
 	@Override

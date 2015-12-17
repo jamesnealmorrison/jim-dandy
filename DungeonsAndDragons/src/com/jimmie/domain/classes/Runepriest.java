@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.RunicState;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -19,11 +20,11 @@ public class Runepriest extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private RunicArtistry runicArtistry;
+	private RunicState runicState;
 
 	@Override
 	public void initializeForEncounter() {
-		// TODO Auto-generated method stub
-
+		runicState = RunicState.NONE;
 	}
 
 	@Override
@@ -153,5 +154,13 @@ public class Runepriest extends DndClass {
 	public int getArmorClassBonus() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public RunicState getRunicState() {
+		return runicState;
+	}
+
+	public void setRunicState(RunicState runicState) {
+		this.runicState = runicState;
 	}
 }

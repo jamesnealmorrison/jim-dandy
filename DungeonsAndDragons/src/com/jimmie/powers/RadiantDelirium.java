@@ -3,14 +3,20 @@ package com.jimmie.powers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
@@ -82,7 +88,49 @@ public class RadiantDelirium extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = encounter.chooseRangedTarget(user, 5, 5);
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			int targetReflex = target.getReflex(user);
+			Utils.print("Your target has a reflex of " + targetReflex);
+
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets, encounter);
+
+			if (attackRoll >= targetReflex) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = 3;
+				DiceType damageDiceType = DiceType.EIGHT_SIDED;
+
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, encounter, true, user);
+				
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					Utils.print(target.getName() + " is dazed until the end of my next turn.");
+					Creature c = (Creature) target;
+					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, user.getCurrentTurn());
+					
+					Utils.print(target.getName() + " will take a -2 penalty to AC (save ends).");
+					c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+				}
+
+				
+			} else {
+				Utils.print("You missed " + target.getName());
+
+				int damageRolls = 3;
+				DiceType damageDiceType = DiceType.EIGHT_SIDED;
+
+				target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.RADIANT, encounter, true, user);
+				
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					Utils.print(target.getName() + " is dazed until the end of my next turn.");
+					Creature c = (Creature) target;
+					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, user.getCurrentTurn());
+				}
+			}
+		}
 	}
 
 	@Override

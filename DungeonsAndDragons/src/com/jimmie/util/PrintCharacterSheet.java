@@ -532,8 +532,7 @@ public class PrintCharacterSheet {
 	}
 
 	private PlayerCharacter getCharacterToPrint() {
-		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Keothi");
-		pc.setReadiedArmor(pc.getArmor().get(1));
+		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Gamal");
 		return pc;
 	}
 	

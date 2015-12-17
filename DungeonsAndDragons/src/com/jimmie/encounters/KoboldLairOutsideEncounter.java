@@ -1,7 +1,6 @@
 package com.jimmie.encounters;
 
 import java.util.ArrayList;
-
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -12,7 +11,6 @@ import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -126,7 +124,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 	
 		/* Set up the player characters */
-		gamal.setCurrentPosition(new Position(3,20));
+// Original position		gamal.setCurrentPosition(new Position(3,20));
+		gamal.setCurrentPosition(new Position(13,13));
+		
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -148,8 +148,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		percian.addReadiedWeapon(readiedWeapon);
 		percian.setReadiedArmor(percian.getArmor().get(0));
 */
-// Original position		keothi.setCurrentPosition(new Position(3,18));
-		keothi.setCurrentPosition(new Position(13,13));
+		keothi.setCurrentPosition(new Position(3,18));
 /*		
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
@@ -198,9 +197,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		characters = new ArrayList<DndCharacter>();
 
-//		characters.add(gamal);
+		characters.add(gamal);
 //		characters.add(percian);
-		characters.add(keothi);
+//		characters.add(keothi);
 		characters.add(travok);
 //		characters.add(halfOrcFighter);
 		

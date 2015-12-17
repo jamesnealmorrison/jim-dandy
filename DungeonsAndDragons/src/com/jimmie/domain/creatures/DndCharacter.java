@@ -11,7 +11,6 @@ import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.NotEnoughCurrencyException;
 import com.jimmie.domain.Resistance;
 import com.jimmie.domain.Ritual;
-import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Avenger;
@@ -46,9 +45,154 @@ import com.jimmie.powers.SpendActionPoint;
 import com.jimmie.util.Utils;
 
 public abstract class DndCharacter extends Creature {
+	private static final long serialVersionUID = 1L;
 	private Armor readiedArmor;
 	private List<Armor> armor;
 	private List<Gear> gear;
+	protected Coins coins;
+	protected List<Ritual> rituals;	
+	protected int age;
+	protected Gender gender;
+	protected int height;  // in inches
+	protected int weight;  // in pounds
+	protected Deity deity;
+	protected String adventuringCompanyOrOtherAffiliations;
+	protected int initiativeMisc;
+	protected int armorClassMisc1;
+	protected int armorClassMisc2;
+	protected int fortitudeMisc1;
+	protected int fortitudeMisc2;
+	protected int reflexMisc1;
+	protected int reflexMisc2;
+	protected int willMisc1;
+	protected int willMisc2;
+	protected int speedMisc;
+	protected int healingSurgesPerDay;
+	protected int currentSurgeUses;
+	protected int deathSavingThrowFailures;
+	protected String deathSavingThrowMods; // Not sure what this is.
+	protected List<Resistance> resistances;
+	protected String additionalEffectsForSpendingActionPoints;
+	protected String personalityTraits;
+	protected String mannerismsAndAppearance;
+	protected String background;
+	protected List<CompanionOrAlly> companionsAndAllies;
+	protected List<String> sessionAndCampaignNotes;
+	private HashMap<Hand, ReadiedWeapon> readiedWeapons;
+	private List<Weapon> weapons;
+	private Implement readiedImplement;
+	private List<WeaponType> weaponTypeProficiencies;
+	private List<WeaponGroup> weaponGroupProficiencies;
+	private List<WeaponCategory> weaponCategoryProficiencies;
+	private List<ArmorType> armorTypeProficiencies;
+	protected List<ArmorGroup> armorGroupProficiencies;
+	protected List<ImplementType> implementProficiencies;
+	private Shield readiedShield;
+	private List<Shield> shields;
+
+	public Shield getReadiedShield() {
+		if (readiedShield == null) {
+			readiedShield = new NoShield();
+		}
+		return readiedShield;
+	}
+
+	public void setReadiedShield(Shield readiedShield) {
+		this.readiedShield = readiedShield;
+	}
+
+	public boolean isShieldReadied() {
+		if ((readiedShield != null) || !(NoShield.class.isInstance(readiedShield))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void useHealingSurge() {
+		if (currentSurgeUses < this.healingSurgesPerDay) {
+			heal(getHealingSurgeValue());
+			currentSurgeUses++;
+		} else {
+			Utils.print("OOPS!  You can't use any more healing surges.");
+		}
+	}
+
+	public void addCoins(int i, CoinType coinType) {
+		switch (coinType) {
+		case COPPER_PIECE :
+			coins.addCopperPieces(i);
+			break;
+		case SILVER_PIECE :
+			coins.addSilverPieces(i);
+			break;
+		case GOLD_PIECE :
+			coins.addGoldPieces(i);
+			break;
+		case PLATINUM_PIECE :
+			coins.addPlatinumPieces(i);
+			break;
+		case ASTRAL_DIAMOND :
+			coins.addAstralDiamonds(i);
+			break;
+		}
+	}
+
+	public Coins getCoins() {
+		return coins;
+	}
+
+	public void setCoins(Coins coins) {
+		this.coins = coins;
+	}
+
+	public void spendCoins(Price price) throws NotEnoughCurrencyException {
+		coins.spend(price.getAmount(), price.getCoinType());
+	}
+
+	public void addArmor(Armor armor) {
+		if (this.armor == null) {
+			this.armor = new ArrayList<Armor>();
+		}
+		this.armor.add(armor);
+	}
+
+	public void addGear(Gear gear) {
+		if (this.gear == null) {
+			this.gear = new ArrayList<Gear>();
+		}
+		this.gear.add(gear);
+	}
+
+	public List<Shield> getShields() {
+		return shields;
+	}
+
+	public void setShields(List<Shield> shields) {
+		this.shields = shields;
+	}
+	
+	public void addShield(Shield shield) {
+		if (shields == null) {
+			shields = new ArrayList<Shield>();
+		}
+		shields.add(shield);
+	}
+
+	public List<Weapon> getWeapons() {
+		return weapons;
+	}
+
+	public void setWeapons(List<Weapon> weapons) {
+		this.weapons = weapons;
+	}
+	
+	public void addWeapon(Weapon weapon) {
+		if (weapons == null) {
+			weapons = new ArrayList<Weapon>();
+		}
+		weapons.add(weapon);
+	}
 
 	public List<Gear> getGear() {
 		return gear;
@@ -114,28 +258,7 @@ public abstract class DndCharacter extends Creature {
 					Utils.print("Armor Class Modifier no longer applies.  Removint.");
 				}
 			} 
-			
-			/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-			if (TemporaryAidAnotherBonus.class.isAssignableFrom(tempEffect.getClass())) {
-				TemporaryAidAnotherBonus temporaryAidAnotherBonus = (TemporaryAidAnotherBonus) tempEffect;
-				if (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE) {
-					if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-						Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getModifier() + " to defense against this attack by " + attacker.getName() + ".");
-						armorClass = armorClass + temporaryAidAnotherBonus.getModifier();
-						Utils.print("Bonus still applies.");
-						temporaryAidAnotherBonus = null;
-						Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-					} else {
-						/* Bonus is over.  Reset the bonus. */
-						it.remove();
-						Utils.print("Bonus no longer applies.  Resetting bonus.");
-					}
-				} 				
-			}
 		}
-
-		
-
 		return armorClass;
 	}
 
@@ -145,7 +268,7 @@ public abstract class DndCharacter extends Creature {
 		}
 		return readiedArmor;
 	}
-	private static final long serialVersionUID = 1L;
+
 	public List<Ritual> getRituals() {
 		return rituals;
 	}
@@ -325,14 +448,6 @@ public abstract class DndCharacter extends Creature {
 		this.sessionAndCampaignNotes = sessionAndCampaignNotes;
 	}
 
-	protected Coins coins = new Coins();
-	
-	protected List<Ritual> rituals;	
-	protected int age = 0;
-	protected Gender gender;
-	protected int height = 0;  // in inches
-	protected int weight = 0;  // in pounds
-	protected Deity deity;
 	public Deity getDeity() {
 		return deity;
 	}
@@ -340,37 +455,6 @@ public abstract class DndCharacter extends Creature {
 	public void setDeity(Deity deity) {
 		this.deity = deity;
 	}
-	protected String adventuringCompanyOrOtherAffiliations;
-	protected int initiativeMisc = 0;
-	protected int armorClassMisc1 = 0;
-	protected int armorClassMisc2 = 0;
-	protected int fortitudeMisc1 = 0;
-	protected int fortitudeMisc2 = 0;
-	protected int reflexMisc1 = 0;
-	protected int reflexMisc2 = 0;
-	protected int willMisc1 = 0;
-	protected int willMisc2 = 0;
-	protected int speedMisc = 0;
-	protected int healingSurgesPerDay = 0;
-	protected int currentSurgeUses = 0;
-	protected int deathSavingThrowFailures = 0;
-	protected String deathSavingThrowMods; // Not sure what this is.
-	protected List<Resistance> resistances;
-	protected String additionalEffectsForSpendingActionPoints;
-	protected String personalityTraits;
-	protected String mannerismsAndAppearance;
-	protected String background;
-	protected List<CompanionOrAlly> companionsAndAllies;
-	protected List<String> sessionAndCampaignNotes;
-	private HashMap<Hand, ReadiedWeapon> readiedWeapons;
-	private List<Weapon> weapons;
-	private Implement readiedImplement;
-	private List<WeaponType> weaponTypeProficiencies;
-	private List<WeaponGroup> weaponGroupProficiencies;
-	private List<WeaponCategory> weaponCategoryProficiencies;
-	private List<ArmorType> armorTypeProficiencies;
-	protected List<ArmorGroup> armorGroupProficiencies;
-	protected List<ImplementType> implementProficiencies;
 
 	public List<WeaponType> getWeaponTypeProficiencies() {
 		return weaponTypeProficiencies;
@@ -507,7 +591,25 @@ public abstract class DndCharacter extends Creature {
 		addPower(new SpendActionPoint());
 		addPower(new SecondWind());
 		addPower(new AidAnother());
-	}
+
+		coins = new Coins();
+		age = 0;
+		height = 0;  // in inches
+		weight = 0;  // in pounds
+		initiativeMisc = 0;
+		armorClassMisc1 = 0;
+		armorClassMisc2 = 0;
+		fortitudeMisc1 = 0;
+		fortitudeMisc2 = 0;
+		reflexMisc1 = 0;
+		reflexMisc2 = 0;
+		willMisc1 = 0;
+		willMisc2 = 0;
+		speedMisc = 0;
+		healingSurgesPerDay = 0;
+		currentSurgeUses = 0;
+		deathSavingThrowFailures = 0;
+}
 
 	/* In this method, I will have general other bonus that are hard to define anywhere else. */
 	public int getOtherAttackModifier(List<AttackTarget> targets, Encounter encounter) {
@@ -603,6 +705,7 @@ public abstract class DndCharacter extends Creature {
 		}
 	}
 
+	@Override
 	public int getImplementAttackBonus() {
 		Implement implement = getReadiedImplement();
 
@@ -613,6 +716,7 @@ public abstract class DndCharacter extends Creature {
 		}
 	}
 
+	@Override
 	public int getImplementDamageBonus() {
 		Implement implement = getReadiedImplement();
 		
@@ -652,110 +756,4 @@ public abstract class DndCharacter extends Creature {
 		usedSecondWind = false;
 	}
 
-	private Shield readiedShield;
-	private List<Shield> shields;
-
-	public Shield getReadiedShield() {
-		if (readiedShield == null) {
-			readiedShield = new NoShield();
-		}
-		return readiedShield;
-	}
-
-	public void setReadiedShield(Shield readiedShield) {
-		this.readiedShield = readiedShield;
-	}
-
-	public boolean isShieldReadied() {
-		if ((readiedShield != null) || !(NoShield.class.isInstance(readiedShield))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public void useHealingSurge() {
-		if (currentSurgeUses < this.healingSurgesPerDay) {
-			heal(getHealingSurgeValue());
-			currentSurgeUses++;
-		} else {
-			Utils.print("OOPS!  You can't use any more healing surges.");
-		}
-	}
-
-	public void addCoins(int i, CoinType coinType) {
-		switch (coinType) {
-		case COPPER_PIECE :
-			coins.addCopperPieces(i);
-			break;
-		case SILVER_PIECE :
-			coins.addSilverPieces(i);
-			break;
-		case GOLD_PIECE :
-			coins.addGoldPieces(i);
-			break;
-		case PLATINUM_PIECE :
-			coins.addPlatinumPieces(i);
-			break;
-		case ASTRAL_DIAMOND :
-			coins.addAstralDiamonds(i);
-			break;
-		}
-	}
-
-	public Coins getCoins() {
-		return coins;
-	}
-
-	public void setCoins(Coins coins) {
-		this.coins = coins;
-	}
-
-	public void spendCoins(Price price) throws NotEnoughCurrencyException {
-		coins.spend(price.getAmount(), price.getCoinType());
-	}
-
-	public void addArmor(Armor armor) {
-		if (this.armor == null) {
-			this.armor = new ArrayList<Armor>();
-		}
-		this.armor.add(armor);
-	}
-
-	public void addGear(Gear gear) {
-		if (this.gear == null) {
-			this.gear = new ArrayList<Gear>();
-		}
-		this.gear.add(gear);
-	}
-
-	public List<Shield> getShields() {
-		return shields;
-	}
-
-	public void setShields(List<Shield> shields) {
-		this.shields = shields;
-	}
-	
-	public void addShield(Shield shield) {
-		if (shields == null) {
-			shields = new ArrayList<Shield>();
-		}
-		shields.add(shield);
-	}
-
-	public List<Weapon> getWeapons() {
-		return weapons;
-	}
-
-	public void setWeapons(List<Weapon> weapons) {
-		this.weapons = weapons;
-	}
-	
-	public void addWeapon(Weapon weapon) {
-		if (weapons == null) {
-			weapons = new ArrayList<Weapon>();
-		}
-		weapons.add(weapon);
-	}
 }

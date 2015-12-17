@@ -86,8 +86,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + 7 + user.getOtherAttackModifier(targets, encounter);
+			int roll = d.roll() + 7 + user.getOtherAttackModifier(targets, encounter);
 
 			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.
@@ -106,7 +105,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 			}
 			roll = roll + count;
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+			Utils.print("Your total with modifiers is " + roll + ".");
 
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);

@@ -2,6 +2,8 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
@@ -12,7 +14,6 @@ import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Utils;
 import com.jimmie.domain.creatures.DndCharacter;
 
 
@@ -22,6 +23,7 @@ public class LayOnHands extends AttackPower {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private boolean usedThisRound = false;
 
 	@Override
 	public AttackType getAttackType() {
@@ -85,7 +87,22 @@ public class LayOnHands extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		Creature ally = encounter.chooseAllyAdjacentTo(user, user.getCurrentPosition());
+		DndCharacter cUser = null;
+		DndCharacter cAlly = null;
+		
+		if ((DndCharacter.class.isAssignableFrom(user.getClass())) && (DndCharacter.class.isAssignableFrom(ally.getClass()))) {
+			 cUser = (DndCharacter) user;
+			 cAlly = (DndCharacter) ally;
+		}
+		timesUsed++;
+		usedThisRound = true;
+		// Give an extra healing surge to the ally (Because useHealingSurge will deduct one.
+		cAlly.setCurrentSurgeUses(cAlly.getCurrentSurgeUses()+1);
+		cAlly.useHealingSurge();
+		// Remove one from mine.
+		cUser.setCurrentSurgeUses(cUser.getCurrentSurgeUses()-1);
+		
 	}
 
 	@Override
@@ -113,10 +130,17 @@ public class LayOnHands extends AttackPower {
 	}
 
 	@Override
+	public void initializeForStartOfTurn() {
+		usedThisRound = false;
+	}
+
+	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
-			if (((DndCharacter) user).getCurrentSurgeUses() < ((DndCharacter) user).getHealingSurgesPerDay()) {
-				return true;
+		if ((timesUsed <= user.getAbilityModifier(AbilityType.WISDOM)) && (!usedThisRound )) {
+			if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+				if (((DndCharacter) user).getCurrentSurgeUses() < ((DndCharacter) user).getHealingSurgesPerDay()) {
+					return true;
+				}
 			}
 		}
 		return false;

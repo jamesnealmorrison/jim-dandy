@@ -10,18 +10,10 @@ public abstract class DndClass implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private int fortitudeBonus = 0;
-	private int willBonus = 0;
-	private int reflexBonus = 0;
-	
-	public DndCharacter getOwner() {
-		return owner;
-	}
+	private int fortitudeBonus;
+	private int willBonus;
+	private int reflexBonus;
 	protected DndCharacter owner; // Pointer back to the player character
-	public void setOwner(DndCharacter owner) {
-		this.owner = owner;
-	}
 	public abstract void initializeForEncounter();
 	public abstract void initializeForNewDay();
 	public abstract List<String> selectInitialSkills();
@@ -45,5 +37,12 @@ public abstract class DndClass implements Serializable {
 	}
 	public void setReflexBonus(int reflexBonus) {
 		this.reflexBonus = reflexBonus;
+	}
+
+	public DndCharacter getOwner() {
+		return owner;
+	}
+	public void setOwner(DndCharacter owner) {
+		this.owner = owner;
 	}
 }

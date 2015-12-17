@@ -12,9 +12,9 @@ public aspect StartOfTurnAspect {
 		// Warden Font Of Life:
 		if (creature.getDndClass() != null) {
 			if (Warden.class.isAssignableFrom(creature.getDndClass().getClass())) {
-				Utils.print("I put the framework in place for Warden Font of Life.  As soon as I start coding any effects that need saving throws, implement font of life");
+				Utils.print("As a warden, with Font of Life, you can make one saving throw at the start of your turn.");
+				creature.performSavingThrows(1, 0);
 			}
-		}
-		
+		}		
 	}
 }

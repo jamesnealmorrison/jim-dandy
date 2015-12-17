@@ -302,7 +302,9 @@ public class Utils {
 	public static boolean hasCombatAdvantage(Creature source,
 			Creature target, Encounter encounter) {
 		/* Does the target have a condition that grants combat advantage? */
-		if (target.isStunned() || target.isBlinded()) {
+		// TODO: Prone says only melee attacks.
+		if (target.isBlinded() || target.isDazed() || target.isDominated() || target.isDying() || target.isHelpless() || target.isProne() || target.isRestrained()
+				|| target.isStunned() || target.isSurprised() || target.isUnconscious()) {
 			return true;
 		}
 

@@ -5,7 +5,6 @@ import java.util.List;
 import com.jimmie.domain.Aura;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureType;
-import com.jimmie.domain.creatures.Origin;
 import com.jimmie.util.Utils;
 
 public abstract class Monster extends Creature {
@@ -24,7 +23,6 @@ public abstract class Monster extends Creature {
 	protected int savingThrows;
 	protected String tactics;
 	protected int experiencePointValue;
-	protected Origin origin;
 	protected CreatureType type;
 	protected List<MonsterKeyword> keywords;
 	protected int armorClass;
@@ -91,12 +89,6 @@ public abstract class Monster extends Creature {
 	}
 	public void setExperiencePointValue(int experiencePointValue) {
 		this.experiencePointValue = experiencePointValue;
-	}
-	public Origin getOrigin() {
-		return origin;
-	}
-	public void setOrigin(Origin origin) {
-		this.origin = origin;
 	}
 	public CreatureType getType() {
 		return type;

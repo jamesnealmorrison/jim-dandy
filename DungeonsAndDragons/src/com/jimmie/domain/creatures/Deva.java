@@ -1,5 +1,6 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
@@ -62,9 +63,53 @@ public class Deva extends Race {
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
 		
 		pc.addLanguage("Common");
-		// TODO: Language choice.
-		Utils.print("NOTE: I have not yet coded the two language choices.");
+
+		Utils.print("Choose two other languages:");
+		for (int i = 0; i < 2; i++) {
+			Utils.print("1. Deep Speech");
+			Utils.print("2. Draconic");
+			Utils.print("3. Dwarven");
+			Utils.print("4. Elven");
+			Utils.print("5. Giant");
+			Utils.print("6. Goblin");
+			Utils.print("7. Primordial");
+			Utils.print("8. Supernal");
+			Utils.print("9. Abyssal");
+
+			Utils.print("Your choice:");
+			int choice = Utils.getValidIntInputInRange(1, 9);
+			
+			switch (choice) {
+			case 1 :
+				pc.addLanguage("DeepSpeech");
+				break;
+			case  2:
+				pc.addLanguage("Draconic");
+				break;
+			case  3:
+				pc.addLanguage("Dwarven");
+				break;
+			case  4:
+				pc.addLanguage("Elven");
+				break;
+			case  5:
+				pc.addLanguage("Giant");
+				break;
+			case  6:
+				pc.addLanguage("Goblin");
+				break;
+			case  7:
+				pc.addLanguage("Primordial");
+				break;
+			case  8:
+				pc.addLanguage("Supernal");
+				break;
+			case  9:
+				pc.addLanguage("Abyssal");
+				break;
+			}
 		
+		}
 		Utils.print("As a Deva, you get +2 History and Religion.");
 		Skill history = pc.getSkill(SkillType.HISTORY);
 		history.setMisc(history.getMisc()+2);
@@ -72,11 +117,14 @@ public class Deva extends Race {
 		Skill religion = pc.getSkill(SkillType.RELIGION);
 		religion.setMisc(religion.getMisc()+2);
 		
+		// Astral Resistance.
+		// TODO: Need to implement the "+1/2 your level", but that can wait until my character is level 2.
+		pc.addDamageResistance(DamageType.NECROTIC, 5);
+		pc.addDamageResistance(DamageType.RADIANT, 5);
+		
 		pc.addPower(new MemoryOfAThousandLifetimes());
 		
-		// TODO: Astral Majesty, Astral Resistance, Immortal Origin.
-		Utils.print("NOTE: I have not yet coded Astral Majesty, Astral Resistance, Immortal Origin.");		
-		
+		pc.setOrigin(Origin.IMMORTAL);
 	}
 
 	@Override

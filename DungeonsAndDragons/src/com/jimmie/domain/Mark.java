@@ -78,6 +78,8 @@ public class Mark {
 		} else if (duration == DurationType.SPECIAL) {
 			// Special marks will be removed elsewhere.  That's why they're special.
 			return true;
+		} else if (duration == DurationType.SAVE_ENDS) {
+			return true;
 		}
 		return false;
 

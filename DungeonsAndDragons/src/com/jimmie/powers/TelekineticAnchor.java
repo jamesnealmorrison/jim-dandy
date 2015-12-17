@@ -13,7 +13,6 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Psion;
-import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -90,11 +89,6 @@ public class TelekineticAnchor extends AttackPower {
 		if (timesUsed == 0) {
 			timesUsed++;
 			
-			DndCharacter c = null;
-			if (DndCharacter.class.isAssignableFrom(user.getClass())) {
-				c = (DndCharacter) user;
-			}		
-			
 			List<AttackTarget> targets = new ArrayList<AttackTarget>();
 			Utils.print("Please enter the X coordinate of the burst (within range of 10). No validation is done here, so do it right!");
 			int x = Utils.getValidIntInputInRange(1, 50);
@@ -120,16 +114,12 @@ public class TelekineticAnchor extends AttackPower {
 			damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 
 			for (AttackTarget target : targets) {
-				Dice d = new Dice(DiceType.TWENTY_SIDED);
-				int diceRoll = d.roll();
-				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
-
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 				int targetFortitude = target.getFortitude();
 				Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-				if (roll >= targetFortitude) {
+				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+
+				if (attackRoll >= targetFortitude) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 

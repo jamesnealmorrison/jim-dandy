@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
@@ -16,7 +17,6 @@ import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.NaturesWrath;
 import com.jimmie.powers.WardensFury;
 import com.jimmie.powers.WardensGrasp;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class Warden extends DndClass {
@@ -42,16 +42,12 @@ public class Warden extends DndClass {
 		setUsedFormOfTheWillowSentinelAttack(true);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.roll();
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
 		int targetArmorClass = target.getArmorClass(owner);
 		Utils.print("Your target has an AC of " + targetArmorClass);
 		
-		if (roll >= targetArmorClass) {
+		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, targets, encounter);
+		
+		if (attackRoll >= targetArmorClass) {
 			/* A HIT! */
 			Utils.print("You successfully hit " + target.getName());
 

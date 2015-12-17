@@ -2,6 +2,8 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
@@ -81,7 +83,11 @@ public class ChannelDivinityDivineMettle extends AttackPower {
 
 	@Override
 	public void process(Encounter encounter, Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		Creature creature = encounter.chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 10);
+		
+		int modifier = user.getAbilityModifier(AbilityType.CHARISMA);
+		Utils.print(creature.getName() + " gets to make a saving throw with a bonus of " + modifier);
+		creature.performSavingThrows(1, modifier);
 	}
 
 	@Override

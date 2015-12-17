@@ -16,7 +16,6 @@ import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class RadiantVengeance extends AttackPower {
@@ -91,16 +90,12 @@ public class RadiantVengeance extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			if (roll >= targetReflex) {
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets, encounter);
+
+			if (attackRoll >= targetReflex) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 

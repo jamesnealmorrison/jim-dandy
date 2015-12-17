@@ -17,7 +17,6 @@ import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class ForcePunch extends AttackPower {
@@ -118,16 +117,12 @@ public class ForcePunch extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + c.getImplementAttackBonus() + user.getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 			int targetFortitude = target.getFortitude();
 			Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-			if (roll >= targetFortitude) {
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets, encounter);
+
+			if (attackRoll >= targetFortitude) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 

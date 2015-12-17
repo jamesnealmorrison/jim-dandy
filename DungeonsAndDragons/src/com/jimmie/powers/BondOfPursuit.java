@@ -17,7 +17,6 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class BondOfPursuit extends AttackPower {
@@ -92,17 +91,13 @@ public class BondOfPursuit extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			if (roll >= targetArmorClass) {
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets, encounter);
+
+			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 

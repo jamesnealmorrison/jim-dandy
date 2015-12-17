@@ -265,10 +265,80 @@ Please select one of the following Feats:
      Second wind or total defense grants saving throw
 35. Weapon Expertise
      +1 to attacks with weapon group
-36. Rune Of Hope
+36. Battle Hardened
+     +5 to saving throws against fear, +2 to initiative checks
+37. Battle Caster Defense
+     +4 AC against opportunity attacks after you use ranged or area power
+38. Beguiling Enchantment
+     Enemy -2 to attacks after you hit it with charm power
+39. Cascading Rush
+     Push adjacent enemy before or after bull rush
+40. Combat Intuition
+     +2 to opportunity attacks against enemy you miss
+41. Deadly Draw
+     Combat advantage against enemy you pull or slide adjacent
+42. Directed Bull Rush
+     Slide your bull rush target instead of pushing
+43. Focused Mind
+     +4 to saving throws against dazing and stunning effects
+44. Grounding Shot
+     Your ranged attacks hit and damage prone targets more easily
+45. Hafted Defense
+     +1 AC and Reflex while wielding polearm or staff in two hands
+46. Hammering Iron
+     Push target after opportunity attack when using hammer
+47. Headman's Chop
+     5 extra damage to prone target when using axe or heavy blade
+48. Impending Victory
+     +1 attack with at-will powers against bloodied creatures
+49. Low Crawl
+     You can shift while prone
+50. Lucky Start
+     Make first attack roll twice if your initiative check is highest
+51. Nimble Runner
+     +2 Reflex when you run, and don't grant combat advantage
+52. Opportunistic Shove
+     Bull rush when you make opportunity attack
+53. Polearm Flanker
+     Flank from 1 square away when using polearm
+54. Power Throw
+     Trade -2 attack for damage bonus with heavy thrown weapon
+55. Rapid Assault
+     +2 or more damage on your first attack during an encounter
+56. Shifting Defense
+     Shift 1 square when you use total defense
+57. Spring Step
+     Shift 1 square when you stand up
+58. Steady Feet
+     Ignore 1 square of difficult terrain when you walk
+59. Strike and Shove
+     Push target after critical hit with melee attack
+60. Superior Implement Training
+     Use one superior implement of a type open to your class
+61. Teamwork Defense
+     +1 AC when adjacent to ally who also has this feat
+62. Unarmored Agility
+     +2 AC while wearing cloth armor or no armor
+63. Unfailing Vigor
+     Spend a healing surge if you roll 18-20 on death saving throw
+64. Versatile Expertise
+     Bonus to attacks with weapons and implements of your choice
+65. Vicious Advantage
+     Gain combat advantage against slowed or immobilized targets
+66. Warding Defense
+     Allies benefit when you use total defense and wield a shield
+67. Watchful Redoubt
+     +1 attack when you use total defense
+68. Rune of Eloquence
+     Bonus to Bluff and Diplomacy equal to your number of rune feats
+69. Rune Of Hope
      Rune of mending target also gains temporary hp
+70. Rune Of Vengeance
+     Bonus to damage equal to your number of rune feats after you are first bloodied
+71. Rune Of Zeal
+     Bonus to Athletics and Endurance equal to your number of rune feats
 Your choice:
-36
+69
 Choose two At Will Powers:
 1. Word Of Binding
 2. Word Of Diminishment

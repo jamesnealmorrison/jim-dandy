@@ -7,7 +7,6 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
-import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
@@ -15,7 +14,6 @@ import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class AidAnother extends Power {
@@ -86,15 +84,11 @@ public class AidAnother extends Power {
 
 		if ((targets != null) && (!targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
 			Utils.print("The 'Aid Another' action is against a DC of 10.");
-
-			if (roll >= 10) {
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+					
+			if (attackRoll >= 10) {
 				/* A HIT! */
 				Utils.print("You are successfully aiding against " + target.getName());
 

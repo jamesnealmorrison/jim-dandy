@@ -17,7 +17,6 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class SureStrike extends AttackPower {
@@ -91,16 +90,12 @@ public class SureStrike extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter) + 2;
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			if (roll >= targetArmorClass) {
+			int attackRoll = user.attackRollWithPowerModifier(AbilityType.STRENGTH, getAccessoryType(), targets, encounter, 2);
+
+			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 

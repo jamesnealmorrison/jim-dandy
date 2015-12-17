@@ -5,11 +5,15 @@ Goliath: Haven't implemented powerful athlete yet, because I won't often be doin
 Dwarf: Haven't implemented Cast-Iron Stomach yet, because I haven't ran across a creature that poisons yet. Haven't done encumbered speed because I haven't coded any encumbrances yet.
 Haven't implemented Stand Your Ground yet.  I'll implement it when I have the first critter that has a power that pushes, pulls, slides or knocks someone prone.
 
+Deva: Astral Majesty is fully implemented and tested. Astral Resistance is coded, but not tested. Memory of a Thousand Lifetimes is implemented except for ability check.
+Deva is pretty much implemented then.
+
+
 
 CLASSES***********************************
 
 Warden:
-Need to finish implementing Font Of Life when I start having effects with saving throws.
+Font Of Life is coded, but not tested yet.
 Earthstrength is completely implemented and tested.  :-)
 Wildblood: Implemented the first paragraph, about light armor.  But haven't implemented the second paragraph about second wind.  Put it in the second wind aspect, when I do.
 Nature's Wrath is fully implemented and tested.
@@ -21,9 +25,13 @@ Idea: There will probably end up being a lot of powers that should target a crea
 
 
 Paladin:
-Still need to implement Divine Mettle.  Waiting until after saving throws are implemented.
+Divine Mettle is implemented but not tested yet.
 Divine Strength.  Need to make sure it doesn't apply to more than one attack.  Right now I just have the duration set to the start of the next turn.
 Divine Challenge.  Done except for checking if you attacked the creature during your turn and penalizing by not letting you use it the next turn if you didn't engage the target.
+Lay on Hands is completely done and tested (well, except for the "minimum 1" - but my guy has 2 wisdom)
+Bolstering Strike is done and tested.
+Enfeebling Strike is done and tested.
+Shielding Smite is done and tested.
 
 
 
@@ -41,3 +49,4 @@ General*************************************
 Expand the store to include gear from book 2 (p 197)
 Modify powers' meetsRequirementsToUsePower method to see if you have an enemy that you can attack with it,
 so menus are more context sensitive.
+Dazed is all coded except for "you can't take immediate actions".

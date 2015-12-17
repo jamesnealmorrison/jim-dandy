@@ -95,16 +95,12 @@ public class ThunderRamAssault extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				Dice d = new Dice(DiceType.TWENTY_SIDED);
-				int diceRoll = d.roll();
-				int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets, encounter);
-
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				if (roll >= targetArmorClass) {
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets, encounter);
+
+				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 
@@ -143,17 +139,13 @@ public class ThunderRamAssault extends AttackPower {
 
 					for (Creature secondaryTarget : blastTargets) {
 						List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
-						secondaryTargets.add(secondaryTarget);
-						d = new Dice(DiceType.TWENTY_SIDED);
-						diceRoll = d.roll();
-						roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(secondaryTargets, encounter);
-
-						Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
 						int secondaryTargetFortitude = secondaryTarget.getFortitude();
 						Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
 
-						if (roll >= secondaryTargetFortitude) {
+						secondaryTargets.add(secondaryTarget);
+						attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets, encounter);
+
+						if (attackRoll >= secondaryTargetFortitude) {
 							/* A HIT! */
 							Utils.print("You successfully hit " + secondaryTarget.getName());
 
