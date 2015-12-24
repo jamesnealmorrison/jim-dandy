@@ -8,6 +8,9 @@ Haven't implemented Stand Your Ground yet.  I'll implement it when I have the fi
 Deva: Astral Majesty is fully implemented and tested. Astral Resistance is coded, but not tested. Memory of a Thousand Lifetimes is implemented except for ability check.
 Deva is pretty much implemented then.
 
+Elf: Fey Origin is implemented.  Group Awareness is also, but not tested.  Elven accuracy is done.  So, all done with ELVES!!!!!!!!!
+
+
 
 CLASSES***********************************
 
@@ -34,13 +37,24 @@ Shielding Smite is done and tested.
 
 
 Runepriest:
+Rune of Mending is done and tested.  Rune Master is done and tested. Word of Binding is done and tested.
+Runic Artistry Defiant Word is done, but not Wrathful Hammer.
+Word of Exchange is done except for "next ally to hit the target gets an AC bonus...."
+Divine Rune of Thunder is done and tested.
+Rune of the Undeniable Dawn done and tested.  EVEN THE ZONE!!!
 
 
 
 Sorcerer:
-Need to implement daggers as Implements.
-
-
+I have implemented daggers as Implements, but not really tested.
+Chaos burst is coded and tested.
+Chaos Power is coded, but not tested until I implement some of the sorcerer attack powers.
+Not sure of a better way to code this.... but at the end of each of my sorcerer powers, I need to code checks for the unfettered power roll.
+Coded/tested wild soul, except for "ignoring target's resistance to that damage type".
+Chaos Bolt is tested pretty thoroughly.  But I'm sure with how complex it is, that it's a bit buggy.  It even has the unfettered power logic.
+Storm Walk is done and tested.
+Bedeviling Burst is done and tested.
+Dazzling Ray is done and tested.
 
 
 Monk:

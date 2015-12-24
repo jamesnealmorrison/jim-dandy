@@ -107,19 +107,20 @@ public class AspectOfMight extends AttackPower {
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
 
 				} else {
 					Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
-					Utils.print("You successfully hit " + target.getName());
 
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, false, user);
+					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, false, user);
 
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 				Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");
 				if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {

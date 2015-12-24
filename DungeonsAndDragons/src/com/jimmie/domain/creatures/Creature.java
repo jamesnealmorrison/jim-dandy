@@ -20,6 +20,7 @@ import com.jimmie.domain.TemporaryCondition;
 import com.jimmie.domain.CombatAdvantageType;
 import com.jimmie.domain.Condition;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Effect;
@@ -32,8 +33,10 @@ import com.jimmie.domain.Prone;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
+import com.jimmie.domain.TargetedTemporaryEffect;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.TemporaryDamageResistance;
 import com.jimmie.domain.TemporaryInvisibility;
@@ -380,12 +383,27 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			TemporaryEffect tempEffect = it.next();
 	
 			if (tempEffect.getEffectType() == TemporaryEffectType.ATTACK_ROLL_MODIFIER) {
+				boolean appliesToTarget = false;
+				// See if it's a targeted effect (i.e. only applies to certain targets).
+				if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
+					TargetedTemporaryEffect targetedTempEffect = (TargetedTemporaryEffect) tempEffect;
+					if ((targetedTempEffect.getTarget() == null) || (!targets.contains(targetedTempEffect.getTarget()))) {
+						appliesToTarget = false;
+					} else {
+						appliesToTarget = true;
+					}
+				} else {
+					appliesToTarget = true;
+				}
+				if (!appliesToTarget) {
+					continue;
+				}
 				if (tempEffect.stillApplies()) {
 					Utils.print(name + " currently has a temporary attack roll modifier of " + tempEffect.getModifier());
 					total = total + tempEffect.getModifier();
-					/* If it was immediate duration, delete the modifier now. */
-					if (tempEffect.getDuration() == DurationType.IMMEDIATE) {
-						Utils.print("Attack modifier will no longer apply because it's effect was immediate.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("Attack modifier will no longer apply.");
 						it.remove();
 					}
 				} else {
@@ -550,13 +568,27 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public void setTemporaryEffect(int modifier, int modifierStartTurn,
-			DurationType duration, Creature source, TemporaryEffectType effectType) {
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason) {
 		TemporaryEffect temporaryEffect = new TemporaryEffect();
 		temporaryEffect.setModifier(modifier);
 		temporaryEffect.setStartTurn(modifierStartTurn);
 		temporaryEffect.setDuration(duration);
 		temporaryEffect.setSource(source);
 		temporaryEffect.setEffectType(effectType);
+		temporaryEffect.setReason(reason);
+		temporaryEffects.add(temporaryEffect);
+	}
+
+	public void setTargetedTemporaryEffect(int modifier, int modifierStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, Creature target) {
+		TargetedTemporaryEffect temporaryEffect = new TargetedTemporaryEffect();
+		temporaryEffect.setModifier(modifier);
+		temporaryEffect.setStartTurn(modifierStartTurn);
+		temporaryEffect.setDuration(duration);
+		temporaryEffect.setSource(source);
+		temporaryEffect.setEffectType(effectType);
+		temporaryEffect.setTarget(target);
+		temporaryEffect.setReason(reason);
 		temporaryEffects.add(temporaryEffect);
 	}
 
@@ -699,7 +731,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	public void initializeForEncounter() {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int roll = d.roll();
+		int roll = d.roll(DiceRollType.INITIATIVE_ROLL);
 		initiativeRoll = roll + initiative;
 		setCurrentTurn(0);
 		channelDivinityUses = 0;
@@ -710,7 +742,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 	}
 
-	public void initializeForNewDay() {
+	public void initializeForNewDay() {		
+		// TODO: Remove any conditions/effects that last until the "end of next extended rest".
 		actionPoints = 0;
 	}
 
@@ -848,7 +881,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 						continue;
 					}
 				}/* Are they about to move into difficult terrain? */
-				else if (Encounter.getEncounter().isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction))) {
+				else if (isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction), movementType)) {
 					if (distanceLeft < 2) {
 						Utils.print("Sorry.  Can't enter that square.  It's difficult terrain.");
 						continue;
@@ -866,6 +899,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	}
 
+	private boolean isDifficultTerrain(Position position, MovementType movementType) {
+		return Encounter.getEncounter().isDifficultTerrain(position);
+	}
+	
 	public Power getBasicMeleeAttack() {
 		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
 		int count = 0;
@@ -909,7 +946,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	private int skillCheckRoll(SkillCheck skillCheck) {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.roll();
+		int diceRoll = d.roll(DiceRollType.SKILL_CHECK_ROLL);
 		int roll = diceRoll + getSkillModifier(skillCheck.getSkillType());
 		Utils.print("Your skill check roll with modifiers is " + roll);
 		return roll;
@@ -1056,7 +1093,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		// Some powers need initialized for the start of turn.
 		for (Power power : getPowers()) {
 			power.initializeForStartOfTurn();
-		}		
+		}
 	}
 
 	public void endOfTurn() {
@@ -1120,7 +1157,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					Utils.print("Your choice (Y or N):");
 					if (Utils.getYesOrNoInput().equalsIgnoreCase("Y")) {
 						Dice dice = new Dice(DiceType.TWENTY_SIDED);
-						int roll = dice.roll();
+						int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
 						// TODO: Add any modifiers (once you run into a power or something that adds a modifier).
 						if (roll + modifier >= 10) {
 							Utils.print("You are no longer affected.");
@@ -1136,7 +1173,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	private int rollForSavingThrow(int modifier) {
 		Dice dice = new Dice(DiceType.TWENTY_SIDED);
-		int roll = dice.roll();
+		int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
 		int total = roll+modifier;
 		Utils.print("Your saving throw total is + " + total);
 		return total;
@@ -1263,6 +1300,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					Utils.print(name + " is supposed to get a modifier to reflex until " + tempEffect.getDuration());
 					modifier = modifier + tempEffect.getModifier();
 					Utils.print("Modifier still applies.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("Modifier will no longer apply.");
+						it.remove();
+					}
 				} else {
 					/* modifier is over.  Reset the modifier. */
 					it.remove();
@@ -1289,6 +1331,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					Utils.print(name + " is supposed to get a modifier to will until " + tempEffect.getDuration());
 					currentWill = currentWill + tempEffect.getModifier();
 					Utils.print("Modifier still applies.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("Modifier will no longer apply.");
+						it.remove();
+					}
 				} else {
 					/* modifier is over.  Reset the modifier. */
 					it.remove();
@@ -1491,6 +1538,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (temporaryCondition.getConditionType() == CreatureConditionType.SLOWED) {
 					if (temporaryCondition.stillApplies()) {
 						Utils.print(getName() + " is slowed.  Can only move 2 spaces.");
+						/* If it should be removed now, delete the modifier now. */
+						if (temporaryCondition.shouldBeRemoved()) {
+							Utils.print("Slowed condition will no longer apply.");
+							it.remove();
+						}
 						return 2;
 					} else {
 						Utils.print("The SLOWED condition no longer applies.  Removing.");
@@ -1589,6 +1641,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (temporaryDamageResistance.stillApplies()) {
 					if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
 						resistance += temporaryDamageResistance.getModifier();
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Temporary damage resistance will no longer apply.");
+							it.remove();
+						}
 					}
 				} else {
 					Utils.print("Temporary damage resistance no longer applies.  Removing.");
@@ -1643,6 +1700,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.UNCONSCIOUS) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still unconscious.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be unconscious after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer unconscious.  Removing.");
@@ -1662,6 +1724,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.SURPRISED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still surprised.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be surprised after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer surprised.  Removing.");
@@ -1681,6 +1748,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.DEAFENED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still deafened.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be deafened after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer deafened.  Removing.");
@@ -1701,6 +1773,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.PETRIFIED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is petrified still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be petrified after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer petrified.  Removing.");
@@ -1721,6 +1798,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.DYING) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is dying still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be dying after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer dying.  Removing.");
@@ -1741,6 +1823,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.DOMINATED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is dominated still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be dominated after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer dominated.  Removing.");
@@ -1761,6 +1848,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.DAZED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is dazed still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be dazed after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer dazed.  Removing.");
@@ -1781,6 +1873,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.STUNNED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is stunned still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be stunned after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer stunned.  Removing.");
@@ -1802,9 +1899,17 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (temporaryInvisibility.stillApplies()) {
 					/* Does it apply to this creature? */
 					if (temporaryInvisibility.getTargets() == null) {
+						/* If it should be removed now, delete the modifier now. */
+						if (temporaryInvisibility.shouldBeRemoved()) {
+							it.remove();
+						}
 						return true;
 					} else {
 						if (temporaryInvisibility.getTargets().contains(attacker)) {
+							/* If it should be removed now, delete the modifier now. */
+							if (temporaryInvisibility.shouldBeRemoved()) {
+								it.remove();
+							}
 							return true;
 						}
 					}
@@ -1826,6 +1931,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.BLINDED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is blinded still.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be blinded after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer blinded.  Removing.");
@@ -1845,6 +1955,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.HELPLESS) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still helpless.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be helpless after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer helpless.  Removing.");
@@ -1864,6 +1979,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.IMMOBILIZED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still immobilized.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be immobilized after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer immobilized.  Removing.");
@@ -1883,6 +2003,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.PRONE) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still prone.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be prone after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer prone.  Removing.");
@@ -1902,6 +2027,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.RESTRAINED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still restrained.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be restrained after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer restrained.  Removing.");
@@ -1921,6 +2051,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.SLOWED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still slowed.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be slowed after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer slowed.  Removing.");
@@ -1940,6 +2075,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (condition.getConditionType() == CreatureConditionType.WEAKENED) {
 					if (condition.stillApplies()) {
 						Utils.print(getName() + " is still weakened.");
+						/* If it should be removed now, delete the modifier now. */
+						if (condition.shouldBeRemoved()) {
+							Utils.print("But will not be weakened after this.");
+							it.remove();
+						}
 						return true;
 					} else {
 						Utils.print(getName() + " is no longer weakened.  Removing.");
@@ -1967,8 +2107,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 	
 	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets) {
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.roll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(targets);
+		int diceRoll = rawAttackRoll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(targets);
 		
 		if (accessoryType == AccessoryType.IMPLEMENT) {
 			diceRoll += getImplementAttackBonus();
@@ -1981,6 +2120,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return diceRoll;
 	}
 
+	private int rawAttackRoll() {
+		Dice d = new Dice(DiceType.TWENTY_SIDED);
+		return d.roll(DiceRollType.ATTACK_ROLL);
+	}
+
 	public int getImplementAttackBonus() {
 		Utils.print("In Creature.getImplementAttackBonus.");
 		return 0;
@@ -1989,5 +2133,54 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public int getImplementDamageBonus() {
 		Utils.print("In Creature.getImplementDamageBonus.");
 		return 0;
+	}
+
+	@Override
+	public void miss(Creature misser) {
+	}
+
+	public void slideTargets(List<AttackTarget> targets, int distance) {
+
+		if (targets != null) {
+			for (AttackTarget target : targets) {
+				// No use sliding a dead target.
+				if (target.getCurrentHitPoints() > 0) {
+					for (int i = 0; i <= distance; i++) {
+						Utils.print("What direction do you want to slide " + target.getName() + "? (N, E, S, W, NE, NW, SE, SW, STOP)?");
+						List<String> validDirections = new ArrayList<String>();
+
+						validDirections.add("N");
+						validDirections.add("E");
+						validDirections.add("S");
+						validDirections.add("W");
+						validDirections.add("NE");
+						validDirections.add("NW");
+						validDirections.add("SE");
+						validDirections.add("SW");
+						validDirections.add("STOP");
+
+						Utils.print("Your choice?");
+						String direction = Utils.getValidInput(validDirections);
+						if ("STOP".equalsIgnoreCase(direction)) {
+							break;
+						}
+
+						target.slide(direction);
+					}
+				}
+			}
+		}
+	}
+
+	public void pushTargets(List<Creature> pushTargets, int distance) {
+		if (pushTargets != null) {
+			for (Creature target : pushTargets) {
+				for (int i = 0; i < distance; i++) {
+					String pushDirection = Encounter.getEncounter().getPushDirection(getCurrentPosition(), target.getCurrentPosition());
+					target.push(pushDirection);
+				}
+			}
+		}
+		
 	}
 }

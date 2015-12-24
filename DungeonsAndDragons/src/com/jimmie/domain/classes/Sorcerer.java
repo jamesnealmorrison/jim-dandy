@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class Sorcerer extends DndClass {
@@ -19,6 +25,33 @@ public class Sorcerer extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private SorcererSpellSource spellSource;
+	private int firstAttackRoll;
+	private int unfetteredPower;
+	private boolean lastAttackRollEven;
+
+	public boolean getLastAttackRollEven() {
+		return lastAttackRollEven;
+	}
+
+	public void setLastAttackRollEven(boolean lastAttackRollEven) {
+		this.lastAttackRollEven = lastAttackRollEven;
+	}
+
+	public int getUnfetteredPower() {
+		return unfetteredPower;
+	}
+
+	public void setUnfetteredPower(int unfetteredPower) {
+		this.unfetteredPower = unfetteredPower;
+	}
+
+	public int getFirstAttackRoll() {
+		return firstAttackRoll;
+	}
+
+	public void setFirstAttackRoll(int firstAttackRoll) {
+		this.firstAttackRoll = firstAttackRoll;
+	}
 
 	@Override
 	public void initializeForEncounter() {
@@ -27,9 +60,54 @@ public class Sorcerer extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-
+	public void initializeForNewDay(DndCharacter dndCharacter) {
+		if (this.getSpellSource() == SorcererSpellSource.WILD_MAGIC) {
+			// Wild Soul
+			Dice d = new Dice(DiceType.TEN_SIDED);
+			int roll = d.roll(DiceRollType.WILD_SOUL);
+			switch (roll) {
+			case 1 :
+				Utils.print("You will have 5 damage resistance to ACID until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.ACID);
+				break;
+			case 2 :
+				Utils.print("You will have 5 damage resistance to COLD until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.COLD);
+				break;
+			case 3 :
+				Utils.print("You will have 5 damage resistance to FIRE until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.FIRE);
+				break;
+			case 4 :
+				Utils.print("You will have 5 damage resistance to FORCE until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.FORCE);
+				break;
+			case 5 :
+				Utils.print("You will have 5 damage resistance to LIGHTNING until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.LIGHTNING);
+				break;
+			case 6 :
+				Utils.print("You will have 5 damage resistance to NECROTIC until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.NECROTIC);
+				break;
+			case 7 :
+				Utils.print("You will have 5 damage resistance to POISON until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.POISON);
+				break;
+			case 8 :
+				Utils.print("You will have 5 damage resistance to PSYCHIC until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.PSYCHIC);
+				break;
+			case 9 :
+				Utils.print("You will have 5 damage resistance to RADIANT until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.RADIANT);
+				break;
+			case 10 :
+				Utils.print("You will have 5 damage resistance to THUNDER until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, DamageType.THUNDER);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -153,4 +231,5 @@ public class Sorcerer extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 }

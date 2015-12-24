@@ -8,6 +8,7 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.MovementType;
@@ -123,7 +124,7 @@ public class MajesticWord extends AttackPower {
 
 			for (int i = 0; i < extraRolls; i++) {
 			    Dice d = new Dice(DiceType.SIX_SIDED);
-     			extraHitPoints = extraHitPoints + d.roll();
+     			extraHitPoints = extraHitPoints + d.roll(DiceRollType.HIT_POINT_MODIFICATION);
 			}		
 			
 			target.heal(extraHitPoints);

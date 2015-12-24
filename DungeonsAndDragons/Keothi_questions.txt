@@ -75,7 +75,7 @@ NOTE: I have not yet coded Powerful Athlete.
 How old is your character?
 34
 Is you character Male (M) or Female(F)?
-M
+m
 What alignment is your character?
 1. Good
 2. Lawful Good
@@ -285,6 +285,72 @@ Please select one of the following Feats:
      Successful Font Of Life saving throw grants +2 bonus to other saving throws
 45. Sudden Roots
      Enemy hit by opportuniy attack is slowed
+46. Battle Hardened
+     +5 to saving throws against fear, +2 to initiative checks
+47. Battle Caster Defense
+     +4 AC against opportunity attacks after you use ranged or area power
+48. Battering Shield
+     Push or slide target 1 additional square when using shield
+49. Beguiling Enchantment
+     Enemy -2 to attacks after you hit it with charm power
+50. Cascading Rush
+     Push adjacent enemy before or after bull rush
+51. Combat Intuition
+     +2 to opportunity attacks against enemy you miss
+52. Deadly Draw
+     Combat advantage against enemy you pull or slide adjacent
+53. Directed Bull Rush
+     Slide your bull rush target instead of pushing
+54. Focused Mind
+     +4 to saving throws against dazing and stunning effects
+55. Grounding Shot
+     Your ranged attacks hit and damage prone targets more easily
+56. Hafted Defense
+     +1 AC and Reflex while wielding polearm or staff in two hands
+57. Hammering Iron
+     Push target after opportunity attack when using hammer
+58. Headman's Chop
+     5 extra damage to prone target when using axe or heavy blade
+59. Impending Victory
+     +1 attack with at-will powers against bloodied creatures
+60. Low Crawl
+     You can shift while prone
+61. Lucky Start
+     Make first attack roll twice if your initiative check is highest
+62. Nimble Runner
+     +2 Reflex when you run, and don't grant combat advantage
+63. Opportunistic Shove
+     Bull rush when you make opportunity attack
+64. Polearm Flanker
+     Flank from 1 square away when using polearm
+65. Power Throw
+     Trade -2 attack for damage bonus with heavy thrown weapon
+66. Rapid Assault
+     +2 or more damage on your first attack during an encounter
+67. Shifting Defense
+     Shift 1 square when you use total defense
+68. Spring Step
+     Shift 1 square when you stand up
+69. Steady Feet
+     Ignore 1 square of difficult terrain when you walk
+70. Strike and Shove
+     Push target after critical hit with melee attack
+71. Superior Implement Training
+     Use one superior implement of a type open to your class
+72. Teamwork Defense
+     +1 AC when adjacent to ally who also has this feat
+73. Unarmored Agility
+     +2 AC while wearing cloth armor or no armor
+74. Unfailing Vigor
+     Spend a healing surge if you roll 18-20 on death saving throw
+75. Versatile Expertise
+     Bonus to attacks with weapons and implements of your choice
+76. Vicious Advantage
+     Gain combat advantage against slowed or immobilized targets
+77. Warding Defense
+     Allies benefit when you use total defense and wield a shield
+78. Watchful Redoubt
+     +1 attack when you use total defense
 Your choice:
 43
 Choose two At Will Powers:

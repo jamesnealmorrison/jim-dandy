@@ -106,7 +106,7 @@ public class StrengthOfStone extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 
 				Utils.print(user.getName() + " gets 3 temporary HP");
 				/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */
@@ -115,6 +115,8 @@ public class StrengthOfStone extends AttackPower {
 				}
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
@@ -88,7 +89,7 @@ public class ChannelDivinityDivineStrength extends AttackPower {
 		// Has it been used during this encounter already?
 		if (user.getChannelDivinityUses() == 0) {
 			user.setChannelDivinityUses(1);
-			user.setTemporaryEffect(user.getAbilityModifier(AbilityType.STRENGTH), user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER);
+			user.setTemporaryEffect(user.getAbilityModifier(AbilityType.STRENGTH), user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER, TemporaryEffectReason.DIVINE_STRENGTH);
 		} else {
 			Utils.print("Sorry, you can't really use this power.  You already used a Channel Divinity Power this encounter.");
 		}

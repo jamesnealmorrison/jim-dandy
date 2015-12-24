@@ -55,7 +55,7 @@ public class Mark {
 	}
 
 	public boolean stillApplies() {
-		if (duration == DurationType.END_OF_NEXT_TURN) {
+		if ((duration == DurationType.END_OF_NEXT_TURN) || (duration == DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN)) {
 			if (marker.getCurrentTurn() <= startTurn) {
 				/* mark still applies. */
 				return true;
@@ -79,6 +79,8 @@ public class Mark {
 			// Special marks will be removed elsewhere.  That's why they're special.
 			return true;
 		} else if (duration == DurationType.SAVE_ENDS) {
+			return true;
+		} else if (duration == DurationType.END_OF_NEXT_EXTENDED_REST) {
 			return true;
 		}
 		return false;

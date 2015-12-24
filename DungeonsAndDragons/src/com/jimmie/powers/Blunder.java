@@ -14,6 +14,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -113,7 +114,7 @@ public class Blunder extends AttackPower {
 					int damageRolls = 1;
 					DiceType damageDiceType = DiceType.SIX_SIDED;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
 
 					/* I get to slide the target 2 squares and allow an ally to do a basic attack against them as a free action with a +2 power bonus. */
 					Utils.print("You now get to slide " + target.getName() + " 2 squares and allow someone a free attack with a +2 bonus.");
@@ -156,7 +157,7 @@ public class Blunder extends AttackPower {
 							Utils.print("Please pick which ally will attack.");
 							Creature attacker = Encounter.getEncounter().chooseAnyAlly(user);
 
-							attacker.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+							attacker.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.BLUNDER);
 							Utils.print("Make sure to pick me (" + target.getName() + ") when it asks who to attack.");
 							/* Should be able to cast the marker to a character. */
 							if (DndCharacter.class.isInstance(attacker)) {
@@ -170,6 +171,8 @@ public class Blunder extends AttackPower {
 
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		} else {

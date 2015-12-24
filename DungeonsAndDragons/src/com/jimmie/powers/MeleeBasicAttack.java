@@ -115,9 +115,11 @@ public class MeleeBasicAttack extends AttackPower {
 						Utils.print("Because of your Aspect Of Might bonus, you get a two bonus to this damage.  I'll add it for you!");
 					}
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + avengerBonus, user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

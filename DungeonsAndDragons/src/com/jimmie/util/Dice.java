@@ -2,6 +2,7 @@ package com.jimmie.util;
 
 import java.util.Random;
 
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 
 public class Dice {
@@ -47,7 +48,7 @@ public class Dice {
 		}
 	}
 	
-	public int roll() {
+	public int roll(DiceRollType diceRollType) {
 		if (Dice.rollType != USER_ENTERED) {
 			/* The computer is so fast, it doesn't roll new numbers sometimes.  So take the 6th different number. */
 			int index = 0;

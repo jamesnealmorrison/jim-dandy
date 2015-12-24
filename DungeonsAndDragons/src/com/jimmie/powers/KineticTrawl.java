@@ -140,7 +140,7 @@ public class KineticTrawl extends AttackPower {
 					damageDiceType = DiceType.TEN_SIDED;
 				}
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user);
 
 				int targetPullDistance = 1;
 
@@ -155,6 +155,8 @@ public class KineticTrawl extends AttackPower {
 
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

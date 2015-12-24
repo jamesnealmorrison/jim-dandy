@@ -130,9 +130,9 @@ public class ForcePunch extends AttackPower {
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
 				if (augment == 2) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.FORCE, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.FORCE, true, user);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user.getRace()), DamageType.FORCE, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user);
 				}
 
 				int targetPushDistance = 1;
@@ -163,6 +163,8 @@ public class ForcePunch extends AttackPower {
 				}
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

@@ -1,12 +1,16 @@
 package com.jimmie.util.aspects;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
+import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public aspect HurtAspect {
@@ -18,10 +22,10 @@ public aspect HurtAspect {
 		Utils.print("Hurtee = " + hurtee);
 
 		if (Creature.class.isAssignableFrom(hurter.getClass())) {
-			Creature c = (Creature) hurter; 
+			Creature cHurter = (Creature) hurter; 
 
 			// Is there a temporary damage modifier?
-			for (Iterator<TemporaryEffect> it = c.getTemporaryEffects().iterator(); it.hasNext();) {
+			for (Iterator<TemporaryEffect> it = cHurter.getTemporaryEffects().iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
 				if (tempEffect.getEffectType() == TemporaryEffectType.DAMAGE_MODIFIER) {
 					if (tempEffect.stillApplies()) {
@@ -34,8 +38,47 @@ public aspect HurtAspect {
 					}
 				}
 			}
+			// Is there a temporary damage modifier to the hurtee?
+			for (Iterator<TemporaryEffect> it = hurtee.getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER) {
+					if (tempEffect.stillApplies()) {
+						Utils.print("There is a temporary RECEIVING damage modifier of " + tempEffect.getModifier());
+						damage += tempEffect.getModifier();
+						Utils.print("Doing " + damage + " points worth of damage.");
+						// Check for Word of Exchange.
+						if (tempEffect.getReason() == TemporaryEffectReason.WORD_OF_EXCHANGE) {
+							Utils.print(cHurter.getName() + " gets " + tempEffect.getModifier() + " temporary hit points because the creature was hit by Word of Exchange.");
+							cHurter.setTemporaryHitPoints(tempEffect.getModifier());
+						}
+					} else {
+						Utils.print("Temporary damage modifier no longer applies.  Removing it.");
+						it.remove();
+					}
+				}
+			}
 		}
 		
+		// Runepriest Rune Master
+		// See if I'm adjacent to a runepriest in the Rune of Protection state
+		List<Creature> allies = Encounter.getEncounter().getAdjacentAllies(hurtee);
+		if (allies != null) {
+			for (Creature ally : allies) {
+				if (ally.getDndClass() != null) {
+					if (Runepriest.class.isAssignableFrom(ally.getDndClass().getClass())) {
+						Runepriest runepriest = (Runepriest) ally.getDndClass();
+						if (runepriest.getRunicState() == RunicState.RUN_OF_PROTECTION) {
+							Utils.print(hurtee.getName() + " gets a resist 2 to all damage because they are adjacent to a runepriest in the Rune of Protection state.");
+							damage -= 2;
+							if (damage < 0) {
+								damage = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		proceed(hurtee, damage, damageType, hit, hurter);
 		
 		

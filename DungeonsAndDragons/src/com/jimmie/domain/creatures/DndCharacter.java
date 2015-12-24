@@ -28,6 +28,7 @@ import com.jimmie.domain.items.armor.ArmorType;
 import com.jimmie.domain.items.armor.ClothArmor;
 import com.jimmie.domain.items.armor.NoShield;
 import com.jimmie.domain.items.armor.Shield;
+import com.jimmie.domain.items.weapons.Dagger;
 import com.jimmie.domain.items.weapons.Hand;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.domain.items.weapons.Unarmed;
@@ -248,9 +249,15 @@ public abstract class DndCharacter extends Creature {
 
 			if (tempEffect.getEffectType() == TemporaryEffectType.ARMOR_CLASS_MODIFIER) {
 				if (tempEffect.stillApplies()) {
-					Utils.print(name + " is supposed to get a bonus to armor class until the end of " + tempEffect.getSource().getName() + "'s next turn.");
+					Utils.print(name + " is supposed to get a bonus to armor class of " + tempEffect.getModifier() + ".");
 					armorClass = armorClass + tempEffect.getModifier();
 					Utils.print("Armor Class Modifier still applies.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("But will no longer apply after this.");
+						it.remove();
+					}
+					
 				} else {
 					/* Bonus is over.  Reset the bonus. */
 					it.remove();
@@ -711,6 +718,16 @@ public abstract class DndCharacter extends Creature {
 		if (implement != null) {
 			return implement.getAttackBonus();
 		} else {
+			// Since they aren't holding an implement, see if perhaps they have "daggers" as an implement.
+			if (implementProficiencies.contains(ImplementType.DAGGER)) {
+				// Are they weilding a dagger?
+				for (ReadiedWeapon readiedWeapon : readiedWeapons.values()) {
+					if (Dagger.class.isAssignableFrom(readiedWeapon.getWeapon().getClass())) {
+						Utils.print("You are wielding a dagger as an implement.");
+						return ((Dagger) readiedWeapon.getWeapon()).getAttackBonus();
+					}
+				}
+			}
 			return 0;
 		}
 	}
@@ -725,6 +742,16 @@ public abstract class DndCharacter extends Creature {
 			}
 			return implement.getDamageBonus();
 		} else {
+			// Since they aren't holding an implement, see if perhaps they have "daggers" as an implement.
+			if (implementProficiencies.contains(ImplementType.DAGGER)) {
+				// Are they weilding a dagger?
+				for (ReadiedWeapon readiedWeapon : readiedWeapons.values()) {
+					if (Dagger.class.isAssignableFrom(readiedWeapon.getWeapon().getClass())) {
+						Utils.print("You are wielding a dagger as an implement.");
+						return ((Dagger) readiedWeapon.getWeapon()).getImplementDamageBonus();
+					}
+				}
+			}
 			return 0;
 		}
 	}
@@ -745,7 +772,7 @@ public abstract class DndCharacter extends Creature {
 	public void initializeForNewDay() {
 		super.initializeForNewDay();
 		if (dndClass != null) {
-			dndClass.initializeForNewDay();
+			dndClass.initializeForNewDay(this);
 		}
 		if (race != null) {
 			race.initializeForNewDay();

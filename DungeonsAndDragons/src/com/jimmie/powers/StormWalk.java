@@ -2,16 +2,23 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Sorcerer;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PowerSource;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class StormWalk extends AttackPower {
@@ -81,7 +88,69 @@ public class StormWalk extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		Utils.print("With this power you can shift before or after the attack.");
+		Utils.print("1. Before");
+		Utils.print("2. After");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			user.shift(1, true);
+		}
+		
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		
+		DndCharacter c = null;
+		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
+			c = (DndCharacter) user;
+		}
+		
+		Sorcerer sorcerer = null;
+		if (Sorcerer.class.isAssignableFrom(c.getDndClass().getClass())) {
+			sorcerer = (Sorcerer) c.getDndClass();
+		}
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+			int targetFortitude = target.getFortitude();
+			Utils.print("Your target has a fortitude of " + targetFortitude);
+
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+
+			// Check for unfettered power.
+			if (sorcerer.getUnfetteredPower() == 1) {
+				Utils.print("Because of your unfettered power, you push all creatures within 5 squares.");
+				List<Creature> pushTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(user.getCurrentPosition(), 5);
+				user.pushTargets(pushTargets, 1);
+			}
+
+			if (attackRoll >= targetFortitude) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = 1;
+
+				DiceType damageDiceType = DiceType.EIGHT_SIDED;
+
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.THUNDER, true, user);
+
+				if (sorcerer.getUnfetteredPower() == 20) {
+					Utils.print("Because of your unfettered power, you get to slide " + target.getName() + " 1 square and knock them prone.");
+					user.slideTargets(targets, 1);
+					if (Creature.class.isAssignableFrom(target.getClass())) {
+						Creature cTarget = (Creature) target;
+						// TODO: I don't think I've implemented standing up from prone yet.
+						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, user.getCurrentTurn());
+					}
+				}
+			} else {
+				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
+			}
+		}
+		if (choice == 2) {
+			user.shift(1, true);
+		}		
 	}
 
 	@Override

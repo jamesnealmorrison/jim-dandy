@@ -1,6 +1,8 @@
 package com.jimmie.encounters;
 
 import java.util.ArrayList;
+
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -117,15 +119,15 @@ public class KoboldLairOutsideEncounter extends Encounter {
 //		monsters.add(m9);		
 //		monsters.add(m10);
 		
-//		monsters.add(k);
-//		monsters.add(d);
+		monsters.add(k);
+		monsters.add(d);
 		monsters.add(s);
 
 		
 	
 		/* Set up the player characters */
-// Original position		gamal.setCurrentPosition(new Position(3,20));
-		gamal.setCurrentPosition(new Position(13,13));
+//		ORIGINAL gamal.setCurrentPosition(new Position(3,20));
+		gamal.setCurrentPosition(new Position(12,12));
 		
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
@@ -137,7 +139,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		gamal.addReadiedWeapon(readiedWeapon);
 		gamal.setReadiedArmor(gamal.getArmor().get(0));
 */
-		percian.setCurrentPosition(new Position(1,21));
+// ORIGINAL POSITION		percian.setCurrentPosition(new Position(1,21));
+		percian.setCurrentPosition(new Position(13,13));
+percian.hurt(5, DamageType.PSYCHIC, true, d);		
 /*		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -197,8 +201,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		characters = new ArrayList<DndCharacter>();
 
-		characters.add(gamal);
-//		characters.add(percian);
+//		characters.add(gamal);
+		characters.add(percian);
 //		characters.add(keothi);
 		characters.add(travok);
 //		characters.add(halfOrcFighter);

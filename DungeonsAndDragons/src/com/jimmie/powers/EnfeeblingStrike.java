@@ -15,6 +15,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
@@ -111,7 +112,7 @@ public class EnfeeblingStrike extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
 
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Creature c = (Creature) target;
@@ -120,7 +121,7 @@ public class EnfeeblingStrike extends AttackPower {
 							Mark mark = it.next();
 							if (mark.getMarker() == user) {
 								Utils.print(c.getName() + " will have a -2 attack roll penalty until the end of my next turn.");
-								c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+								c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ENFEEBLING_STRIKE);
 							}
 						}
 					}
@@ -128,6 +129,8 @@ public class EnfeeblingStrike extends AttackPower {
 				
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

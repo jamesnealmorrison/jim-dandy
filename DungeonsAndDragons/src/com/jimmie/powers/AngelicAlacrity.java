@@ -127,14 +127,16 @@ public class AngelicAlacrity extends AttackPower {
 					damageRolls = damageRolls * 2;
 
 					if (aspectOfMightEncounterBonus == false) {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
 					} else {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
+						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
 						Utils.print("You got an aspect of might bonus of two to this damage roll.");
 					}
 
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		} else {

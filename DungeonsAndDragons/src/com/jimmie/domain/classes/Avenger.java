@@ -51,7 +51,7 @@ public class Avenger extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 	}
 
 	@Override

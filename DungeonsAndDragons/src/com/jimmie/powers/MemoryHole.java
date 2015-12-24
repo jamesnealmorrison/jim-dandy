@@ -9,9 +9,11 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.creatures.Creature;
@@ -119,7 +121,7 @@ public class MemoryHole extends AttackPower {
 			int y = Utils.getValidIntInputInRange(1, 50);
 
 			/* Got to do this wierd conversion between creatures and attack targets. */
-			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(x, y, 1);
+			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
 			for (Creature creature : creatureTargets) {
 				targets.add(creature);
 			}
@@ -139,7 +141,7 @@ public class MemoryHole extends AttackPower {
  		int damage = 0;
  		
  		for (int rolls = 0; rolls < damageRolls; rolls++) {
- 		    damage = damage + damageDice.roll();
+ 		    damage = damage + damageDice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
  		}
  		damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 		
@@ -164,6 +166,8 @@ public class MemoryHole extends AttackPower {
 				Utils.print("You just became invisible to " + target.getName());
 			} else {
 			    Utils.print("Sorry.  You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 		user.setTemporaryInvisibility(user, durationType, hitTargets);

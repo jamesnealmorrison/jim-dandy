@@ -113,9 +113,9 @@ public class RadiantVengeance extends AttackPower {
 				}
 
 				if (aspectOfMightEncounterBonus == false) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 0, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, 2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
 					Utils.print("You got an aspect of might bonus of two to this damage roll.");
 				}
 
@@ -127,6 +127,8 @@ public class RadiantVengeance extends AttackPower {
 
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

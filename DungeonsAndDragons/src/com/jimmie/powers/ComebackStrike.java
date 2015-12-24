@@ -106,7 +106,7 @@ public class ComebackStrike extends AttackPower {
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls() * 2;
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 
 					Utils.print("I get to spend a healing surge.");
 					if (DndCharacter.class.isAssignableFrom(user.getClass())) {
@@ -116,6 +116,8 @@ public class ComebackStrike extends AttackPower {
 
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		} else {

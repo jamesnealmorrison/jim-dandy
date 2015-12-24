@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -113,13 +114,15 @@ public class ViciousMockery extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
 
 				/* The target takes a -2 penalty to attack rolls until the end of my next turn. */
-				c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+				c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.VICIOUS_MOCKERY);
 				Utils.print(target.getName() + " will take a -2 attack roll penalty until the end of " + user.getName() + "'s next turn.");
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

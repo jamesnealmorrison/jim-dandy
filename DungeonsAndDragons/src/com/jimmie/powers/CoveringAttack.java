@@ -105,7 +105,7 @@ public class CoveringAttack extends AttackPower {
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls() * 2;
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 
 					/* An ally adjacent to the target can shift two squares. */
 					Creature ally = Encounter.getEncounter().chooseAllyAdjacentTo(user, target.getCurrentPosition());
@@ -116,6 +116,8 @@ public class CoveringAttack extends AttackPower {
 
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		} else {

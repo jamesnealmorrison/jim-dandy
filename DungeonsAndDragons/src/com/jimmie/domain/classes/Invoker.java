@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -30,7 +31,7 @@ public class Invoker extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}

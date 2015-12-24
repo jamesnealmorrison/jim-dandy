@@ -66,7 +66,6 @@ Setting speed to 7.
 Adding low-light vision to senses.
 As an Elf, you get +2 Nature and Perception
 As an Elf, you get a weapon proficiency in longbow and shortbow.
-NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step.
 How old is your character?
 42
 Is you character Male (M) or Female(F)?
@@ -98,6 +97,7 @@ Setting role to Striker.
 Setting power Source to Arcane.
 Adding Armor Proficiencies: Cloth
 Adding Weapon Proficiencies: Simple Melee, Simple Ranged
+Adding Implement Proficiencies: Daggers, Staffs
 Adding bonus of +2 Will
 Setting hit points per level gained = 5
 Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.
@@ -118,7 +118,7 @@ Choose between the following Spell Source:
 2. Wild Magic.
 Your choice:
 2
-NOTE: I have not yet coded Spell Source, Implements.
+NOTE: I have not yet coded Spell Source.
 Time to generate ability scores.
 Choose which method you want to use:
 1. Standard Array
@@ -273,6 +273,68 @@ Please select one of the following Feats:
      Roll twice to determine Wild Soul damage type
 37. Sorcerous Blade Channeling
      Use dagger to make ranged attacks as melee attacks
+38. Battle Hardened
+     +5 to saving throws against fear, +2 to initiative checks
+39. Battle Caster Defense
+     +4 AC against opportunity attacks after you use ranged or area power
+40. Beguiling Enchantment
+     Enemy -2 to attacks after you hit it with charm power
+41. Cascading Rush
+     Push adjacent enemy before or after bull rush
+42. Combat Intuition
+     +2 to opportunity attacks against enemy you miss
+43. Deadly Draw
+     Combat advantage against enemy you pull or slide adjacent
+44. Directed Bull Rush
+     Slide your bull rush target instead of pushing
+45. Focused Mind
+     +4 to saving throws against dazing and stunning effects
+46. Grounding Shot
+     Your ranged attacks hit and damage prone targets more easily
+47. Hafted Defense
+     +1 AC and Reflex while wielding polearm or staff in two hands
+48. Hammering Iron
+     Push target after opportunity attack when using hammer
+49. Headman's Chop
+     5 extra damage to prone target when using axe or heavy blade
+50. Impending Victory
+     +1 attack with at-will powers against bloodied creatures
+51. Low Crawl
+     You can shift while prone
+52. Lucky Start
+     Make first attack roll twice if your initiative check is highest
+53. Nimble Runner
+     +2 Reflex when you run, and don't grant combat advantage
+54. Opportunistic Shove
+     Bull rush when you make opportunity attack
+55. Polearm Flanker
+     Flank from 1 square away when using polearm
+56. Rapid Assault
+     +2 or more damage on your first attack during an encounter
+57. Shifting Defense
+     Shift 1 square when you use total defense
+58. Spring Step
+     Shift 1 square when you stand up
+59. Steady Feet
+     Ignore 1 square of difficult terrain when you walk
+60. Strike and Shove
+     Push target after critical hit with melee attack
+61. Superior Implement Training
+     Use one superior implement of a type open to your class
+62. Teamwork Defense
+     +1 AC when adjacent to ally who also has this feat
+63. Unarmored Agility
+     +2 AC while wearing cloth armor or no armor
+64. Unfailing Vigor
+     Spend a healing surge if you roll 18-20 on death saving throw
+65. Versatile Expertise
+     Bonus to attacks with weapons and implements of your choice
+66. Vicious Advantage
+     Gain combat advantage against slowed or immobilized targets
+67. Warding Defense
+     Allies benefit when you use total defense and wield a shield
+68. Watchful Redoubt
+     +1 attack when you use total defense
 Your choice:
 35
 Choose two At Will Powers:

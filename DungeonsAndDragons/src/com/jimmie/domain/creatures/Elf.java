@@ -10,16 +10,6 @@ import com.jimmie.powers.ElvenAccuracy;
 import com.jimmie.util.Utils;
 
 public class Elf extends Race {
-	private boolean usedElvenAccuracy;
-
-	public boolean isUsedElvenAccuracy() {
-		return usedElvenAccuracy;
-	}
-
-	public void setUsedElvenAccuracy(boolean usedElvenAccuracy) {
-		this.usedElvenAccuracy = usedElvenAccuracy;
-	}
-
 	/**
 	 * 
 	 */
@@ -33,7 +23,6 @@ public class Elf extends Race {
 
 	@Override
 	public void initializeForEncounter() {
-		usedElvenAccuracy = false;		
 	}
 
 	@Override
@@ -84,8 +73,8 @@ public class Elf extends Race {
 
 		pc.addPower(new ElvenAccuracy());
 		
-		// TODO: Fey Origin, Group Awareness, Wild Step
-		Utils.print("NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step.");
+		pc.setOrigin(Origin.FEY);
+		
 	}
 
 	@Override

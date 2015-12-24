@@ -116,11 +116,13 @@ public class StirringShout extends AttackPower {
 						damageRolls = damageRolls * 2;
 					}
 					/* TODO: Supposed to be psychic damage.  Haven't implemented that yet. */
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.PSYCHIC, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.PSYCHIC, true, user);
 
 					target.hitByStirringShout(user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA));
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		} else {

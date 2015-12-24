@@ -66,9 +66,30 @@ Your choice (in pounds):
 Setting size to Medium.
 Setting speed to 6.
 Adding normal vision to senses.
-NOTE: I have not yet coded the two language choices.
+Choose two other languages:
+1. Deep Speech
+2. Draconic
+3. Dwarven
+4. Elven
+5. Giant
+6. Goblin
+7. Primordial
+8. Supernal
+9. Abyssal
+Your choice:
+4
+1. Deep Speech
+2. Draconic
+3. Dwarven
+4. Elven
+5. Giant
+6. Goblin
+7. Primordial
+8. Supernal
+9. Abyssal
+Your choice:
+5
 As a Deva, you get +2 History and Religion.
-NOTE: I have not yet coded Astral Majesty, Astral Resistance, Immortal Origin.
 How old is your character?
 59
 Is you character Male (M) or Female(F)?
@@ -120,7 +141,7 @@ Choose between the following Runic Artistries:
 2. Wrathful Hammer.
 Your choice:
 1
-NOTE: I have not yet coded Rune Master, Runic Artistry.
+NOTE: I have not yet coded Runic Artistry.
 Time to generate ability scores.
 Choose which method you want to use:
 1. Standard Array

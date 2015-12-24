@@ -109,6 +109,8 @@ public class AidAnother extends Power {
 				ally.setTemporaryAidAnotherBonus(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, target, bonusType);
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

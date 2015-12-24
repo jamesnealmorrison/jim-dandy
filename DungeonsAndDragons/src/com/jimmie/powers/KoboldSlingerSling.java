@@ -8,6 +8,7 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
@@ -85,7 +86,7 @@ public class KoboldSlingerSling extends AttackPower {
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
+			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
 			int roll = diceRoll + 6 + user.getOtherAttackModifier(targets);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -109,6 +110,8 @@ public class KoboldSlingerSling extends AttackPower {
 				Utils.print("STILL NEED TO IMPLEMENT SPECIAL SHOT and general rounds!!!!!!!");			
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

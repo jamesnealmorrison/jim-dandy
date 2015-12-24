@@ -1,11 +1,13 @@
 package com.jimmie.util.aspects;
 
 import java.util.Iterator;
-
 import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.Zone;
+import com.jimmie.domain.ZoneType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public aspect DefenseAspect {
@@ -47,6 +49,25 @@ public aspect DefenseAspect {
 				if (attacker.isBloodied()) {
 					Utils.print("As a Deva, you get a +1 bonus to this defense because " + attacker.getName() + " is bloodied.");
 					modifier += 1;
+				}
+			}
+		}
+		
+		// Are you in a "Rune of the undeniable dawn" zone?
+		if (Encounter.getEncounter().getZones() != null) {
+			for (Iterator<Zone> it = Encounter.getEncounter().getZones().iterator(); it.hasNext();) {
+				Zone zone = it.next();
+				if (zone.getZoneType() == ZoneType.RUNE_OF_THE_UNDENIABLE_DAWN) {
+					if (zone.stillApplies()) {
+						// See if the creature is still in the zone, and if they are an ally of the owner.
+						if (Encounter.getEncounter().getAlliesWithinRangeOf(zone.getOwner(), zone.getZoneOrigin(), zone.getSize()).contains(defender)) {
+							Utils.print(defender.getName() + " gets a +2 power bonus to all defenses while within the Rune of the Undeniable Dawn zone.");
+							modifier += 2;
+						}
+					} else {
+						Utils.print("Zone no longer applies.  Removing.");
+						it.remove();
+					}
 				}
 			}
 		}

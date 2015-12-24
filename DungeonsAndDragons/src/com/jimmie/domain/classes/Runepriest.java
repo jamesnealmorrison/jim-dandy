@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.RunicState;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -28,7 +29,7 @@ public class Runepriest extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -126,8 +127,8 @@ public class Runepriest extends DndClass {
 		
 		pc.addPower(new RuneOfMending());
 		
-		// TODO: Rune Master, Runic Artistry
-		Utils.print("NOTE: I have not yet coded Rune Master, Runic Artistry.");
+		// TODO: Runic Artistry
+		Utils.print("NOTE: I have not yet coded Runic Artistry.");
 	}
 
 	@Override
@@ -162,5 +163,19 @@ public class Runepriest extends DndClass {
 
 	public void setRunicState(RunicState runicState) {
 		this.runicState = runicState;
+	}
+
+	public RunicState chooseRunicState() {
+		Utils.print("Choose a runic state:");
+		Utils.print("1. Rune of Destruction");
+		Utils.print("2. Rune of Protection");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			runicState = RunicState.RUNE_OF_DESTRUCTION;
+		} else {
+			runicState = RunicState.RUN_OF_PROTECTION;
+		}
+		return runicState;
 	}
 }

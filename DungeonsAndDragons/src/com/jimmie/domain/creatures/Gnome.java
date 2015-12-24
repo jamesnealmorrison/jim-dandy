@@ -78,8 +78,10 @@ public class Gnome extends Race {
 		
 		pc.addPower(new FadeAway());
 		
-		// TODO: Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning.
-		Utils.print("NOTE: I have not yet coded Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning.");
+		pc.setOrigin(Origin.FEY);
+
+		// TODO: Master Trickster, Reactive Stealth, Trickster's Cunning.
+		Utils.print("NOTE: I have not yet coded Master Trickster, Reactive Stealth, Trickster's Cunning.");
 	}
 
 	@Override

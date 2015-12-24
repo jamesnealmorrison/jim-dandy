@@ -1,4 +1,4 @@
- What Race is your character?
+What Race is your character?
 Races from book 1:
 1. Dragonborn
 2. Dwarf
@@ -99,6 +99,7 @@ Setting role to Defender.
 Setting power Source to Divine.
 Adding Armor Proficiencies: Cloth, Leather, Hide, Chainmail, Scale, Plate, Light shield, Heavy shield
 Adding Weapon Proficiencies: Simple melee, simple ranged, military melee
+Adding Implement Proficiencies: Holy symbol
 Adding bonus of +1 Fortitude, +1 Reflex, +1 Will
 Setting hit points per level gained = 6
 Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.
@@ -113,7 +114,6 @@ Suggested Skills: Diplomacy, Heal, Insight, Religion
 Suggested At-Will Powers: Bolstering Strike, Enfeebling Strike
 Suggested Encounter Power: Shielding Smite
 Suggested Daily Power: Radiant Delirium
-NOTE: I have not yet coded Implement
 Time to generate ability scores.
 Choose which method you want to use:
 1. Standard Array

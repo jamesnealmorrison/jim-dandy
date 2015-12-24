@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
@@ -106,11 +107,13 @@ public class ShieldingSmite extends AttackPower {
 				damageRolls = damageRolls * 2;
 				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
 
 				
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 			
 			// I believe the effect happens, hit or miss.
@@ -118,7 +121,7 @@ public class ShieldingSmite extends AttackPower {
 			Creature ally = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
 			int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 			Utils.print(ally.getName() + " gets an AC bonus of " + abilityModifier + " until the end of my next turn.");
-			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.SHIELDING_SMITE);
 		}
 	}
 

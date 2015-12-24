@@ -9,6 +9,7 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
@@ -108,7 +109,7 @@ public class ThunderRamAssault extends AttackPower {
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
 					/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.THUNDER, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);
 
 					DndClass dndClass = user.getDndClass();
 					GuardianMight guardianMight = null;
@@ -135,7 +136,7 @@ public class ThunderRamAssault extends AttackPower {
 					List<Creature> blastTargets = Encounter.getEncounter().getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
 
 					Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
-					int secondaryDamage = secondaryDice.roll();
+					int secondaryDamage = secondaryDice.roll(DiceRollType.DAMAGE_ROLL);
 
 					for (Creature secondaryTarget : blastTargets) {
 						List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
@@ -156,11 +157,15 @@ public class ThunderRamAssault extends AttackPower {
 							secondaryTarget.push(pushDirection);
 						} else {
 							Utils.print("Sorry.  You missed " + secondaryTarget.getName());
+							// Some targets have powers/effects that happen when they are missed.
+							secondaryTarget.miss(user);
 						}
 					}
 
 				} else {
 					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
 				}
 			}
 		}else {

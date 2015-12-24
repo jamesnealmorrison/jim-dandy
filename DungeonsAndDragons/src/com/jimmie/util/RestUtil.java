@@ -18,18 +18,16 @@ public class RestUtil {
 	protected List<DndCharacter> characters;
 	
 	private void run() {
-		DndCharacter elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
-		DndCharacter kellen = Utils.loadCharacter("Kellen Wordsmith");
-		DndCharacter glock = Utils.loadCharacter("Glock Elmhurst");
-		DndCharacter halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
-		DndCharacter zanros = Utils.loadCharacter("Zanros Hawklight");
+		DndCharacter percian = Utils.loadCharacter("Percian");
+		DndCharacter gamal = Utils.loadCharacter("Gamal");
+		DndCharacter keothi = Utils.loadCharacter("Keothi");
+		DndCharacter travok = Utils.loadCharacter("Travok");
 		
 		characters = new ArrayList<DndCharacter>();
-		characters.add(elfAvenger);
-		characters.add(kellen);
-		characters.add(glock);
-		characters.add(halfOrcFighter);
-		characters.add(zanros);
+		characters.add(percian);
+		characters.add(gamal);
+		characters.add(keothi);
+		characters.add(travok);
 		
 		Utils.print("Do you want to take an:");
 		Utils.print("1. Extended Rest");

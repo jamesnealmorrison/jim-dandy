@@ -2,17 +2,25 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.RunicState;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class WordOfExchange extends AttackPower {
@@ -82,7 +90,57 @@ public class WordOfExchange extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+
+			int targetArmorClass = target.getArmorClass(user);
+			Utils.print("Your target has an AC of " + targetArmorClass);
+
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+
+			if (attackRoll >= targetArmorClass) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
+				if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
+					Utils.print("You are about to choose the Runic State.  Here is the info about them.");
+					Utils.print("Destruction: Next ally attack of this target will deal extra damage and give the ally temp hit points.");
+					Utils.print("Protection: Target will take -2 to defenses and next ally to hit target gets AC bonus.");
+					RunicState runicState = ((Runepriest) user.getDndClass()).chooseRunicState();
+					if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
+						if (Creature.class.isAssignableFrom(target.getClass())) {
+							Creature cTarget = (Creature) target;
+							int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
+							Utils.print("Adding " + abilityModifier + " damage bonus for the next ally to attack " + target.getName() + ".");
+							Utils.print("That ally will also get " + abilityModifier + " temporary hit points.");
+							cTarget.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN, user, TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+						}
+					} else {
+						if (Creature.class.isAssignableFrom(target.getClass())) {
+							Creature cTarget = (Creature) target;
+							Utils.print("Adding a -2 penalty to " + target.getName() + " to all defenses until the end of next turn.");
+							Utils.print("The next ally to attack " + target.getName() + " before the end of my next turn gets a " + user.getAbilityModifier(AbilityType.WISDOM) + " AC temporary bonus.");
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+						}
+						
+//						ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, );
+					}
+				}
+			} else {
+				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
+			}
+		}
 	}
 
 	@Override

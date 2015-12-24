@@ -8,6 +8,7 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -34,7 +35,7 @@ public class Warden extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 	}
 
 	/* This does not have annotation.  It gets called directly. */
@@ -60,7 +61,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, true, owner);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, true, owner);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
@@ -69,9 +70,12 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL, false, owner);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, false, owner);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
+			
+			// Some targets have powers/effects that happen when they are missed.
+			target.miss(owner);
 			return -2;
 		}
 	}

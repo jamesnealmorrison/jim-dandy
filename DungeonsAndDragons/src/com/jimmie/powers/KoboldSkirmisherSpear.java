@@ -8,6 +8,7 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
@@ -86,7 +87,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
+			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
 			int roll = diceRoll + 6 + user.getOtherAttackModifier(targets);
 
 			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
@@ -128,7 +129,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 				if (Creature.class.isInstance(target)) {
 					if (Utils.hasCombatAdvantage(user, (Creature) target)) {
 						Dice dice = new Dice(DiceType.SIX_SIDED);
-						int combatAdvantageRoll = dice.roll();
+						int combatAdvantageRoll = dice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
 						Utils.print("Adding " + combatAdvantageRoll + " to the damage because the Kobold Skirmisher had combat advantage against " + target.getName());
 						rollForDamage = rollForDamage + combatAdvantageRoll;
 					}
@@ -136,6 +137,8 @@ public class KoboldSkirmisherSpear extends AttackPower {
 				target.hurt(rollForDamage, DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

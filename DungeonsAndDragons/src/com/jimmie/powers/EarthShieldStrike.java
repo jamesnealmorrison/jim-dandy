@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
@@ -108,13 +109,15 @@ public class EarthShieldStrike extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 
 				/* I get an AC bonus of +1 until the end of my next turn. */
 				Utils.print("Adding a +1 bonus to AC until the end of my next turn.");
-				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.EARTH_SHIELD_STRIKE);
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

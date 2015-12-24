@@ -149,8 +149,10 @@ public class Eladrin extends Race {
 		Utils.print("As an Eladrin, you get a +1 bonus to your will defense.");
 		setWillBonus(getWillBonus()+1);
 		
-		// TODO: +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step
-		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance.");
+		pc.setOrigin(Origin.FEY);
+
+		// TODO: +5 racial bonus to charm effects, Trance, Fey Step
+		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Trance.");
 		
 		pc.addPower(new FeyStep());
 	

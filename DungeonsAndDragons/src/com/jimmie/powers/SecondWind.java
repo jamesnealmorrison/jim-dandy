@@ -9,6 +9,7 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
@@ -93,11 +94,11 @@ public class SecondWind extends Power {
 			if (timesUsed == 0) {
 				timesUsed++;
 				player.useHealingSurge();
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.ARMOR_CLASS_MODIFIER);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.SECOND_WIND);
 
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.WILL_MODIFIER);
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.REFLEX_MODIFIER);
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORTITUDE_MODIFIER);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.SECOND_WIND);
 			} else {
 				Utils.print("You have already used your second wind in this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
 			}

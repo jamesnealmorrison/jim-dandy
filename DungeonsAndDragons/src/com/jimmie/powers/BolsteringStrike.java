@@ -107,13 +107,15 @@ public class BolsteringStrike extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
 				
 				int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 				Utils.print("You get " + abilityModifier + " temporary hit points.");
 				user.setTemporaryHitPoints(abilityModifier);
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 		}
 	}

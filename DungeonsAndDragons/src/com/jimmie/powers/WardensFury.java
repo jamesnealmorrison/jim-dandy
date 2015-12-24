@@ -10,6 +10,7 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.CombatAdvantageType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
@@ -94,7 +95,7 @@ public class WardensFury extends AttackPower {
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll();
+			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
 			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
@@ -113,7 +114,7 @@ public class WardensFury extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user.getRace()), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
 				
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					((Creature) target).setTemporaryCombatAdvantage(user, DurationType.END_OF_NEXT_TURN, CombatAdvantageType.WARDENS_FURY, user.getCurrentTurn());
@@ -121,6 +122,8 @@ public class WardensFury extends AttackPower {
 				Utils.print("This is not completely implemented yet, though.");
 			} else {
 				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
 			}
 
 		}

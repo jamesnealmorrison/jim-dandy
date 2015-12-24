@@ -6,6 +6,10 @@ import java.util.List;
 import com.jimmie.domain.creatures.Creature;
 
 public class TemporaryInvisibility extends TemporaryEffect {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	List<Creature> targets;
 	
 	public List<Creature> getTargets() {

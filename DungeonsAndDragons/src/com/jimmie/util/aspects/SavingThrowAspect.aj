@@ -1,5 +1,6 @@
 package com.jimmie.util.aspects;
 
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
@@ -26,7 +27,7 @@ public aspect SavingThrowAspect {
 						Utils.print("Your choice (Y or N):");
 						if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
 							Dice d = new Dice(DiceType.SIX_SIDED);
-							result += d.roll();
+							result += d.roll(DiceRollType.SAVING_THROW_ROLL_MODIFICATION);
 							power.setTimesUsed(power.getTimesUsed()+1);
 						}
 					}

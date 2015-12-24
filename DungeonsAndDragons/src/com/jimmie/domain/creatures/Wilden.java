@@ -104,9 +104,7 @@ public class Wilden extends Race {
 		pc.addPower(new WrathOfTheDestroyer());
 		pc.addPower(new PursuitOfTheHunter());
 
-		// TODO: Fey Origin
-		Utils.print("NOTE: I have not yet coded Fey Origin.");
-
+		pc.setOrigin(Origin.FEY);
 		
 	}
 

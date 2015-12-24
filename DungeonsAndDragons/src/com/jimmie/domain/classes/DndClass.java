@@ -15,7 +15,7 @@ public abstract class DndClass implements Serializable {
 	private int reflexBonus;
 	protected DndCharacter owner; // Pointer back to the player character
 	public abstract void initializeForEncounter();
-	public abstract void initializeForNewDay();
+	public abstract void initializeForNewDay(DndCharacter dndCharacter);
 	public abstract List<String> selectInitialSkills();
 	public abstract void makeClassChoicesBeforeAbilityScores(PlayerCharacter pc);
 	public abstract void makeClassChoicesAfterAbilityScores(PlayerCharacter pc);

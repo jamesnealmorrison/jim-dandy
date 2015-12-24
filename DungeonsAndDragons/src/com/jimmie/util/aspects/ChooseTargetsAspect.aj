@@ -20,6 +20,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.RunicState;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 
 public aspect ChooseTargetsAspect {
@@ -84,7 +85,7 @@ public aspect ChooseTargetsAspect {
 					} else if (mark.getMarkType() == MarkType.DIVINE_CHALLENGE) {
 						if (!targets.contains(mark.getMarker())) {
 							Utils.print(attacker.getName() + " will take a -2 penalty to this attack roll because it's attack did not include " + mark.getMarker().getName() + ".");
-							cAttacker.setTemporaryEffect(-2, mark.getMarker().getCurrentTurn(), DurationType.SPECIAL, mark.getMarker(), TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+							cAttacker.setTemporaryEffect(-2, mark.getMarker().getCurrentTurn(), DurationType.SPECIAL, mark.getMarker(), TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.DIVINE_CHALLENGE);
 							
 							// Find the Divine Challenge power and see if this is the first time this attacker has attacked "not me"
 							for (Power power : mark.getMarker().getPowers()) {
@@ -110,15 +111,17 @@ public aspect ChooseTargetsAspect {
 					Creature cTarget = (Creature) target;
 					// See if a runepriest is next to the target. (but the rune priest has to be an enemy of the target, otherwise I'd be granting bonuses to the monsters)
 					List<Creature> targetAdjacentEnemies = Encounter.getEncounter().getAdjacentEnemies(cTarget);
-					for (Creature targetAdjacentEnemy : targetAdjacentEnemies) {
-						if (DndCharacter.class.isAssignableFrom(targetAdjacentEnemy.getClass())) {
-							DndCharacter charTargetAdjacentEnemy = (DndCharacter) targetAdjacentEnemy;
-							if (Runepriest.class.isAssignableFrom(charTargetAdjacentEnemy.getDndClass().getClass())) {
-								Runepriest runepriest = (Runepriest) charTargetAdjacentEnemy.getDndClass();
-								if (runepriest.getRunicState() == RunicState.RUNE_OF_DESTRUCTION) {
-									Utils.print(cTarget.getName() + " is standing next to a Runepriest in the Rune of Destruction state.");
-									Utils.print(attacker.getName() + " will get a +1 bonus to the attack roll.");
-									cAttacker.setTemporaryEffect(1, cAttacker.getCurrentTurn(), DurationType.IMMEDIATE, cAttacker, TemporaryEffectType.ATTACK_ROLL_MODIFIER);
+					if (targetAdjacentEnemies != null) {
+						for (Creature targetAdjacentEnemy : targetAdjacentEnemies) {
+							if (DndCharacter.class.isAssignableFrom(targetAdjacentEnemy.getClass())) {
+								DndCharacter charTargetAdjacentEnemy = (DndCharacter) targetAdjacentEnemy;
+								if (Runepriest.class.isAssignableFrom(charTargetAdjacentEnemy.getDndClass().getClass())) {
+									Runepriest runepriest = (Runepriest) charTargetAdjacentEnemy.getDndClass();
+									if (runepriest.getRunicState() == RunicState.RUNE_OF_DESTRUCTION) {
+										Utils.print(cTarget.getName() + " is standing next to a Runepriest in the Rune of Destruction state.");
+										Utils.print(attacker.getName() + " will get a +1 bonus to the attack roll.");
+										cAttacker.setTemporaryEffect(1, cAttacker.getCurrentTurn(), DurationType.IMMEDIATE, cAttacker, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.RUNE_OF_DESTRUCTION);
+									}
 								}
 							}
 						}

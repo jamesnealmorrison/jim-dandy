@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
@@ -294,19 +295,19 @@ public class CharacterCreator {
 			choices = new ArrayList<Integer>();
 			for (int i = 0; i < 6; i++) {
 				int min = 7;
-				int roll1 = dice.roll();
+				int roll1 = dice.roll(DiceRollType.ABILITY_SCORE_ROLL);
 				if (roll1 < min) {
 					min = roll1;
 				}
-				int roll2 = dice.roll();
+				int roll2 = dice.roll(DiceRollType.ABILITY_SCORE_ROLL);
 				if (roll2 < min) {
 					min = roll2;
 				}
-				int roll3 = dice.roll();
+				int roll3 = dice.roll(DiceRollType.ABILITY_SCORE_ROLL);
 				if (roll3 < min) {
 					min = roll3;
 				}
-				int roll4 = dice.roll();
+				int roll4 = dice.roll(DiceRollType.ABILITY_SCORE_ROLL);
 				if (roll4 < min) {
 					min = roll4;
 				}

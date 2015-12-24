@@ -6,12 +6,17 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.RunicState;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PowerSource;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class RuneOfMending extends AttackPower {
@@ -82,7 +87,49 @@ public class RuneOfMending extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		if (timesUsed < 2) {
+			Utils.print("Would you like to apply this power to yourself or an ally?");
+			Utils.print("1. Self");
+			Utils.print("2. Ally");
+			Utils.print("Your choice:");
+			int choice = Utils.getValidIntInputInRange(1, 2);
+			Creature target = null;
+			if (choice == 1) {
+				target = user;
+			} else {
+				target = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
+			}
+			
+			if (DndCharacter.class.isAssignableFrom(target.getClass())) {
+				((DndCharacter) target).useHealingSurge(); 
+			}
+			
+			if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
+				Utils.print("You are about to choose the Runic State.  Here is the info about them.");
+				Utils.print("Destruction: +2 bonus to damage rolls for me and allies within 5 range.");
+				Utils.print("Protection: +1 bonus to all defenses for me and allies within 5 range.");
+				RunicState runicState = ((Runepriest) user.getDndClass()).chooseRunicState();
+				if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
+					List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(user, user.getCurrentPosition(), 5);
+					for (Creature ally : allies) {
+						Utils.print("Adding 2 damage bonus to " + ally.getName() + " until the end of next turn.");
+						ally.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+					}
+				} else {
+					List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(user, user.getCurrentPosition(), 5);
+					for (Creature ally : allies) {
+						Utils.print("Adding 1 defense bonus to " + ally.getName() + " until the end of next turn.");
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+					}
+					
+				}
+			}
+			
+			timesUsed++;
+		}
 	}
 
 	@Override

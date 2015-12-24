@@ -1,5 +1,6 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
@@ -43,7 +44,7 @@ public class HalfOrc extends Race {
 			if ("Y".equalsIgnoreCase(choice)) {
 				usedFuriousAssault = true;
 				Dice dice = new Dice(DiceType.EIGHT_SIDED);
-				return dice.roll();
+				return dice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
 			} else {
 				return 0;
 			}

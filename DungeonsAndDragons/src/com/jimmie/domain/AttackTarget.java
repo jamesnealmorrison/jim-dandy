@@ -25,4 +25,5 @@ public interface AttackTarget {
 	void pull(String pullDirection);
 	void slide(String direction);
 	int getCurrentHitPoints();
+	void miss(Creature misser);
 }

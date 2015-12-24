@@ -8,12 +8,11 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jimmie.domain.CombatAdvantageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.TemporaryCombatAdvantage;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.domain.creatures.Race;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.gui.DungeonGUI;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -250,11 +249,11 @@ public class Utils {
 	}
 
 	public static int rollForDamage(int damageRolls, DiceType damageDiceType,
-			int weaponDamageBonus, int attributeModifier, Race race) {
+			int weaponDamageBonus, int attributeModifier, Creature roller) {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.roll();
+			int currentRoll = damageDice.roll(DiceRollType.DAMAGE_ROLL);
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -264,8 +263,8 @@ public class Utils {
 		Utils.print("Adding attribute bonus of " + attributeModifier);
 		rollTotal = rollTotal + attributeModifier;
 		int raceBonus = 0;
-		if (race != null) {
-			raceBonus = race.getRacialDamageBonus();
+		if ((roller != null) && (roller.getRace() != null)) {
+			raceBonus = roller.getRace().getRacialDamageBonus();
 		}
 		Utils.print("Adding racial bonus of " + raceBonus);
 		rollTotal = rollTotal + raceBonus;
@@ -275,11 +274,11 @@ public class Utils {
 	}
 
 	public static int rollForHalfDamage(int damageRolls, DiceType damageDiceType,
-			int weaponDamageBonus, int attributeModifier, Race race) {
+			int weaponDamageBonus, int attributeModifier, Creature roller) {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.roll();
+			int currentRoll = damageDice.roll(DiceRollType.DAMAGE_ROLL);
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -289,8 +288,8 @@ public class Utils {
 		Utils.print("Adding attribute bonus of " + attributeModifier);
 		rollTotal = rollTotal + attributeModifier;
 		int raceBonus = 0;
-		if (race != null) {
-			raceBonus = race.getRacialDamageBonus();
+		if (roller.getRace() != null) {
+			raceBonus = roller.getRace().getRacialDamageBonus();
 		}
 		Utils.print("Adding racial bonus of " + raceBonus);
 		rollTotal = rollTotal + raceBonus;
@@ -324,11 +323,13 @@ public class Utils {
 				TemporaryCombatAdvantage temporaryCombatAdvantage = (TemporaryCombatAdvantage) tempEffect;
 
 				if  (temporaryCombatAdvantage.stillApplies()) {
-					// Warden's Fury combat advantage applies to everyone.  For other types I may need to check who has the combat advantage.
-					if (CombatAdvantageType.WARDENS_FURY == temporaryCombatAdvantage.getTypeOfCombatAdvantage()) {
-						Utils.print("Granting combat advantage because of Warden's Fury");
-						return true;
+					Utils.print("Granting combat advantage.");
+					/* If it should be removed now, delete the modifier now. */
+					if (temporaryCombatAdvantage.shouldBeRemoved()) {
+						Utils.print("But will not apply after this.");
+						it.remove();
 					}
+					return true;
 				} else {
 					Utils.print("Temporary Combat Advantage no longer applies. Removing.");
 					it.remove();

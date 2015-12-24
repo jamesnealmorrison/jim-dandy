@@ -6,9 +6,13 @@ import java.util.List;
 
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.TurnTaker;
+import com.jimmie.domain.Zone;
+import com.jimmie.domain.ZoneShape;
+import com.jimmie.domain.ZoneType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -62,6 +66,15 @@ public abstract class Encounter {
 	 */
 	protected List<Monster> monsters;
 	TurnTaker currentParticipant;
+	private List<Zone> zones;
+
+	public List<Zone> getZones() {
+		return zones;
+	}
+
+	public void setZones(List<Zone> zones) {
+		this.zones = zones;
+	}
 
 	public void runEncounter() {
 		Dice.setRollType(Dice.USER_ENTERED);
@@ -385,6 +398,47 @@ public abstract class Encounter {
 		}
 	}
 
+	// This method is to be used for powers that choose an ally "adjacent to either you or the target"
+	public Creature chooseAllyAdjacentToEither(Creature allyOf, Position target, Position target2) {
+		List<Creature> adjacentCreatureList = null;
+		List<Creature> adjacentTarget2List = null;
+		/* Get the list of adjacent allies. */
+		if (Monster.class.isInstance(allyOf)) {
+			adjacentCreatureList = getAdjacentMonsters(target);
+		} else {
+			adjacentCreatureList = getAdjacentCharacters(target);
+			adjacentTarget2List = getAdjacentCharacters(target2);
+			// Combine them.
+			for (Creature adj2 : adjacentTarget2List) {
+				if (!adjacentCreatureList.contains(adj2)) {
+					adjacentCreatureList.add(adj2);
+				}
+			}
+		}
+
+		HashMap<Integer, Creature> adjacentAllies = new HashMap<Integer, Creature>();
+		int index = 0;
+
+		for (Creature creature : adjacentCreatureList) {
+			index++;
+			adjacentAllies.put(index, creature);
+		}
+
+		if (adjacentAllies.isEmpty()) {
+			Utils.print("Sorry.  No adjacent allies.");
+			return null;
+		} else {
+			Utils.print("Choose an adjacent ally.");
+			for (int i = 1; i <= index; i++) {
+				Utils.print(i + ". " + adjacentAllies.get(i).getName());
+			}
+			int choice = Utils.getValidIntInputInRange(1, index);
+			Creature c = adjacentAllies.get(choice);
+			Utils.print("You chose " + c.getName());
+			return c;
+		}
+	}
+	
 	public Creature chooseAnyAlly(Creature allyOf) {
 		HashMap<Integer, Creature> allies = new HashMap<Integer, Creature>();
 		int index = 0;
@@ -441,6 +495,28 @@ public abstract class Encounter {
 			Utils.print("You chose " + c.getName());
 			return c;
 		}
+	}
+
+	public List<Creature> getAlliesWithinRangeOf(Creature allyOf, Position target,
+			int range) {
+		/* Get the list of adjacent allies. */
+		if (Monster.class.isInstance(allyOf)) {
+			return getMonstersWithinRangeOf(target, range);
+		} else {
+			return getCharactersWithinRangeOf(target, range);
+		}
+
+	}
+
+	public List<Creature> getEnemiesWithinRangeOf(Creature enemyOf, Position target,
+			int range) {
+		/* Get the list of adjacent allies. */
+		if (Monster.class.isInstance(enemyOf)) {
+			return getCharactersWithinRangeOf(target, range);
+		} else {
+			return getMonstersWithinRangeOf(target, range);
+		}
+
 	}
 
 	public void removeCreature(Creature creature) {
@@ -505,17 +581,21 @@ public abstract class Encounter {
 	public List<Creature> getAdjacentAllies(Creature creature) {
 		List<Creature> adjacentAllies = new ArrayList<Creature>();
 		if (Monster.class.isInstance(creature)) {
-			for (Monster monster : monsters) {
-				if (monster.getCurrentPosition().isWithinReachOf(
-						creature.getCurrentPosition(), 1)) {
-					adjacentAllies.add(monster);
+			if (monsters != null) {
+				for (Monster monster : monsters) {
+					if (monster.getCurrentPosition().isWithinReachOf(
+							creature.getCurrentPosition(), 1)) {
+						adjacentAllies.add(monster);
+					}
 				}
 			}
 		} else {
-			for (DndCharacter character : characters) {
-				if (character.getCurrentPosition().isWithinReachOf(
-						creature.getCurrentPosition(), 1)) {
-					adjacentAllies.add(character);
+			if (characters != null) {
+				for (DndCharacter character : characters) {
+					if (character.getCurrentPosition().isWithinReachOf(
+							creature.getCurrentPosition(), 1)) {
+						adjacentAllies.add(character);
+					}
 				}
 			}
 		}
@@ -687,6 +767,68 @@ public abstract class Encounter {
 		return targets;
 	}
 
+	
+	// Use this one when you want to pick an enemy of the attacker, but not from the attacker's position.  See Sorcerer Chaos Bolt as an example.
+	public List<AttackTarget> chooseRangedTargetFromPosition(TurnTaker attacker, Position position, int range, int longRange) {
+		/* TODO: Need to add logic for visibility/cover/etc. */
+		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
+
+		Utils.print("Who do you want to attack?");
+		int index = 0;
+
+		if (!characters.contains(attacker)) {
+			for (DndCharacter c : characters) {
+				/* Is this character within reach? */
+				if (position.isWithinReachOf(
+						c.getCurrentPosition(), range)) {
+					/* Check for invisibility. */
+					if (!c.isInvisibleTo(attacker)) {
+						/* Do you have line of sight? */
+						if (hasLineOfSight(position, c.getCurrentPosition())) {
+							index++;
+							validChoices.put(index, c);
+							Utils.print(index + ". " + c.getName());
+						}
+					}
+				}
+			}
+		}
+
+		if (!monsters.contains(attacker)) {
+			for (Monster m : monsters) {
+				/* Is this character within reach? */
+				if (position.isWithinReachOf(
+						m.getCurrentPosition(), range)) {
+					/* Check for invisibility. */
+					if (!m.isInvisibleTo(attacker)) {
+						/* Do you have line of sight? */
+						if (hasLineOfSight(position, m.getCurrentPosition())) {
+							index++;
+							validChoices.put(index, m);
+							Utils.print(index + ". " + m.getName());
+						}
+					}
+				}
+			}
+		}
+
+		/*
+		 * TODO: Later, when I have traps and other attackable things I can add
+		 * those here.
+		 */
+		if (index < 1) {
+			Utils.print("OOPS!  No one to choose from");
+			return null;
+		}
+
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, index);
+
+		List<AttackTarget> targets = new ArrayList<AttackTarget>();
+		targets.add(validChoices.get(choice));
+		return targets;
+	}
+	
 	/* TODO: Check for enemies providing cover. */
 	public int getCoverPenalty(Position attackerPosition, Position targetPosition) {
 		int fewestLinesBlocked = 4;
@@ -1022,6 +1164,32 @@ public abstract class Encounter {
 		return pos;
 	}
 
+	public List<AttackTarget> getAllEnemiesInBlast(Creature creature, int lowerLeftX,
+			int lowerLeftY, int size) {
+		List<AttackTarget> adjacentCreatures = new ArrayList<AttackTarget>();
+
+		if (DndCharacter.class.isInstance(creature)) {
+			for (Monster monster : monsters) {
+				if (monster.getCurrentPosition().isWithinBlast(lowerLeftX,
+						lowerLeftY, size)) {
+					adjacentCreatures.add(monster);
+				}
+			}
+		} else {
+			for (DndCharacter character : characters) {
+				if (character.getCurrentPosition().isWithinBlast(lowerLeftX,
+						lowerLeftY, size)) {
+					adjacentCreatures.add(character);
+				}
+			}
+		}
+		if (adjacentCreatures.isEmpty()) {
+			return null;
+		} else {
+			return adjacentCreatures;
+		}
+	}	
+	
 	public List<Creature> getAllCreaturesInBlast(int lowerLeftX,
 			int lowerLeftY, int size) {
 		/* TODO: Implement "must have line of sight" rule. */
@@ -1045,21 +1213,43 @@ public abstract class Encounter {
 		}
 	}
 
-	public List<Creature> getAllCreaturesInAreaBurst(int x, int y, int size) {
+	public List<Creature> getAllCreaturesInAreaBurst(Position position, int size) {
 		/* TODO: Implement "must have line of sight" rule. */
 		List<Creature> creatures = new ArrayList<Creature>();
 		for (Monster monster : monsters) {
-			Position p = new Position(x, y);
-			if (monster.getCurrentPosition().isWithinReachOf(p, size)) {
+			if (monster.getCurrentPosition().isWithinReachOf(position, size)) {
 				creatures.add(monster);
 			}
 		}
 		for (DndCharacter character : characters) {
-			Position p = new Position(x, y);
-			if (character.getCurrentPosition().isWithinReachOf(p, size)) {
+			if (character.getCurrentPosition().isWithinReachOf(position, size)) {
 				creatures.add(character);
 			}
 		}
+		if (creatures.isEmpty()) {
+			return null;
+		} else {
+			return creatures;
+		}
+	}
+
+	public List<AttackTarget> getAllEnemiesInAreaBurst(Creature creature, Position position, int size) {
+		List<AttackTarget> creatures = new ArrayList<AttackTarget>();
+
+		if (DndCharacter.class.isInstance(creature)) {
+			for (Monster monster : monsters) {
+				if (monster.getCurrentPosition().isWithinReachOf(position, size)) {
+					creatures.add(monster);
+				}
+			}
+		} else {
+			for (DndCharacter character : characters) {
+				if (character.getCurrentPosition().isWithinReachOf(position, size)) {
+					creatures.add(character);
+				}
+			}
+		}
+
 		if (creatures.isEmpty()) {
 			return null;
 		} else {
@@ -1243,5 +1433,21 @@ public abstract class Encounter {
 
 	public static Encounter getEncounter() {
 		return encounter;
+	}
+
+	public void setZone(Position zoneOrigin, ZoneShape zoneShape, int size, Creature owner, DurationType duration, int startTurn, ZoneType zoneType) {
+		Zone zone = new Zone();
+		zone.setZoneOrigin(zoneOrigin);
+		zone.setZoneShape(zoneShape);
+		zone.setSize(size);
+		zone.setOwner(owner);
+		zone.setDuration(duration);
+		zone.setStartTurn(startTurn);
+		zone.setZoneType(zoneType);
+		
+		if (zones == null) {
+			zones = new ArrayList<Zone>();
+		}
+		zones.add(zone);
 	}
 }
