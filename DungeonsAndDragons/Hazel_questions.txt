@@ -1,0 +1,580 @@
+What Race is your character?
+Races from book 1:
+1. Dragonborn
+2. Dwarf
+3. Eladrin
+4. Elf
+5. Half-Elf
+6. Halfling
+7. Human
+8. Tiefling
+Races from book 2:
+9. Deva
+10. Gnome
+11. Goliath
+12. Half-Orc
+13. Shifter
+Races from book 3:
+14. Githzerai
+15. Minotaur
+16. Shardmind
+17. Wilden
+Your choice?
+13
+According to the book, a Shifter favors the druid, fighter, ranger, warden, shaman, and seeker classes.
+What Class is your character?
+Classes from book 1:
+1. Cleric
+2. Fighter
+3. Paladin
+4. Ranger
+5. Rogue
+6. Warlock
+7. Warlord
+8. Wizard
+Classes from book 2:
+9. Avenger
+10. Barbarian
+11. Bard
+12. Druid
+13. Invoker
+14. Shaman
+15. Sorcerer
+16. Warden
+Classes from book 3:
+17. Ardent
+18. Battlemind
+19. Monk
+20. Psion
+21. Runepriest
+22. Seeker
+Your choice?
+12
+What is your character's name? From the book it suggests the following male and female names:
+Male Names: Ash, Brook, Claw, Cliff, Flint, Frost, River, Rock, Storm, Thorn, Tor
+Female Names: Aurora, Autumn, Dawn, Hazel, Iris, Lily, Rain, Rose, Summer
+Your name?
+Hazel
+What Height is your character?  The book suggests 5' 7" - 6' 0" (67" - 72")
+Your choice (in inches):
+70
+What Weight is your character?  The book suggests 130 - 180 lb
+Your choice (in pounds):
+170
+Setting size to Medium.
+Setting speed to 6.
+Adding low-light vision to senses.
+NOTE: I have not yet coded the choice of a language.
+You must choose between a Longtooth Shifter and a Razorclaw Shifter.
+1. Longtooth Shifter
+2. Razorclaw Shifter
+Your choice:
+2
+As a Razorclaw Shifter, you get +2 Athletics and Stealth
+How old is your character?
+47
+Is you character Male (M) or Female(F)?
+f
+What alignment is your character?
+1. Good
+2. Lawful Good
+3. Evil
+4. Chaotic Evil
+5. Unaligned
+1
+What deity do you choose for character?
+1. Avandra
+2. Bahamut
+3. Corellon
+4. Erathis
+5. Ioun
+6. Kord
+7. Melora
+8. Moradin
+9. Pelor
+10. The Raven Queen
+11. Sehanine
+12. None
+7
+Type whatever you want to show up under Adventuring Company or Other Affiliation:  (Keep it kind of short.  There's not too much space)
+Jim's Adventuring Group
+Setting role to Controller.
+Setting power Source to Primal.
+Adding Armor Proficiencies: Cloth, Leather, Hide
+Adding Weapon Proficiencies: Simple Melee, Simple Ranged
+Adding Implement Proficiencies: Staff, Totem
+Adding bonus of +1 Reflex, +1 Will
+Setting hit points per level gained = 5
+Next, you will take a look at the suggested build options.  These are only suggestions.  You can ignore them completely.
+Which build option would you like to see?
+1. Guardian Druid: You are a protector of the land and those who rely on it.
+2. Predator Druid: You hunt down and destroy those who despoil the natural world.
+Your choice:
+1
+Make Wisdom your primary score and Constitution your secondary score.
+Suggested Class Feature: Primal Guardian
+Suggested Feat: Primal Instinct
+Suggested Skills: Arcana, Heal, Insight, Nature
+Suggested At-Will Powers: Call of the Beast, Chill Wind, Grasping Claws
+Suggested Encounter Power: Frost Flash
+Suggested Daily Power: Fires of Life
+Choose between the following Primal Aspects:
+1. Primal Guardian.
+2. Primal Predator.
+Your choice:
+1
+NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting.
+Time to generate ability scores.
+Choose which method you want to use:
+1. Standard Array
+2. Customizing Scores
+3. Rolling Scores
+Your choice?
+1
+With this method, you will assign the following scores to your abilities: 16, 14, 13, 12, 11, 10
+Which one do you want to assign to Strength?
+16
+14
+13
+12
+11
+10
+Your choice?
+13
+Which one do you want to assign to Constitution?
+16
+14
+12
+11
+10
+Your choice?
+14
+Which one do you want to assign to Dexterity?
+16
+12
+11
+10
+Your choice?
+11
+Which one do you want to assign to Intelligence?
+16
+12
+10
+Your choice?
+12
+Which one do you want to assign to Wisdom?
+16
+10
+Your choice?
+16
+Assiging 10 to Charisma.
+As a Razorclaw Shifter you get +2 to Dexterity and Wisdom.
+Setting hit points to 26
+Setting healing surges per day = 9
+Automatically trained in Nature.
+Choose 3 of the following
+Arcana
+Athletics
+Diplomacy
+Endurance
+Heal
+History
+Insight
+Perception
+Your choice:
+arcana
+Athletics
+Diplomacy
+Endurance
+Heal
+History
+Insight
+Perception
+Your choice:
+heal
+Athletics
+Diplomacy
+Endurance
+History
+Insight
+Perception
+Your choice:
+insight
+Please select one of the following Feats:
+1. Alertness
+     No combat advantage when surprised, +2 to Perception
+2. Armor Proficiency Chainmail
+     Training with chanimail armor.
+3. Blade Opportunist
+     +2 to opportunity attacks with heavy blade or light blade
+4. Combat Reflexes
+     +1 to opportunity attacks
+5. Dark Fury
+     +1 damage with necrotic or psychic power
+6. Defensive Mobility
+     +2 to AC against opportunity attacks
+7. Durable
+     Increase number of healing surges by 2.
+8. Far Shot
+     Increase projectile weapon range by 5 squares
+9. Far Throw
+     Increase thrown weapon range by 2 squares
+10. Fast Runner
+     +2 to speed when you charge or run
+11. Improved Initiative
+     +4 to initiative checks
+12. Linguist
+     Learn three new languages
+13. Mounted Combat
+     Gain access to the special abilities of your mount
+14. Powerful Charge
+     +2 damage, +2 to bull rush on a charge
+15. Quick Draw
+     Draw a weapon with attack action, +2 to initiative
+16. Raging Storm
+     +1 damage with lightning or thunder power
+17. Ritual Caster
+     Master and perform rituals
+18. Shield Proficiency (Light)
+     Proficiency with light shields
+19. Skill Focus
+     +3 to checks with chosen skill
+20. Skill Training
+     Gain training in one skill
+21. Toughness
+     Gain 5 additional hit points per tier
+22. Two Weapon Fighting
+     +1 damage while holding a melee weapon in each hand
+23. Weapon Focus
+     +1 damage with chosen weapon group
+24. Weapon Proficiency
+     Gain proficiency with the weapon of your choice
+25. Wintertouched
+     Gain combat advantage against foe vulnerable to cold
+26. Blurring Claws
+     +2 damage with combat advantage during razorclaw shifting
+27. Combat Medic
+     Stabalize the dying as minor action, +2 to Heal checks
+28. Coordinated Explosion
+     +1 to attack rolls with blast or burst if ally is in area
+29. Distant Advantage
+     Gain combat advantage with ranged and area attacks against flanked enemies
+30. Echoes of Thunder
+     +1 damage after you hit with thunder power
+31. Implement Expertise
+     +1 to attack rolls with chosen implement
+32. Improved Bull Rush
+     +4 to bull rush attacks
+33. Improved Grab
+     +4 to grab attacks
+34. Melee Training
+     Change ability used for melee basic weapon attacks
+35. Oncoming Storm
+     Hit with lightning power to gain +1 on thunder attacks
+36. Restful Healing
+     Maximize healing between encounters
+37. Speed Loader
+     Load crossbow as free action instead of minor
+38. Surging Flame
+     Fire-resistant target takes extra damage from fire powers
+39. Timely Respite
+     Second wind or total defense grants saving throw
+40. Weapon Expertise
+     +1 to attacks with weapon group
+41. Wild Senses
+     Roll twice when following tracks, +3 to initiative
+42. Enraged Boar Form
+     +1 attack, +2 damage when charging in beast form
+43. Ferocious Tiger Form
+     +2 damage with combat advantage in beast form
+44. Primal Instinct
+     Ally can reroll initiative
+45. Battle Hardened
+     +5 to saving throws against fear, +2 to initiative checks
+46. Battle Caster Defense
+     +4 AC against opportunity attacks after you use ranged or area power
+47. Beguiling Enchantment
+     Enemy -2 to attacks after you hit it with charm power
+48. Cascading Rush
+     Push adjacent enemy before or after bull rush
+49. Combat Intuition
+     +2 to opportunity attacks against enemy you miss
+50. Deadly Draw
+     Combat advantage against enemy you pull or slide adjacent
+51. Directed Bull Rush
+     Slide your bull rush target instead of pushing
+52. Focused Mind
+     +4 to saving throws against dazing and stunning effects
+53. Grounding Shot
+     Your ranged attacks hit and damage prone targets more easily
+54. Hafted Defense
+     +1 AC and Reflex while wielding polearm or staff in two hands
+55. Hammering Iron
+     Push target after opportunity attack when using hammer
+56. Headman's Chop
+     5 extra damage to prone target when using axe or heavy blade
+57. Impending Victory
+     +1 attack with at-will powers against bloodied creatures
+58. Low Crawl
+     You can shift while prone
+59. Lucky Start
+     Make first attack roll twice if your initiative check is highest
+60. Nimble Runner
+     +2 Reflex when you run, and don't grant combat advantage
+61. Opportunistic Shove
+     Bull rush when you make opportunity attack
+62. Polearm Flanker
+     Flank from 1 square away when using polearm
+63. Rapid Assault
+     +2 or more damage on your first attack during an encounter
+64. Shifting Defense
+     Shift 1 square when you use total defense
+65. Spring Step
+     Shift 1 square when you stand up
+66. Steady Feet
+     Ignore 1 square of difficult terrain when you walk
+67. Strike and Shove
+     Push target after critical hit with melee attack
+68. Superior Implement Training
+     Use one superior implement of a type open to your class
+69. Teamwork Defense
+     +1 AC when adjacent to ally who also has this feat
+70. Unarmored Agility
+     +2 AC while wearing cloth armor or no armor
+71. Unfailing Vigor
+     Spend a healing surge if you roll 18-20 on death saving throw
+72. Versatile Expertise
+     Bonus to attacks with weapons and implements of your choice
+73. Vicious Advantage
+     Gain combat advantage against slowed or immobilized targets
+74. Warding Defense
+     Allies benefit when you use total defense and wield a shield
+75. Watchful Redoubt
+     +1 attack when you use total defense
+Your choice:
+44
+Choose two At Will Powers:
+1. Call Of The Beast
+2. Chill Wind
+3. Flame Seed
+4. Grasping Claws
+5. Pounce
+6. Savage Rend
+7. Storm Spike
+8. Thorn Whip
+Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
+1
+Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
+2
+Choose an Encounter Power:
+1. Cull The Herd
+2. Darting Bite
+3. Frost Flash
+4. Twisting Vines
+Your choice:
+3
+Choose a Daily Power:
+1. Faerie Fire
+2. Fires Of Life
+3. Savage Frenzy
+4. Wind Prison
+Your choice:
+2
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     0
+Platinum pieces: 1
+Astral diamonds: 0
+Welcome to the store.
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     0
+Platinum pieces: 1
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+1
+Please select some armor to purchase:
+Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
+1. CLOTH: 1 GOLD_PIECE
+2. LEATHER: 25 GOLD_PIECE
+3. HIDE: 30 GOLD_PIECE
+4. CHAINMAIL: 40 GOLD_PIECE
+5. SCALE: 45 GOLD_PIECE
+6. PLATE: 50 GOLD_PIECE
+7. LIGHT_SHIELD: 5 GOLD_PIECE
+8. HEAVY_SHIELD: 10 GOLD_PIECE
+Your choice:
+3
+Are you done spending money?
+n
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     70
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+2
+Please select a weapon to purchase:
+Please note that the following choices do NOT take into consideration what your character can actually use.  Choose wisely.
+1. CLUB: 1 GOLD_PIECE
+2. DAGGER: 1 GOLD_PIECE
+3. JAVELIN: 5 GOLD_PIECE
+4. MACE: 5 GOLD_PIECE
+5. SICKLE: 5 GOLD_PIECE
+6. SPEAR: 5 GOLD_PIECE
+7. GREATCLUB: 1 GOLD_PIECE
+8. MORNINGSTAR: 10 GOLD_PIECE
+9. QUARTERSTAFF: 5 GOLD_PIECE
+10. SCYTHE: 5 GOLD_PIECE
+11. BATTLEAXE: 15 GOLD_PIECE
+12. FLAIL: 10 GOLD_PIECE
+13. HANDAXE: 5 GOLD_PIECE
+14. LONGSWORD: 15 GOLD_PIECE
+15. SCIMITAR: 10 GOLD_PIECE
+16. SHORTSWORD: 10 GOLD_PIECE
+17. THROWING_HAMMER: 5 GOLD_PIECE
+18. WARHAMMER: 15 GOLD_PIECE
+19. WAR_PICK: 15 GOLD_PIECE
+20. FALCHION: 25 GOLD_PIECE
+21. FALCHION: 25 GOLD_PIECE
+22. GREATAXE: 30 GOLD_PIECE
+23. GREATSWORD: 30 GOLD_PIECE
+24. HALBERD: 25 GOLD_PIECE
+25. HEAVY_FLAIL: 25 GOLD_PIECE
+26. LONGSPEAR: 10 GOLD_PIECE
+27. MAUL: 30 GOLD_PIECE
+28. BASTARD_SWORD: 30 GOLD_PIECE
+29. KATAR: 3 GOLD_PIECE
+30. RAPIER: 25 GOLD_PIECE
+31. SPIKED_CHAIN: 30 GOLD_PIECE
+32. HAND_CROSSBOW: 25 GOLD_PIECE
+33. SLING: 1 GOLD_PIECE
+34. CROSSBOW: 25 GOLD_PIECE
+35. LONGBOW: 30 GOLD_PIECE
+36. SHORTBOW: 25 GOLD_PIECE
+37. SHURIKEN: 1 GOLD_PIECE
+Your choice:
+10
+Are you done spending money?
+n
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     65
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
+Your choice:
+1
+Are you done spending money?
+n
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     50
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
+Your choice:
+15
+Are you done spending money?
+y
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     45
+Platinum pieces: 0
+Astral diamonds: 0

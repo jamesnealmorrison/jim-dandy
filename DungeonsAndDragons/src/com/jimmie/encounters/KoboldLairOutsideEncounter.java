@@ -2,7 +2,6 @@ package com.jimmie.encounters;
 
 import java.util.ArrayList;
 
-import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -13,6 +12,7 @@ import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,9 +52,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	private DndCharacter keothi;
 	@Autowired
 	private DndCharacter travok;
-/*	@Autowired
-	private Character halfOrcFighter;
-*/	
+	@Autowired
+	private DndCharacter hazel;
+	
 	@Override
 	public void init() {
 		/* Set up the monsters */
@@ -108,16 +108,16 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		monsters = new ArrayList<Monster>();		
 		
-//		monsters.add(m1);		
-//		monsters.add(m2);		
-//		monsters.add(m3);		
-//		monsters.add(m4);		
-//		monsters.add(m5);		
-//		monsters.add(m6);		
-//		monsters.add(m7);		
-//		monsters.add(m8);		
-//		monsters.add(m9);		
-//		monsters.add(m10);
+		monsters.add(m1);		
+		monsters.add(m2);		
+		monsters.add(m3);		
+		monsters.add(m4);		
+		monsters.add(m5);		
+		monsters.add(m6);		
+		monsters.add(m7);		
+		monsters.add(m8);		
+		monsters.add(m9);		
+		monsters.add(m10);
 		
 		monsters.add(k);
 		monsters.add(d);
@@ -126,8 +126,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 	
 		/* Set up the player characters */
-//		ORIGINAL gamal.setCurrentPosition(new Position(3,20));
-		gamal.setCurrentPosition(new Position(12,12));
+		gamal.setCurrentPosition(new Position(3,20));
+//		gamal.setCurrentPosition(new Position(12,12));
 		
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
@@ -139,9 +139,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		gamal.addReadiedWeapon(readiedWeapon);
 		gamal.setReadiedArmor(gamal.getArmor().get(0));
 */
-// ORIGINAL POSITION		percian.setCurrentPosition(new Position(1,21));
-		percian.setCurrentPosition(new Position(13,13));
-percian.hurt(5, DamageType.PSYCHIC, true, d);		
+		percian.setCurrentPosition(new Position(1,21));
+//		percian.setCurrentPosition(new Position(13,13));
 /*		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -164,8 +163,8 @@ percian.hurt(5, DamageType.PSYCHIC, true, d);
 		keothi.addReadiedWeapon(readiedWeapon);
 		keothi.setReadiedArmor(keothi.getArmor().get(0));
 */
-		// Original position		travok.setCurrentPosition(new Position(1,19));
-		travok.setCurrentPosition(new Position(12,14));
+		travok.setCurrentPosition(new Position(1,19));
+//		travok.setCurrentPosition(new Position(12,14));
 /*
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
@@ -184,28 +183,44 @@ percian.hurt(5, DamageType.PSYCHIC, true, d);
 		}
 */
 		
-//		halfOrcFighter.setCurrentPosition(new Position(4,19));
-		
+		hazel.setCurrentPosition(new Position(4,19));
+/*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(hazel.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		hazel.addReadiedWeapon(readiedWeapon);
+		hazel.setReadiedArmor(hazel.getArmor().get(0));
+*/		
 
-//		gamal.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DevaRunepriest.JPG");
-//		percian.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\ElfSorcerer.JPG");
-//		keothi.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
-//		travok.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DwarfPaladin.JPG");
-//		halfOrcFighter.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
+//		gamal.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Gamal.jpg");		
+//		gamal.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GamalBloodied.jpg");		
+//		percian.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Percian.JPG");
+//		percian.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\PercianBloodied.JPG");
+//		keothi.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Keothi.JPG");
+//		keothi.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KeothiBloodied.JPG");
+//		travok.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Travok.JPG");
+//		travok.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\TravokBloodied.JPG");
+//		hazel.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Hazel.JPG");
+//		hazel.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HazelBloodied.JPG");
 
 //		Utils.saveCharacter(gamal);
 //		Utils.saveCharacter(percian);
 //		Utils.saveCharacter(keothi);
 //		Utils.saveCharacter(travok);
+//		Utils.saveCharacter(hazel);
 		
 		
 		characters = new ArrayList<DndCharacter>();
 
-//		characters.add(gamal);
+		
+		characters.add(gamal);
 		characters.add(percian);
-//		characters.add(keothi);
+		characters.add(keothi);
 		characters.add(travok);
-//		characters.add(halfOrcFighter);
+		characters.add(hazel);
 		
 		map = new Map();
 		map.setWidth(15);
@@ -655,15 +670,15 @@ percian.hurt(5, DamageType.PSYCHIC, true, d);
 	public void setTravok(DndCharacter travok) {
 		this.travok = travok;
 	}
-/*
-	public Character getHalfOrcFighter() {
-		return halfOrcFighter;
+
+	public DndCharacter getHazel() {
+		return hazel;
 	}
 
-	public void setHalfOrcFighter(Character halfOrcFighter) {
-		this.halfOrcFighter = halfOrcFighter;
+	public void setHazel(DndCharacter hazel) {
+		this.hazel = hazel;
 	}
-*/
+
 	public DndCharacter getPercian() {
 		return percian;
 	}

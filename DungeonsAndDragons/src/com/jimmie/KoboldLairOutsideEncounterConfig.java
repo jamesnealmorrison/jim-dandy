@@ -115,4 +115,9 @@ public class KoboldLairOutsideEncounterConfig {
 	public DndCharacter travok() {
 		return Utils.loadCharacter("Travok");
 	}
+
+	@Bean
+	public DndCharacter hazel() {
+		return Utils.loadCharacter("Hazel");
+	}
 }

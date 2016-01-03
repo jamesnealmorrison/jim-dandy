@@ -35,7 +35,8 @@ public class KoboldSlinger extends Kobold {
 		addPower(new KoboldSlingerDagger());
 		addPower(new KoboldSlingerSling());
 		addPower(new KoboldShifty());
-		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldSlinger.JPG");
+		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldSlinger.jpg");
+		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldSlingerBloodied.jpg");
 	}
 
 	public int getStrengthModifier() {

@@ -24,7 +24,8 @@ public class KoboldWyrmpriest extends Kobold {
 		setWisdom(17);
 		setCharisma(12);
 		addPower(new KoboldWyrmpriestSpear());
-		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldWyrmpriest.JPG");
+		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldWyrmpriest.jpg");
+		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldWyrmpriestBloodied.jpg");
 	}
 
 	public int getStrengthModifier() {

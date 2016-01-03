@@ -38,7 +38,8 @@ public class KoboldDragonshield extends Kobold {
 		addPower(new KoboldDragonshieldShortSword());
 		addPower(new KoboldShifty());
 		usedDragonshieldTactics = false;
-		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldDragonshield.JPG");
+		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldDragonshield.jpg");
+		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldDragonshieldBloodied.jpg");
 	}
 
 	public boolean isUsedDragonshieldTactics() {

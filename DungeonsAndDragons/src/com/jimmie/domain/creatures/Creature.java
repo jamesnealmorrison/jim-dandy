@@ -1,6 +1,12 @@
 package com.jimmie.domain.creatures;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -58,6 +64,7 @@ import com.jimmie.util.Utils;
 public abstract class Creature implements Serializable, TurnTaker, AttackTarget {
 	protected List<TemporaryEffect> temporaryEffects;
 	private String imagePath;
+	private String bloodiedImagePath;
 	protected Role role;
 	protected boolean usedSecondWind;
 	private Creature pursuer;
@@ -107,6 +114,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	private boolean turnOver;
 	private List<Mark> marks;
 	protected Origin origin;
+	Image image = null;
+	Image scaledImage = null;
+	Image bloodiedImage = null;
+	Image scaledBloodiedImage = null;
 
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
@@ -516,19 +527,35 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		currentConditions.add(new Prone());
 	}
 
-	public BufferedImage getImage() {
-		BufferedImage image = null;
-		try {
-			image = ImageIO.read(new File(imagePath));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public Image getImage() {
+		if (image == null) {
+			try {
+				image = ImageIO.read(new File(imagePath));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return image;
 	}
 
+	public Image getBloodiedImage() {
+		if (bloodiedImage == null) {
+			try {
+				bloodiedImage = ImageIO.read(new File(bloodiedImagePath));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return bloodiedImage;
+	}
+
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+	public void setBloodiedImagePath(String bloodiedImagePath) {
+		this.bloodiedImagePath = bloodiedImagePath;
 	}
 	public Role getRole() {
 		return role;
@@ -2181,6 +2208,86 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				}
 			}
 		}
+		
+	}
+
+	public Image getScaledImage(double shrinkPercent) {
+		if (scaledImage == null) {
+			if ((getImage().getWidth(null) == 200) || (getImage().getWidth(null) == 400) || (getImage().getWidth(null) == 600)) {
+				// Go ahead and do transparency here, too.  But not based on white.  Base it on being outside the circle or not.
+				Image image1 = getImage();
+				Image newImage = makeTransparent((BufferedImage)image1);
+				
+				scaledImage = newImage.getScaledInstance((int) (newImage.getWidth(null)*shrinkPercent), (int)(newImage.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
+			} else {
+				scaledImage = getImage();
+			}
+		}
+		return scaledImage;
+	}
+
+	private Image makeTransparent(BufferedImage image)
+	{
+		ImageFilter filter = new RGBImageFilter()
+		{
+			public final int filterRGB(int x, int y, int rgb)
+			{
+				if (!pixelInsideCircle(x,y,image.getWidth())) {
+					return 0;
+				} else {
+					return rgb;
+				}
+			}
+		};
+
+		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+		return Toolkit.getDefaultToolkit().createImage(ip);
+	}
+	
+	private boolean pixelInsideCircle(int x, int y, int width) {
+		// For now, start with a width 4 pixels outside the circle.
+		int r = (width/2) + 1;
+		int h = width/2;
+		int b = -2*h;
+		int c = (x*x)-(2*h*x)+(2*h*h)-(r*r);
+		
+		// Use the quadratic formula to figure out the y edge values
+		int yEdgeUp = (-b+(int) Math.sqrt((b*b)-(4*c)))/2;
+		int yEdgeDown = (-b-(int) Math.sqrt((b*b)-(4*c)))/2;
+		if ((y>=yEdgeUp) || (y<=yEdgeDown)) {
+			return false;
+		} else {
+			return true;
+		}
+		
+	}	
+	
+	public Image getScaledBloodiedImage(double shrinkPercent) {
+		if (scaledBloodiedImage == null) {
+			if ((getBloodiedImage().getWidth(null) == 200) || (getBloodiedImage().getWidth(null) == 400) || (getBloodiedImage().getWidth(null) == 600)) {
+				scaledBloodiedImage = getBloodiedImage().getScaledInstance((int) (getBloodiedImage().getWidth(null)*shrinkPercent), (int)(getBloodiedImage().getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
+			} else {
+				ImageFilter filter = new RGBImageFilter()
+				{
+					public final int filterRGB(int x, int y, int rgb)
+					{
+						/* Still have to filter out the white transparency. */
+						int red = (rgb >> 16) & 0xFF;
+						int green = (rgb >> 8) & 0xFF;
+						int blue = rgb & 0xFF;
+						if ((red > 200) && (green > 200) && (blue > 200)) { 
+							return 0;
+						} else {
+							return (rgb | 0x00880000);
+						}
+					}
+				};
+
+				ImageProducer ip = new FilteredImageSource(getBloodiedImage().getSource(), filter);
+				scaledBloodiedImage = Toolkit.getDefaultToolkit().createImage(ip);
+			}
+		}
+		return scaledBloodiedImage;
 		
 	}
 }
