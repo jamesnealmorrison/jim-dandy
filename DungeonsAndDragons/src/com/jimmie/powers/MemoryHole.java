@@ -114,12 +114,14 @@ public class MemoryHole extends AttackPower {
 		
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		if (augment == 2) {
+			Encounter.showCoordinateSystem(true);
 			Utils.print("Please enter the X coordinate of the burst (within range of 10). No validation is done here, so do it right!");
 			int x = Utils.getValidIntInputInRange(1, 50);
 			
 			Utils.print("Please enter the Y coordinate of the burst (within range of 10). No validation is done here, so do it right!");
 			int y = Utils.getValidIntInputInRange(1, 50);
-
+			Encounter.showCoordinateSystem(false);
+			
 			/* Got to do this wierd conversion between creatures and attack targets. */
 			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
 			for (Creature creature : creatureTargets) {

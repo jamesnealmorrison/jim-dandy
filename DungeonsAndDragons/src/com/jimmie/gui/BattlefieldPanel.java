@@ -90,18 +90,19 @@ public class BattlefieldPanel extends JPanel {
 				//g2d.setXORMode(Color.white);
 				if (creature.getImage() != null) {
 
-//				Image newImage = transformWhiteToTransparency(CreatureTile(creature.getImage()));
-				double shrinkPercent = (double) SQUARE_SIZE/200.0;
-				Image newImage = creature.getScaledImage(shrinkPercent);
-								
-				if (creature.isBloodied()) {
-					newImage = creature.getScaledBloodiedImage(shrinkPercent); 
-				}
-				g2d.drawImage(newImage, screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), null);
-				g2d.drawString(creature.getDisplayName(), screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY());
+					//				Image newImage = transformWhiteToTransparency(CreatureTile(creature.getImage()));
+					double shrinkPercent = (double) SQUARE_SIZE/200.0;
+					Image newImage = creature.getScaledImage(shrinkPercent);
+
+					if (creature.isBloodied()) {
+						newImage = creature.getScaledBloodiedImage(shrinkPercent); 
+					}
+					
+					g2d.drawImage(newImage, screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), null);
+					g2d.drawString(creature.getDisplayName(), screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY());
 				}
 			}
-			
+
 			// See if there are any zones that need to be painted.
 			List<Zone> zones = Encounter.getEncounter().getZones();
 			if (zones != null) {
@@ -124,6 +125,19 @@ public class BattlefieldPanel extends JPanel {
 						} else {
 							Utils.print("There is a zone on the encounter that I don't know how to paint yet.  See BattlefieldPanel.");
 						}
+					}
+				}
+			}
+			
+			// See if the coordinate system should be shown or not.
+			if (Encounter.isShowCoordinateSystem()) {
+				for (int row = 0; row <= map.getWidth(); row++) {
+					for (int col = 0; col <= map.getHeight(); col++) {
+						Position mapPosition = new Position(row,col);
+						ScreenPosition screenPosition = new ScreenPosition(mapPosition, new Dimension(map.getWidth(),map.getHeight()), SQUARE_SIZE);
+						g2d.setColor(Color.BLACK);
+						g2d.drawRect(screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), SQUARE_SIZE, SQUARE_SIZE);
+						g2d.drawString("("+row+","+col+")", screenPosition.getTopLeftCorner().getX()+(SQUARE_SIZE/2)-8, screenPosition.getTopLeftCorner().getY()+((SQUARE_SIZE/2)+8));
 					}
 				}
 			}

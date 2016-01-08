@@ -6,8 +6,11 @@ import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Shifter;
 import com.jimmie.domain.creatures.PowerSource;
@@ -81,7 +84,18 @@ public class RazorclawShifting extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		if (timesUsed == 0) {
+			timesUsed++;
+			
+			Utils.print(user.getName() + " will gain a +2 bonus to speed and +1 bonus to AC and Reflex until the end of the encounter.");
+			user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.SPEED_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+		} else {
+			Utils.print("Sorry, but " + user.getName() + " has already used Angelic Alacrity in this encounter.");
+			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
+			user.setUsedStandardAction(false);
+		}
 	}
 
 	@Override
@@ -114,7 +128,13 @@ public class RazorclawShifting extends AttackPower {
 		if (timesUsed > 0) {
 			return false;
 		}
-		return true;
+		
+		// Must be bloodied
+		if (user.isBloodied()) {
+			return true;
+		}
+		
+		return false;
 	}
 
 }

@@ -64,19 +64,61 @@ public class Shifter extends Race {
 		
 		Utils.print("Setting speed to 6.");
 		pc.setBaseSpeed(6);
-		
+
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
-		
+
 		pc.addLanguage("Common");
-		// TODO: Language choice.
-		Utils.print("NOTE: I have not yet coded the choice of a language.");
+		Utils.print("Adding Common language.  Choose one other language:");
+		Utils.print("1. Deep Speech");
+		Utils.print("2. Draconic");
+		Utils.print("3. Dwarven");
+		Utils.print("4. Elven");
+		Utils.print("5. Giant");
+		Utils.print("6. Goblin");
+		Utils.print("7. Primordial");
+		Utils.print("8. Supernal");
+		Utils.print("9. Abyssal");
+
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 9);
+
+		switch (choice) {
+		case 1 :
+			pc.addLanguage("DeepSpeech");
+			break;
+		case  2:
+			pc.addLanguage("Draconic");
+			break;
+		case  3:
+			pc.addLanguage("Dwarven");
+			break;
+		case  4:
+			pc.addLanguage("Elven");
+			break;
+		case  5:
+			pc.addLanguage("Giant");
+			break;
+		case  6:
+			pc.addLanguage("Goblin");
+			break;
+		case  7:
+			pc.addLanguage("Primordial");
+			break;
+		case  8:
+			pc.addLanguage("Supernal");
+			break;
+		case  9:
+			pc.addLanguage("Abyssal");
+			break;
+
+		}
 
 		Utils.print("You must choose between a Longtooth Shifter and a Razorclaw Shifter.");
 		Utils.print("1. Longtooth Shifter");
 		Utils.print("2. Razorclaw Shifter");
 		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, 2);
+		choice = Utils.getValidIntInputInRange(1, 2);
 		
 		if (choice == 1) {
 			shifterType = ShifterType.LONGTOOTH;

@@ -2,16 +2,22 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.PowerSource;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class GraspingClaws extends AttackPower {
@@ -81,7 +87,39 @@ public class GraspingClaws extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, null);
+
+		if ((targets != null) && !(targets.isEmpty())) {
+			AttackTarget target = targets.get(0);
+
+			int targetReflex = target.getReflex(user);
+			Utils.print("Your target has a Reflex of " + targetReflex);
+
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+
+			if (attackRoll >= targetReflex) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+
+				int damageRolls = 1;
+				DiceType damageDiceType = DiceType.EIGHT_SIDED;
+
+				/* Book says at level 21 increase damage to 2[W]. */
+				if (getLevel() >= 21) {
+					damageRolls = damageRolls * 2;
+				}
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
+				
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					Creature cTarget = (Creature) target;
+					cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SLOWED, user.getCurrentTurn());
+				}
+			} else {
+				Utils.print("You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
+			}
+		}
 	}
 
 	@Override
@@ -110,6 +148,16 @@ public class GraspingClaws extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		if (user.getDndClass() != null) {
+			if (Druid.class.isAssignableFrom(user.getDndClass().getClass())) {
+				// A druid must be in humanoid form to use this.
+				Druid druid = (Druid) user.getDndClass();
+				if (!druid.isInBeastForm()) {
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 

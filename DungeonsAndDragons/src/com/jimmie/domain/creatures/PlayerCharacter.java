@@ -11,10 +11,12 @@ import com.jimmie.domain.MagicItem;
 import com.jimmie.domain.ParagonPath;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.feats.Feat;
 import com.jimmie.domain.feats.FeatType;
 import com.jimmie.domain.items.armor.ClothArmor;
 import com.jimmie.powers.Power;
+import com.jimmie.rituals.Ritual;
 import com.jimmie.util.FeatMaster;
 import com.jimmie.util.PowerMaster;
 import com.jimmie.util.Utils;
@@ -157,10 +159,16 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 				}
 			}
 			
-			if (i < 2) {
-				Utils.print("There are less than two At Will powers to choose from.  Something went wrong.");
+			int atWillChoices = 2;
+			if (Druid.class.isAssignableFrom(dndClass.getClass())) {
+				Utils.print("As a Druid with Balance of Nature, you get 3 at will powers.  But please follow the following rule because I didn't check for this:");
+				Utils.print("Throughout your career, at least one of your at will powers, and no more than two, must have the beast form keyword.");
+				atWillChoices = 3;
+			}
+			if (i < atWillChoices) {
+				Utils.print("There are less than " + atWillChoices + " At Will powers to choose from.  Something went wrong.");
 			} else {
-				for (int choiceIndex = 0; choiceIndex < 2; choiceIndex++) {
+				for (int choiceIndex = 0; choiceIndex < atWillChoices; choiceIndex++) {
 					Utils.print("Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)");
 					int choice = Utils.getValidIntInputInRange(1, i);
 					Power power = choices.get(choice);
@@ -310,5 +318,12 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 	public int getSpeed() {
 		// TODO: Item and misc.
 		return super.getSpeed() + this.getReadiedArmor().getSpeedPenalty();
+	}
+
+	public void addRitual(Ritual ritual) {
+		if (rituals == null) {
+			rituals = new ArrayList<Ritual>();
+		}
+		rituals.add(ritual);
 	}
 }

@@ -17,12 +17,17 @@ public aspect MovementAspect {
 	&& args(direction, movementType);
 
 	void around(String direction, MovementType movementType) : moveCreature(direction, movementType) {
-		Utils.print("In advice: direction = " + direction + ". encounter = " + ". movementType = " + movementType);
 		Object o = thisJoinPoint.getThis();
 		Creature creature = null;
 		if (Creature.class.isAssignableFrom(o.getClass())) {
 			creature = (Creature) o;
 
+			// See if the creature is immobilized
+			if (creature.isImmobilized()) {
+				Utils.print(creature.getName() + " is immobilized.  They can not move.");
+				return;
+			}
+			
 			if (movementType == MovementType.SHIFTING) {
 				if (creature.isMarked()) {
 

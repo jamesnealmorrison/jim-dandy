@@ -64,7 +64,7 @@ public class Deva extends Race {
 		
 		pc.addLanguage("Common");
 
-		Utils.print("Choose two other languages:");
+		Utils.print("Adding Common Language.  Choose two other languages:");
 		for (int i = 0; i < 2; i++) {
 			Utils.print("1. Deep Speech");
 			Utils.print("2. Draconic");

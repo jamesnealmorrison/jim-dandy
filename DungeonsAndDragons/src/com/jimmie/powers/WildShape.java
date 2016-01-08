@@ -11,10 +11,16 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
-
+import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
 public class WildShape extends AttackPower {
+	@Override
+	public void initializeForStartOfTurn() {
+		super.initializeForStartOfTurn();
+		timesUsed = 0;
+	}
+
 	/**
 	 * 
 	 */
@@ -81,7 +87,28 @@ public class WildShape extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		// Only once per round.
+		if (timesUsed == 0) {
+			if (Druid.class.isAssignableFrom(user.getDndClass().getClass())) {
+				Druid druid = (Druid) user.getDndClass();
+				if (druid.isInBeastForm()) {
+					druid.setInBeastForm(false);
+					Utils.print("Changing to humanoid form.");
+					Utils.print("You get to shift 1 square when changing back to humanoid form.");
+					user.shift(1, true);
+					// Put copied image back into creature.
+					user.setImage(null);
+					user.setBloodiedImage(null);
+				} else {
+					druid.setInBeastForm(true);
+					user.setImage(druid.getBeastFormImage());
+					user.setBloodiedImage(druid.getBeastFormBloodiedImage());
+					Utils.print("Changing to beast form.");
+					Encounter.setDebug(true);
+				}
+			}
+			timesUsed++;
+		}
 	}
 
 	@Override
@@ -110,6 +137,9 @@ public class WildShape extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		if (timesUsed > 0) {
+			return false;
+		}
 		return true;
 	}
 

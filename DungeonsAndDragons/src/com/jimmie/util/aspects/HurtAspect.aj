@@ -3,11 +3,13 @@ package com.jimmie.util.aspects;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
+import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.encounters.Encounter;
@@ -81,6 +83,25 @@ public aspect HurtAspect {
 
 		proceed(hurtee, damage, damageType, hit, hurter);
 		
+		// See if hurting the creature killed it for the Druid Fires of Life power
+		if (hurtee.getCurrentHitPoints() <= 0) {
+			// See if they still had the Fires of Life ongoing damage.
+			for (TemporaryEffect tempEffect : hurtee.getTemporaryEffects()) {
+				if (TemporaryOngoingDamage.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryOngoingDamage tempDamage = (TemporaryOngoingDamage) tempEffect;
+					if (tempDamage.getReason() == TemporaryEffectReason.FIRES_OF_LIFE) {
+						if (tempDamage.stillApplies()) {
+							int hpGained = 5 + tempDamage.getSource().getAbilityModifier(AbilityType.CONSTITUTION);
+							Utils.print(hurtee.getName() + " died without being able to save against the Fires Of Life ongoing damage.  An ally of " + tempDamage.getSource().getName() + " can gain " + hpGained + " hit points.");
+							Creature ally = Encounter.getEncounter().chooseAllyWithinRangeOf(tempDamage.getSource(), hurtee.getCurrentPosition(), 5);
+							if (ally != null) {
+								ally.heal(hpGained);
+							}
+						}
+					}
+				}
+			}
+		}
 		
 	}
 

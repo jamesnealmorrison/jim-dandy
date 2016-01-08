@@ -12,7 +12,6 @@ import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -108,15 +107,15 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		
 		monsters = new ArrayList<Monster>();		
 		
-		monsters.add(m1);		
-		monsters.add(m2);		
-		monsters.add(m3);		
-		monsters.add(m4);		
-		monsters.add(m5);		
-		monsters.add(m6);		
-		monsters.add(m7);		
-		monsters.add(m8);		
-		monsters.add(m9);		
+//		monsters.add(m1);		
+//		monsters.add(m2);		
+//		monsters.add(m3);		
+//		monsters.add(m4);		
+//		monsters.add(m5);		
+//		monsters.add(m6);		
+//		monsters.add(m7);		
+//		monsters.add(m8);		
+//		monsters.add(m9);		
 		monsters.add(m10);
 		
 		monsters.add(k);
@@ -183,7 +182,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 */
 		
-		hazel.setCurrentPosition(new Position(4,19));
+//		ORIGINAL hazel.setCurrentPosition(new Position(4,19));
+		hazel.setCurrentPosition(new Position(12,12));
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(hazel.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -205,7 +205,12 @@ public class KoboldLairOutsideEncounter extends Encounter {
 //		travok.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\TravokBloodied.JPG");
 //		hazel.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Hazel.JPG");
 //		hazel.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HazelBloodied.JPG");
-
+/*		
+		if (Druid.class.isAssignableFrom(hazel.getDndClass().getClass())) {
+			((Druid) hazel.getDndClass()).setBeastFormImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolf.JPG");
+			((Druid) hazel.getDndClass()).setBeastFormBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolfBloodied.JPG");
+		}
+*/
 //		Utils.saveCharacter(gamal);
 //		Utils.saveCharacter(percian);
 //		Utils.saveCharacter(keothi);
@@ -216,9 +221,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		characters = new ArrayList<DndCharacter>();
 
 		
-		characters.add(gamal);
-		characters.add(percian);
-		characters.add(keothi);
+//		characters.add(gamal);
+//		characters.add(percian);
+//		characters.add(keothi);
 		characters.add(travok);
 		characters.add(hazel);
 		

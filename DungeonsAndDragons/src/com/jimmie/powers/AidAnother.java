@@ -11,6 +11,8 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.encounters.Encounter;
@@ -106,7 +108,7 @@ public class AidAnother extends Power {
 				} else {
 					bonusType = TemporaryAidAnotherBonus.DEFENSE;				
 				}
-				ally.setTemporaryAidAnotherBonus(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, target, bonusType);
+				ally.setTemporaryAidAnotherBonus(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AID_ANOTHER_BONUS, TemporaryEffectReason.AID_ANOTHER, target, bonusType);
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

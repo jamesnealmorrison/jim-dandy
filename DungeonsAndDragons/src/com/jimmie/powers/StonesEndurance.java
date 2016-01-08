@@ -9,6 +9,8 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Goliath;
 import com.jimmie.domain.creatures.PowerSource;
@@ -81,7 +83,7 @@ public class StonesEndurance extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		user.setTemporaryDamageResistance(5, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, DamageType.ALL);
+		user.setTemporaryDamageResistance(5, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.STONES_ENDURANCE, DamageType.ALL);
 		timesUsed++;
 	}
 

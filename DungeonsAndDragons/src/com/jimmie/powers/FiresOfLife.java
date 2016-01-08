@@ -2,15 +2,26 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.encounters.Encounter;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class FiresOfLife extends AttackPower {
@@ -80,7 +91,55 @@ public class FiresOfLife extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		if (timesUsed == 0) {
+			timesUsed++;
+			List<AttackTarget> targets = new ArrayList<AttackTarget>();
+			Encounter.showCoordinateSystem(true);
+
+			Utils.print("Please enter the X coordinate of the burst (within range of 10). No validation is done here, so do it right!");
+			int x = Utils.getValidIntInputInRange(1, 50);
+
+			Utils.print("Please enter the Y coordinate of the burst (within range of 10). No validation is done here, so do it right!");
+			int y = Utils.getValidIntInputInRange(1, 50);
+			Encounter.showCoordinateSystem(false);
+
+			/* Got to do this weird conversion between creatures and attack targets. */
+			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
+			for (Creature creature : creatureTargets) {
+				targets.add(creature);
+			}
+
+			Utils.print("Since this might affect multiple targets, rolling for damage first.");
+			int damageRolls = 1;
+
+			Dice damageDice = new Dice(DiceType.SIX_SIDED);
+			int damage = 0;
+
+			for (int rolls = 0; rolls < damageRolls; rolls++) {
+				damage = damage + damageDice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
+			}
+
+			for (AttackTarget target : targets) {
+				int targetReflex = target.getReflex(user);
+				Utils.print("Your target, " + target.getName() + ", has a Reflex of " + targetReflex);
+
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+
+				if (attackRoll >= targetReflex) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
+					target.hurt(damage+user.getAbilityModifier(AbilityType.WISDOM), DamageType.FIRE, true, user);
+					if (Creature.class.isAssignableFrom(target.getClass())) {
+						Creature cTarget = (Creature) target;
+						cTarget.setTemporaryOngoingDamage(5,user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DAMAGE, TemporaryEffectReason.FIRES_OF_LIFE, DamageType.FIRE);
+					}
+				} else {
+					Utils.print("Sorry.  You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -113,7 +172,17 @@ public class FiresOfLife extends AttackPower {
 		if (timesUsed > 0) {
 			return false;
 		}
+
+		if (user.getDndClass() != null) {
+			if (Druid.class.isAssignableFrom(user.getDndClass().getClass())) {
+				// A druid must be in humanoid form to use this.
+				Druid druid = (Druid) user.getDndClass();
+				if (druid.isInBeastForm()) {
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
-
 }

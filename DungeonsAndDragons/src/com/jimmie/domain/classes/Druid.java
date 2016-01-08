@@ -1,7 +1,13 @@
 package com.jimmie.domain.classes;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.ImplementType;
@@ -12,6 +18,9 @@ import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.powers.WildShape;
+import com.jimmie.rituals.AnimalMessenger;
+import com.jimmie.rituals.Ritual;
+import com.jimmie.util.RitualMaster;
 import com.jimmie.util.Utils;
 
 public class Druid extends DndClass {
@@ -21,7 +30,12 @@ public class Druid extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private PrimalAspect primalAspect;
-
+	private boolean inBeastForm = false;
+	private Image beastFormImage;
+	private String beastFormImagePath;
+	private Image beastFormBloodiedImage;
+	private String beastFormBloodiedImagePath;
+	
 	@Override
 	public void initializeForEncounter() {
 		// TODO Auto-generated method stub
@@ -129,9 +143,30 @@ public class Druid extends DndClass {
 		}
 		
 		pc.addPower(new WildShape());
+
+		Utils.print("As a Druid, you have Ritual Casting.  Make sure you purchase a Ritual book.  They are 50gp, so you might want to purchase it before making your other purchases.");
+		Utils.print("Adding Animal Messenger ritual.");
+		pc.addRitual(new AnimalMessenger());
+
+		// Choose one more ritual
+		List<Ritual> allRituals = RitualMaster.getFullListOfRituals();
+
+		int i = 0;		
+		HashMap<Integer, Ritual> choices = new HashMap<Integer, Ritual>();
+		Utils.print("Choose another Ritual:");
+		for (Ritual ritual : allRituals) {
+			if (ritual.canBeSelected(pc)) {
+				i++;
+				choices.put(i, ritual);
+				Utils.print(i + ". " + ritual.getName());
+			}
+		}
+			
+		Utils.print("Your choice:");
+		choice = Utils.getValidIntInputInRange(1, i);
+		Ritual ritual = choices.get(choice);
+		pc.addRitual(ritual);
 		
-		// TODO: Balance of Nature, Primal Aspect, Ritual Casting
-		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting.");
 	}
 
 	@Override
@@ -159,4 +194,51 @@ public class Druid extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	public boolean isInBeastForm() {
+		return inBeastForm;
+	}
+	public void setInBeastForm(boolean inBeastForm) {
+		this.inBeastForm = inBeastForm;
+	}
+
+	public Image getBeastFormImage() {
+		if (beastFormImage == null) {
+			try {
+				beastFormImage = ImageIO.read(new File(beastFormImagePath));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return beastFormImage;
+	}
+
+	public Image getBeastFormBloodiedImage() {
+		if (beastFormBloodiedImage == null) {
+			try {
+				beastFormBloodiedImage = ImageIO.read(new File(beastFormBloodiedImagePath));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return beastFormBloodiedImage;
+	}
+
+	public String getBeastFormImagePath() {
+		return beastFormImagePath;
+	}
+
+	public void setBeastFormImagePath(String beastFormImagePath) {
+		this.beastFormImagePath = beastFormImagePath;
+	}
+
+	public String getBeastFormBloodiedImagePath() {
+		return beastFormBloodiedImagePath;
+	}
+
+	public void setBeastFormBloodiedImagePath(String beastFormBloodiedImagePath) {
+		this.beastFormBloodiedImagePath = beastFormBloodiedImagePath;
+	}
+
 }

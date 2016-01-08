@@ -27,6 +27,8 @@ import com.jimmie.util.Utils;
 
 public abstract class Encounter {
 	private static Encounter encounter;
+	private static boolean debug;
+	private static boolean showCoordinateSystem;
 	protected Map map;
 
 	public Map getMap() {
@@ -1449,5 +1451,50 @@ public abstract class Encounter {
 			zones = new ArrayList<Zone>();
 		}
 		zones.add(zone);
+	}
+
+	public static void setDebug(boolean b) {
+		debug = b;		
+	}
+	public static boolean isDebug() {
+		return debug;
+	}
+
+	public static void showCoordinateSystem(boolean b) {
+		showCoordinateSystem = b;
+	}
+
+	public static boolean isShowCoordinateSystem() {
+		return showCoordinateSystem;
+	}
+
+	public int getDistanceToClosestEnemy(Creature enemyOf) {
+		int minDistance = 999;
+		
+		List<Creature> allEnemies = getAllEnemies(enemyOf);
+		for (Creature enemy : allEnemies) {
+			int distance = enemyOf.getCurrentPosition().getDistanceTo(enemy.getCurrentPosition());
+			if (distance < minDistance) {
+				minDistance = distance;
+			}
+		}
+		
+		return minDistance;
+	}
+
+	private List<Creature> getAllEnemies(Creature enemyOf) {
+		List<Creature> creatures = new ArrayList<Creature>();
+		
+		/* Get the list of adjacent allies. */
+		if (Monster.class.isInstance(enemyOf)) {
+			for (DndCharacter character : characters) {
+				creatures.add(character);
+			}
+		} else {
+			for (Monster monster : monsters) {
+				creatures.add(monster);
+			}
+		}
+		return creatures;
 	}
 }

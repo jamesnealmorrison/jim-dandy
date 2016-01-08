@@ -1,3 +1,5 @@
+BIG TODO!!!  I haven't really done feats for any of the characters yet.
+
 RACES*************************************
 
 Goliath: Haven't implemented powerful athlete yet, because I won't often be doing jump or climb checks for now. But other than that Goliath should be 100% implemented.
@@ -9,6 +11,8 @@ Deva: Astral Majesty is fully implemented and tested. Astral Resistance is coded
 Deva is pretty much implemented then.
 
 Elf: Fey Origin is implemented.  Group Awareness is also, but not tested.  Elven accuracy is done.  So, all done with ELVES!!!!!!!!!
+
+Shifter: Razorclaw Shifting is done. Only thing left is longtooth shifting.
 
 
 
@@ -56,6 +60,15 @@ Storm Walk is done and tested.
 Bedeviling Burst is done and tested.
 Dazzling Ray is done and tested.
 
+
+Druid:
+Balance of Nature is done, except I just put a note saying they must choose at least one (but not more than two) beast form powers.
+Wild Shape is done and tested.  But I need to make sure that I only allow powers with the beast form keyword when in beast form and vice versa.  There is still a lot of stuff mentioned about dropping things when going to beast form.
+Call of the Beast - implemented and mostly tested.  Yes, implemented only allowing it in humanoid form.
+Chill Wind - fully implemented and tested.  Even humanoid form only.
+Grasping Claws - fully implemented and tested. Even beast form only.
+Frost Flash - fully implemented and tested. Even immobilized part. And beast form only.
+Fires of Life is done and tested!!!
 
 Monk:
 Need to implement Implements: Ki focuses

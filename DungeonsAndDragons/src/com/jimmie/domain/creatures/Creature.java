@@ -46,6 +46,7 @@ import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.TemporaryDamageResistance;
 import com.jimmie.domain.TemporaryInvisibility;
+import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Warden;
@@ -620,7 +621,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public void setTemporaryAidAnotherBonus(int bonus, int bonusStartTurn,
-			DurationType duration, Creature source, AttackTarget target, int bonusType) {
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, AttackTarget target, int bonusType) {
 		TemporaryAidAnotherBonus temporaryAidAnotherBonus = new TemporaryAidAnotherBonus();
 		temporaryAidAnotherBonus.setModifier(bonus);
 		temporaryAidAnotherBonus.setStartTurn(bonusStartTurn);
@@ -628,18 +629,35 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryAidAnotherBonus.setSource(source);
 		temporaryAidAnotherBonus.setTarget(target);
 		temporaryAidAnotherBonus.setType(bonusType);
+		temporaryAidAnotherBonus.setEffectType(effectType);
+		temporaryAidAnotherBonus.setReason(reason);
 		temporaryEffects.add(temporaryAidAnotherBonus);
 	}
 
 	public void setTemporaryDamageResistance(int bonus, int bonusStartTurn,
-			DurationType duration, Creature source, DamageType damageType) {
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, DamageType damageType) {
 		TemporaryDamageResistance temporaryDamageResistance = new TemporaryDamageResistance();
 		temporaryDamageResistance.setModifier(bonus);
 		temporaryDamageResistance.setStartTurn(bonusStartTurn);
 		temporaryDamageResistance.setDuration(duration);
 		temporaryDamageResistance.setSource(source);
 		temporaryDamageResistance.setDamageType(damageType);
+		temporaryDamageResistance.setEffectType(effectType);
+		temporaryDamageResistance.setReason(reason);
 		temporaryEffects.add(temporaryDamageResistance);
+	}
+
+	public void setTemporaryOngoingDamage(int damage, int damageStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, DamageType damageType) {
+		TemporaryOngoingDamage temporaryOngoingDamage = new TemporaryOngoingDamage();
+		temporaryOngoingDamage.setModifier(damage);
+		temporaryOngoingDamage.setStartTurn(damageStartTurn);
+		temporaryOngoingDamage.setDuration(duration);
+		temporaryOngoingDamage.setSource(source);
+		temporaryOngoingDamage.setDamageType(damageType);
+		temporaryOngoingDamage.setEffectType(effectType);
+		temporaryOngoingDamage.setReason(reason);
+		temporaryEffects.add(temporaryOngoingDamage);
 	}
 
 	public List<Mark> getMarks() {
@@ -1556,12 +1574,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 	
 	public int getSpeed() {
-		// Check for slowness
+		int modifier = 0;
 		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
 			TemporaryEffect tempEffect = it.next();
 			if (TemporaryCondition.class.isAssignableFrom(tempEffect.getClass())) {
 				TemporaryCondition temporaryCondition = (TemporaryCondition) tempEffect;
 
+				// Check for slowness
 				if (temporaryCondition.getConditionType() == CreatureConditionType.SLOWED) {
 					if (temporaryCondition.stillApplies()) {
 						Utils.print(getName() + " is slowed.  Can only move 2 spaces.");
@@ -1577,9 +1596,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					}
 				}
 			}
+			if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MODIFIER) {
+				if (tempEffect.stillApplies()) {
+					Utils.print(getName() + " has a temporary speed modifier of " + tempEffect.getModifier() + " due to " + tempEffect.getReason());
+					modifier = tempEffect.getModifier();
+				}
+			}
 		}
 
-		return baseSpeed;
+		return baseSpeed + modifier;
 	}
 
 	public void setBaseSpeed(int speed) {
@@ -2172,7 +2197,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			for (AttackTarget target : targets) {
 				// No use sliding a dead target.
 				if (target.getCurrentHitPoints() > 0) {
-					for (int i = 0; i <= distance; i++) {
+					for (int i = 0; i < distance; i++) {
 						Utils.print("What direction do you want to slide " + target.getName() + "? (N, E, S, W, NE, NW, SE, SW, STOP)?");
 						List<String> validDirections = new ArrayList<String>();
 
@@ -2265,7 +2290,11 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public Image getScaledBloodiedImage(double shrinkPercent) {
 		if (scaledBloodiedImage == null) {
 			if ((getBloodiedImage().getWidth(null) == 200) || (getBloodiedImage().getWidth(null) == 400) || (getBloodiedImage().getWidth(null) == 600)) {
-				scaledBloodiedImage = getBloodiedImage().getScaledInstance((int) (getBloodiedImage().getWidth(null)*shrinkPercent), (int)(getBloodiedImage().getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
+				// Go ahead and do transparency here, too.  But not based on white.  Base it on being outside the circle or not.
+				Image image1 = getBloodiedImage();
+				Image newImage = makeTransparent((BufferedImage)image1);
+				
+				scaledBloodiedImage = newImage.getScaledInstance((int) (newImage.getWidth(null)*shrinkPercent), (int)(newImage.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
 			} else {
 				ImageFilter filter = new RGBImageFilter()
 				{
@@ -2290,4 +2319,16 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return scaledBloodiedImage;
 		
 	}
+	public void setImage(Image image) {
+		this.image = image;
+		// If image is changing, then we need to clear the scaled image, too.
+		scaledImage = null;
+	}
+
+	public void setBloodiedImage(Image bloodiedImage) {
+		this.bloodiedImage = bloodiedImage;
+		// If image is changing, then we need to clear the scaled image, too.
+		scaledBloodiedImage = null;
+	}
+
 }

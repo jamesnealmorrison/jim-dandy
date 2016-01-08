@@ -1,5 +1,6 @@
 package com.jimmie.util.aspects;
 
+import java.util.Iterator;
 import java.util.List;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.Runepriest;
@@ -20,6 +21,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.RunicState;
+import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 
@@ -125,6 +127,38 @@ public aspect ChooseTargetsAspect {
 								}
 							}
 						}
+					}
+				}
+			}
+			
+			// Look for Druid Call of the Beast			
+			for (Iterator<TemporaryEffect> it = cAttacker.getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.CALL_OF_THE_BEAST_EFFECT) {
+					if (tempEffect.stillApplies()) {
+						// See if the list of targets includes one of the closest targets.
+						int closestTargetDistance = Encounter.getEncounter().getDistanceToClosestEnemy(cAttacker);
+						Utils.print("Closest target is " + closestTargetDistance + " squares away.");
+
+						// Now see if any of the targets are at that range.
+						boolean foundClosestTarget = false;
+						for (AttackTarget target : targets) {
+							if (attacker.getCurrentPosition().getDistanceTo(target.getCurrentPosition()) == closestTargetDistance) {
+								foundClosestTarget = true;
+								break;
+							}
+						}
+						if (foundClosestTarget == false) {
+							Utils.print(attacker.getName() + " did not attack their closest target.  Because they are impacted by the Call of the Beast power, they are taking " + tempEffect.getModifier() + " psychic damage.");
+							cAttacker.hurt(tempEffect.getModifier(), DamageType.PSYCHIC, true, tempEffect.getSource());
+						}
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Call of the Beast effect no longer applies.  Removing.");
+							it.remove();
+						}
+					} else {
+						Utils.print("Call of the Beast effect no longer applies.  Removing.");
+						it.remove();
 					}
 				}
 			}

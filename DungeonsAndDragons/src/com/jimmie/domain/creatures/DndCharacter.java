@@ -10,7 +10,6 @@ import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.NotEnoughCurrencyException;
 import com.jimmie.domain.Resistance;
-import com.jimmie.domain.Ritual;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Avenger;
@@ -42,6 +41,7 @@ import com.jimmie.powers.AidAnother;
 import com.jimmie.powers.MeleeBasicAttack;
 import com.jimmie.powers.SecondWind;
 import com.jimmie.powers.SpendActionPoint;
+import com.jimmie.rituals.Ritual;
 import com.jimmie.util.Utils;
 
 public abstract class DndCharacter extends Creature {
@@ -118,6 +118,7 @@ public abstract class DndCharacter extends Creature {
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void addCoins(int i, CoinType coinType) {
 		switch (coinType) {
 		case COPPER_PIECE :

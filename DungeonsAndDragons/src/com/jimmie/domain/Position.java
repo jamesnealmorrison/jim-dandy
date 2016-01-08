@@ -133,5 +133,8 @@ public class Position implements Serializable {
 			return false;
 		}
 	}
+	public int getDistanceTo(Position toPosition) {
+		return (int)(Math.sqrt(((getX() - toPosition.getX())*(getX() - toPosition.getX())) + ((getY() - toPosition.getY())*(getY() - toPosition.getY()))));
+	}
 
 }

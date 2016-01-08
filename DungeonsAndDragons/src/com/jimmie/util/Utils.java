@@ -12,6 +12,7 @@ import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.TemporaryCombatAdvantage;
 import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.gui.DungeonGUI;
@@ -300,6 +301,25 @@ public class Utils {
 
 	public static boolean hasCombatAdvantage(Creature source,
 			Creature target) {
+		// Make sure they aren't effected by Druid Call of the Beast effect.
+		for (Iterator<TemporaryEffect> it = target.getTemporaryEffects().iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+			if (tempEffect.getEffectType() == TemporaryEffectType.CALL_OF_THE_BEAST_EFFECT) {
+				if  (tempEffect.stillApplies()) {
+					Utils.print("Effected by Call of the Beast and can not gain combat advantage.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("But will not apply after this.");
+						it.remove();
+					}
+					return false;
+				} else {
+					Utils.print("Temporary Call of the Beast effect no longer applies. Removing.");
+					it.remove();
+				}
+			}
+		}
+		
 		/* Does the target have a condition that grants combat advantage? */
 		// TODO: Prone says only melee attacks.
 		if (target.isBlinded() || target.isDazed() || target.isDominated() || target.isDying() || target.isHelpless() || target.isProne() || target.isRestrained()

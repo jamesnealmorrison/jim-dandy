@@ -2,15 +2,23 @@ package com.jimmie.powers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
+import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.encounters.Encounter;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class ChillWind extends AttackPower {
@@ -80,7 +88,59 @@ public class ChillWind extends AttackPower {
 
 	@Override
 	public void process(Creature user) {
-		Utils.print("Sorry, but I haven't implemented this power yet.");
+		timesUsed++;
+
+		List<AttackTarget> targets = new ArrayList<AttackTarget>();
+		List<AttackTarget> sliders = new ArrayList<AttackTarget>();
+		boolean sliding = false;
+		Encounter.showCoordinateSystem(true);
+		
+		Utils.print("Please enter the X coordinate of the burst (within range of 10). No validation is done here, so do it right!");
+		int x = Utils.getValidIntInputInRange(1, 50);
+
+		Utils.print("Please enter the Y coordinate of the burst (within range of 10). No validation is done here, so do it right!");
+		int y = Utils.getValidIntInputInRange(1, 50);
+		Encounter.showCoordinateSystem(false);
+
+		/* Got to do this weird conversion between creatures and attack targets. */
+		List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
+		for (Creature creature : creatureTargets) {
+			targets.add(creature);
+		}
+
+		Utils.print("Since this might affect multiple targets, rolling for damage first.");
+		int damageRolls = 1;
+
+		Dice damageDice = new Dice(DiceType.SIX_SIDED);
+		int damage = 0;
+
+		for (int rolls = 0; rolls < damageRolls; rolls++) {
+			damage = damage + damageDice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
+		}
+		
+		for (AttackTarget target : targets) {
+			int targetFortitude = target.getFortitude();
+			Utils.print("Your target, " + target.getName() + ", has a Fortitude of " + targetFortitude);
+
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+
+			if (attackRoll >= targetFortitude) {
+				/* A HIT! */
+				Utils.print("You successfully hit " + target.getName());
+				Utils.print("Doing " + damage + " cold damage and you get to slide them 1 square.");
+				target.hurt(damage, DamageType.COLD, true, user);
+				sliders.add(target);
+				sliding = true;
+			} else {
+				Utils.print("Sorry.  You missed " + target.getName());
+				// Some targets have powers/effects that happen when they are missed.
+				target.miss(user);
+			}
+		}
+		
+		if (sliding) {
+			user.slideTargets(sliders, 1);
+		}
 	}
 
 	@Override
@@ -109,6 +169,15 @@ public class ChillWind extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
+		if (user.getDndClass() != null) {
+			if (Druid.class.isAssignableFrom(user.getDndClass().getClass())) {
+				// A druid must be in humanoid form to use this.
+				Druid druid = (Druid) user.getDndClass();
+				if (druid.isInBeastForm()) {
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 

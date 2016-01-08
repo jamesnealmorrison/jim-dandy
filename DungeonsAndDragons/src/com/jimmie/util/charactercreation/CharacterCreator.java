@@ -95,7 +95,6 @@ public class CharacterCreator {
 		// Reminder: When I got tired of adding feats, I had stopped after InescapableForce. page 205
 		
 		pc.choosePowers();
-
 		
 		pc.addCoins(100, CoinType.GOLD_PIECE);
 		Utils.printCoins(pc);

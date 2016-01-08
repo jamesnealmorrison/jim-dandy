@@ -64,7 +64,18 @@ Your choice (in pounds):
 Setting size to Medium.
 Setting speed to 6.
 Adding low-light vision to senses.
-NOTE: I have not yet coded the choice of a language.
+Adding Common language.  Choose one other language:
+1. Deep Speech
+2. Draconic
+3. Dwarven
+4. Elven
+5. Giant
+6. Goblin
+7. Primordial
+8. Supernal
+9. Abyssal
+Your choice:
+2
 You must choose between a Longtooth Shifter and a Razorclaw Shifter.
 1. Longtooth Shifter
 2. Razorclaw Shifter
@@ -123,7 +134,26 @@ Choose between the following Primal Aspects:
 2. Primal Predator.
 Your choice:
 1
-NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting.
+As a Druid, you have Ritual Casting.  Make sure you purchase a Ritual book.  They are 50gp, so you might want to purchase it before making your other purchases.
+Adding Animal Messenger ritual.
+Choose another Ritual:
+1. Animal Messenger
+2. Comprehend Language
+3. Gentle Repose
+4. Magic Mouth
+5. Make Whole
+6. Secret Page
+7. Silence
+8. Tenser's Floating Disk
+9. Create Campsite
+10. Purify Water
+11. Unseen Servant
+12. Create Holy Water
+13. Dowsing Rod
+14. Portend Weather
+15. Traveler's Camouflage
+Your choice:
+12
 Time to generate ability scores.
 Choose which method you want to use:
 1. Standard Array
@@ -362,10 +392,14 @@ Choose two At Will Powers:
 6. Savage Rend
 7. Storm Spike
 8. Thorn Whip
+As a Druid with Balance of Nature, you get 3 at will powers.  But please follow the following rule because I didn't check for this:
+Throughout your career, at least one of your at will powers, and no more than two, must have the beast form keyword.
 Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
 1
 Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
 2
+Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)
+4
 Choose an Encounter Power:
 1. Cull The Herd
 2. Darting Bite
@@ -410,13 +444,13 @@ Please note that the following choices do NOT take into consideration what your 
 7. LIGHT_SHIELD: 5 GOLD_PIECE
 8. HEAVY_SHIELD: 10 GOLD_PIECE
 Your choice:
-3
+2
 Are you done spending money?
 n
 Hazel has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     70
+Gold pieces:     75
 Platinum pieces: 0
 Astral diamonds: 0
 What do you want to look at now?
@@ -471,7 +505,7 @@ n
 Hazel has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     65
+Gold pieces:     70
 Platinum pieces: 0
 Astral diamonds: 0
 What do you want to look at now?
@@ -523,7 +557,7 @@ n
 Hazel has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     50
+Gold pieces:     55
 Platinum pieces: 0
 Astral diamonds: 0
 What do you want to look at now?
@@ -571,10 +605,61 @@ Please select an item to purchase:
 Your choice:
 15
 Are you done spending money?
-y
+n
 Hazel has the following coins:
 Copper pieces:   0
 Silver pieces:   0
-Gold pieces:     45
+Gold pieces:     50
+Platinum pieces: 0
+Astral diamonds: 0
+What do you want to look at now?
+1. Armor
+2. Weapons
+3. Gear
+Your choice:
+3
+Please select an item to purchase:
+1. STANDARD_ADVENTURERS_KIT: 15 GOLD_PIECE
+2. BACKPACK: 2 GOLD_PIECE
+3. BEDROLL: 1 SILVER_PIECE
+4. FLINT_AND_STEEL: 1 GOLD_PIECE
+5. BELT_POUCH: 1 GOLD_PIECE
+6. TRAIL_RATIONS: 5 GOLD_PIECE
+7. HEMPEN_ROPE: 1 GOLD_PIECE
+8. SUNRODS: 4 GOLD_PIECE
+9. WATERSKIN: 1 GOLD_PIECE
+10. ARROWS: 1 GOLD_PIECE
+11. CROSSBOW_BOLTS: 1 GOLD_PIECE
+12. SLING_BULLETS: 1 GOLD_PIECE
+13. ORB: 15 GOLD_PIECE
+14. ROD: 12 GOLD_PIECE
+15. STAFF: 5 GOLD_PIECE
+16. WAND: 7 GOLD_PIECE
+17. CANDLE: 1 COPPER_PIECE
+18. CHAIN: 30 GOLD_PIECE
+19. CHEST: 2 GOLD_PIECE
+20. CLIMBERS_KIT: 2 GOLD_PIECE
+21. GRAPPLING_HOOK: 1 GOLD_PIECE
+22. HAMMER: 5 SILVER_PIECE
+23. PITONS: 5 SILVER_PIECE
+24. EVERBURNING_TORCH: 50 GOLD_PIECE
+25. FINE_CLOTHING: 30 GOLD_PIECE
+26. FLASK: 3 COPPER_PIECE
+27. HOLY_SYMBOL: 10 GOLD_PIECE
+28. JOURNEYBREAD: 50 GOLD_PIECE
+29. LANTERN: 7 GOLD_PIECE
+30. RITUAL_BOOK: 50 GOLD_PIECE
+31. SILK_ROPE: 10 GOLD_PIECE
+32. SPELLBOOK: 50 GOLD_PIECE
+33. TENT: 10 GOLD_PIECE
+34. THIEVES_TOOLS: 20 GOLD_PIECE
+35. TORCH: 1 SILVER_PIECE
+Your choice:
+30
+You are out of money now.
+Hazel has the following coins:
+Copper pieces:   0
+Silver pieces:   0
+Gold pieces:     0
 Platinum pieces: 0
 Astral diamonds: 0

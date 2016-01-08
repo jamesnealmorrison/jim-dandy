@@ -1,6 +1,10 @@
 package com.jimmie.util.aspects;
 
+import java.util.Iterator;
+
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.Zone;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.classes.Sorcerer;
@@ -45,6 +49,18 @@ public aspect StartOfTurnAspect {
 							}
 						}
 					}
+				}
+			}
+		}
+		
+		// Is the creature taking ongoing damage.
+		for (Iterator<TemporaryEffect> it = creature.getTemporaryEffects().iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+			if (TemporaryOngoingDamage.class.isAssignableFrom(tempEffect.getClass())) {
+				TemporaryOngoingDamage damage = (TemporaryOngoingDamage) tempEffect;
+				if (damage.stillApplies()) {
+					Utils.print(creature.getName() + " is taking on going " + damage.getModifier() + " " + damage.getDamageType() + " damage.");
+					creature.hurt(damage.getModifier(), damage.getDamageType(), true, damage.getSource());
 				}
 			}
 		}
