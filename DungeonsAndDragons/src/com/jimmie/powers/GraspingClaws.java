@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureConditionType;
@@ -86,7 +87,7 @@ public class GraspingClaws extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, null);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -112,14 +113,16 @@ public class GraspingClaws extends AttackPower {
 				
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Creature cTarget = (Creature) target;
-					cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SLOWED, user.getCurrentTurn());
+					cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SLOWED, TemporaryEffectReason.GRASPING_CLAWS, user.getCurrentTurn());
 				}
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

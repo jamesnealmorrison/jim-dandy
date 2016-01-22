@@ -27,12 +27,8 @@ public class TwoWeaponThreat extends Feat {
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
 		if (pc.getDexterity() >= 13) {
-			if (pc.getFeats() != null) {
-				for (Feat feat : pc.getFeats()) {
-					if (feat.getType() == FeatType.TWO_WEAPON_FIGHTING) {
-						return true;
-					}
-				}
+			if (pc.hasFeat(FeatType.TWO_WEAPON_FIGHTING)) {
+				return true;
 			}
 		}
 		return false;

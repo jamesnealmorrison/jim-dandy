@@ -54,13 +54,15 @@ public aspect StartOfTurnAspect {
 		}
 		
 		// Is the creature taking ongoing damage.
-		for (Iterator<TemporaryEffect> it = creature.getTemporaryEffects().iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (TemporaryOngoingDamage.class.isAssignableFrom(tempEffect.getClass())) {
-				TemporaryOngoingDamage damage = (TemporaryOngoingDamage) tempEffect;
-				if (damage.stillApplies()) {
-					Utils.print(creature.getName() + " is taking on going " + damage.getModifier() + " " + damage.getDamageType() + " damage.");
-					creature.hurt(damage.getModifier(), damage.getDamageType(), true, damage.getSource());
+		if (creature.getTemporaryEffects() != null) {
+			for (Iterator<TemporaryEffect> it = creature.getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryOngoingDamage.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryOngoingDamage damage = (TemporaryOngoingDamage) tempEffect;
+					if (damage.stillApplies()) {
+						Utils.print(creature.getName() + " is taking on going " + damage.getModifier() + " " + damage.getDamageType() + " damage.");
+						creature.hurt(damage.getModifier(), damage.getDamageType(), true, damage.getSource());
+					}
 				}
 			}
 		}

@@ -81,7 +81,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, 1);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -123,7 +123,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 
 				int attributeBonus = 0;
 
-				int rollForDamage = Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null);
+				int rollForDamage = Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user);
 
 				/* Combat Advantage power adds 1d6 damage when the kobold skirmisher has combat advantage against the target. */
 				if (Creature.class.isInstance(target)) {
@@ -140,7 +140,9 @@ public class KoboldSkirmisherSpear extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

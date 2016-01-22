@@ -85,7 +85,7 @@ public class KineticTrawl extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		/* See if they want to augment. */
 		int augment = 0;
 		int range = 0;
@@ -159,6 +159,7 @@ public class KineticTrawl extends AttackPower {
 				target.miss(user);
 			}
 		}
+		return true;
 	}
 
 	@Override

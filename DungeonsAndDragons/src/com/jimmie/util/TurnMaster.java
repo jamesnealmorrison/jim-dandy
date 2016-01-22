@@ -3,6 +3,9 @@ package com.jimmie.util;
 import java.util.LinkedList;
 
 import com.jimmie.domain.TurnTaker;
+import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.monsters.Monster;
+import com.jimmie.encounters.Encounter;
 
 public class TurnMaster {
 	private static LinkedList<TurnTaker> participantList = new LinkedList<TurnTaker>();
@@ -12,8 +15,6 @@ public class TurnMaster {
 	}
 	
 	public static void addParticipant(TurnTaker newParticipant) {
-		newParticipant.initializeForEncounter();
-		
 		/* If this is the first participant, just add it. */
 		if (participantList.isEmpty()) {
 			participantList.add(newParticipant);
@@ -37,9 +38,33 @@ public class TurnMaster {
 	public static TurnTaker getNextParticipant() {
 		TurnTaker nextParticipant = null;
 		if (!participantList.isEmpty()) {
-			/* Pop the next element off the list. */
-			nextParticipant = participantList.pop();
-			/* Got to add it back to the end also. */
+			boolean activeParticipantFound = false;
+			while (!activeParticipantFound) {
+				// Pop the next element off the list. */
+				nextParticipant = participantList.pop();
+
+				// See if this type of creature is active yet.
+				if (Monster.class.isAssignableFrom(nextParticipant.getClass())) {
+					if (!Encounter.areMonstersActive()) {
+						// Skip this monster, but you have to put them back on the list.
+						participantList.add(nextParticipant);
+						continue;
+					} else {
+						activeParticipantFound = true;
+					}
+				}
+				if (DndCharacter.class.isAssignableFrom(nextParticipant.getClass())) {
+					if (!Encounter.areCharactersActive()) {
+						// Skip this character, but you have to put them back on the list.
+						participantList.add(nextParticipant);
+						continue;
+					} else {
+						activeParticipantFound = true;
+					}
+				}
+			}
+			
+			// Got to add it back to the end also. */
 			participantList.add(nextParticipant);
 		}
 		return nextParticipant;

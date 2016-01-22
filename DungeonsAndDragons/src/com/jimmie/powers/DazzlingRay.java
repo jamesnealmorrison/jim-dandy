@@ -89,7 +89,7 @@ public class DazzlingRay extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 		
 		DndCharacter c = null;
@@ -132,7 +132,7 @@ public class DazzlingRay extends AttackPower {
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;
 						// TODO: I don't think I've implemented standing up from prone yet.
-						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, user.getCurrentTurn());
+						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.DAZZLING_RAY, user.getCurrentTurn());
 					}
 				}
 			} else {
@@ -151,6 +151,7 @@ public class DazzlingRay extends AttackPower {
 				}
 			}
 		}
+		return true;
 	}
 
 	@Override

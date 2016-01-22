@@ -89,7 +89,7 @@ public class ThunderRamAssault extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
@@ -127,6 +127,7 @@ public class ThunderRamAssault extends AttackPower {
 					int lowerLeftX = 0;
 					int lowerLeftY = 0;
 
+					Encounter.showCoordinateSystem(true);
 					Utils.print("Please enter the lower left X coordinate of the blast. No validation is done here, so do it right!");
 					lowerLeftX = Utils.getValidIntInputInRange(1, 50);
 
@@ -138,27 +139,29 @@ public class ThunderRamAssault extends AttackPower {
 					Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
 					int secondaryDamage = secondaryDice.roll(DiceRollType.DAMAGE_ROLL);
 
-					for (Creature secondaryTarget : blastTargets) {
-						List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
-						int secondaryTargetFortitude = secondaryTarget.getFortitude();
-						Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
+					if (blastTargets != null) {
+						for (Creature secondaryTarget : blastTargets) {
+							List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
+							int secondaryTargetFortitude = secondaryTarget.getFortitude(user);
+							Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
 
-						secondaryTargets.add(secondaryTarget);
-						attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets);
+							secondaryTargets.add(secondaryTarget);
+							attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets);
 
-						if (attackRoll >= secondaryTargetFortitude) {
-							/* A HIT! */
-							Utils.print("You successfully hit " + secondaryTarget.getName());
+							if (attackRoll >= secondaryTargetFortitude) {
+								/* A HIT! */
+								Utils.print("You successfully hit " + secondaryTarget.getName());
 
-							secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, true, user);
+								secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, true, user);
 
-							/* If you chose the Earth Strength build, you can push the primary target. */
-							String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
-							secondaryTarget.push(pushDirection);
-						} else {
-							Utils.print("Sorry.  You missed " + secondaryTarget.getName());
-							// Some targets have powers/effects that happen when they are missed.
-							secondaryTarget.miss(user);
+								/* If you chose the Earth Strength build, you can push the primary target. */
+								String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());
+								secondaryTarget.push(pushDirection);
+							} else {
+								Utils.print("Sorry.  You missed " + secondaryTarget.getName());
+								// Some targets have powers/effects that happen when they are missed.
+								secondaryTarget.miss(user);
+							}
 						}
 					}
 
@@ -168,10 +171,12 @@ public class ThunderRamAssault extends AttackPower {
 					target.miss(user);
 				}
 			}
+			return true;
 		}else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Thunder Ram Assault in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedStandardAction(false);
+			return true;
 		}
 	}
 

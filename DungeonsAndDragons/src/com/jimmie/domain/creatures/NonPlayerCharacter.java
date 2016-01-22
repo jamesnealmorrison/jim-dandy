@@ -8,9 +8,9 @@ public class NonPlayerCharacter extends DndCharacter {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public int getFortitude() {
+	public void setArmorClass(int armorClass) {
 		// TODO Auto-generated method stub
-		return 0;
+		
 	}
 
 }

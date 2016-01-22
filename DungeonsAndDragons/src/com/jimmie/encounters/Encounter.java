@@ -3,7 +3,6 @@ package com.jimmie.encounters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DurationType;
@@ -15,7 +14,9 @@ import com.jimmie.domain.ZoneShape;
 import com.jimmie.domain.ZoneType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.Monster;
+import com.jimmie.domain.feats.FeatType;
 import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.items.weapons.Weapon;
 import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.map.Map;
@@ -30,6 +31,12 @@ public abstract class Encounter {
 	private static boolean debug;
 	private static boolean showCoordinateSystem;
 	protected Map map;
+	private static boolean monstersVisible = true;
+	private static boolean monstersActive = true;
+	private static boolean charactersVisible = true;
+	private static boolean charactersActive = true;
+	@SuppressWarnings("rawtypes")
+	private HashMap<Class, Integer> monsterInitiatives = new HashMap<Class, Integer>();
 
 	public Map getMap() {
 		return map;
@@ -156,9 +163,10 @@ public abstract class Encounter {
 					skipTurn = true;					
 				} else {
 					Power chosenPower = validActions.get(choice);
-					chosenPower.process(c);
-					// Mark the character has having taken the appropriate action.
-					c.useAction(chosenPower.getActionType());
+					if (chosenPower.process(c) == true) {
+						// Mark the character has having taken the appropriate action.
+						c.useAction(chosenPower.getActionType());
+					}
 				}
 			}
 
@@ -223,19 +231,69 @@ public abstract class Encounter {
 		 * players/monsters to the map, etc.
 		 */
 
+		// Initialize everyone for the encounter before adding them to the turn master.
+		for (DndCharacter c : characters) {
+			c.initializeForEncounter();
+		}
+		
+		// See if any of the characters have the Primal Instinct feat
+		for (DndCharacter c : characters) {
+			if (PlayerCharacter.class.isAssignableFrom(c.getClass())) {
+				if (((PlayerCharacter) c).hasFeat(FeatType.PRIMAL_INSTINCT)) {
+					Utils.print("Because " + c.getName() + " has the Primal Instinct feat, one of the characters (within 5 squares) can reroll initiative.");
+					Utils.print("Would you like to use this feat?");
+					Utils.print("Your choice (Y or N)?");
+					if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+						int i = 0;
+						
+						HashMap<Integer, DndCharacter> choices = new HashMap<Integer, DndCharacter>();
+						for (DndCharacter ally : characters) {
+							if ((ally != c) && (ally.getCurrentPosition().isWithinReachOf(c.getCurrentPosition(), 5))) {
+								i++;
+								choices.put(i,ally);
+								Utils.print(i + ". " + ally.getName());
+							}
+						}
+						Utils.print("Your choice:");
+						int choice = Utils.getValidIntInputInRange(1, i);
+						DndCharacter ally = choices.get(choice);
+						if (ally != null) {
+							ally.rollForInitiative();
+						}
+					}
+				}
+			}
+		}
+		
+		for (Monster m : monsters) {
+			m.initializeForEncounter();
+			if (!monsterInitiatives.containsKey(m.getClass())) {
+				monsterInitiatives.put(m.getClass(), m.getInitiativeRoll());
+			}
+		}
+		
+		
 		/* Add all the characters to the turnmaster. */
 		for (DndCharacter c : characters) {
 			TurnMaster.addParticipant(c);
 		}
+		
+		// Call a method that should be overridden in the sub class to do any necessary fixing of initiatives before adding them to the turn master.
+		makeEncounterInitiativeChanges();
 
 		/* Now the monsters. */
 		for (Monster m : monsters) {
 			TurnMaster.addParticipant(m);
 		}
-
 		/* TODO: Add other things, like traps/hazards that take turns. */
+
+		// Individual encounter setup.
+		setup();
+
 	}
 
+	protected abstract void makeEncounterInitiativeChanges();
+	
 	public List<AttackTarget> chooseMeleeTarget(TurnTaker attacker, Weapon weapon) {
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 		int reach = 1;
@@ -395,7 +453,6 @@ public abstract class Encounter {
 			}
 			int choice = Utils.getValidIntInputInRange(1, index);
 			Creature c = adjacentAllies.get(choice);
-			Utils.print("You chose " + c.getName());
 			return c;
 		}
 	}
@@ -436,7 +493,6 @@ public abstract class Encounter {
 			}
 			int choice = Utils.getValidIntInputInRange(1, index);
 			Creature c = adjacentAllies.get(choice);
-			Utils.print("You chose " + c.getName());
 			return c;
 		}
 	}
@@ -462,7 +518,6 @@ public abstract class Encounter {
 		}
 		int choice = Utils.getValidIntInputInRange(1, index);
 		Creature c = allies.get(choice);
-		Utils.print("You chose " + c.getName());
 		return c;
 	}
 
@@ -494,7 +549,6 @@ public abstract class Encounter {
 			}
 			int choice = Utils.getValidIntInputInRange(1, index);
 			Creature c = adjacentAllies.get(choice);
-			Utils.print("You chose " + c.getName());
 			return c;
 		}
 	}
@@ -1496,5 +1550,46 @@ public abstract class Encounter {
 			}
 		}
 		return creatures;
+	}
+
+	public static boolean areMonstersVisible() {
+		return monstersVisible;
+	}
+
+	public static void setMonstersVisible(boolean monstersVisible) {
+		Encounter.monstersVisible = monstersVisible;
+	}
+
+	public static boolean areMonstersActive() {
+		return monstersActive;
+	}
+
+	public static void setMonstersActive(boolean monstersActive) {
+		Encounter.monstersActive = monstersActive;
+	}
+
+	public abstract void setup();
+
+	public static boolean areCharactersVisible() {
+		return charactersVisible;
+	}
+
+	public static void setCharactersVisible(boolean charactersVisible) {
+		Encounter.charactersVisible = charactersVisible;
+	}
+
+	public static boolean areCharactersActive() {
+		return charactersActive;
+	}
+
+	public static void setCharactersActive(boolean charactersActive) {
+		Encounter.charactersActive = charactersActive;
+	}
+
+	public int getMonsterInitiative(Class<? extends Creature> class1) {
+		if (monsterInitiatives.containsKey(class1)) {
+			return monsterInitiatives.get(class1);
+		}
+		return 0;
 	}
 }

@@ -88,7 +88,7 @@ public class TideOfIron extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 		
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -124,7 +124,9 @@ public class TideOfIron extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -26,12 +26,8 @@ public class ExpertRitualist extends Feat {
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		if (pc.getFeats() != null) {
-			for (Feat feat : pc.getFeats()) {
-				if (feat.getType() == FeatType.RITUAL_CASTER) {
-					return true;
-				}
-			}
+		if (pc.hasFeat(FeatType.RITUAL_CASTER)) {
+			return true;
 		}
 		return false;
 	}

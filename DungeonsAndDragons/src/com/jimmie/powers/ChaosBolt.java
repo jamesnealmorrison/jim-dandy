@@ -14,12 +14,16 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Sorcerer;
 import com.jimmie.domain.classes.SorcererSpellSource;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.feats.FeatType;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
@@ -90,7 +94,7 @@ public class ChaosBolt extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 		List<AttackTarget> attackedTargets = new ArrayList<AttackTarget>();
 		Position lastTargetPosition = null;
@@ -123,6 +127,17 @@ public class ChaosBolt extends AttackPower {
 			if (attackRoll >= targetWill) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
+				
+				// Check for Arcane Spellfury feat.
+				if (PlayerCharacter.class.isAssignableFrom(user.getClass())) {
+					if (((PlayerCharacter) user).hasFeat(FeatType.ARCANE_SPELLFURY)) {
+						Utils.print("Because " + user.getName() + " has the Arcane Spellfury feat, they will get a +1 attack bonus against " + target.getName() + " until the end of the next turn.");
+						if (Creature.class.isAssignableFrom(target.getClass())) {
+							Creature cTarget = (Creature) target;
+							c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
+						}
+					}
+				}
 
 				int damageRolls = 1;
 
@@ -137,7 +152,7 @@ public class ChaosBolt extends AttackPower {
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;
 						// TODO: I don't think I've implemented standing up from prone yet.
-						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, user.getCurrentTurn());
+						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.CHAOS_BOLT, user.getCurrentTurn());
 					}
 				}
 				
@@ -173,6 +188,17 @@ public class ChaosBolt extends AttackPower {
 									/* A HIT! */
 									Utils.print("You successfully hit " + target.getName());
 
+									// Check for Arcane Spellfury feat.
+									if (PlayerCharacter.class.isAssignableFrom(user.getClass())) {
+										if (((PlayerCharacter) user).hasFeat(FeatType.ARCANE_SPELLFURY)) {
+											Utils.print("Because " + user.getName() + " has the Arcane Spellfury feat, they will get a +1 attack bonus against " + target.getName() + " until the end of the next turn.");
+											if (Creature.class.isAssignableFrom(target.getClass())) {
+												Creature cTarget = (Creature) target;
+												c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
+											}
+										}
+									}
+									
 									damageRolls = 1;
 
 									damageDiceType = DiceType.SIX_SIDED;
@@ -186,7 +212,7 @@ public class ChaosBolt extends AttackPower {
 										if (Creature.class.isAssignableFrom(target.getClass())) {
 											Creature cTarget = (Creature) target;
 											// TODO: I don't think I've implemented standing up from prone yet.
-											cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, user.getCurrentTurn());
+											cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.CHAOS_BOLT, user.getCurrentTurn());
 										}
 									}
 									
@@ -204,7 +230,9 @@ public class ChaosBolt extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

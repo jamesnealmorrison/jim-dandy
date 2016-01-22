@@ -89,7 +89,7 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<Creature> cTargets = Encounter.getEncounter().getEnemiesWithinRangeOf(user, user.getCurrentPosition(), 3);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.addAll(cTargets);
@@ -129,6 +129,7 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 		}
 		
 		Encounter.getEncounter().setZone(user.getCurrentPosition(), ZoneShape.BURST, 3, user, DurationType.END_OF_NEXT_TURN, user.getCurrentTurn(), ZoneType.RUNE_OF_THE_UNDENIABLE_DAWN);
+		return true;
 	}
 
 	@Override

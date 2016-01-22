@@ -74,8 +74,26 @@ Monk:
 Need to implement Implements: Ki focuses
 
 
+
+FEATS **************************************************************************
+Healing Hands is done.
+Arcane Spellfury is done.
+Crushing Earthstrength is done.
+Rune of Mending is done.
+Primal Instinct is done.
+
+
+
 General*************************************
 Expand the store to include gear from book 2 (p 197)
 Modify powers' meetsRequirementsToUsePower method to see if you have an enemy that you can attack with it,
 so menus are more context sensitive.
 Dazed is all coded except for "you can't take immediate actions".
+Bull Rush is implemented and tested.
+Charge is done.
+Running is done.
+
+
+MONSTERS**********************************
+Kobold Slinger is completely done.
+Kobold Minion is completely done.

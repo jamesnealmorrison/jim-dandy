@@ -81,7 +81,7 @@ public class FormOfTheWillowSentinel extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 
@@ -89,11 +89,13 @@ public class FormOfTheWillowSentinel extends AttackPower {
 			if (Warden.class.isAssignableFrom(dndClass.getClass())) {
 				((Warden) dndClass).setUsingFormOfTheWillowSentinel(true);
 			}						
+			return true;
 		}else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Form of the Willow Sentinel today.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedMinorAction(false);
 		}
+		return false;
 	}
 
 	@Override

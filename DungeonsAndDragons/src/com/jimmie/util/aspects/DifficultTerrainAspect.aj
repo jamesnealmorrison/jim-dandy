@@ -17,9 +17,11 @@ public aspect DifficultTerrainAspect {
 		// Are you shifting into difficult terrain?
 		if (difficultTerrain) {
 			if (MovementType.SHIFTING == movementType) {
-				if (Elf.class.isAssignableFrom(creature.getRace().getClass())) {
-					Utils.print(creature.getName() + " is an Elf with Wild Step.  They ignore difficult terrain while shifting.");
-					difficultTerrain = false;;
+				if (creature.getRace() != null) {
+					if (Elf.class.isAssignableFrom(creature.getRace().getClass())) {
+						Utils.print(creature.getName() + " is an Elf with Wild Step.  They ignore difficult terrain while shifting.");
+						difficultTerrain = false;;
+					}
 				}
 			}
 		}

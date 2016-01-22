@@ -28,35 +28,37 @@ public aspect AttackRollAspect {
 		int result = proceed(creature);
 
 		// Deva Memory of a Thousand Lifetimes
-		if (Deva.class.isAssignableFrom(creature.getRace().getClass())) {
-			// Look for the "Memory of a Thousand Lifetimes" power
-			for (Power power : creature.getPowers()) {
-				if (MemoryOfAThousandLifetimes.class.isAssignableFrom(power.getClass())) {
-					if (power.getTimesUsed() == 0) {
-						Utils.print("You are a Deva with the Memory of a Thousand Lifetimes power.  Would you like to add 1d6 to this roll?");
-						Utils.print("Your choice (Y or N):");
-						if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
-							Dice d = new Dice(DiceType.SIX_SIDED);
-							result += d.roll(DiceRollType.ATTACK_ROLL_MODIFICATION);
-							power.setTimesUsed(power.getTimesUsed()+1);
+		if (creature.getRace() != null) {
+			if (Deva.class.isAssignableFrom(creature.getRace().getClass())) {
+				// Look for the "Memory of a Thousand Lifetimes" power
+				for (Power power : creature.getPowers()) {
+					if (MemoryOfAThousandLifetimes.class.isAssignableFrom(power.getClass())) {
+						if (power.getTimesUsed() == 0) {
+							Utils.print("You are a Deva with the Memory of a Thousand Lifetimes power.  Would you like to add 1d6 to this roll?");
+							Utils.print("Your choice (Y or N):");
+							if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+								Dice d = new Dice(DiceType.SIX_SIDED);
+								result += d.roll(DiceRollType.ATTACK_ROLL_MODIFICATION);
+								power.setTimesUsed(power.getTimesUsed()+1);
+							}
 						}
 					}
 				}
 			}
-		}
 		
-		// Elven Accuracy
-		if (Elf.class.isAssignableFrom(creature.getRace().getClass())) {
-			// Look for the "Elven Accuracy" power
-			for (Power power : creature.getPowers()) {
-				if (ElvenAccuracy.class.isAssignableFrom(power.getClass())) {
-					if (power.getTimesUsed() == 0) {
-						Utils.print("You are an Elf with the Elven Accuracy power.  Would you like to reroll?");
-						Utils.print("Your choice (Y or N):");
-						if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
-							// Just reroll
-							result = proceed(creature);
-							power.setTimesUsed(power.getTimesUsed()+1);
+			// Elven Accuracy
+			if (Elf.class.isAssignableFrom(creature.getRace().getClass())) {
+				// Look for the "Elven Accuracy" power
+				for (Power power : creature.getPowers()) {
+					if (ElvenAccuracy.class.isAssignableFrom(power.getClass())) {
+						if (power.getTimesUsed() == 0) {
+							Utils.print("You are an Elf with the Elven Accuracy power.  Would you like to reroll?");
+							Utils.print("Your choice (Y or N):");
+							if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+								// Just reroll
+								result = proceed(creature);
+								power.setTimesUsed(power.getTimesUsed()+1);
+							}
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 package com.jimmie.domain.creatures.monsters;
 
+import com.jimmie.domain.creatures.Size;
 import com.jimmie.powers.KoboldWyrmpriestSpear;
 
 public class KoboldWyrmpriest extends Kobold {
@@ -9,6 +10,7 @@ public class KoboldWyrmpriest extends Kobold {
 	private static final long serialVersionUID = 1L;
 	
 	public KoboldWyrmpriest() {
+		setSize(Size.SMALL);
 		setInitiative(4);
 		setMaxHitPoints(36);
 		setCurrentHitPoints(36);

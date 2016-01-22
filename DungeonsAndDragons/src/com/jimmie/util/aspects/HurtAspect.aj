@@ -26,36 +26,24 @@ public aspect HurtAspect {
 		if (Creature.class.isAssignableFrom(hurter.getClass())) {
 			Creature cHurter = (Creature) hurter; 
 
-			// Is there a temporary damage modifier?
-			for (Iterator<TemporaryEffect> it = cHurter.getTemporaryEffects().iterator(); it.hasNext();) {
-				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.DAMAGE_MODIFIER) {
-					if (tempEffect.stillApplies()) {
-						Utils.print("There is a temporary damage modifier of " + tempEffect.getModifier());
-						damage += tempEffect.getModifier();
-						Utils.print("Doing " + damage + " points worth of damage.");
-					} else {
-						Utils.print("Temporary damage modifier no longer applies.  Removing it.");
-						it.remove();
-					}
-				}
-			}
 			// Is there a temporary damage modifier to the hurtee?
-			for (Iterator<TemporaryEffect> it = hurtee.getTemporaryEffects().iterator(); it.hasNext();) {
-				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER) {
-					if (tempEffect.stillApplies()) {
-						Utils.print("There is a temporary RECEIVING damage modifier of " + tempEffect.getModifier());
-						damage += tempEffect.getModifier();
-						Utils.print("Doing " + damage + " points worth of damage.");
-						// Check for Word of Exchange.
-						if (tempEffect.getReason() == TemporaryEffectReason.WORD_OF_EXCHANGE) {
-							Utils.print(cHurter.getName() + " gets " + tempEffect.getModifier() + " temporary hit points because the creature was hit by Word of Exchange.");
-							cHurter.setTemporaryHitPoints(tempEffect.getModifier());
+			if (hurtee.getTemporaryEffects() != null) {
+				for (Iterator<TemporaryEffect> it = hurtee.getTemporaryEffects().iterator(); it.hasNext();) {
+					TemporaryEffect tempEffect = it.next();
+					if (tempEffect.getEffectType() == TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER) {
+						if (tempEffect.stillApplies()) {
+							Utils.print("There is a temporary RECEIVING damage modifier of " + tempEffect.getModifier());
+							damage += tempEffect.getModifier();
+							Utils.print("Doing " + damage + " points worth of damage.");
+							// Check for Word of Exchange.
+							if (tempEffect.getReason() == TemporaryEffectReason.WORD_OF_EXCHANGE) {
+								Utils.print(cHurter.getName() + " gets " + tempEffect.getModifier() + " temporary hit points because the creature was hit by Word of Exchange.");
+								cHurter.setTemporaryHitPoints(tempEffect.getModifier());
+							}
+						} else {
+							Utils.print("Temporary damage modifier no longer applies.  Removing it.");
+							it.remove();
 						}
-					} else {
-						Utils.print("Temporary damage modifier no longer applies.  Removing it.");
-						it.remove();
 					}
 				}
 			}

@@ -85,7 +85,7 @@ public class RadiantVengeance extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -130,7 +130,9 @@ public class RadiantVengeance extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

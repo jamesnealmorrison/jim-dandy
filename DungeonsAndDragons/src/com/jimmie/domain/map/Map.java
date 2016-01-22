@@ -58,11 +58,14 @@ public class Map {
 
 	public boolean isBoulder(Position position) {
 		MapLocation location = locations.get(getKey(position));
-		if (LocationType.BOULDER == location.getType()) {
-			return true;
-		} else {
-			return false;
+		if (location != null) {
+			if (LocationType.BOULDER == location.getType()) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+		return false;
 	}
 	
 	public boolean isGrass(Position position) {

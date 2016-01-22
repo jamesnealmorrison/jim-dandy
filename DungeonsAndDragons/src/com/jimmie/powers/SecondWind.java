@@ -85,7 +85,7 @@ public class SecondWind extends Power {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		// Second winds should only be available to characters
 		if (!DndCharacter.class.isAssignableFrom(user.getClass())) {
 			Utils.print(user.getDisplayName() + " is not a character.  Not sure how you got to this second wind power.");
@@ -101,8 +101,10 @@ public class SecondWind extends Power {
 				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.SECOND_WIND);
 			} else {
 				Utils.print("You have already used your second wind in this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
+				return false;
 			}
 		}
+		return true;
 	}
 
 	@Override

@@ -82,9 +82,10 @@ public class StonesEndurance extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		user.setTemporaryDamageResistance(5, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.STONES_ENDURANCE, DamageType.ALL);
 		timesUsed++;
+		return true;
 	}
 
 	@Override

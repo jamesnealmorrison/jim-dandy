@@ -28,7 +28,9 @@ public aspect MovementAspect {
 				return;
 			}
 			
-			if (movementType == MovementType.SHIFTING) {
+			// Page 290 of the Player Handbook says pushing, pulling and sliding also does not invoke opportunity attacks.
+			if ((movementType == MovementType.SHIFTING) || (movementType == MovementType.SLIDE) || (movementType == MovementType.PUSH) ||
+					(movementType == MovementType.PULL)) {
 				if (creature.isMarked()) {
 
 					for (Mark mark : creature.getMarks()) {
@@ -71,7 +73,6 @@ public aspect MovementAspect {
 			List<Creature> adjacentCreaturesBeforeMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);
 
 			proceed(direction, movementType);
-			Utils.print("Should have moved");
 
 			/* Get a list of adjacentCreatures after the move. */
 			List<Creature> adjacentCreaturesAfterMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);

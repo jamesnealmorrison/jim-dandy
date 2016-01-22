@@ -39,8 +39,10 @@ import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.powers.AidAnother;
 import com.jimmie.powers.MeleeBasicAttack;
+import com.jimmie.powers.ReadyWeapon;
 import com.jimmie.powers.SecondWind;
 import com.jimmie.powers.SpendActionPoint;
+import com.jimmie.powers.TotalDefense;
 import com.jimmie.rituals.Ritual;
 import com.jimmie.util.Utils;
 
@@ -233,6 +235,10 @@ public abstract class DndCharacter extends Creature {
 		return 0;
 	}
 
+	public void setArmorClass(int armorClass) {
+		
+	}
+	
 	public int getArmorClass(Creature attacker) {
 		int armorClass = getBaseArmorClass();
 
@@ -245,26 +251,28 @@ public abstract class DndCharacter extends Creature {
 		}
 
 		/* See if there is a temporary bonus to the armor class. */
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
 
-			if (tempEffect.getEffectType() == TemporaryEffectType.ARMOR_CLASS_MODIFIER) {
-				if (tempEffect.stillApplies()) {
-					Utils.print(name + " is supposed to get a bonus to armor class of " + tempEffect.getModifier() + ".");
-					armorClass = armorClass + tempEffect.getModifier();
-					Utils.print("Armor Class Modifier still applies.");
-					/* If it should be removed now, delete the modifier now. */
-					if (tempEffect.shouldBeRemoved()) {
-						Utils.print("But will no longer apply after this.");
+				if (tempEffect.getEffectType() == TemporaryEffectType.ARMOR_CLASS_MODIFIER) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(name + " is supposed to get a bonus to armor class of " + tempEffect.getModifier() + ".");
+						armorClass = armorClass + tempEffect.getModifier();
+						Utils.print("Armor Class Modifier still applies.");
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("But will no longer apply after this.");
+							it.remove();
+						}
+
+					} else {
+						/* Bonus is over.  Reset the bonus. */
 						it.remove();
+						Utils.print("Armor Class Modifier no longer applies.  Removing.");
 					}
-					
-				} else {
-					/* Bonus is over.  Reset the bonus. */
-					it.remove();
-					Utils.print("Armor Class Modifier no longer applies.  Removint.");
-				}
-			} 
+				} 
+			}
 		}
 		return armorClass;
 	}
@@ -616,7 +624,9 @@ public abstract class DndCharacter extends Creature {
 		healingSurgesPerDay = 0;
 		currentSurgeUses = 0;
 		deathSavingThrowFailures = 0;
-}
+		powers.add(new TotalDefense());
+		powers.add(new ReadyWeapon());
+	}
 
 	/* In this method, I will have general other bonus that are hard to define anywhere else. */
 	public int getOtherAttackModifier(List<AttackTarget> targets) {

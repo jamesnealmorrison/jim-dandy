@@ -15,7 +15,9 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.feats.FeatType;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
@@ -86,7 +88,7 @@ public class RuneOfMending extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed < 2) {
 			Utils.print("Would you like to apply this power to yourself or an ally?");
 			Utils.print("1. Self");
@@ -102,6 +104,16 @@ public class RuneOfMending extends AttackPower {
 			
 			if (DndCharacter.class.isAssignableFrom(target.getClass())) {
 				((DndCharacter) target).useHealingSurge(); 
+			}
+			
+			// Look for Rune of Hope feat
+			if (PlayerCharacter.class.isAssignableFrom(user.getClass())) {
+				PlayerCharacter pc = (PlayerCharacter) user;
+				if (pc.hasFeat(FeatType.RUNE_OF_HOPE)) {
+					int runeFeats = pc.getNumberOfRuneFeats();
+					Utils.print("Because " + user.getName() + " has the Rune of Hope feat, they get " + runeFeats + " temporary hit points.");
+					pc.setTemporaryHitPoints(runeFeats);
+				}
 			}
 			
 			if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
@@ -129,7 +141,9 @@ public class RuneOfMending extends AttackPower {
 			}
 			
 			timesUsed++;
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class FiresOfLife extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 			List<AttackTarget> targets = new ArrayList<AttackTarget>();
@@ -139,7 +139,9 @@ public class FiresOfLife extends AttackPower {
 					target.miss(user);
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

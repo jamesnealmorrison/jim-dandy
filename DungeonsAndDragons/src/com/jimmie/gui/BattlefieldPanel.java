@@ -5,21 +5,27 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.jimmie.domain.Position;
 import com.jimmie.domain.Zone;
 import com.jimmie.domain.ZoneShape;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.map.Map;
 import com.jimmie.encounters.Encounter;
@@ -31,17 +37,25 @@ public class BattlefieldPanel extends JPanel {
 	private static final int SQUARE_SIZE = 69;
 	private Map map;
 	List<Creature> creatures;
-	private BufferedImage img;
+	private Image img;
+	private BufferedImage originalImg;
 	private File imageSrc;
-	
+	@Autowired
+	private String battlefieldImageFilePath;
+	private HashMap<String, Image> images;
+
 	public void init(Map map, List<Creature> creatures) {
 		this.setMap(map);
+		images = new HashMap<String, Image>();
 		Dimension dimension = new Dimension((map.getWidth())*SQUARE_SIZE,(map.getHeight())*SQUARE_SIZE);
 		this.setPreferredSize(dimension);
 		this.creatures = creatures;		
 		try {
-			imageSrc = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KoboldOutsideLair.JPG");
-			img = ImageIO.read(imageSrc);
+			imageSrc = new File(battlefieldImageFilePath);
+			originalImg = ImageIO.read(imageSrc);
+			double shrinkPercent = (double) SQUARE_SIZE/200.0;
+			img = originalImg.getScaledInstance((int) (originalImg.getWidth(null)*shrinkPercent), (int)(originalImg.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,17 +99,56 @@ public class BattlefieldPanel extends JPanel {
 						it.remove();
 						continue;
 					}
+					
+					if (!Encounter.areMonstersVisible()) {
+						continue;
+					}
+				}
+				
+				if (DndCharacter.class.isAssignableFrom(creature.getClass())) {
+					if (!Encounter.areCharactersVisible()) {
+						continue;
+					}
 				}
 				ScreenPosition screenPosition = new ScreenPosition(creature.getCurrentPosition(), new Dimension(map.getWidth(),map.getHeight()), SQUARE_SIZE);
-				//g2d.setXORMode(Color.white);
-				if (creature.getImage() != null) {
 
-					//				Image newImage = transformWhiteToTransparency(CreatureTile(creature.getImage()));
+				String imagePath = creature.getImagePath();
+				if (imagePath != null) {
 					double shrinkPercent = (double) SQUARE_SIZE/200.0;
-					Image newImage = creature.getScaledImage(shrinkPercent);
+					// Look in the HashMap for the image.
+					Image newImage = images.get(imagePath);
+					// If not found, read it from the file and put it in the hash map.
+					if (newImage == null) {
+						try {
+							Image image = ImageIO.read(new File(imagePath));
+							newImage = getScaledImage(image, shrinkPercent);
+
+							// Put the scaled image in there.
+							images.put(imagePath, newImage);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}						
+					}
+					
+					
 
 					if (creature.isBloodied()) {
-						newImage = creature.getScaledBloodiedImage(shrinkPercent); 
+						String bloodiedImagePath = creature.getBloodiedImagePath();
+						// Look in the HashMap for the bloodied image.
+						newImage = images.get(bloodiedImagePath);
+						if (newImage == null) {
+							try {
+								Image image = ImageIO.read(new File(bloodiedImagePath));
+								newImage = getScaledImage(image, shrinkPercent);
+
+								// Put the scaled bloodied image in there.
+								images.put(bloodiedImagePath, newImage);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}						
+						}
 					}
 					
 					g2d.drawImage(newImage, screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), null);
@@ -152,4 +205,60 @@ public class BattlefieldPanel extends JPanel {
 	public void setMap(Map map) {
 		this.map = map;
 	}
+	
+	public String getImageFilePath() {
+		return battlefieldImageFilePath;
+	}
+
+	public void setImageFilePath(String imageFilePath) {
+		this.battlefieldImageFilePath = imageFilePath;
+	}
+
+	public Image getScaledImage(Image image, double shrinkPercent) {
+		Image scaledImage = null;
+		if ((image.getWidth(null) == 200) || (image.getWidth(null) == 400) || (image.getWidth(null) == 600)) {
+			Image newImage = makeTransparent((BufferedImage)image);
+
+			scaledImage = newImage.getScaledInstance((int) (newImage.getWidth(null)*shrinkPercent), (int)(newImage.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
+		}
+		return scaledImage;
+	}
+
+	private Image makeTransparent(BufferedImage image)
+	{
+		ImageFilter filter = new RGBImageFilter()
+		{
+			public final int filterRGB(int x, int y, int rgb)
+			{
+				if (!pixelInsideCircle(x,y,image.getWidth())) {
+					return 0;
+				} else {
+					return rgb;
+				}
+			}
+		};
+
+		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+		return Toolkit.getDefaultToolkit().createImage(ip);
+	}
+
+	private boolean pixelInsideCircle(int x, int y, int width) {
+		// For now, start with a width 4 pixels outside the circle.
+		int r = (width/2) + 1;
+		int h = width/2;
+		int b = -2*h;
+		int c = (x*x)-(2*h*x)+(2*h*h)-(r*r);
+		
+		// Use the quadratic formula to figure out the y edge values
+		int yEdgeUp = (-b+(int) Math.sqrt((b*b)-(4*c)))/2;
+		int yEdgeDown = (-b-(int) Math.sqrt((b*b)-(4*c)))/2;
+		if ((y>=yEdgeUp) || (y<=yEdgeDown)) {
+			return false;
+		} else {
+			return true;
+		}
+		
+	}	
+
+
 }

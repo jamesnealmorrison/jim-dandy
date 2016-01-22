@@ -80,8 +80,9 @@ public class CullTheHerd extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		Utils.print("Sorry, but I haven't implemented this power yet.");
+		return false;
 	}
 
 	@Override

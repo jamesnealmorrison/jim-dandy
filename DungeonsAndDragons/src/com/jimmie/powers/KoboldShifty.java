@@ -74,8 +74,9 @@ public class KoboldShifty extends Power {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		user.shift(1, true);
+		return true;
 	}
 
 	@Override

@@ -80,7 +80,7 @@ public class KoboldSlingerDagger extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, 1);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -105,13 +105,15 @@ public class KoboldSlingerDagger extends AttackPower {
 
 				int attributeBonus = 0;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

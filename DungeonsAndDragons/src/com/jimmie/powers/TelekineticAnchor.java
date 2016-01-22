@@ -87,7 +87,7 @@ public class TelekineticAnchor extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {		
+	public boolean process(Creature user) {		
 		if (timesUsed == 0) {
 			timesUsed++;
 			
@@ -118,7 +118,7 @@ public class TelekineticAnchor extends AttackPower {
 			damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE);
 
 			for (AttackTarget target : targets) {
-				int targetFortitude = target.getFortitude();
+				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has an Fortitude of " + targetFortitude);
 
 				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
@@ -137,10 +137,12 @@ public class TelekineticAnchor extends AttackPower {
 				/* Whether it hits or not, the target will take 5 force damage if it moves on its next turn. */
 				target.hitByTelekineticAnchor();
 			}
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Telekinetic Anchor today.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though.");
 			user.setUsedStandardAction(false);			
+			return false;
 		}
 	}
 

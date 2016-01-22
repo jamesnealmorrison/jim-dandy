@@ -88,7 +88,7 @@ public class ViciousMockery extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		DndCharacter c = null;
 		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
 			c = (DndCharacter) user;
@@ -124,7 +124,9 @@ public class ViciousMockery extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

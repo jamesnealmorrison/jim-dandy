@@ -12,6 +12,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureConditionType;
@@ -85,7 +86,7 @@ public class WardensGrasp extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 0);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -111,10 +112,11 @@ public class WardensGrasp extends AttackPower {
 			Utils.print("Setting them to slow");
 			if (Creature.class.isAssignableFrom(target.getClass())) {
 				Creature creature = (Creature) target;
-				creature.setTemporaryCondition(creature, DurationType.START_OF_NEXT_TURN, CreatureConditionType.SLOWED, creature.getCurrentTurn());
+				creature.setTemporaryCondition(creature, DurationType.START_OF_NEXT_TURN, CreatureConditionType.SLOWED, TemporaryEffectReason.WARDENS_GRASP, creature.getCurrentTurn());
 			}
-
+			return true;
 		}
+		return false;
 	}
 
 	@Override

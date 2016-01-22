@@ -15,6 +15,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.RunicState;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureConditionType;
@@ -89,7 +90,7 @@ public class DivineRuneOfThunder extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -129,7 +130,7 @@ public class DivineRuneOfThunder extends AttackPower {
 							for (int i = 0; i < abilityModifier; i++) {
 								target.push(pushDirection);
 							}
-							cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, user.getCurrentTurn());
+							cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.DIVINE_RUNE_OF_THUNDER, user.getCurrentTurn());
 						}
 					}
 					if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
@@ -146,7 +147,9 @@ public class DivineRuneOfThunder extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

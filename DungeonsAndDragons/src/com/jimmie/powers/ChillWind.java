@@ -87,7 +87,7 @@ public class ChillWind extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		timesUsed++;
 
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
@@ -119,7 +119,7 @@ public class ChillWind extends AttackPower {
 		}
 		
 		for (AttackTarget target : targets) {
-			int targetFortitude = target.getFortitude();
+			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target, " + target.getName() + ", has a Fortitude of " + targetFortitude);
 
 			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
@@ -141,6 +141,7 @@ public class ChillWind extends AttackPower {
 		if (sliding) {
 			user.slideTargets(sliders, 1);
 		}
+		return true;
 	}
 
 	@Override

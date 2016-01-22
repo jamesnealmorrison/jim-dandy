@@ -14,6 +14,7 @@ import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
@@ -24,6 +25,7 @@ public class KoboldMinionJavelin extends AttackPower {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static int attackModifier = 4; // Some kobold Minions have 4 and others have 5.
 
 	@Override
 	public String getName() {
@@ -80,31 +82,43 @@ public class KoboldMinionJavelin extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20);
-
-		if ((targets != null) && !(targets.isEmpty())) {
-			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
-			int roll = diceRoll + 5 + user.getOtherAttackModifier(targets);
-
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-
-			int targetArmorClass = target.getArmorClass(user);
-			Utils.print("Your target has an AC of " + targetArmorClass);
-
-			if (roll >= targetArmorClass) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
-
-				target.hurt(4, DamageType.NORMAL, true, user);
-			} else {
-				Utils.print("You missed " + target.getName());
-				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+	public boolean process(Creature user) {
+		// Are there any rounds left?
+		if (KoboldMinion.class.isAssignableFrom(user.getClass())) {
+			KoboldMinion minion = (KoboldMinion) user;
+			if (minion.getJavelins() == 0) {
+				Utils.print("Sorry, but " + minion.getName() + " has no more javelins.");
+				return false;
 			}
+
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20);
+
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
+				Dice d = new Dice(DiceType.TWENTY_SIDED);
+				int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
+				int roll = diceRoll + KoboldMinionJavelin.getAttackModifier() + user.getOtherAttackModifier(targets);
+
+				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+
+				int targetArmorClass = target.getArmorClass(user);
+				Utils.print("Your target has an AC of " + targetArmorClass);
+
+				if (roll >= targetArmorClass) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
+
+					target.hurt(4, DamageType.NORMAL, true, user);
+				} else {
+					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user);
+				}
+				minion.setJavelins(minion.getJavelins()-1);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -136,6 +150,23 @@ public class KoboldMinionJavelin extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		return true;
+		if (KoboldMinion.class.isAssignableFrom(user.getClass())) {
+			KoboldMinion minion = (KoboldMinion) user;
+			// Are there any rounds left?
+			if (minion.getJavelins() == 0) {
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
+
+	public static void setAttackModifier(int attackModifier) {
+		KoboldMinionJavelin.attackModifier = attackModifier;
+	}
+
+	private static int getAttackModifier() {
+		return attackModifier ;
+	}
+
 }

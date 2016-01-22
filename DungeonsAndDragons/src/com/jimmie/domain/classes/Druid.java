@@ -1,14 +1,8 @@
 package com.jimmie.domain.classes;
 
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.ImplementType;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -31,9 +25,7 @@ public class Druid extends DndClass {
 	private static final long serialVersionUID = 1L;
 	private PrimalAspect primalAspect;
 	private boolean inBeastForm = false;
-	private Image beastFormImage;
 	private String beastFormImagePath;
-	private Image beastFormBloodiedImage;
 	private String beastFormBloodiedImagePath;
 	
 	@Override
@@ -199,30 +191,6 @@ public class Druid extends DndClass {
 	}
 	public void setInBeastForm(boolean inBeastForm) {
 		this.inBeastForm = inBeastForm;
-	}
-
-	public Image getBeastFormImage() {
-		if (beastFormImage == null) {
-			try {
-				beastFormImage = ImageIO.read(new File(beastFormImagePath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return beastFormImage;
-	}
-
-	public Image getBeastFormBloodiedImage() {
-		if (beastFormBloodiedImage == null) {
-			try {
-				beastFormBloodiedImage = ImageIO.read(new File(beastFormBloodiedImagePath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return beastFormBloodiedImage;
 	}
 
 	public String getBeastFormImagePath() {

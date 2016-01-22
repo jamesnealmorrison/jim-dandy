@@ -86,7 +86,7 @@ public class WildShape extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		// Only once per round.
 		if (timesUsed == 0) {
 			if (Druid.class.isAssignableFrom(user.getDndClass().getClass())) {
@@ -97,18 +97,20 @@ public class WildShape extends AttackPower {
 					Utils.print("You get to shift 1 square when changing back to humanoid form.");
 					user.shift(1, true);
 					// Put copied image back into creature.
-					user.setImage(null);
-					user.setBloodiedImage(null);
+//					user.setImage(null);
+//					user.setBloodiedImage(null);
 				} else {
 					druid.setInBeastForm(true);
-					user.setImage(druid.getBeastFormImage());
-					user.setBloodiedImage(druid.getBeastFormBloodiedImage());
+//					user.setImage(druid.getBeastFormImage());
+//					user.setBloodiedImage(druid.getBeastFormBloodiedImage());
 					Utils.print("Changing to beast form.");
 					Encounter.setDebug(true);
 				}
 			}
 			timesUsed++;
+			return true;
 		}
+		return false;
 	}
 
 	@Override

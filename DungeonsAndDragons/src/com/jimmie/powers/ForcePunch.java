@@ -85,7 +85,7 @@ public class ForcePunch extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		/* See if they want to augment. */
 		int augment = 0;
 		int range = 0;
@@ -117,7 +117,7 @@ public class ForcePunch extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			int targetFortitude = target.getFortitude();
+			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target has an Fortitude of " + targetFortitude);
 
 			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
@@ -167,6 +167,7 @@ public class ForcePunch extends AttackPower {
 				target.miss(user);
 			}
 		}
+		return true;
 	}
 
 	@Override

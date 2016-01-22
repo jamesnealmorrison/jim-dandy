@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.classes.PrimalAspect;
 import com.jimmie.domain.creatures.Creature;
@@ -88,7 +89,7 @@ public class FrostFlash extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 
@@ -101,7 +102,7 @@ public class FrostFlash extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				int targetFortitude = target.getFortitude();
+				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has a Fortitude of " + targetFortitude);
 
 				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.IMPLEMENT, targets);
@@ -128,7 +129,7 @@ public class FrostFlash extends AttackPower {
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;
 						Utils.print(target.getName() + " is also immobilized until the end of the next turn.");
-						cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.IMMOBILIZED, user.getCurrentTurn());						
+						cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.IMMOBILIZED, TemporaryEffectReason.FROST_FLASH, user.getCurrentTurn());						
 					}
 					
 
@@ -138,11 +139,13 @@ public class FrostFlash extends AttackPower {
 					target.miss(user);
 				}
 			}
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Frost Flash in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedStandardAction(false);
 		}
+		return false;
 	}
 
 	@Override

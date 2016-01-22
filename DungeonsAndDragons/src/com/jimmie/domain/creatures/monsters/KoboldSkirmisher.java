@@ -1,5 +1,6 @@
 package com.jimmie.domain.creatures.monsters;
 
+import com.jimmie.domain.creatures.Size;
 import com.jimmie.powers.KoboldShifty;
 import com.jimmie.powers.KoboldSkirmisherSpear;
 
@@ -10,6 +11,7 @@ public class KoboldSkirmisher extends Kobold {
 	private static final long serialVersionUID = 1L;
 	
 	public KoboldSkirmisher() {
+		setSize(Size.SMALL);
 		setInitiative(5);
 		setMaxHitPoints(27);
 		setCurrentHitPoints(27);

@@ -80,7 +80,7 @@ public class AidAnother extends Power {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		Utils.print("Pick the target that you want to help your ally against.");
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
@@ -114,7 +114,9 @@ public class AidAnother extends Power {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

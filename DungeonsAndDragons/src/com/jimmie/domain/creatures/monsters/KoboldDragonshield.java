@@ -1,6 +1,7 @@
 package com.jimmie.domain.creatures.monsters;
 
 
+import com.jimmie.domain.creatures.Size;
 import com.jimmie.powers.KoboldDragonshieldShortSword;
 import com.jimmie.powers.KoboldShifty;
 import com.jimmie.util.Utils;
@@ -11,7 +12,6 @@ public class KoboldDragonshield extends Kobold {
 	@Override
 	public void startOfTurn() {
 		super.startOfTurn();
-		Utils.print("In KoboldDragonshield.startOfTurn");
 		usedDragonshieldTactics = false;
 	}
 
@@ -21,6 +21,7 @@ public class KoboldDragonshield extends Kobold {
 	private static final long serialVersionUID = 1L;
 	
 	public KoboldDragonshield() {
+		setSize(Size.SMALL);
 		setInitiative(4);
 		setMaxHitPoints(36);
 		setCurrentHitPoints(36);
@@ -28,7 +29,7 @@ public class KoboldDragonshield extends Kobold {
 		setFortitude(14);
 		setReflex(13);
 		setWill(13);
-		setBaseSpeed(6);
+		setBaseSpeed(5);
 		setStrength(14);
 		setConstitution(12);
 		setDexterity(13);

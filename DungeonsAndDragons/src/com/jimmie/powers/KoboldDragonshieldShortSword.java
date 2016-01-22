@@ -81,7 +81,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, 1);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -89,7 +89,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int roll = d.roll(DiceRollType.ATTACK_ROLL) + 7 + user.getOtherAttackModifier(targets);
 
-			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
+			/* Kobold Dragonshields have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.
 			 */
 			List<Creature> adjacentCreatures = Encounter.getEncounter().getAllAdjacentCreatures((Creature)target);
@@ -122,13 +122,15 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 				int attributeBonus = 0;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, null), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user);
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -926,4 +926,16 @@ public class KoboldAmbushEncounter extends Encounter {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void makeEncounterInitiativeChanges() {
+		// TODO Auto-generated method stub
+		
+	}
 }

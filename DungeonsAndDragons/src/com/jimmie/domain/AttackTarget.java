@@ -10,7 +10,7 @@ public interface AttackTarget {
 	void push(String pushDirection);
 //	void markByCombatChallenge(Creature owner, DurationType durationType);
 //	void markByMisdirectedMark(Creature owner, Creature misdirectedOwner, DurationType durationType);
-	int getFortitude();
+	int getFortitude(Creature attacker);
 	int getReflex(Creature attacker);
 	int getWill(Creature attacker);
 	boolean isStunned();

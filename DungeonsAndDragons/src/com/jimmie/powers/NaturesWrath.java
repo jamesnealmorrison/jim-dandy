@@ -84,7 +84,7 @@ public class NaturesWrath extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<Creature> adjEnemies = Encounter.getEncounter().getAdjacentEnemies(user);
 		
 		for (Creature enemy : adjEnemies) {
@@ -92,6 +92,7 @@ public class NaturesWrath extends AttackPower {
 			Utils.print(enemy.getName() + " is now marked by " + getName() + " until the end of my next turn.");
 		}
 		timesUsed++;
+		return true;
 	}
 
 	@Override

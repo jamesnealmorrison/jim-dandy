@@ -79,11 +79,8 @@ public class BattlefieldViewerPanel extends JPanel implements MouseListener {
 	public void mouseReleased(MouseEvent event) {
 		Point point = event.getPoint();
 		
-		System.out.println("Mouse clicked at " + point.getX() + ", " + point.getY());
 		int col = (int) (point.getX()/(((BattlefieldCreator.SQUARE_SIZE*BattlefieldCreator.SHRINK_PERCENT))));
 		int row = (int) (point.getY()/(((BattlefieldCreator.SQUARE_SIZE*BattlefieldCreator.SHRINK_PERCENT))));
-		
-		System.out.println("Selected " +  col + ", " + row + " element.");
 		
 		Image image = BattlefieldCreator.getBattlefieldImage();
 		Graphics g = image.getGraphics();

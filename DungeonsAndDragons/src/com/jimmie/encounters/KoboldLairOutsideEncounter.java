@@ -57,72 +57,22 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	@Override
 	public void init() {
 		/* Set up the monsters */
-		m1.setName("Kobold Minion 1");
-		m1.setDisplayName("M1");
-		m1.setCurrentPosition(new Position(4,4));
-
-		m2.setName("Kobold Minion 2");
-		m2.setDisplayName("M2");
-		m2.setCurrentPosition(new Position(5,3));
-		m3.setName("Kobold Minion 3");
-		m3.setDisplayName("M3");
-		m3.setCurrentPosition(new Position(6,6));
-		m4.setName("Kobold Minion 4");
-		m4.setDisplayName("M4");
-		m4.setCurrentPosition(new Position(7,3));
-		m5.setName("Kobold Minion 5");
-		m5.setDisplayName("M5");
-		m5.setCurrentPosition(new Position(8,7));
-		m6.setName("Kobold Minion 6");
-		m6.setDisplayName("M6");
-		m6.setCurrentPosition(new Position(9,11));
-		m7.setName("Kobold Minion 7");
-		m7.setDisplayName("M7");
-		m7.setCurrentPosition(new Position(11,13));
-		m8.setName("Kobold Minion 8");
-		m8.setDisplayName("M8");
-		m8.setCurrentPosition(new Position(13,7));
-		m9.setName("Kobold Minion 9");
-		m9.setDisplayName("M9");
-		m9.setCurrentPosition(new Position(13,9));
-		m10.setName("Kobold Minion 10");
-		m10.setDisplayName("M10");
-		m10.setCurrentPosition(new Position(14,13));
-
-		KoboldSkirmisher k = new KoboldSkirmisher();
-		k.setName("Kobold Skirmisher");
-		k.setDisplayName("K");
-		k.setCurrentPosition(new Position(15,19));
-		
-		KoboldDragonshield d = new KoboldDragonshield();
-		d.setName("Kobold Dragonshield");
-		d.setDisplayName("D");
-		d.setCurrentPosition(new Position(7,11));
-		
-		KoboldSlinger s = new KoboldSlinger();
-		s.setName("Kobold Slinger");
-		s.setDisplayName("S");
-		s.setCurrentPosition(new Position(14,15));
-
-		
 		monsters = new ArrayList<Monster>();		
 		
-//		monsters.add(m1);		
-//		monsters.add(m2);		
-//		monsters.add(m3);		
-//		monsters.add(m4);		
-//		monsters.add(m5);		
-//		monsters.add(m6);		
-//		monsters.add(m7);		
-//		monsters.add(m8);		
-//		monsters.add(m9);		
+		monsters.add(m1);		
+		monsters.add(m2);		
+		monsters.add(m3);		
+		monsters.add(m4);		
+		monsters.add(m5);		
+		monsters.add(m6);		
+		monsters.add(m7);		
+		monsters.add(m8);		
+		monsters.add(m9);
 		monsters.add(m10);
 		
 		monsters.add(k);
 		monsters.add(d);
 		monsters.add(s);
-
-		
 	
 		/* Set up the player characters */
 		gamal.setCurrentPosition(new Position(3,20));
@@ -153,7 +103,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		keothi.setCurrentPosition(new Position(3,18));
 /*		
 		readiedWeapon = new ReadiedWeapon();
-		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		readiedWeapon.setWeapon(keothi.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
 		} else {
@@ -166,7 +116,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 //		travok.setCurrentPosition(new Position(12,14));
 /*
 		readiedWeapon = new ReadiedWeapon();
-		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		readiedWeapon.setWeapon(travok.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
 		} else {
@@ -182,8 +132,8 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 */
 		
-//		ORIGINAL hazel.setCurrentPosition(new Position(4,19));
-		hazel.setCurrentPosition(new Position(12,12));
+		hazel.setCurrentPosition(new Position(4,19));
+//		hazel.setCurrentPosition(new Position(12,12));
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(hazel.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -221,9 +171,9 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		characters = new ArrayList<DndCharacter>();
 
 		
-//		characters.add(gamal);
-//		characters.add(percian);
-//		characters.add(keothi);
+		characters.add(gamal);
+		characters.add(percian);
+		characters.add(keothi);
 		characters.add(travok);
 		characters.add(hazel);
 		
@@ -690,6 +640,18 @@ public class KoboldLairOutsideEncounter extends Encounter {
 
 	public void setPercian(DndCharacter percian) {
 		this.percian = percian;
+	}
+
+	@Override
+	public void setup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void makeEncounterInitiativeChanges() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -79,8 +79,12 @@ public class AcidOrb extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
+		// TODO: WHEN THIS IS IMPLEMENTED, BE SURE TO CHECK FOR ARCANE SPELLFURY FEAT.  SEE CHAOS BOLT FOR AN EXAMPLE OF HOW TO DO THIS!!!!!
+
+		
 		Utils.print("Sorry, but I haven't implemented this power yet.");
+		return false;
 	}
 
 	@Override

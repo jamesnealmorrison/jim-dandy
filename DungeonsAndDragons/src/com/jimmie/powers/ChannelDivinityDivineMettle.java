@@ -82,12 +82,13 @@ public class ChannelDivinityDivineMettle extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		Creature creature = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 10);
 		
 		int modifier = user.getAbilityModifier(AbilityType.CHARISMA);
 		Utils.print(creature.getName() + " gets to make a saving throw with a bonus of " + modifier);
 		creature.performSavingThrows(1, modifier);
+		return true;
 	}
 
 	@Override

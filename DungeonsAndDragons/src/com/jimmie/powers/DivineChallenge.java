@@ -85,7 +85,7 @@ public class DivineChallenge extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
 		
 		for (AttackTarget target : targets) {
@@ -98,6 +98,7 @@ public class DivineChallenge extends AttackPower {
 		}
 		takenOneTimePenalty = false;
 		timesUsed++;
+		return true;
 	}
 
 	@Override

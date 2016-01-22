@@ -1,6 +1,8 @@
 package com.jimmie.domain.map;
 
 import com.jimmie.domain.Position;
+import com.jimmie.encounters.Encounter;
+import com.jimmie.encounters.KoboldLairOutsideEncounter;
 
 public class MapLocation {
 	private Position position;
@@ -12,10 +14,12 @@ public class MapLocation {
 	}
 
 	public boolean isDifficultTerrain() {
-/* The trees in encounter "KoboldLairOutside" do not count as difficult terrain.
  		if (type == LocationType.TREE) {
+ 			if (KoboldLairOutsideEncounter.class.isAssignableFrom(Encounter.getEncounter().getClass())) {
+ 				return false;
+ 			}
 			return true;
-		} else */ 
+		} else  
 			if (type == LocationType.RUBBLE) {
 			return true;
 		} else if (type == LocationType.FOLIAGE) {

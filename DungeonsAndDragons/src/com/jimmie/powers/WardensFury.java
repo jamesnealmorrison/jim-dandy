@@ -89,7 +89,7 @@ public class WardensFury extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -100,7 +100,7 @@ public class WardensFury extends AttackPower {
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 
-			int targetFortitude = target.getFortitude();
+			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target has a fortitude of " + targetFortitude);
 
 			if (roll >= targetFortitude) {
@@ -125,8 +125,9 @@ public class WardensFury extends AttackPower {
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
-
+			return true;
 		}
+		return false;
 	}
 
 	@Override

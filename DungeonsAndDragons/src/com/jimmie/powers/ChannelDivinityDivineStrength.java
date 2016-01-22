@@ -84,14 +84,16 @@ public class ChannelDivinityDivineStrength extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		// Only one Channel Divinity power can be used per encounter
 		// Has it been used during this encounter already?
 		if (user.getChannelDivinityUses() == 0) {
 			user.setChannelDivinityUses(1);
 			user.setTemporaryEffect(user.getAbilityModifier(AbilityType.STRENGTH), user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER, TemporaryEffectReason.DIVINE_STRENGTH);
+			return true;
 		} else {
 			Utils.print("Sorry, you can't really use this power.  You already used a Channel Divinity Power this encounter.");
+			return false;
 		}
 		
 	}

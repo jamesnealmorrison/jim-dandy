@@ -30,7 +30,7 @@ public abstract class Power implements Serializable {
 	public abstract int getRangeNumber1(); // This is for ranged/close/area.  The first number.  e.g. close burst 3
 	public abstract int getRangeNumber2(); // This is for area.  The second number.  e.g. area burst 2 within 5 squares
 	public abstract List<EffectType> getEffectTypes();
-	public abstract void process(Creature user);
+	public abstract boolean process(Creature user);  // return value indicates if the power was used.  In other words, should the creature be marked as using that action type.
 	public abstract boolean meetsPrerequisitesToChoosePower(Creature user);
 	public abstract boolean meetsRequirementsToUsePower(Creature user);
 	public abstract boolean isBasicAttack();

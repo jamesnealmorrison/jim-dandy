@@ -532,7 +532,7 @@ public class PrintCharacterSheet {
 	}
 
 	private PlayerCharacter getCharacterToPrint() {
-		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Gamal");
+		PlayerCharacter pc = (PlayerCharacter) Utils.loadCharacter("Travok");
 		return pc;
 	}
 	

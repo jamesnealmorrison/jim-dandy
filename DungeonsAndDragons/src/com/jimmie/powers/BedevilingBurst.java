@@ -16,6 +16,7 @@ import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Sorcerer;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureConditionType;
@@ -91,7 +92,7 @@ public class BedevilingBurst extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> allTargets = Encounter.getEncounter().getAllEnemiesInAreaBurst(user, user.getCurrentPosition(), 3);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		List<Creature> pushTargets = new ArrayList<Creature>();
@@ -178,7 +179,7 @@ public class BedevilingBurst extends AttackPower {
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						cTarget = (Creature) target;
 						// TODO: I don't think I've implemented standing up from prone yet.
-						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, user.getCurrentTurn());
+						cTarget.setTemporaryCondition(user, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.BEDEVILING_BURST, user.getCurrentTurn());
 					}
 				}
 
@@ -195,6 +196,7 @@ public class BedevilingBurst extends AttackPower {
 		if (!slideTargets.isEmpty()) {
 			user.slideTargets(slideTargets, user.getAbilityModifier(AbilityType.DEXTERITY));
 		}
+		return true;
 	}
 
 	@Override

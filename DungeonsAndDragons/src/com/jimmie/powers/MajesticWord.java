@@ -87,7 +87,7 @@ public class MajesticWord extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed < 2) {
 			timesUsed++;
 			Utils.print("Remember you can only uses this once per round, even if you can use it twice in an encounter.  But I didn't code that so you are on the honor system.");
@@ -151,12 +151,13 @@ public class MajesticWord extends AttackPower {
 				String direction = Utils.getValidInput(validDirections);
 				target.moveCreature(direction, MovementType.SLIDE);
 			}
-			
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Majestic Word twice in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedMinorAction(false);
 		}
+		return false;
 	}
 
 	@Override

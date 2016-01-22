@@ -172,7 +172,9 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 					Utils.print("Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)");
 					int choice = Utils.getValidIntInputInRange(1, i);
 					Power power = choices.get(choice);
-					addPower(power);
+					if (power != null) {
+						addPower(power);
+					}
 				}
 			}
 
@@ -194,7 +196,9 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, i);
 				Power power = choices.get(choice);
-				addPower(power);
+				if (power != null) {
+					addPower(power);
+				}
 			}
 
 			// Choose one daily power 
@@ -215,7 +219,9 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, i);
 				Power power = choices.get(choice);
-				addPower(power);
+				if (power != null) {
+					addPower(power);
+				}
 			}
 		}
 	}
@@ -317,7 +323,15 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 	@Override
 	public int getSpeed() {
 		// TODO: Item and misc.
-		return super.getSpeed() + this.getReadiedArmor().getSpeedPenalty();
+		int armorPenalty = this.getReadiedArmor().getSpeedPenalty();
+		// See if they are a Dwarf (with encumbered speed).
+		if (armorPenalty < 0) {
+			if (Dwarf.class.isAssignableFrom(this.getRace().getClass())) {
+				Utils.print("This Dwarf has Encumbered Speed and does not take the " + armorPenalty + " armor penalty to speed.");
+				armorPenalty = 0;
+			}
+		}
+		return super.getSpeed() + armorPenalty;
 	}
 
 	public void addRitual(Ritual ritual) {
@@ -325,5 +339,17 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 			rituals = new ArrayList<Ritual>();
 		}
 		rituals.add(ritual);
+	}
+
+	public int getNumberOfRuneFeats() {
+		int total = 0;
+		for (Feat feat : feats) {
+			if ((feat.getType() == FeatType.RUNE_OF_ELOQUENCE) || (feat.getType() == FeatType.RUNE_OF_HOPE) || (feat.getType() == FeatType.RUNE_OF_VENGEANCE) ||
+					(feat.getType() == FeatType.RUNE_OF_ZEAL) || (feat.getType() == FeatType.RUNE_OF_ESCAPE) || (feat.getType() == FeatType.RUNE_OF_TORMENT) ||
+					(feat.getType() == FeatType.RUNE_OF_BATTLE) || (feat.getType() == FeatType.RUNE_OF_HEALTH)) {
+				total++;
+			}
+		}
+		return total;
 	}
 }

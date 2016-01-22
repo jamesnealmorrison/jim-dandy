@@ -84,7 +84,7 @@ public class OathOfEnmity extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		// The book says that you regain access to this power when the target dies (that's why it's "encounter special").
 		if ((oathOfEnmityTarget == null) || (oathOfEnmityTarget.getCurrentHitPoints() <= 0)) {
 			timesUsed = 0;
@@ -93,15 +93,17 @@ public class OathOfEnmity extends AttackPower {
 		if (timesUsed == 0) {
 			timesUsed++;
 
-		/* This is supposed to be a close burst 10, but the ranged will work for it. */
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
-		
-		oathOfEnmityTarget = targets.get(0);
+			/* This is supposed to be a close burst 10, but the ranged will work for it. */
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+
+			oathOfEnmityTarget = targets.get(0);
+			return true;
 
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Oath of Enmity in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedMinorAction(false);
+			return false;
 		}
 	}
 

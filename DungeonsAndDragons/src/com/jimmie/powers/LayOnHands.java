@@ -13,8 +13,11 @@ import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.Paladin;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
+import com.jimmie.domain.feats.FeatType;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.util.Utils;
 import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.PlayerCharacter;
 
 
 public class LayOnHands extends AttackPower {
@@ -86,7 +89,7 @@ public class LayOnHands extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		Creature ally = Encounter.getEncounter().chooseAllyAdjacentTo(user, user.getCurrentPosition());
 		DndCharacter cUser = null;
 		DndCharacter cAlly = null;
@@ -102,7 +105,18 @@ public class LayOnHands extends AttackPower {
 		cAlly.useHealingSurge();
 		// Remove one from mine.
 		cUser.setCurrentSurgeUses(cUser.getCurrentSurgeUses()-1);
-		
+		// Check for Healing Hands Feat
+		if (PlayerCharacter.class.isAssignableFrom(user.getClass())) {
+			PlayerCharacter pc = (PlayerCharacter) user;
+			if (pc.getFeats() != null) {
+				if (pc.hasFeat(FeatType.HEALING_HANDS)) {
+					int charisma = user.getAbilityModifier(AbilityType.CHARISMA);
+					Utils.print("Because " + user.getName() + " has the Healing Hands feat, " + cAlly.getName() + " gains an additional " + charisma);
+					cAlly.heal(charisma);
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override

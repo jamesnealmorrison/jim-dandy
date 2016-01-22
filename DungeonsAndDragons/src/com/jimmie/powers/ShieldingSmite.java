@@ -89,7 +89,7 @@ public class ShieldingSmite extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -122,7 +122,9 @@ public class ShieldingSmite extends AttackPower {
 			int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 			Utils.print(ally.getName() + " gets an AC bonus of " + abilityModifier + " until the end of my next turn.");
 			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.SHIELDING_SMITE);
+			return true;
 		}
+		return false;
 	}
 
 	@Override

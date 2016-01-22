@@ -88,7 +88,7 @@ public class RadiantDelirium extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
 
 		if ((targets != null) && !(targets.isEmpty())) {
@@ -110,7 +110,7 @@ public class RadiantDelirium extends AttackPower {
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Utils.print(target.getName() + " is dazed until the end of my next turn.");
 					Creature c = (Creature) target;
-					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, user.getCurrentTurn());
+					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.RADIANT_DELIRIUM, user.getCurrentTurn());
 					
 					Utils.print(target.getName() + " will take a -2 penalty to AC (save ends).");
 					c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RADIANT_DELIRIUM);
@@ -128,12 +128,14 @@ public class RadiantDelirium extends AttackPower {
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Utils.print(target.getName() + " is dazed until the end of my next turn.");
 					Creature c = (Creature) target;
-					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, user.getCurrentTurn());
+					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.RADIANT_DELIRIUM, user.getCurrentTurn());
 				}
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -86,7 +86,7 @@ public class AspectOfMight extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
@@ -127,11 +127,13 @@ public class AspectOfMight extends AttackPower {
 					((Avenger) user.getDndClass()).setAspectOfMightEncounterBonus(true);
 				}
 			}
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Aspect of Might today.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedStandardAction(false);
 		}
+		return false;
 	}
 
 	@Override

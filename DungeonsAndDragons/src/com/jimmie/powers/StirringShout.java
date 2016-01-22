@@ -85,7 +85,7 @@ public class StirringShout extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 
@@ -125,10 +125,12 @@ public class StirringShout extends AttackPower {
 					target.miss(user);
 				}
 			}
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Stirring Shout in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 			user.setUsedStandardAction(false);			
+			return false;
 		}
 	}
 

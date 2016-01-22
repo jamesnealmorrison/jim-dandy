@@ -81,7 +81,7 @@ public class ForcefulPunch extends AttackPower {
 	}
 
 	@Override
-	public void process(Creature user) {
+	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
 			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
@@ -117,10 +117,12 @@ public class ForcefulPunch extends AttackPower {
 
 				targets.get(0).slide(direction);
 			}
+			return true;
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Forceful Push in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
 		}
+		return false;
 	}
 
 	@Override

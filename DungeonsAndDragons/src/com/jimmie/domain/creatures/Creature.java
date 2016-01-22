@@ -1,20 +1,10 @@
 package com.jimmie.domain.creatures;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
-import java.awt.image.RGBImageFilter;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import javax.imageio.ImageIO;
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
@@ -56,6 +46,8 @@ import com.jimmie.domain.items.weapons.Hand;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.AttackPower;
+import com.jimmie.powers.BullRush;
+import com.jimmie.powers.Charge;
 import com.jimmie.powers.DivineChallenge;
 import com.jimmie.powers.Power;
 import com.jimmie.util.Dice;
@@ -93,6 +85,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected int maxHitPoints;
 	protected int reflex;
 	protected int will;
+	protected int fortitude;
 	protected int actionPoints;
 	protected int strength;
 	protected int constitution;
@@ -115,10 +108,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	private boolean turnOver;
 	private List<Mark> marks;
 	protected Origin origin;
-	Image image = null;
-	Image scaledImage = null;
-	Image bloodiedImage = null;
-	Image scaledBloodiedImage = null;
 
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
@@ -164,6 +153,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		baseSpeed = 0;
 		temporaryHitPoints = 0;
 		channelDivinityUses = 0;
+		
+		// Add some default powers that all creatures should have
+		powers.add(new BullRush());
+		powers.add(new Charge());
 	}
 	
 	public int getTemporaryHitPoints() {
@@ -315,10 +308,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.currentTurn = currentTurn;
 	}
 
-	public void setArmorClass(int armorClass) {
-		Utils.print("You have somehow reached the setArmorClass method of the Creature class.  You should not do this.");	
-	}
-
+	public abstract void setArmorClass(int armorClass);
 
 	public boolean isTurnOver() {
 		return turnOver;
@@ -364,7 +354,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryEffects.add(temporaryCombatAdvantage);
 	}
 	
-	public void setTemporaryCondition(Creature source, DurationType durationType, CreatureConditionType conditionType, int startTurn) {
+	public void setTemporaryCondition(Creature source, DurationType durationType, CreatureConditionType conditionType, TemporaryEffectReason reason, int startTurn) {
 		// TODO: Probably want to write smart code that will check the condition type to determine if multiples of that
 		// condition can apply or not, and check the list to see if multiples do apply.
 		TemporaryCondition temporaryCondition = new TemporaryCondition();
@@ -372,6 +362,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryCondition.setSource(source);
 		temporaryCondition.setDuration(durationType);
 		temporaryCondition.setStartTurn(startTurn);
+		temporaryCondition.setReason(reason);
 		temporaryEffects.add(temporaryCondition);
 	}
 
@@ -391,38 +382,40 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		int total = 0;
 
 		/* Check for a temporary attack roll modifier. */
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-	
-			if (tempEffect.getEffectType() == TemporaryEffectType.ATTACK_ROLL_MODIFIER) {
-				boolean appliesToTarget = false;
-				// See if it's a targeted effect (i.e. only applies to certain targets).
-				if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
-					TargetedTemporaryEffect targetedTempEffect = (TargetedTemporaryEffect) tempEffect;
-					if ((targetedTempEffect.getTarget() == null) || (!targets.contains(targetedTempEffect.getTarget()))) {
-						appliesToTarget = false;
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+
+				if (tempEffect.getEffectType() == TemporaryEffectType.ATTACK_ROLL_MODIFIER) {
+					boolean appliesToTarget = false;
+					// See if it's a targeted effect (i.e. only applies to certain targets).
+					if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
+						TargetedTemporaryEffect targetedTempEffect = (TargetedTemporaryEffect) tempEffect;
+						if ((targetedTempEffect.getTarget() == null) || (!targets.contains(targetedTempEffect.getTarget()))) {
+							appliesToTarget = false;
+						} else {
+							appliesToTarget = true;
+						}
 					} else {
 						appliesToTarget = true;
 					}
-				} else {
-					appliesToTarget = true;
-				}
-				if (!appliesToTarget) {
-					continue;
-				}
-				if (tempEffect.stillApplies()) {
-					Utils.print(name + " currently has a temporary attack roll modifier of " + tempEffect.getModifier());
-					total = total + tempEffect.getModifier();
-					/* If it should be removed now, delete the modifier now. */
-					if (tempEffect.shouldBeRemoved()) {
-						Utils.print("Attack modifier will no longer apply.");
+					if (!appliesToTarget) {
+						continue;
+					}
+					if (tempEffect.stillApplies()) {
+						Utils.print(name + " currently has a temporary attack roll modifier of " + tempEffect.getModifier());
+						total = total + tempEffect.getModifier();
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Attack modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						Utils.print("Attack modifier no longer applies.  Removing.");
 						it.remove();
 					}
-				} else {
-					Utils.print("Attack modifier no longer applies.  Removing.");
-					it.remove();
-				}
-			}			
+				}			
+			}
 		}
 
 
@@ -500,6 +493,30 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 	}
 
+	public void shift(int distance, String direction, boolean free) {
+		if (!free) {
+			if (!canTakeMoveAction()) {
+				Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
+				return;
+			}
+			if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}
+		}
+
+		/* Right now, the only difference between walk and shift is the distance.
+		 * Later I'll add things like checking for opportunity attacks, etc.
+		 */
+
+		int distanceLeft = distance;
+
+		while (distanceLeft > 0) {
+			moveCreature(direction, MovementType.SHIFTING);
+			distanceLeft--;
+		}
+	}
 
 	public void setTemporaryHitPoints(int i) {
 		temporaryHitPoints = i;
@@ -528,28 +545,12 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		currentConditions.add(new Prone());
 	}
 
-	public Image getImage() {
-		if (image == null) {
-			try {
-				image = ImageIO.read(new File(imagePath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return image;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-	public Image getBloodiedImage() {
-		if (bloodiedImage == null) {
-			try {
-				bloodiedImage = ImageIO.read(new File(bloodiedImagePath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return bloodiedImage;
+	public String getBloodiedImagePath() {
+		return bloodiedImagePath;
 	}
 
 	public void setImagePath(String imagePath) {
@@ -775,9 +776,17 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public void initializeForEncounter() {
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int roll = d.roll(DiceRollType.INITIATIVE_ROLL);
-		initiativeRoll = roll + initiative;
+		if (Monster.class.isAssignableFrom(this.getClass())) {
+			// See if this type of creature has already rolled for initiative.
+			int monsterInitiative = Encounter.getEncounter().getMonsterInitiative(this.getClass());
+			if (monsterInitiative != 0) {
+				setInitiativeRoll(monsterInitiative);
+			} else {
+				rollForInitiative();
+			}
+		} else {
+			rollForInitiative();
+		}
 		setCurrentTurn(0);
 		channelDivinityUses = 0;
 		
@@ -785,6 +794,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		for (Power power : powers) {
 			power.initializeForEncounter();
 		}
+	}
+
+	public void rollForInitiative() {
+		Utils.print(getName() + " is rolling for initiative.");
+		Dice d = new Dice(DiceType.TWENTY_SIDED);
+		int roll = d.roll(DiceRollType.INITIATIVE_ROLL);
+		initiativeRoll = roll + initiative;
 	}
 
 	public void initializeForNewDay() {		
@@ -872,6 +888,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		validActions.add("Walk");
 		Utils.print("Shift");
 		validActions.add("Shift");
+		Utils.print("Run");;
+		validActions.add("Run");
 
 		Utils.print("Your choice?");
 		String choice = Utils.getValidInput(validActions);
@@ -887,6 +905,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		} else if ("Shift".equalsIgnoreCase(choice)) {
 			movementType = MovementType.SHIFTING;
 			distanceLeft = 1;
+		} else if ("Run".equalsIgnoreCase(choice)) {
+			movementType = MovementType.RUNNING;
+			distanceLeft = getSpeed()+2;
+			Utils.print("Because you are running, you get a -5 penalty to attack rolls and you grant combat advantage until the start of your next turn.");
+			Utils.print("You also grant opportunity attacks if you leave a square adjacent to an enemy.");
+			setTemporaryEffect(-5, currentTurn, DurationType.START_OF_NEXT_TURN, this, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.RUNNING);
+			setTemporaryCombatAdvantage(this, DurationType.START_OF_NEXT_TURN, CombatAdvantageType.RUNNING, getCurrentTurn());
 		}
 
 		while (distanceLeft > 0) {
@@ -956,11 +981,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (power.isBasicAttack() && ((AttackPower)power).isMeleeAttack()) {
 					// If it's a melee weapon attack, make sure they have a melee weapon readied.
 					AttackType attackType = ((AttackPower)power).getAttackType();
-					if ((attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.MELEE_WEAPON)) {
-						if (getReadiedWeapon().getWeapon().isMeleeWeapon()) {
-							count++;
-							basicMeleeAttacks.put(count, power);							
-						}
+					if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)
+							|| (((attackType == AttackType.MELEE_WEAPON)	|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isMeleeWeapon())) {
+						count++;
+						basicMeleeAttacks.put(count, power);							
 					}
 				}
 			}
@@ -1081,7 +1105,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		Power chosenPower = validActions.get(choice);
 
 		Utils.print("Make sure you choose " + target.getName() + " in the next question, since I haven't automated that yet.");
-		chosenPower.process(this);
+		if (chosenPower != null) {
+			chosenPower.process(this);
+		}
 	}
 
 
@@ -1127,11 +1153,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		usedStandardAction = false;
 		currentTurn++;
 		
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if ((tempEffect.getDuration() == DurationType.START_OF_NEXT_TURN) && (tempEffect.getStartTurn() < currentTurn)) {
-				Utils.print("It's the start of a new turn.  Removing " + tempEffect.getEffectType() + " temporary effect.");
-				it.remove();
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if ((tempEffect.getDuration() == DurationType.START_OF_NEXT_TURN) && (tempEffect.getStartTurn() < currentTurn)) {
+					Utils.print("It's the start of a new turn.  Removing " + tempEffect.getEffectType() + " temporary effect.");
+					it.remove();
+				}
 			}
 		}
 		
@@ -1169,10 +1197,12 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					if (!adjCreatures.contains(markedCreature)) {
 						Utils.print(getName() + " did not engage " + markedCreature.getName() + ". Removing the Divine Challenge mark.");
 						divineChallenge.setMarkedCreature(null);
-						for (Iterator<Mark> it = markedCreature.getMarks().iterator(); it.hasNext();) {
-							Mark mark = it.next();
-							if (mark.getMarkType() == MarkType.DIVINE_CHALLENGE) {
-								it.remove();
+						if (markedCreature.getMarks() != null) {
+							for (Iterator<Mark> it = markedCreature.getMarks().iterator(); it.hasNext();) {
+								Mark mark = it.next();
+								if (mark.getMarkType() == MarkType.DIVINE_CHALLENGE) {
+									it.remove();
+								}
 							}
 						}
 					}
@@ -1187,30 +1217,50 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	// quantity is the number of saving throws you can do now.  A 0 means you perform a saving throw against all your "save ends" effects.
 	public void performSavingThrows(int quantity, int modifier) {
 		int count = 0;
-		for (Iterator<TemporaryEffect> it = getTemporaryEffects().iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (effect.getDuration() == DurationType.SAVE_ENDS) {
-				if (quantity == 0) {
-					Utils.print(getName() + " gets to make a saving throw against " + effect.getEffectType());
-					int roll = rollForSavingThrow(modifier);
-					if (roll >= 10) {
-						Utils.print("You are no longer affected.");
-						it.remove();
+		if (getTemporaryEffects() != null) {
+			for (Iterator<TemporaryEffect> it = getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (effect.getDuration() == DurationType.SAVE_ENDS) {
+					TemporaryEffectType effectType = effect.getEffectType();
+					CreatureConditionType conditionType = null;
+					if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+						conditionType = ((TemporaryCondition) effect).getConditionType();
 					}
-				} else if (count < quantity) {
-					Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against " + effect.getEffectType() + "?");
-					Utils.print("Your choice (Y or N):");
-					if (Utils.getYesOrNoInput().equalsIgnoreCase("Y")) {
-						Dice dice = new Dice(DiceType.TWENTY_SIDED);
-						int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
-						// TODO: Add any modifiers (once you run into a power or something that adds a modifier).
-						if (roll + modifier >= 10) {
+					if (quantity == 0) {
+						if (effectType != null) {
+							Utils.print(getName() + " gets to make a saving throw against " + effectType);
+						} else if (conditionType != null) {
+							Utils.print(getName() + " gets to make a saving throw against " + conditionType);
+						} else {
+							Utils.print(getName() + " gets to make a saving throw against someting.  Not sure what.");
+						}
+						int roll = rollForSavingThrow(modifier);
+						if (roll >= 10) {
 							Utils.print("You are no longer affected.");
 							it.remove();
-							count++;
 						}
+					} else if (count < quantity) {
+						if (effectType != null) {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against " + effectType + "?");
+						} else if (conditionType != null) {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against " + conditionType + "?");
+						} else {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against something (not sure what)?");
+						}
+						
+						Utils.print("Your choice (Y or N):");
+						if (Utils.getYesOrNoInput().equalsIgnoreCase("Y")) {
+							Dice dice = new Dice(DiceType.TWENTY_SIDED);
+							int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
+							// TODO: Add any modifiers (once you run into a power or something that adds a modifier).
+							if (roll + modifier >= 10) {
+								Utils.print("You are no longer affected.");
+								it.remove();
+								count++;
+							}
+						}
+
 					}
-					
 				}
 			}
 		}
@@ -1336,55 +1386,42 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 */
 	public int getReflex(Creature attacker) {
-		int modifier = 0;
-		/* See if there is a temporary modifier to the reflex. */
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (tempEffect.getEffectType() == TemporaryEffectType.REFLEX_MODIFIER) {
-				if (tempEffect.stillApplies()) {
-					Utils.print(name + " is supposed to get a modifier to reflex until " + tempEffect.getDuration());
-					modifier = modifier + tempEffect.getModifier();
-					Utils.print("Modifier still applies.");
-					/* If it should be removed now, delete the modifier now. */
-					if (tempEffect.shouldBeRemoved()) {
-						Utils.print("Modifier will no longer apply.");
-						it.remove();
-					}
-				} else {
-					/* modifier is over.  Reset the modifier. */
-					it.remove();
-					Utils.print("Modifier no longer applies.  Resetting modifier.");
-				}
-			}
-		}
-		return reflex + modifier;
+		return reflex;
 	}
-
 
 	public void setReflex(int reflex) {
 		this.reflex = reflex;
 	}
-
+	
+	public int getFortitude(Creature attacker) {
+		return fortitude;
+	}
+	
+	public void setFortitude(int fortitude) {
+		this.fortitude = fortitude;
+	}
 
 	public int getWill(Creature attacker) {
 		int currentWill = will;
 
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MODIFIER) {
-				if (tempEffect.stillApplies()) {
-					Utils.print(name + " is supposed to get a modifier to will until " + tempEffect.getDuration());
-					currentWill = currentWill + tempEffect.getModifier();
-					Utils.print("Modifier still applies.");
-					/* If it should be removed now, delete the modifier now. */
-					if (tempEffect.shouldBeRemoved()) {
-						Utils.print("Modifier will no longer apply.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MODIFIER) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(name + " is supposed to get a modifier to will until " + tempEffect.getDuration());
+						currentWill = currentWill + tempEffect.getModifier();
+						Utils.print("Modifier still applies.");
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						/* modifier is over.  Reset the modifier. */
 						it.remove();
+						Utils.print("Modifier no longer applies.  Resetting modifier.");
 					}
-				} else {
-					/* modifier is over.  Reset the modifier. */
-					it.remove();
-					Utils.print("Modifier no longer applies.  Resetting modifier.");
 				}
 			}
 		}
@@ -1575,31 +1612,33 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	
 	public int getSpeed() {
 		int modifier = 0;
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(tempEffect.getClass())) {
-				TemporaryCondition temporaryCondition = (TemporaryCondition) tempEffect;
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryCondition temporaryCondition = (TemporaryCondition) tempEffect;
 
-				// Check for slowness
-				if (temporaryCondition.getConditionType() == CreatureConditionType.SLOWED) {
-					if (temporaryCondition.stillApplies()) {
-						Utils.print(getName() + " is slowed.  Can only move 2 spaces.");
-						/* If it should be removed now, delete the modifier now. */
-						if (temporaryCondition.shouldBeRemoved()) {
-							Utils.print("Slowed condition will no longer apply.");
+					// Check for slowness
+					if (temporaryCondition.getConditionType() == CreatureConditionType.SLOWED) {
+						if (temporaryCondition.stillApplies()) {
+							Utils.print(getName() + " is slowed.  Can only move 2 spaces.");
+							/* If it should be removed now, delete the modifier now. */
+							if (temporaryCondition.shouldBeRemoved()) {
+								Utils.print("Slowed condition will no longer apply.");
+								it.remove();
+							}
+							return 2;
+						} else {
+							Utils.print("The SLOWED condition no longer applies.  Removing.");
 							it.remove();
 						}
-						return 2;
-					} else {
-						Utils.print("The SLOWED condition no longer applies.  Removing.");
-						it.remove();
 					}
 				}
-			}
-			if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MODIFIER) {
-				if (tempEffect.stillApplies()) {
-					Utils.print(getName() + " has a temporary speed modifier of " + tempEffect.getModifier() + " due to " + tempEffect.getReason());
-					modifier = tempEffect.getModifier();
+				if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MODIFIER) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(getName() + " has a temporary speed modifier of " + tempEffect.getModifier() + " due to " + tempEffect.getReason());
+						modifier = tempEffect.getModifier();
+					}
 				}
 			}
 		}
@@ -1649,7 +1688,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 
 		if (temporaryHitPoints > 0) {
-			Utils.print(name + " has " + temporaryHitPoints + ". Using those first.");
+			Utils.print(name + " has " + temporaryHitPoints + " temporary hit points. Using those first.");
 			if (temporaryHitPoints >= damage) {
 				temporaryHitPoints = temporaryHitPoints - damage;
 				Utils.print(temporaryHitPoints + " remaining.");
@@ -1686,22 +1725,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 		
 		// Check for temporary damage resistance.
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (TemporaryDamageResistance.class.isAssignableFrom(tempEffect.getClass())) {
-				TemporaryDamageResistance temporaryDamageResistance = (TemporaryDamageResistance) tempEffect;
-				if (temporaryDamageResistance.stillApplies()) {
-					if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
-						resistance += temporaryDamageResistance.getModifier();
-						/* If it should be removed now, delete the modifier now. */
-						if (tempEffect.shouldBeRemoved()) {
-							Utils.print("Temporary damage resistance will no longer apply.");
-							it.remove();
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryDamageResistance.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryDamageResistance temporaryDamageResistance = (TemporaryDamageResistance) tempEffect;
+					if (temporaryDamageResistance.stillApplies()) {
+						if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
+							resistance += temporaryDamageResistance.getModifier();
+							/* If it should be removed now, delete the modifier now. */
+							if (tempEffect.shouldBeRemoved()) {
+								Utils.print("Temporary damage resistance will no longer apply.");
+								it.remove();
+							}
 						}
+					} else {
+						Utils.print("Temporary damage resistance no longer applies.  Removing.");
+						it.remove();
 					}
-				} else {
-					Utils.print("Temporary damage resistance no longer applies.  Removing.");
-					it.remove();
 				}
 			}
 		}
@@ -1745,22 +1786,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isUnconscious() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.UNCONSCIOUS) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still unconscious.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be unconscious after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.UNCONSCIOUS) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still unconscious.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be unconscious after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer unconscious.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer unconscious.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1769,22 +1812,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isSurprised() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.SURPRISED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still surprised.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be surprised after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.SURPRISED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still surprised.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be surprised after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer surprised.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer surprised.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1793,22 +1838,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isDeafened() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.DEAFENED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still deafened.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be deafened after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DEAFENED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still deafened.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be deafened after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer deafened.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer deafened.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1818,22 +1865,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 
 	public boolean isPetrified() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.PETRIFIED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is petrified still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be petrified after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.PETRIFIED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is petrified still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be petrified after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer petrified.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer petrified.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1843,22 +1892,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 
 	public boolean isDying() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.DYING) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is dying still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be dying after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DYING) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dying still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dying after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dying.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer dying.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1868,22 +1919,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 
 	public boolean isDominated() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.DOMINATED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is dominated still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be dominated after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DOMINATED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dominated still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dominated after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dominated.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer dominated.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1893,22 +1946,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 
 	public boolean isDazed() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.DAZED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is dazed still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be dazed after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DAZED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dazed still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dazed after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dazed.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer dazed.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1918,22 +1973,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	@Override
 	public boolean isStunned() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.STUNNED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is stunned still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be stunned after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.STUNNED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is stunned still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be stunned after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer stunned.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer stunned.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1943,31 +2000,33 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	/* There could be several reasons you are invisible.  For now, just checking for temporary invisibility, though. */
 	public boolean isInvisibleTo(TurnTaker attacker) {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect tempEffect = it.next();
-			if (TemporaryInvisibility.class.isAssignableFrom(tempEffect.getClass())) {
-				TemporaryInvisibility temporaryInvisibility = (TemporaryInvisibility) tempEffect;
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryInvisibility.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryInvisibility temporaryInvisibility = (TemporaryInvisibility) tempEffect;
 
-				if (temporaryInvisibility.stillApplies()) {
-					/* Does it apply to this creature? */
-					if (temporaryInvisibility.getTargets() == null) {
-						/* If it should be removed now, delete the modifier now. */
-						if (temporaryInvisibility.shouldBeRemoved()) {
-							it.remove();
-						}
-						return true;
-					} else {
-						if (temporaryInvisibility.getTargets().contains(attacker)) {
+					if (temporaryInvisibility.stillApplies()) {
+						/* Does it apply to this creature? */
+						if (temporaryInvisibility.getTargets() == null) {
 							/* If it should be removed now, delete the modifier now. */
 							if (temporaryInvisibility.shouldBeRemoved()) {
 								it.remove();
 							}
 							return true;
+						} else {
+							if (temporaryInvisibility.getTargets().contains(attacker)) {
+								/* If it should be removed now, delete the modifier now. */
+								if (temporaryInvisibility.shouldBeRemoved()) {
+									it.remove();
+								}
+								return true;
+							}
 						}
+					} else {
+						it.remove();
+						Utils.print("Temporary invisibility no longer applies.  Resetting.");
 					}
-				} else {
-					it.remove();
-					Utils.print("Temporary invisibility no longer applies.  Resetting.");
 				}
 			}
 		}
@@ -1976,22 +2035,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	@Override
 	public boolean isBlinded() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.BLINDED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is blinded still.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be blinded after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.BLINDED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is blinded still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be blinded after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer blinded.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer blinded.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2000,22 +2061,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isHelpless() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.HELPLESS) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still helpless.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be helpless after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.HELPLESS) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still helpless.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be helpless after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer helpless.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer helpless.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2024,22 +2087,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isImmobilized() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.IMMOBILIZED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still immobilized.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be immobilized after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.IMMOBILIZED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still immobilized.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be immobilized after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer immobilized.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer immobilized.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2048,22 +2113,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isProne() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.PRONE) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still prone.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be prone after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.PRONE) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still prone.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be prone after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer prone.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer prone.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2072,22 +2139,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isRestrained() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.RESTRAINED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still restrained.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be restrained after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.RESTRAINED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still restrained.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be restrained after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer restrained.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer restrained.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2096,22 +2165,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isSlowed() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.SLOWED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still slowed.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be slowed after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.SLOWED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still slowed.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be slowed after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer slowed.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer slowed.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2120,22 +2191,24 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean isWeakened() {
-		for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-			TemporaryEffect effect = it.next();
-			if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
-				TemporaryCondition condition = (TemporaryCondition) effect;
-				if (condition.getConditionType() == CreatureConditionType.WEAKENED) {
-					if (condition.stillApplies()) {
-						Utils.print(getName() + " is still weakened.");
-						/* If it should be removed now, delete the modifier now. */
-						if (condition.shouldBeRemoved()) {
-							Utils.print("But will not be weakened after this.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.WEAKENED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still weakened.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be weakened after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer weakened.  Removing.");
 							it.remove();
 						}
-						return true;
-					} else {
-						Utils.print(getName() + " is no longer weakened.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -2236,99 +2309,203 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		
 	}
 
-	public Image getScaledImage(double shrinkPercent) {
-		if (scaledImage == null) {
-			if ((getImage().getWidth(null) == 200) || (getImage().getWidth(null) == 400) || (getImage().getWidth(null) == 600)) {
-				// Go ahead and do transparency here, too.  But not based on white.  Base it on being outside the circle or not.
-				Image image1 = getImage();
-				Image newImage = makeTransparent((BufferedImage)image1);
-				
-				scaledImage = newImage.getScaledInstance((int) (newImage.getWidth(null)*shrinkPercent), (int)(newImage.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
-			} else {
-				scaledImage = getImage();
+	public boolean isSmallerThan(Creature user) {
+		switch (size) {
+		case TINY : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return true;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case SMALL : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case MEDIUM : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case LARGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case HUGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return true;
+			}
+		case GARGANTUAN : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
 			}
 		}
-		return scaledImage;
+		return false;
 	}
 
-	private Image makeTransparent(BufferedImage image)
-	{
-		ImageFilter filter = new RGBImageFilter()
-		{
-			public final int filterRGB(int x, int y, int rgb)
-			{
-				if (!pixelInsideCircle(x,y,image.getWidth())) {
-					return 0;
-				} else {
-					return rgb;
-				}
-			}
-		};
-
-		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
-		return Toolkit.getDefaultToolkit().createImage(ip);
-	}
-	
-	private boolean pixelInsideCircle(int x, int y, int width) {
-		// For now, start with a width 4 pixels outside the circle.
-		int r = (width/2) + 1;
-		int h = width/2;
-		int b = -2*h;
-		int c = (x*x)-(2*h*x)+(2*h*h)-(r*r);
-		
-		// Use the quadratic formula to figure out the y edge values
-		int yEdgeUp = (-b+(int) Math.sqrt((b*b)-(4*c)))/2;
-		int yEdgeDown = (-b-(int) Math.sqrt((b*b)-(4*c)))/2;
-		if ((y>=yEdgeUp) || (y<=yEdgeDown)) {
-			return false;
-		} else {
+	public boolean isSameSizeAs(Creature user) {
+		if (size == user.size) {
 			return true;
+		} else {
+			return false;
 		}
-		
-	}	
-	
-	public Image getScaledBloodiedImage(double shrinkPercent) {
-		if (scaledBloodiedImage == null) {
-			if ((getBloodiedImage().getWidth(null) == 200) || (getBloodiedImage().getWidth(null) == 400) || (getBloodiedImage().getWidth(null) == 600)) {
-				// Go ahead and do transparency here, too.  But not based on white.  Base it on being outside the circle or not.
-				Image image1 = getBloodiedImage();
-				Image newImage = makeTransparent((BufferedImage)image1);
-				
-				scaledBloodiedImage = newImage.getScaledInstance((int) (newImage.getWidth(null)*shrinkPercent), (int)(newImage.getHeight(null)*shrinkPercent), Image.SCALE_SMOOTH);
-			} else {
-				ImageFilter filter = new RGBImageFilter()
-				{
-					public final int filterRGB(int x, int y, int rgb)
-					{
-						/* Still have to filter out the white transparency. */
-						int red = (rgb >> 16) & 0xFF;
-						int green = (rgb >> 8) & 0xFF;
-						int blue = rgb & 0xFF;
-						if ((red > 200) && (green > 200) && (blue > 200)) { 
-							return 0;
-						} else {
-							return (rgb | 0x00880000);
-						}
-					}
-				};
+	}
 
-				ImageProducer ip = new FilteredImageSource(getBloodiedImage().getSource(), filter);
-				scaledBloodiedImage = Toolkit.getDefaultToolkit().createImage(ip);
+	public boolean isOneSizeBiggerThan(Creature user) {
+		switch (size) {
+		case TINY : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case SMALL : 
+			switch (user.getSize()) {
+			case TINY : 
+				return true;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case MEDIUM : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return true;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case LARGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case HUGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case GARGANTUAN : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return false;
 			}
 		}
-		return scaledBloodiedImage;
-		
+		return false;
 	}
-	public void setImage(Image image) {
-		this.image = image;
-		// If image is changing, then we need to clear the scaled image, too.
-		scaledImage = null;
-	}
-
-	public void setBloodiedImage(Image bloodiedImage) {
-		this.bloodiedImage = bloodiedImage;
-		// If image is changing, then we need to clear the scaled image, too.
-		scaledBloodiedImage = null;
-	}
-
 }
