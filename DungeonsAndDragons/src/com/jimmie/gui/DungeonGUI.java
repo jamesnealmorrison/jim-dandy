@@ -1,19 +1,17 @@
 package com.jimmie.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.LayoutManager;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
-
 import com.jimmie.DungeonConfig;
 import com.jimmie.OnTheRoadKoboldBrigandsEncounterConfig;
 import com.jimmie.encounters.Encounter;
@@ -59,7 +57,10 @@ public class DungeonGUI extends JPanel {
 	@Autowired
 	private BattlefieldPanel battlefieldPanel;
 	private JScrollPane battleMapScrollPane;
+	private JPanel bufferBetweenMonitors;
 	private JScrollPane creatureScrollPane;
+	private JScrollPane battleCardsScrollPane;
+	
 	@Autowired
 	private Encounter encounter;
 
@@ -73,11 +74,13 @@ public class DungeonGUI extends JPanel {
 
 	public void init() {
 		topPanel = new JPanel();
-		LayoutManager borderLayout = new BorderLayout();
+		LayoutManager gridBagLayout = new GridBagLayout();
 		Dimension preferredSize = new Dimension();
-		preferredSize.setSize(1250, 975);
+		preferredSize.setSize(3810, 975);
 		topPanel.setPreferredSize(preferredSize);
-		topPanel.setLayout(borderLayout);
+		topPanel.setLayout(gridBagLayout);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
 
 		/* Set up the encounter. */
 		// encounter = new KoboldLairOutsideEncounter();
@@ -88,7 +91,7 @@ public class DungeonGUI extends JPanel {
 		partyPanel.init(encounter.getCreatures());
 		battlefieldPanel.init(encounter.getMap(), encounter.getCreatures());
 		battleMapScrollPane = new JScrollPane();
-		Dimension battleMapScrollPaneDimension = new Dimension(400,400);
+		Dimension battleMapScrollPaneDimension = new Dimension(1055,975);
 		battleMapScrollPane.setPreferredSize(battleMapScrollPaneDimension);
 		battleMapScrollPane.createHorizontalScrollBar();
 		battleMapScrollPane.createVerticalScrollBar();
@@ -98,8 +101,12 @@ public class DungeonGUI extends JPanel {
 		battleMapScrollPane.add(battlefieldPanel);
 		battleMapScrollPane.setViewportView(battlefieldPanel);
 
+		bufferBetweenMonitors = new JPanel();
+		Dimension bufferDimension = new Dimension(10,975);
+		bufferBetweenMonitors.setPreferredSize(bufferDimension);
+
 		creatureScrollPane = new JScrollPane();
-		Dimension creatureScrollPaneDimension = new Dimension(200,400);
+		Dimension creatureScrollPaneDimension = new Dimension(725,975);
 		creatureScrollPane.setPreferredSize(creatureScrollPaneDimension);
 		creatureScrollPane.createHorizontalScrollBar();
 		creatureScrollPane.createVerticalScrollBar();
@@ -109,14 +116,28 @@ public class DungeonGUI extends JPanel {
 		creatureScrollPane.add(partyPanel);
 		creatureScrollPane.setViewportView(partyPanel);
 
+		
+		battleCardsScrollPane = new JScrollPane();
+		Dimension battleCardsScrollPaneDimension = new Dimension(1170,975);
+		battleCardsScrollPane.setPreferredSize(battleCardsScrollPaneDimension);
+		battleCardsScrollPane.createHorizontalScrollBar();
+		battleCardsScrollPane.createVerticalScrollBar();
+		battleCardsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		battleCardsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+//		battleCardsScrollPane.add(partyPanel);
+//		battleCardsScrollPane.setViewportView(partyPanel);
+		
 
 		console = new IntegratedCommandConsole();
 		console.addPropertyChangeListener(consolePanel);
 		console.setConsolePanel(consolePanel);
 
-		topPanel.add(creatureScrollPane, BorderLayout.WEST);
-		topPanel.add(battleMapScrollPane, BorderLayout.CENTER);
-		topPanel.add(consolePanel, BorderLayout.SOUTH);
+		topPanel.add(battleMapScrollPane, c);
+		topPanel.add(consolePanel, c);
+		topPanel.add(bufferBetweenMonitors, c);
+		topPanel.add(creatureScrollPane, c);
+		topPanel.add(battleCardsScrollPane, c);
 		add(topPanel);
 
 		Utils.setICC(console);

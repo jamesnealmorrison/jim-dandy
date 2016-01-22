@@ -25,7 +25,7 @@ public class ConsolePanel extends JPanel implements PropertyChangeListener, Acti
 	{
 		this.setLayout(new BorderLayout(5,5));
 // This used to not be here at all:
-		this.setPreferredSize(new Dimension(100,300));
+		this.setPreferredSize(new Dimension(840,975));
 		textArea = new JTextArea(10, 20);
 		textArea.setEditable(false);
 		JScrollPane scrollPaneForConsole = new JScrollPane(textArea);
