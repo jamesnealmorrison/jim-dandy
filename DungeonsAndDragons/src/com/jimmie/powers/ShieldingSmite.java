@@ -121,7 +121,7 @@ public class ShieldingSmite extends AttackPower {
 			Creature ally = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
 			int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 			Utils.print(ally.getName() + " gets an AC bonus of " + abilityModifier + " until the end of my next turn.");
-			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.SHIELDING_SMITE);
+			ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.SHIELDING_SMITE);
 			return true;
 		}
 		return false;

@@ -255,7 +255,7 @@ public abstract class DndCharacter extends Creature {
 			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
 
-				if (tempEffect.getEffectType() == TemporaryEffectType.ARMOR_CLASS_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.AC_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(name + " is supposed to get a bonus to armor class of " + tempEffect.getModifier() + ".");
 						armorClass = armorClass + tempEffect.getModifier();
@@ -791,6 +791,7 @@ public abstract class DndCharacter extends Creature {
 		this.currentSurgeUses = 0;
 		actionPoints = 1;
 		usedSecondWind = false;
+		temporaryEffects = new ArrayList<TemporaryEffect>();
 	}
 
 }

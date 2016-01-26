@@ -94,11 +94,11 @@ public class SecondWind extends Power {
 			if (timesUsed == 0) {
 				timesUsed++;
 				player.useHealingSurge();
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.AC_MOD, TemporaryEffectReason.SECOND_WIND);
 
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.SECOND_WIND);
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.SECOND_WIND);
-				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.WILL_MOD, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.REF_MOD, TemporaryEffectReason.SECOND_WIND);
+				player.setTemporaryEffect(2, player.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, player, TemporaryEffectType.FORT_MOD, TemporaryEffectReason.SECOND_WIND);
 			} else {
 				Utils.print("You have already used your second wind in this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
 				return false;

@@ -197,7 +197,7 @@ public class PrintCharacterSheet {
 		g2d.drawString(String.valueOf(0), COL8_DEFENSES, ROW3_DEFENSES);
 
 		
-		g2d.drawString(String.valueOf(pc.getFortitude()), COL1_DEFENSES, ROW4_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getFortitude(null)), COL1_DEFENSES, ROW4_DEFENSES);
 		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW4_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getFortitudeAbilityModifier()), COL3_DEFENSES, ROW4_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getDndClass().getFortitudeBonus()), COL4_DEFENSES, ROW4_DEFENSES);
@@ -208,7 +208,7 @@ public class PrintCharacterSheet {
 		g2d.drawString(String.valueOf(pc.getRace().getFortitudeBonus() + pc.getFortitudeMisc1()), COL7_DEFENSES, ROW4_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getFortitudeMisc2()), COL8_DEFENSES, ROW4_DEFENSES);
 
-		g2d.drawString(String.valueOf(pc.getReflex()), COL1_DEFENSES, ROW5_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getReflex(null)), COL1_DEFENSES, ROW5_DEFENSES);
 		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW5_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getReflexAbilityModifier()), COL3_DEFENSES, ROW5_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getDndClass().getReflexBonus()), COL4_DEFENSES, ROW5_DEFENSES);
@@ -219,7 +219,7 @@ public class PrintCharacterSheet {
 		g2d.drawString(String.valueOf(pc.getRace().getReflexBonus() + pc.getReflexMisc1()), COL7_DEFENSES, ROW5_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getReflexMisc2()), COL8_DEFENSES, ROW5_DEFENSES);
 
-		g2d.drawString(String.valueOf(pc.getWill()), COL1_DEFENSES, ROW6_DEFENSES);
+		g2d.drawString(String.valueOf(pc.getWill(null)), COL1_DEFENSES, ROW6_DEFENSES);
 		g2d.drawString(String.valueOf(10+(pc.getLevel()/2)), COL2_DEFENSES, ROW6_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getWillAbilityModifier()), COL3_DEFENSES, ROW6_DEFENSES);
 		g2d.drawString(String.valueOf(pc.getDndClass().getWillBonus()), COL4_DEFENSES, ROW6_DEFENSES);

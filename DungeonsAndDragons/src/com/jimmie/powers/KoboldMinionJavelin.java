@@ -8,15 +8,12 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
-import com.jimmie.domain.DiceRollType;
-import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class KoboldMinionJavelin extends AttackPower {
@@ -95,16 +92,14 @@ public class KoboldMinionJavelin extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				Dice d = new Dice(DiceType.TWENTY_SIDED);
-				int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
-				int roll = diceRoll + KoboldMinionJavelin.getAttackModifier() + user.getOtherAttackModifier(targets);
+				int diceRoll = user.attackRoll(KoboldMinionJavelin.getAttackModifier() + user.getOtherAttackModifier(targets));
 
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a total of " + diceRoll);
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				if (roll >= targetArmorClass) {
+				if (diceRoll >= targetArmorClass) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import com.jimmie.DungeonConfig;
-import com.jimmie.OnTheRoadKoboldBrigandsEncounterConfig;
+import com.jimmie.KoboldAmbushEncounterConfig;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.IntegratedCommandConsole;
 import com.jimmie.util.Utils;
@@ -59,6 +59,8 @@ public class DungeonGUI extends JPanel {
 	private JScrollPane battleMapScrollPane;
 	private JPanel bufferBetweenMonitors;
 	private JScrollPane creatureScrollPane;
+	@Autowired
+	private BattleCardPanel battleCardPanel;
 	private JScrollPane battleCardsScrollPane;
 	
 	@Autowired
@@ -97,6 +99,7 @@ public class DungeonGUI extends JPanel {
 		battleMapScrollPane.createVerticalScrollBar();
 		battleMapScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		battleMapScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		battleMapScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 		battleMapScrollPane.add(battlefieldPanel);
 		battleMapScrollPane.setViewportView(battlefieldPanel);
@@ -112,6 +115,7 @@ public class DungeonGUI extends JPanel {
 		creatureScrollPane.createVerticalScrollBar();
 		creatureScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		creatureScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		creatureScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 		creatureScrollPane.add(partyPanel);
 		creatureScrollPane.setViewportView(partyPanel);
@@ -124,9 +128,11 @@ public class DungeonGUI extends JPanel {
 		battleCardsScrollPane.createVerticalScrollBar();
 		battleCardsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		battleCardsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		battleCardsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-//		battleCardsScrollPane.add(partyPanel);
-//		battleCardsScrollPane.setViewportView(partyPanel);
+		battleCardPanel.init();
+		battleCardsScrollPane.add(battleCardPanel);
+		battleCardsScrollPane.setViewportView(battleCardPanel);
 		
 
 		console = new IntegratedCommandConsole();
@@ -149,7 +155,7 @@ public class DungeonGUI extends JPanel {
 	public static void main(String[] args)
 	{
 		@SuppressWarnings("resource")
-		ApplicationContext context = new AnnotationConfigApplicationContext(OnTheRoadKoboldBrigandsEncounterConfig.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(KoboldAmbushEncounterConfig.class);
 		
 		frame = new JFrame("Dungeon GUI");      
 
@@ -196,6 +202,9 @@ public class DungeonGUI extends JPanel {
 		if (battlefieldPanel != null)
 		{
 			battlefieldPanel.repaint();
+		}
+		if (battleCardPanel != null) {
+			battleCardPanel.repaint();
 		}
 	}
 }

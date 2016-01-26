@@ -70,43 +70,43 @@ public class Sorcerer extends DndClass {
 			switch (roll) {
 			case 1 :
 				Utils.print("You will have 5 damage resistance to ACID until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.ACID);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.ACID);
 				break;
 			case 2 :
 				Utils.print("You will have 5 damage resistance to COLD until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.COLD);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.COLD);
 				break;
 			case 3 :
 				Utils.print("You will have 5 damage resistance to FIRE until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.FIRE);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.FIRE);
 				break;
 			case 4 :
 				Utils.print("You will have 5 damage resistance to FORCE until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.FORCE);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.FORCE);
 				break;
 			case 5 :
 				Utils.print("You will have 5 damage resistance to LIGHTNING until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.LIGHTNING);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.LIGHTNING);
 				break;
 			case 6 :
 				Utils.print("You will have 5 damage resistance to NECROTIC until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.NECROTIC);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.NECROTIC);
 				break;
 			case 7 :
 				Utils.print("You will have 5 damage resistance to POISON until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.POISON);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.POISON);
 				break;
 			case 8 :
 				Utils.print("You will have 5 damage resistance to PSYCHIC until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.PSYCHIC);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.PSYCHIC);
 				break;
 			case 9 :
 				Utils.print("You will have 5 damage resistance to RADIANT until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.RADIANT);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.RADIANT);
 				break;
 			case 10 :
 				Utils.print("You will have 5 damage resistance to THUNDER until the end of your next extended rest.");
-				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DAMAGE_RESISTANCE, TemporaryEffectReason.WILD_MAGIC, DamageType.THUNDER);
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.THUNDER);
 				break;
 			}
 		}

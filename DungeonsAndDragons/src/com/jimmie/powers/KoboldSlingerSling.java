@@ -9,7 +9,6 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
-import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
@@ -21,7 +20,6 @@ import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class KoboldSlingerSling extends AttackPower {
@@ -132,11 +130,9 @@ public class KoboldSlingerSling extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				Dice d = new Dice(DiceType.TWENTY_SIDED);
-				int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
-				int roll = diceRoll + 6 + user.getOtherAttackModifier(targets);
+				int roll = user.attackRoll(6 + user.getOtherAttackModifier(targets));
 
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+				Utils.print("You rolled a total of: " + roll);
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
@@ -162,11 +158,11 @@ public class KoboldSlingerSling extends AttackPower {
 						}
 						if (shot == FIREPOT) {
 							Utils.print(target.getName() + " takes ongoing 2 fire damage (save ends) because of the firepot.");
-							cTarget.setTemporaryOngoingDamage(2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DAMAGE, TemporaryEffectReason.KOBOLD_SLINGER_SLING, DamageType.FIRE);
+							cTarget.setTemporaryOngoingDamage(2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DMG, TemporaryEffectReason.KOBOLD_SLINGER_SLING, DamageType.FIRE);
 						}
 						if (shot == STINKPOT) {
 							Utils.print(target.getName() + " takes ongoing a -2 penalty to attack rolls (save ends) because of the stinkpot.");
-							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.KOBOLD_SLINGER_SLING);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.KOBOLD_SLINGER_SLING);
 						}
 					}
 				} else {

@@ -13,6 +13,7 @@ import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.ZoneShape;
 import com.jimmie.domain.ZoneType;
@@ -90,46 +91,53 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<Creature> cTargets = Encounter.getEncounter().getEnemiesWithinRangeOf(user, user.getCurrentPosition(), 3);
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.addAll(cTargets);
-		
-		Utils.print("Since this might affect multiple targets, rolling for damage first.");
-		DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
-		Dice damageDice = new Dice(damageDiceType);
-		int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
- 		int damage = 0;
- 		
- 		for (int rolls = 0; rolls < damageRolls; rolls++) {
- 		    damage = damage + damageDice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
- 		}
- 		damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH);
-		
- 		List<Creature> hitTargets = new ArrayList<Creature>();
-		for (AttackTarget target : targets) {
-			int targetAC = target.getArmorClass(user);
-			Utils.print("Your target, " + target.getName() + ", has an AC of " + targetAC);
-			
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
-			
-			if (attackRoll >= targetAC) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
+		if (timesUsed > 0) {
+			Utils.print("You can't use this power.  Sorry.");
+			return false;
+		} else {
+			List<Creature> cTargets = Encounter.getEncounter().getEnemiesWithinRangeOf(user, user.getCurrentPosition(), 3);
+			List<AttackTarget> targets = new ArrayList<AttackTarget>();
+			targets.addAll(cTargets);
 
-				target.hurt(damage, DamageType.RADIANT, true, user);
-				
-				hitTargets.add((Creature) target);
-			} else {
-			    Utils.print("Sorry.  You missed " + target.getName() + ". Doing half damage.");
-			    
-			    target.hurt(damage/2, DamageType.RADIANT, false, user);
-			    
-				target.miss(user);
+			Utils.print("Since this might affect multiple targets, rolling for damage first.");
+			DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+			Dice damageDice = new Dice(damageDiceType);
+			int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+			int damage = 0;
+
+			for (int rolls = 0; rolls < damageRolls; rolls++) {
+				damage = damage + damageDice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
 			}
+			damage = damage + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH);
+
+			List<Creature> hitTargets = new ArrayList<Creature>();
+			for (AttackTarget target : targets) {
+				int targetAC = target.getArmorClass(user);
+				Utils.print("Your target, " + target.getName() + ", has an AC of " + targetAC);
+
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+
+				if (attackRoll >= targetAC) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
+
+					target.hurt(damage, DamageType.RADIANT, true, user);
+
+					hitTargets.add((Creature) target);
+				} else {
+					Utils.print("Sorry.  You missed " + target.getName() + ". Doing half damage.");
+
+					target.hurt(damage/2, DamageType.RADIANT, false, user);
+
+					target.miss(user);
+				}
+			}
+
+			Position position = new Position(user.getCurrentPosition().getX(), user.getCurrentPosition().getY());
+			Encounter.getEncounter().setZone(position, ZoneShape.BURST, 3, user, DurationType.END_OF_NEXT_TURN, user.getCurrentTurn(), ZoneType.RUNE_OF_THE_UNDENIABLE_DAWN);
+			timesUsed++;
+			return true;
 		}
-		
-		Encounter.getEncounter().setZone(user.getCurrentPosition(), ZoneShape.BURST, 3, user, DurationType.END_OF_NEXT_TURN, user.getCurrentTurn(), ZoneType.RUNE_OF_THE_UNDENIABLE_DAWN);
-		return true;
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public class EarthShieldStrike extends AttackPower {
 
 				/* I get an AC bonus of +1 until the end of my next turn. */
 				Utils.print("Adding a +1 bonus to AC until the end of my next turn.");
-				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.EARTH_SHIELD_STRIKE);
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.EARTH_SHIELD_STRIKE);
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

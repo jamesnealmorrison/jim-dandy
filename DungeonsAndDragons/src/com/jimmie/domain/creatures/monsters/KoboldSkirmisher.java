@@ -30,6 +30,7 @@ public class KoboldSkirmisher extends Kobold {
 		addPower(new KoboldShifty());
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldSkirmisher.jpg");
 		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldSkirmisherBloodied.jpg");
+		setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldSkirmisherBattleCard.jpg");
 	}
 	
 	public int getStrengthModifier() {

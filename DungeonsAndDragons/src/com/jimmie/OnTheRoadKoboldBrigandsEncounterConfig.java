@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
@@ -11,6 +12,7 @@ import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.encounters.OnTheRoadKoboldBrigandsEncounter;
+import com.jimmie.gui.BattleCardPanel;
 import com.jimmie.gui.BattlefieldPanel;
 import com.jimmie.gui.ConsolePanel;
 import com.jimmie.gui.DungeonGUI;
@@ -35,6 +37,10 @@ public class OnTheRoadKoboldBrigandsEncounterConfig {
 	@Bean
 	public BattlefieldPanel battlefieldPanel() {
 		return new BattlefieldPanel();
+	}
+	@Bean
+	public BattleCardPanel battleCardPanel() {
+		return new BattleCardPanel();
 	}
 	@Bean
 	public String battlefieldImageFilePath() {
@@ -101,7 +107,7 @@ public class OnTheRoadKoboldBrigandsEncounterConfig {
 
 	@Bean
 	public KoboldDragonshield d1() {
-		KoboldDragonshield d1 = new KoboldDragonshield();
+		KoboldDragonshield d1 = new KoboldDragonshield(DamageType.FIRE);
 		d1.setName("Kobold Dragonshield 1");
 		d1.setDisplayName("D1");
 		d1.setCurrentPosition(new Position(12,10));
@@ -110,7 +116,7 @@ public class OnTheRoadKoboldBrigandsEncounterConfig {
 
 	@Bean
 	public KoboldDragonshield d2() {
-		KoboldDragonshield d2 = new KoboldDragonshield();
+		KoboldDragonshield d2 = new KoboldDragonshield(DamageType.FIRE);
 		d2.setName("Kobold Dragonshield 2");
 		d2.setDisplayName("D2");
 		d2.setCurrentPosition(new Position(12,9));

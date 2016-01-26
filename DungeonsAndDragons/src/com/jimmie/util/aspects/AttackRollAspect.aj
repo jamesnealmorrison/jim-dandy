@@ -1,15 +1,21 @@
 package com.jimmie.util.aspects;
 
+import java.util.List;
+
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
+import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Sorcerer;
 import com.jimmie.domain.classes.SorcererSpellSource;
+import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Elf;
+import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.ElvenAccuracy;
 import com.jimmie.powers.MemoryOfAThousandLifetimes;
 import com.jimmie.powers.Power;
@@ -25,8 +31,8 @@ public aspect AttackRollAspect {
 	
 	int around(Creature creature) : attackRoll(creature) {
 		
-		int result = proceed(creature);
-
+		int result = proceed(creature);		
+		
 		// Deva Memory of a Thousand Lifetimes
 		if (creature.getRace() != null) {
 			if (Deva.class.isAssignableFrom(creature.getRace().getClass())) {
@@ -64,6 +70,31 @@ public aspect AttackRollAspect {
 				}
 			}
 		}
+		
+		
+		/* Check to see if the attacker is standing next to a Warden using the Form of the Willow Sentinel power. */
+		/* If so, the Warden may be able to do an immediate interrupt. */
+		List<Creature> adjacentEnemies = Encounter.getEncounter().getAdjacentEnemies(creature);
+		if (adjacentEnemies != null) {
+			for (Creature adjacentEnemy : adjacentEnemies) {
+				if (DndCharacter.class.isAssignableFrom(adjacentEnemy.getClass())) {
+					DndClass dndClass = ((DndCharacter) adjacentEnemy).getDndClass();
+					if (Warden.class.isInstance(dndClass)) {
+						if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
+							if (!((Warden) dndClass).isUsedFormOfTheWillowSentinelAttack()) {
+								Utils.print(creature.getName() + " is currently adjacent to a Warden that is using Form of the Willow Sentinel who has not yet interrupted an attack.");
+								Utils.print("Does " + adjacentEnemy.getName() + " want to use this attack now?");
+								Utils.print("Please note, you MUST say no if it is the Warden getting attacked.  I didn't check for that in the code.");
+								String choice = Utils.getYesOrNoInput();
+								if ("Y".equalsIgnoreCase(choice)) {
+									result = result + ((Warden) dndClass).formOfTheWillowSentinelAttack(creature);
+								}
+							}
+						}
+					}
+				}
+			}		
+		}
 
 		return result;
 	}
@@ -81,7 +112,7 @@ public aspect AttackRollAspect {
 					if (sorcerer.getFirstAttackRoll() == 0) {
 						if ((result & 1) == 0) {
 							Utils.print("Your first attack roll of the round is even.  As a sorcerer with wild magic, you get a +1 AC bonus until the start of your next turn.");
-							creature.setTemporaryEffect(1, creature.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, creature, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.CHAOS_BURST);
+							creature.setTemporaryEffect(1, creature.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, creature, TemporaryEffectType.AC_MOD, TemporaryEffectReason.CHAOS_BURST);
 						} else {
 							Utils.print("Your first attack roll of the round is odd.  As a sorcerer with wild magic, you get to make a saving throw now.");
 							Utils.print("This will be useless if you don't have a condition where save ends.");

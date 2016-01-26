@@ -28,6 +28,8 @@ public class Warden extends DndClass {
 	private static final long serialVersionUID = 1L;
 	private boolean usedFormOfTheWillowSentinelAttack;
 	private boolean usingFormOfTheWillowSentinel;
+	private String willowSentinelImagePath;
+	private String willowSentinelBloodiedImagePath;
 	private GuardianMight guardianMight;
 
 	@Override
@@ -222,5 +224,21 @@ public class Warden extends DndClass {
 	public int getArmorClassBonus() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public String getWillowSentinelImagePath() {
+		return willowSentinelImagePath;
+	}
+
+	public void setWillowSentinelImagePath(String willowSentinelImagePath) {
+		this.willowSentinelImagePath = willowSentinelImagePath;
+	}
+
+	public String getWillowSentinelBloodiedImagePath() {
+		return willowSentinelBloodiedImagePath;
+	}
+
+	public void setWillowSentinelBloodiedImagePath(String willowSentinelBloodiedImagePath) {
+		this.willowSentinelBloodiedImagePath = willowSentinelBloodiedImagePath;
 	}
 }

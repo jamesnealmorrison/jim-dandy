@@ -99,7 +99,7 @@ public class Charge extends AttackPower {
 			Utils.print("1. Bull Rush");
 			Utils.print("2. Basic Melee Attack");
 			Utils.print("Your choice?");
-			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.CHARGE);
+			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.CHARGE);
 			if (1 == Utils.getValidIntInputInRange(1, 2)) {
 				// Find the user's bull rush power.
 				for (Power power : user.getPowers()) {

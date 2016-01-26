@@ -86,9 +86,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
-			int roll = diceRoll + 6 + user.getOtherAttackModifier(targets);
+			int roll = user.attackRoll(6 + user.getOtherAttackModifier(targets));
 
 			/* Kobold Skirmishers have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.
@@ -107,7 +105,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 			}
 			roll = roll + count;
 
-			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+			Utils.print("You rolled a total of: " + roll);
 
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);

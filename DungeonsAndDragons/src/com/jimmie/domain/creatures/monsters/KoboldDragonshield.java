@@ -1,6 +1,7 @@
 package com.jimmie.domain.creatures.monsters;
 
 
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.creatures.Size;
 import com.jimmie.powers.KoboldDragonshieldShortSword;
 import com.jimmie.powers.KoboldShifty;
@@ -20,7 +21,7 @@ public class KoboldDragonshield extends Kobold {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public KoboldDragonshield() {
+	public KoboldDragonshield(DamageType damageType) {
 		setSize(Size.SMALL);
 		setInitiative(4);
 		setMaxHitPoints(36);
@@ -41,6 +42,8 @@ public class KoboldDragonshield extends Kobold {
 		usedDragonshieldTactics = false;
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldDragonshield.jpg");
 		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldDragonshieldBloodied.jpg");
+		setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldDragonshieldBattleCard.jpg");
+		addDamageResistance(damageType, 5);
 	}
 
 	public boolean isUsedDragonshieldTactics() {

@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
@@ -12,6 +13,7 @@ import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.encounters.KoboldLairOutsideEncounter;
+import com.jimmie.gui.BattleCardPanel;
 import com.jimmie.gui.BattlefieldPanel;
 import com.jimmie.gui.ConsolePanel;
 import com.jimmie.gui.DungeonGUI;
@@ -37,6 +39,10 @@ public class KoboldLairOutsideEncounterConfig {
 	@Bean
 	public BattlefieldPanel battlefieldPanel() {
 		return new BattlefieldPanel();
+	}
+	@Bean
+	public BattleCardPanel battleCardPanel() {
+		return new BattleCardPanel();
 	}
 	@Bean
 	public String battlefieldImageFilePath() {
@@ -137,7 +143,7 @@ public class KoboldLairOutsideEncounterConfig {
 	}
 	@Bean
 	public KoboldDragonshield d() {
-		KoboldDragonshield d = new KoboldDragonshield();
+		KoboldDragonshield d = new KoboldDragonshield(DamageType.ACID);
 		d.setName("Kobold Dragonshield");
 		d.setDisplayName("D");
 		d.setCurrentPosition(new Position(7,11));

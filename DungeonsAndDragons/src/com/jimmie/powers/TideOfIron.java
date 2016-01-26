@@ -117,8 +117,8 @@ public class TideOfIron extends AttackPower {
 				Utils.print("I think I am also supposed to be able to occupy the space the creature was in, but I haven't implemented that yet.  SORRY!");
 
 				/* I get an AC/REF bonus of +1 until the end of my next turn. */
-				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.TIDE_OF_IRON);
-				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.TIDE_OF_IRON);
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.TIDE_OF_IRON);
+				user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REF_MOD, TemporaryEffectReason.TIDE_OF_IRON);
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

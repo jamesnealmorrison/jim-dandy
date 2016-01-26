@@ -39,7 +39,7 @@ public aspect DefenseAspect {
 		if (defender.getTemporaryEffects() != null) {
 			for (Iterator<TemporaryEffect> it = defender.getTemporaryEffects().iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.REFLEX_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.REF_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(defender.getName() + " is supposed to get a modifier to reflex until " + tempEffect.getDuration());
 						modifier = modifier + tempEffect.getModifier();
@@ -68,7 +68,7 @@ public aspect DefenseAspect {
 		if (defender.getTemporaryEffects() != null) {
 			for (Iterator<TemporaryEffect> it = defender.getTemporaryEffects().iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.FORTITUDE_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.FORT_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(defender.getName() + " is supposed to get a modifier to fortitude until " + tempEffect.getDuration());
 						modifier = modifier + tempEffect.getModifier();
@@ -122,9 +122,11 @@ public aspect DefenseAspect {
 		// Deva Astral Majesty
 		if (defender.getRace() != null) {
 			if (Deva.class.isAssignableFrom(defender.getRace().getClass())) {
-				if (attacker.isBloodied()) {
-					Utils.print("As a Deva, you get a +1 bonus to this defense because " + attacker.getName() + " is bloodied.");
-					modifier += 1;
+				if (attacker != null) {
+					if (attacker.isBloodied()) {
+						Utils.print("As a Deva, you get a +1 bonus to this defense because " + attacker.getName() + " is bloodied.");
+						modifier += 1;
+					}
 				}
 			}
 		}

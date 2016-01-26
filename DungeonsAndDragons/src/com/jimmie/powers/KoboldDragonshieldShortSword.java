@@ -8,7 +8,6 @@ import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
-import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.PowerUsage;
@@ -16,7 +15,6 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.monsters.Kobold;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class KoboldDragonshieldShortSword extends AttackPower {
@@ -86,8 +84,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			Dice d = new Dice(DiceType.TWENTY_SIDED);
-			int roll = d.roll(DiceRollType.ATTACK_ROLL) + 7 + user.getOtherAttackModifier(targets);
+			int roll = user.attackRoll(7+user.getOtherAttackModifier(targets));
 
 			/* Kobold Dragonshields have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.

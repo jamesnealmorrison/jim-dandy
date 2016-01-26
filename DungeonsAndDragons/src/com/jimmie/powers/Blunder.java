@@ -157,7 +157,7 @@ public class Blunder extends AttackPower {
 							Utils.print("Please pick which ally will attack.");
 							Creature attacker = Encounter.getEncounter().chooseAnyAlly(user);
 
-							attacker.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.BLUNDER);
+							attacker.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.IMMEDIATE, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.BLUNDER);
 							Utils.print("Make sure to pick me (" + target.getName() + ") when it asks who to attack.");
 							/* Should be able to cast the marker to a character. */
 							if (DndCharacter.class.isInstance(attacker)) {

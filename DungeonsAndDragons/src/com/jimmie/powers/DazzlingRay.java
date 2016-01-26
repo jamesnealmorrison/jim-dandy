@@ -145,9 +145,9 @@ public class DazzlingRay extends AttackPower {
 			if (sorcerer.getLastAttackRollEven()) {
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					int abilityModifier = user.getAbilityModifier(AbilityType.DEXTERITY);
-					Utils.print("Because of your wild magic, the target takes a penalty to attack rolls against you of " + abilityModifier + ". (Save ends)");
+					Utils.print("Because of your wild magic, the target takes a penalty to attack rolls against you of " + (-1*abilityModifier) + ". (Save ends)");
 					Creature cTarget = (Creature) target;
-					cTarget.setTargetedTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.DAZZLING_RAY, user);
+					cTarget.setTargetedTemporaryEffect((-1*abilityModifier), user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.DAZZLING_RAY, user);
 				}
 			}
 		}

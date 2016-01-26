@@ -17,6 +17,7 @@ import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
@@ -105,6 +106,12 @@ public class WordOfBinding extends AttackPower {
 
 				target.hurt(user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), DamageType.NORMAL, true, user);
 
+				Utils.print("Target is immobilized.  Please note, I haven't implemented the part saying 'or until I'm not adjacent to it'.");
+				if (Creature.class.isAssignableFrom(target.getClass())) {
+					Creature cTarget = (Creature) target;
+					cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.IMMOBILIZED, TemporaryEffectReason.WORD_OF_BINDING, user.getCurrentTurn());
+				}
+				
 				if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
 					Utils.print("You are about to choose the Runic State.  Here is the info about them.");
 					Utils.print("Destruction: Next attack by ally to target will deal extra damage.");
@@ -115,14 +122,14 @@ public class WordOfBinding extends AttackPower {
 							Creature cTarget = (Creature) target;
 							int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 							Utils.print("Adding " + abilityModifier + " damage bonus for the next ally to attack " + target.getName() + ".");
-							cTarget.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN, user, TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER, TemporaryEffectReason.WORD_OF_BINDING);
+							cTarget.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN, user, TemporaryEffectType.RCV_DMG_MOD, TemporaryEffectReason.WORD_OF_BINDING);
 						}
 						
 					} else {
 						Creature ally = Encounter.getEncounter().chooseAllyAdjacentToEither(user, user.getCurrentPosition(), target.getCurrentPosition());
 						int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 						Utils.print("Adding " + abilityModifier + " AC bonus to " + ally.getName() + " until the end of next turn.");
-						ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.WORD_OF_BINDING);
+						ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.WORD_OF_BINDING);
 					}
 				}
 

@@ -113,7 +113,7 @@ public class RadiantDelirium extends AttackPower {
 					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.RADIANT_DELIRIUM, user.getCurrentTurn());
 					
 					Utils.print(target.getName() + " will take a -2 penalty to AC (save ends).");
-					c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RADIANT_DELIRIUM);
+					c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.RADIANT_DELIRIUM);
 				}
 
 				

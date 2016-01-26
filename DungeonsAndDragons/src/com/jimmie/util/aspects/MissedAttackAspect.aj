@@ -22,7 +22,7 @@ public aspect MissedAttackAspect {
 					Utils.print("Because " + misser.getName() + " missed " + target.getName() + " and " + target.getName() + " is a Runepriest with Defiant Word,");
 					int abilityModifier = target.getAbilityModifier(AbilityType.WISDOM);
 					Utils.print(target.getName() + " will get a " + abilityModifier + " bonus to attacks against " + misser.getName() + " until the end of the next turn.");
-					target.setTargetedTemporaryEffect(abilityModifier, target.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, target, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.DEFIANT_WORD, misser);
+					target.setTargetedTemporaryEffect(abilityModifier, target.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, target, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.DEFIANT_WORD, misser);
 				}
 			}
 		}

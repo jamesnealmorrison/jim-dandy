@@ -121,7 +121,7 @@ public class EnfeeblingStrike extends AttackPower {
 							Mark mark = it.next();
 							if (mark.getMarker() == user) {
 								Utils.print(c.getName() + " will have a -2 attack roll penalty until the end of my next turn.");
-								c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ENFEEBLING_STRIKE);
+								c.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.ENFEEBLING_STRIKE);
 							}
 						}
 					}

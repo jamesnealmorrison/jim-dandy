@@ -51,6 +51,7 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 	public PlayerCharacter(Race r, DndClass c) {
 		race = r;
 		dndClass = c;
+		dndClass.setOwner(this);
 		// The book says that all player characters start out with cloth armor (basic clothing).
 		addArmor(new ClothArmor());
 	}
@@ -247,7 +248,7 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 		return 0;
 	}
 
-	public int getFortitude() {
+	public int getFortitude(Creature attacker) {
 		return (10+getLevel()/2 + getFortitudeAbilityModifier() + dndClass.getFortitudeBonus() + getFeatFortitudeBonus() + race.getFortitudeBonus() + getFortitudeMisc1() + getFortitudeMisc2());
 		// TODO: Enhancement????
 	}
@@ -256,7 +257,7 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 		return Math.max(getAbilityModifier(AbilityType.STRENGTH), getAbilityModifier(AbilityType.CONSTITUTION));
 	}
 
-	public int getReflex() {
+	public int getReflex(Creature attacker) {
 		return (10+getLevel()/2 + getReflexAbilityModifier() + dndClass.getReflexBonus() + getFeatReflexBonus() + race.getReflexBonus() + getReflexMisc1() + getReflexMisc2());
 		// TODO: Enhancement????
 	}
@@ -273,7 +274,7 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 		return 0;
 	}
 
-	public int getWill() {
+	public int getWill(Creature attacker) {
 		return (10+getLevel()/2 + getWillAbilityModifier() + dndClass.getWillBonus() + getFeatWillBonus() + race.getWillBonus() + getWillMisc1() + getWillMisc2());
 		// TODO: Enhancement????
 	}

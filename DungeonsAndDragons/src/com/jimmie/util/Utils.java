@@ -302,7 +302,7 @@ public class Utils {
 	public static boolean hasCombatAdvantage(Creature source,
 			Creature target) {
 		// Make sure they aren't effected by Druid Call of the Beast effect.
-		for (Iterator<TemporaryEffect> it = target.getTemporaryEffects().iterator(); it.hasNext();) {
+		for (Iterator<TemporaryEffect> it = source.getTemporaryEffects().iterator(); it.hasNext();) {
 			TemporaryEffect tempEffect = it.next();
 			if (tempEffect.getEffectType() == TemporaryEffectType.CALL_OF_THE_BEAST_EFFECT) {
 				if  (tempEffect.stillApplies()) {

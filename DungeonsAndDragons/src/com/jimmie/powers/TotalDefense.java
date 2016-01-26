@@ -78,10 +78,10 @@ public class TotalDefense extends Power {
 	@Override
 	public boolean process(Creature user) {
 		Utils.print(user.getName() + " now has a +2 bonus to all defenses until the start of the nex turn.");
-		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.TOTAL_DEFENSE);
-		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.TOTAL_DEFENSE);
-		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.TOTAL_DEFENSE);
-		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.TOTAL_DEFENSE);
+		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.TOTAL_DEFENSE);
+		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.FORT_MOD, TemporaryEffectReason.TOTAL_DEFENSE);
+		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MOD, TemporaryEffectReason.TOTAL_DEFENSE);
+		user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.START_OF_NEXT_TURN, user, TemporaryEffectType.REF_MOD, TemporaryEffectReason.TOTAL_DEFENSE);
 		return true;
 	}
 

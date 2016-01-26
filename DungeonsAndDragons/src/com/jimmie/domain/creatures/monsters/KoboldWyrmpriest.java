@@ -1,6 +1,10 @@
 package com.jimmie.domain.creatures.monsters;
 
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.creatures.Size;
+import com.jimmie.powers.KoboldWyrmpriestDragonBreath;
+import com.jimmie.powers.KoboldWyrmpriestEnergyOrb;
+import com.jimmie.powers.KoboldWyrmpriestInciteFaith;
 import com.jimmie.powers.KoboldWyrmpriestSpear;
 
 public class KoboldWyrmpriest extends Kobold {
@@ -9,7 +13,7 @@ public class KoboldWyrmpriest extends Kobold {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public KoboldWyrmpriest() {
+	public KoboldWyrmpriest(DamageType damageType) {
 		setSize(Size.SMALL);
 		setInitiative(4);
 		setMaxHitPoints(36);
@@ -26,8 +30,12 @@ public class KoboldWyrmpriest extends Kobold {
 		setWisdom(17);
 		setCharisma(12);
 		addPower(new KoboldWyrmpriestSpear());
+		addPower(new KoboldWyrmpriestEnergyOrb(damageType));
+		addPower(new KoboldWyrmpriestInciteFaith());
+		addPower(new KoboldWyrmpriestDragonBreath(DamageType.ACID));
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldWyrmpriest.jpg");
 		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldWyrmpriestBloodied.jpg");
+		setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldWyrmpriestBattleCard.jpg");
 	}
 
 	public int getStrengthModifier() {

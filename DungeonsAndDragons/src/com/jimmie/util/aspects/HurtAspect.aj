@@ -30,7 +30,7 @@ public aspect HurtAspect {
 			if (hurtee.getTemporaryEffects() != null) {
 				for (Iterator<TemporaryEffect> it = hurtee.getTemporaryEffects().iterator(); it.hasNext();) {
 					TemporaryEffect tempEffect = it.next();
-					if (tempEffect.getEffectType() == TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER) {
+					if (tempEffect.getEffectType() == TemporaryEffectType.RCV_DMG_MOD) {
 						if (tempEffect.stillApplies()) {
 							Utils.print("There is a temporary RECEIVING damage modifier of " + tempEffect.getModifier());
 							damage += tempEffect.getModifier();

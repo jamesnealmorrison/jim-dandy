@@ -163,5 +163,4 @@ public class WardensFury extends AttackPower {
 		}
 		return false;
 	}
-
 }

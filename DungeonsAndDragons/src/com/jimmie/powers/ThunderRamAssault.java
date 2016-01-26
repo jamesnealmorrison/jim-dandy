@@ -133,6 +133,7 @@ public class ThunderRamAssault extends AttackPower {
 
 					Utils.print("Please enter the lower left Y coordinate of the blast. No validation is done here, so do it right!");
 					lowerLeftY = Utils.getValidIntInputInRange(1, 50);
+					Encounter.showCoordinateSystem(false);
 
 					List<Creature> blastTargets = Encounter.getEncounter().getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
 

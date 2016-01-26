@@ -3,8 +3,6 @@ package com.jimmie.encounters;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.jimmie.domain.DamageType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
@@ -58,6 +56,10 @@ public class OnTheRoadKoboldBrigandsEncounter extends Encounter {
 		monsters = new ArrayList<Monster>();
 		
 		m1.inializeForEncounter(3);
+		m2.inializeForEncounter(3);
+		m3.inializeForEncounter(3);
+		m4.inializeForEncounter(3);
+		m5.inializeForEncounter(3);
 		monsters.add(m1);
 		monsters.add(m2);
 		monsters.add(m3);
@@ -66,18 +68,16 @@ public class OnTheRoadKoboldBrigandsEncounter extends Encounter {
 		s.initializeForEncounter(20, 2, 1, 0);
 		monsters.add(s);
 		
-		d1.addDamageResistance(DamageType.FIRE, 5);
-		d2.addDamageResistance(DamageType.FIRE, 5);
 		monsters.add(d1);
 		monsters.add(d2);
 		
-		// Set up the player characters */
-//		gamal.setCurrentPosition(new Position(3,20));
-//		percian.setCurrentPosition(new Position(1,21));
-//		keothi.setCurrentPosition(new Position(3,18));
-//		travok.setCurrentPosition(new Position(1,19));
-//		hazel.setCurrentPosition(new Position(4,19));
-/*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		// Set up the player characters
+/*		gamal.setCurrentPosition(new Position(13,13));
+		percian.setCurrentPosition(new Position(13,14));
+		keothi.setCurrentPosition(new Position(13,15));
+		travok.setCurrentPosition(new Position(14,13));
+		hazel.setCurrentPosition(new Position(14,14));
+		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(keothi.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
@@ -96,6 +96,7 @@ public class OnTheRoadKoboldBrigandsEncounter extends Encounter {
 			readiedWeapon.setHand(Hand.MAIN_HAND);
 		}
 		travok.addReadiedWeapon(readiedWeapon);
+		
 		travok.setReadiedArmor(travok.getArmor().get(0));
 		
 		for (Gear gear : travok.getGear()) {
@@ -149,16 +150,83 @@ public class OnTheRoadKoboldBrigandsEncounter extends Encounter {
 			((Druid) hazel.getDndClass()).setBeastFormImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolf.JPG");
 			((Druid) hazel.getDndClass()).setBeastFormBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolfBloodied.JPG");
 		}
-
 		
 		
+		gamal.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Gamal.jpg");		
+		percian.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Percian.jpg");		
+		keothi.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Keothi.jpg");		
+		travok.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Travok.jpg");		
+		hazel.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Hazel.jpg");		
 
+		gamal.setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GamalBattleCard.jpg");		
+		percian.setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\PercianBattleCard.jpg");		
+		keothi.setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KeothiBattleCard.jpg");		
+		travok.setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\TravokBattleCard.jpg");		
+		hazel.setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HazelBattleCard.jpg");		
+
+		
+		if (Warden.class.isAssignableFrom(keothi.getDndClass().getClass())) {
+			((Warden) keothi.getDndClass()).setWillowSentinelImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\WillowSentinel.JPG");
+			((Warden) keothi.getDndClass()).setWillowSentinelBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\WillowSentinelBloodied.JPG");
+		}
+
+		
+		gamal.getDndClass().setOwner(gamal);
+		percian.getDndClass().setOwner(percian);
+		keothi.getDndClass().setOwner(keothi);
+		travok.getDndClass().setOwner(travok);
+		hazel.getDndClass().setOwner(hazel);
+
+		if (PlayerCharacter.class.isAssignableFrom(gamal.getClass())) {
+			((PlayerCharacter) gamal).setExperiencePoints(95);
+			gamal.addCoins(7, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(percian.getClass())) {
+			((PlayerCharacter) percian).setExperiencePoints(95);
+			percian.addCoins(7, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(keothi.getClass())) {
+			((PlayerCharacter) keothi).setExperiencePoints(95);
+			keothi.addCoins(7, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(travok.getClass())) {
+			((PlayerCharacter) travok).setExperiencePoints(95);
+			travok.addCoins(7, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(hazel.getClass())) {
+			((PlayerCharacter) hazel).setExperiencePoints(95);
+			hazel.addCoins(7, CoinType.SILVER_PIECE);
+		}
+		
 Utils.saveCharacter(gamal);
 Utils.saveCharacter(percian);
 Utils.saveCharacter(keothi);
 Utils.saveCharacter(travok);
 Utils.saveCharacter(hazel);
 */
+		// Just to be certain, print off all the characters stats.
+		Utils.print("Keothi reflex = " + keothi.getReflex(null));
+		Utils.print("Keothi will = " + keothi.getWill(null));
+		Utils.print("Keothi fortitude = " + keothi.getFortitude(null));
+		Utils.print("Keothi ac = " + keothi.getArmorClass(null));
+		Utils.print("Hazel reflex = " + hazel.getReflex(null));
+		Utils.print("Hazel will = " + hazel.getWill(null));
+		Utils.print("Hazel fortitude = " + hazel.getFortitude(null));
+		Utils.print("Hazel ac = " + hazel.getArmorClass(null));
+		Utils.print("Travok reflex = " + travok.getReflex(null));
+		Utils.print("Travok will = " + travok.getWill(null));
+		Utils.print("Travok fortitude = " + travok.getFortitude(null));
+		Utils.print("Travok ac = " + travok.getArmorClass(null));
+		Utils.print("Percian reflex = " + percian.getReflex(null));
+		Utils.print("Percian will = " + percian.getWill(null));
+		Utils.print("Percian fortitude = " + percian.getFortitude(null));
+		Utils.print("Percian ac = " + percian.getArmorClass(null));
+		Utils.print("Gamal reflex = " + gamal.getReflex(null));
+		Utils.print("Gamal will = " + gamal.getWill(null));
+		Utils.print("Gamal fortitude = " + gamal.getFortitude(null));
+		Utils.print("Gamal ac = " + gamal.getArmorClass(null));
+		
+
 		characters = new ArrayList<DndCharacter>();
 		characters.add(gamal);
 		characters.add(percian);
@@ -603,7 +671,7 @@ Utils.saveCharacter(hazel);
 			Utils.print("Please enter the X coordinate (13 - 15).");
 			int x = Utils.getValidIntInputInRange(13, 15);
 
-			Utils.print("Please enter the Y coordinate (13-15).");
+			Utils.print("Please enter the Y coordinate (13 - 15).");
 			int y = Utils.getValidIntInputInRange(13, 15);
 			Encounter.showCoordinateSystem(false);
 			
@@ -626,13 +694,13 @@ Utils.saveCharacter(hazel);
 		
 		Utils.print("Small creatures hiding behind the rocks spring into view and begin to move toward you.  With a shriek, the small humanoids");
 		Utils.print("attack.  Scaled and rust-colored, they have reptilian heads and tails.");
-		
 		Encounter.setMonstersActive(true);
 		Encounter.setMonstersVisible(true);
 		
 		// Setup monster values that can change for different encounters.
 		KoboldMinionJavelin.setAttackModifier(4);
 		KoboldMinionSpear.setAttackModifier(4);
+		
 	}
 
 	@Override

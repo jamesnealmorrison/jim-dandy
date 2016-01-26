@@ -134,7 +134,7 @@ public class ChaosBolt extends AttackPower {
 						Utils.print("Because " + user.getName() + " has the Arcane Spellfury feat, they will get a +1 attack bonus against " + target.getName() + " until the end of the next turn.");
 						if (Creature.class.isAssignableFrom(target.getClass())) {
 							Creature cTarget = (Creature) target;
-							c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
+							c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
 						}
 					}
 				}
@@ -194,7 +194,7 @@ public class ChaosBolt extends AttackPower {
 											Utils.print("Because " + user.getName() + " has the Arcane Spellfury feat, they will get a +1 attack bonus against " + target.getName() + " until the end of the next turn.");
 											if (Creature.class.isAssignableFrom(target.getClass())) {
 												Creature cTarget = (Creature) target;
-												c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
+												c.setTargetedTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.ARCANE_SPELLFURY, cTarget);
 											}
 										}
 									}

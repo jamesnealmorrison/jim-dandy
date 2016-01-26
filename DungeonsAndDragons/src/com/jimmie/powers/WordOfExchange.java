@@ -119,17 +119,17 @@ public class WordOfExchange extends AttackPower {
 							int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
 							Utils.print("Adding " + abilityModifier + " damage bonus for the next ally to attack " + target.getName() + ".");
 							Utils.print("That ally will also get " + abilityModifier + " temporary hit points.");
-							cTarget.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN, user, TemporaryEffectType.RECEIVING_DAMAGE_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN, user, TemporaryEffectType.RCV_DMG_MOD, TemporaryEffectReason.WORD_OF_EXCHANGE);
 						}
 					} else {
 						if (Creature.class.isAssignableFrom(target.getClass())) {
 							Creature cTarget = (Creature) target;
 							Utils.print("Adding a -2 penalty to " + target.getName() + " to all defenses until the end of next turn.");
 							Utils.print("The next ally to attack " + target.getName() + " before the end of my next turn gets a " + user.getAbilityModifier(AbilityType.WISDOM) + " AC temporary bonus.");
-							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
-							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
-							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
-							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORT_MOD, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MOD, TemporaryEffectReason.WORD_OF_EXCHANGE);
+							cTarget.setTemporaryEffect(-2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REF_MOD, TemporaryEffectReason.WORD_OF_EXCHANGE);
 						}
 						
 //						ally.setTemporaryEffect(abilityModifier, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, );

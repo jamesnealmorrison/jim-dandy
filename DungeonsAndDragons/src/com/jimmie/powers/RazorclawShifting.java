@@ -88,9 +88,9 @@ public class RazorclawShifting extends AttackPower {
 			timesUsed++;
 			
 			Utils.print(user.getName() + " will gain a +2 bonus to speed and +1 bonus to AC and Reflex until the end of the encounter.");
-			user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.SPEED_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
-			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
-			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+			user.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.SPEED_MOD, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.RAZORCLAW_SHIFTING);
+			user.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, user, TemporaryEffectType.REF_MOD, TemporaryEffectReason.RAZORCLAW_SHIFTING);
 		} else {
 			Utils.print("Sorry, but " + user.getName() + " has already used Angelic Alacrity in this encounter.");
 			Utils.print("I know it would have been nice if I had told you that before you picked it, though");

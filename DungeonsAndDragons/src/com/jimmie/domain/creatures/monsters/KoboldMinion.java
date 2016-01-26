@@ -34,6 +34,7 @@ public class KoboldMinion extends Kobold {
 		addPower(new KoboldShifty());
 		setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldMinion.jpg");
 		setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldMinionBloodied.jpg");
+		setBattleCardImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\KoboldMinionBattleCard.jpg");
 	}
 
 	public int getStrengthModifier() {

@@ -137,20 +137,26 @@ public class Map {
 
 	public boolean isFoliage(Position position) {
 		MapLocation location = locations.get(getKey(position));
-		if (LocationType.FOLIAGE == location.getType()) {
-			return true;
-		} else {
-			return false;
+		if (location != null) {
+			if (LocationType.FOLIAGE == location.getType()) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public boolean isTree(Position position) {
 		MapLocation location = locations.get(getKey(position));
-		if (LocationType.TREE == location.getType()) {
-			return true;
-		} else {
-			return false;
+		if (location != null) {
+			if (LocationType.TREE == location.getType()) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public boolean providesCover(Position position) {

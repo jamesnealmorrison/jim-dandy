@@ -110,11 +110,9 @@ public class ElvenAccuracy extends AttackPower {
 
 	@Override
 	public boolean meetsRequirementsToUsePower(Creature user) {
-		// Has it been used during this encounter already?
-		if (timesUsed > 0) {
-			return false;
-		}
-		return true;
+		// Returning false all the time, so that it doesn't show up in the list of choices.  The AttackRollAspect doesn't
+		// call this to see if it can be used.
+		return false;
 	}
 
 }

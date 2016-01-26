@@ -74,7 +74,7 @@ public abstract class Encounter {
 	 * and NPC's. ie the good guys.
 	 */
 	protected List<Monster> monsters;
-	TurnTaker currentParticipant;
+	private TurnTaker currentParticipant;
 	private List<Zone> zones;
 
 	public List<Zone> getZones() {
@@ -1591,5 +1591,13 @@ public abstract class Encounter {
 			return monsterInitiatives.get(class1);
 		}
 		return 0;
+	}
+
+	public TurnTaker getCurrentParticipant() {
+		return currentParticipant;
+	}
+
+	public void setCurrentParticipant(TurnTaker currentParticipant) {
+		this.currentParticipant = currentParticipant;
 	}
 }

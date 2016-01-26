@@ -125,16 +125,16 @@ public class RuneOfMending extends AttackPower {
 					List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(user, user.getCurrentPosition(), 5);
 					for (Creature ally : allies) {
 						Utils.print("Adding 2 damage bonus to " + ally.getName() + " until the end of next turn.");
-						ally.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.DAMAGE_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.DMG_MOD, TemporaryEffectReason.RUNE_OF_MENDING);
 					}
 				} else {
 					List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(user, user.getCurrentPosition(), 5);
 					for (Creature ally : allies) {
 						Utils.print("Adding 1 defense bonus to " + ally.getName() + " until the end of next turn.");
-						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.ARMOR_CLASS_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
-						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORTITUDE_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
-						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
-						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REFLEX_MODIFIER, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AC_MOD, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.FORT_MOD, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.WILL_MOD, TemporaryEffectReason.RUNE_OF_MENDING);
+						ally.setTemporaryEffect(1, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.REF_MOD, TemporaryEffectReason.RUNE_OF_MENDING);
 					}
 					
 				}

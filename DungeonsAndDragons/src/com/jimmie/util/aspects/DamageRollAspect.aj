@@ -40,7 +40,7 @@ public aspect DamageRollAspect {
 		if (roller.getTemporaryEffects() != null) {
 			for (Iterator<TemporaryEffect> it = roller.getTemporaryEffects().iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.DAMAGE_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.DMG_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print("There is a temporary damage modifier of " + tempEffect.getModifier());
 						result += tempEffect.getModifier();

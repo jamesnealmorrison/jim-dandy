@@ -58,6 +58,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected List<TemporaryEffect> temporaryEffects;
 	private String imagePath;
 	private String bloodiedImagePath;
+	private String battleCardImagePath;
 	protected Role role;
 	protected boolean usedSecondWind;
 	private Creature pursuer;
@@ -386,7 +387,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
 
-				if (tempEffect.getEffectType() == TemporaryEffectType.ATTACK_ROLL_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.ATCK_ROLL_MOD) {
 					boolean appliesToTarget = false;
 					// See if it's a targeted effect (i.e. only applies to certain targets).
 					if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
@@ -559,6 +560,14 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public void setBloodiedImagePath(String bloodiedImagePath) {
 		this.bloodiedImagePath = bloodiedImagePath;
 	}
+	public String getBattleCardImagePath() {
+		return battleCardImagePath;
+	}
+
+	public void setBattleCardImagePath(String battleCardImagePath) {
+		this.battleCardImagePath = battleCardImagePath;
+	}
+
 	public Role getRole() {
 		return role;
 	}
@@ -838,6 +847,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean canTakeMinorAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedMinorAction || !usedMoveAction || !usedStandardAction) {
 			return true;
 		} else {
@@ -847,6 +859,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean canTakeMoveAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedMoveAction || !usedStandardAction) {
 			return true;
 		} else {
@@ -855,6 +870,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean canTakeStandardAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedStandardAction) {
 			return true;
 		} else {
@@ -910,7 +928,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			distanceLeft = getSpeed()+2;
 			Utils.print("Because you are running, you get a -5 penalty to attack rolls and you grant combat advantage until the start of your next turn.");
 			Utils.print("You also grant opportunity attacks if you leave a square adjacent to an enemy.");
-			setTemporaryEffect(-5, currentTurn, DurationType.START_OF_NEXT_TURN, this, TemporaryEffectType.ATTACK_ROLL_MODIFIER, TemporaryEffectReason.RUNNING);
+			setTemporaryEffect(-5, currentTurn, DurationType.START_OF_NEXT_TURN, this, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.RUNNING);
 			setTemporaryCombatAdvantage(this, DurationType.START_OF_NEXT_TURN, CombatAdvantageType.RUNNING, getCurrentTurn());
 		}
 
@@ -998,7 +1016,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return basicMeleeAttacks.get(1);
 	}
 
-	private boolean performSkillCheck(SkillCheck skillCheck) {
+	public boolean performSkillCheck(SkillCheck skillCheck) {
 		int roll = skillCheckRoll(skillCheck);
 
 		Utils.print("Your target DC was + " + skillCheck.getDifficultyClass());
@@ -1407,7 +1425,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		if (temporaryEffects != null) {
 			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
 				TemporaryEffect tempEffect = it.next();
-				if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(name + " is supposed to get a modifier to will until " + tempEffect.getDuration());
 						currentWill = currentWill + tempEffect.getModifier();
@@ -1634,7 +1652,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 						}
 					}
 				}
-				if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MODIFIER) {
+				if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(getName() + " has a temporary speed modifier of " + tempEffect.getModifier() + " due to " + tempEffect.getReason());
 						modifier = tempEffect.getModifier();
@@ -2245,6 +2263,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return diceRoll;
 	}
 
+	// This one should be used mainly for monster attacks.
+	public int attackRoll(int modifiers) {
+		int diceRoll = rawAttackRoll() + modifiers;
+		
+		Utils.print("With all the modifiers, your roll becomes " + diceRoll);
+		
+		return diceRoll;
+	}
+	
 	private int rawAttackRoll() {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		return d.roll(DiceRollType.ATTACK_ROLL);

@@ -104,10 +104,7 @@ public class FiresOfLife extends AttackPower {
 			Encounter.showCoordinateSystem(false);
 
 			/* Got to do this weird conversion between creatures and attack targets. */
-			List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
-			for (Creature creature : creatureTargets) {
-				targets.add(creature);
-			}
+			targets = Encounter.getEncounter().getAllEnemiesInAreaBurst(user, new Position(x, y), 1);
 
 			Utils.print("Since this might affect multiple targets, rolling for damage first.");
 			int damageRolls = 1;
@@ -131,7 +128,7 @@ public class FiresOfLife extends AttackPower {
 					target.hurt(damage+user.getAbilityModifier(AbilityType.WISDOM), DamageType.FIRE, true, user);
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;
-						cTarget.setTemporaryOngoingDamage(5,user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DAMAGE, TemporaryEffectReason.FIRES_OF_LIFE, DamageType.FIRE);
+						cTarget.setTemporaryOngoingDamage(5,user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DMG, TemporaryEffectReason.FIRES_OF_LIFE, DamageType.FIRE);
 					}
 				} else {
 					Utils.print("Sorry.  You missed " + target.getName());
@@ -139,6 +136,14 @@ public class FiresOfLife extends AttackPower {
 					target.miss(user);
 				}
 			}
+			
+			// After Effect; one creature within 5 squares regains 2 HP.
+			Utils.print("As an after effect, an ally within 5 squares regains 2 hit points.");
+			Creature ally = Encounter.getEncounter().chooseAllyWithinRangeOf(user, user.getCurrentPosition(), 5);
+			if (ally != null) {
+				ally.heal(2);
+			}
+			
 			return true;
 		}
 		return false;
