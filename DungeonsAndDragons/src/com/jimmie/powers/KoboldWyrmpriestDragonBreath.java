@@ -60,10 +60,8 @@ public class KoboldWyrmpriestDragonBreath extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(damageType);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return damageType;
 	}
 
 	@Override
@@ -127,7 +125,7 @@ public class KoboldWyrmpriestDragonBreath extends AttackPower {
 						Utils.print("Sorry.  You missed " + target.getName() + ". doing half damage.");
 						target.hurt(damage/2, damageType, false, user);
 						// Some targets have powers/effects that happen when they are missed.
-						target.miss(user);
+						target.miss(user, this);
 					}
 				}
 			}

@@ -2,9 +2,9 @@ package com.jimmie.domain.items.weapons;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.items.Price;
+import com.jimmie.powers.Power;
 
 public abstract class Weapon implements Serializable {
 	/**
@@ -57,5 +57,9 @@ public abstract class Weapon implements Serializable {
 			return true;
 		}
 		return false;
+	}
+
+	public List<Power> getPowers() {
+		return null;
 	}
 }

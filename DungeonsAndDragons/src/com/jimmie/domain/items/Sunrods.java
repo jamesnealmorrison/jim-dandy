@@ -20,4 +20,9 @@ public class Sunrods extends Gear {
 	public GearType getGearType() {
 		return GearType.SUNRODS;
 	}
+
+	@Override
+	public String getName() {
+		return "Sunrods";
+	}
 }

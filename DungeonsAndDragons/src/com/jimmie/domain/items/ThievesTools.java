@@ -20,4 +20,9 @@ public class ThievesTools extends Gear {
 	public GearType getGearType() {
 		return GearType.THIEVES_TOOLS;
 	}
+
+	@Override
+	public String getName() {
+		return "Thieves Tools";
+	}
 }

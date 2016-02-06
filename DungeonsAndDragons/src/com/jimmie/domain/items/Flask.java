@@ -20,4 +20,9 @@ public class Flask extends Gear {
 	public GearType getGearType() {
 		return GearType.FLASK;
 	}
+
+	@Override
+	public String getName() {
+		return "Flask";
+	}
 }

@@ -2,9 +2,12 @@ package com.jimmie.util.aspects;
 
 import java.util.List;
 
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
@@ -59,6 +62,11 @@ public aspect MovementAspect {
 							Utils.print("This would have provoked an opportunity attack from " + adjacentEnemy.getName() + " but I am invisible to them now. ");
 						} else {
 							Utils.print(adjacentEnemy.getName() + " gets to perform an opportunity attack on " + creature.getName() + " because " + creature.getName() + " left a square adjacent to " + adjacentEnemy.getName() + " without shifting.");
+							// Check for Halfling Nimble Reaction
+							if (com.jimmie.domain.creatures.monsters.Halfling.class.isAssignableFrom(creature.getClass())) {
+								Utils.print(creature.getName() + " gets a +2 AC bonus against opportunity attacks.");
+								creature.setTemporaryEffect(2, creature.getCurrentTurn(), DurationType.IMMEDIATE, creature, TemporaryEffectType.AC_MOD, TemporaryEffectReason.NIMBLE_REACTION);
+							}
 							adjacentEnemy.performOpportunityAttack(creature);
 						}
 					}

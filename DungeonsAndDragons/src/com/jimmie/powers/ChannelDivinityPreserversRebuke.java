@@ -50,10 +50,8 @@ public class ChannelDivinityPreserversRebuke extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NONE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NONE;
 	}
 
 	@Override

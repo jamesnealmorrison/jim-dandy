@@ -1,8 +1,14 @@
 package com.jimmie.domain;
 
+import java.io.Serializable;
+
 import com.jimmie.domain.creatures.Creature;
 
-public class Mark {
+public class Mark implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MarkType markType;
 	private Creature marker;
 	private DurationType duration;

@@ -20,4 +20,9 @@ public class RitualBook extends Gear {
 	public GearType getGearType() {
 		return GearType.RITUAL_BOOK;
 	}
+
+	@Override
+	public String getName() {
+		return "Ritual Book";
+	}
 }

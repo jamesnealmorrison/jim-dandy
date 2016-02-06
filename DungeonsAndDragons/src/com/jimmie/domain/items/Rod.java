@@ -38,4 +38,9 @@ public class Rod extends Implement {
 	public ImplementType getImplementType() {
 		return ImplementType.ROD;
 	}
+
+	@Override
+	public String getName() {
+		return "Rod";
+	}
 }

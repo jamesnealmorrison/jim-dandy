@@ -60,10 +60,8 @@ public class DazzlingRay extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.RADIANT);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.RADIANT;
 	}
 
 	@Override
@@ -139,7 +137,7 @@ public class DazzlingRay extends AttackPower {
 				Utils.print("You missed " + target.getName() + ". Doing half damage.");
 				target.hurt(Utils.rollForHalfDamage(6, DiceType.SIX_SIDED, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.RADIANT, false, user);
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 			
 			if (sorcerer.getLastAttackRollEven()) {

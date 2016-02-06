@@ -4,6 +4,7 @@ import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
+import com.jimmie.domain.creatures.monsters.Irontooth;
 import com.jimmie.powers.MemoryOfAThousandLifetimes;
 import com.jimmie.powers.Power;
 import com.jimmie.util.Dice;
@@ -35,6 +36,11 @@ public aspect SavingThrowAspect {
 					}
 				}
 			}
+		}
+		
+		if (Irontooth.class.isAssignableFrom(creature.getClass())) {
+			Utils.print("Irontooth gets a +2 to all saving throws.");
+			result += 2;
 		}
 		
 		return result;

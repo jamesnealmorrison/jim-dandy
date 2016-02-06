@@ -20,4 +20,9 @@ public class EverburningTorch extends Gear {
 	public GearType getGearType() {
 		return GearType.EVERBURNING_TORCH;
 	}
+
+	@Override
+	public String getName() {
+		return "Everburning Torch";
+	}
 }

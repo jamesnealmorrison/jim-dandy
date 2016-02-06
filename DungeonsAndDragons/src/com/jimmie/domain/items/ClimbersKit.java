@@ -20,4 +20,9 @@ public class ClimbersKit extends Gear {
 	public GearType getGearType() {
 		return GearType.CLIMBERS_KIT;
 	}
+
+	@Override
+	public String getName() {
+		return "ClimbersKit";
+	}
 }

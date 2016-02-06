@@ -58,10 +58,8 @@ public class CallOfTheBeast extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.PSYCHIC);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.PSYCHIC;
 	}
 
 	@Override
@@ -122,7 +120,7 @@ public class CallOfTheBeast extends AttackPower {
 			} else {
 				Utils.print("Sorry.  You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 		}
 		return true;

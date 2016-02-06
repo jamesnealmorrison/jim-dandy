@@ -52,10 +52,8 @@ public class RayOfFrost extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.COLD);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.COLD;
 	}
 
 	@Override

@@ -20,4 +20,9 @@ public class Tent extends Gear {
 	public GearType getGearType() {
 		return GearType.TENT;
 	}
+
+	@Override
+	public String getName() {
+		return "Tent";
+	}
 }

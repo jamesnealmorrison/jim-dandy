@@ -60,10 +60,8 @@ public class LayOnHands extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NONE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NONE;
 	}
 
 	@Override
@@ -101,10 +99,10 @@ public class LayOnHands extends AttackPower {
 		timesUsed++;
 		usedThisRound = true;
 		// Give an extra healing surge to the ally (Because useHealingSurge will deduct one.
-		cAlly.setCurrentSurgeUses(cAlly.getCurrentSurgeUses()+1);
+		cAlly.setCurrentSurgeUses(cAlly.getCurrentSurgeUses()-1);
 		cAlly.useHealingSurge();
 		// Remove one from mine.
-		cUser.setCurrentSurgeUses(cUser.getCurrentSurgeUses()-1);
+		cUser.setCurrentSurgeUses(cUser.getCurrentSurgeUses()+1);
 		// Check for Healing Hands Feat
 		if (PlayerCharacter.class.isAssignableFrom(user.getClass())) {
 			PlayerCharacter pc = (PlayerCharacter) user;

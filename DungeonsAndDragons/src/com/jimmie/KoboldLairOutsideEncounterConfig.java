@@ -151,7 +151,7 @@ public class KoboldLairOutsideEncounterConfig {
 	}
 	@Bean
 	public KoboldSlinger s() {
-		KoboldSlinger s = new KoboldSlinger();
+		KoboldSlinger s = new KoboldSlinger(0,1,2);
 		s.setName("Kobold Slinger");
 		s.setDisplayName("S");
 		s.setCurrentPosition(new Position(14,15));

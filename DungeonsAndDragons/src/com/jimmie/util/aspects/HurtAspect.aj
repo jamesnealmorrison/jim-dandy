@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
+import com.jimmie.domain.DiceType;
 import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectReason;
@@ -12,7 +14,10 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.monsters.GnomeSkulk;
+import com.jimmie.domain.creatures.monsters.HalflingSlinger;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public aspect HurtAspect {
@@ -66,6 +71,18 @@ public aspect HurtAspect {
 						}
 					}
 				}
+			}
+		}
+		
+		// Combat Advantage feature
+		if ((GnomeSkulk.class.isAssignableFrom(hurter.getClass()))
+				|| (HalflingSlinger.class.isAssignableFrom(hurter.getClass()))) {
+			if (Utils.hasCombatAdvantage((Creature) hurter, hurtee)) {
+				Utils.print("Because of " + ((Creature) hurter).getName() + "'s Combat Advantage feature, they deal an extra 1d6 damage.");
+				// TODO: Some creatures (halfling slinger) this only applies to ranged, others to melee, other to both.
+				Dice d = new Dice(DiceType.SIX_SIDED);
+				int extraDamage = d.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
+				damage += extraDamage;
 			}
 		}
 

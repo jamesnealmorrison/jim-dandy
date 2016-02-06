@@ -20,4 +20,9 @@ public class Bedroll extends Gear {
 	public GearType getGearType() {
 		return GearType.BEDROLL;
 	}
+
+	@Override
+	public String getName() {
+		return "Bedroll";
+	}
 }

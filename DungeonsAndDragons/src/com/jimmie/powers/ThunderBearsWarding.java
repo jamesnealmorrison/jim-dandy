@@ -51,10 +51,8 @@ public class ThunderBearsWarding extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.THUNDER);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.THUNDER;
 	}
 
 	@Override

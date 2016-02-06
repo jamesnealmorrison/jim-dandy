@@ -53,10 +53,8 @@ public class BullRush extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NONE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NONE;
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class BullRush extends AttackPower {
 					} else {
 						Utils.print("You missed " + target.getName());
 						// Some targets have powers/effects that happen when they are missed.
-						target.miss(user);
+						target.miss(user, this);
 					}
 				} else {
 					Utils.print(target.getName() + " is too big.  You can't bull rush them.");

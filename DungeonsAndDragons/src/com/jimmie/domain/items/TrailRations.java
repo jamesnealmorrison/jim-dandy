@@ -20,4 +20,9 @@ public class TrailRations extends Gear {
 	public GearType getGearType() {
 		return GearType.TRAIL_RATIONS;
 	}
+
+	@Override
+	public String getName() {
+		return "Trail Rations";
+	}
 }

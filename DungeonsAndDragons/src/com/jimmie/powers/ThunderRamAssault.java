@@ -60,10 +60,8 @@ public class ThunderRamAssault extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.THUNDER);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.THUNDER;
 	}
 
 	@Override
@@ -161,7 +159,7 @@ public class ThunderRamAssault extends AttackPower {
 							} else {
 								Utils.print("Sorry.  You missed " + secondaryTarget.getName());
 								// Some targets have powers/effects that happen when they are missed.
-								secondaryTarget.miss(user);
+								secondaryTarget.miss(user, this);
 							}
 						}
 					}
@@ -169,7 +167,7 @@ public class ThunderRamAssault extends AttackPower {
 				} else {
 					Utils.print("You missed " + target.getName());
 					// Some targets have powers/effects that happen when they are missed.
-					target.miss(user);
+					target.miss(user, this);
 				}
 			}
 			return true;

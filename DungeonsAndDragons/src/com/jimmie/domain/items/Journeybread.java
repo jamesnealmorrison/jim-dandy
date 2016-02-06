@@ -20,4 +20,9 @@ public class Journeybread extends Gear {
 	public GearType getGearType() {
 		return GearType.JOURNEYBREAD;
 	}
+
+	@Override
+	public String getName() {
+		return "Journeybread";
+	}
 }

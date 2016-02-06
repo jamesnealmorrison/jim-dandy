@@ -56,10 +56,8 @@ public class RadiantVengeance extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.RADIANT);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.RADIANT;
 	}
 
 	@Override
@@ -128,7 +126,7 @@ public class RadiantVengeance extends AttackPower {
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 			return true;
 		}

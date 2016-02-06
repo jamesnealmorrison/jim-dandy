@@ -20,4 +20,9 @@ public class Waterskin extends Gear {
 	public GearType getGearType() {
 		return GearType.WATERSKIN;
 	}
+
+	@Override
+	public String getName() {
+		return "Waterskin";
+	}
 }

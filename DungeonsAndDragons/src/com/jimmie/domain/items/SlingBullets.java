@@ -19,4 +19,10 @@ public class SlingBullets extends Gear {
 	@Override
 	public GearType getGearType() {
 		return GearType.SLING_BULLETS;
-	}}
+	}
+
+	@Override
+	public String getName() {
+		return "Sling Bullets";
+	}
+}

@@ -20,4 +20,9 @@ public class SilkRope extends Gear {
 	public GearType getGearType() {
 		return GearType.SILK_ROPE;
 	}
+
+	@Override
+	public String getName() {
+		return "Sild Rope";
+	}
 }

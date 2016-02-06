@@ -20,4 +20,9 @@ public class Arrows extends Gear {
 	public GearType getGearType() {
 		return GearType.ARROWS;
 	}
+
+	@Override
+	public String getName() {
+		return "Arrows";
+	}
 }

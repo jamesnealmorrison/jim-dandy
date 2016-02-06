@@ -2,16 +2,24 @@ package com.jimmie.encounters;
 
 import java.util.ArrayList;
 
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.SkillType;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
+import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
 import com.jimmie.domain.map.MapLocation;
+import com.jimmie.util.SkillCheck;
+import com.jimmie.util.Utils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +64,14 @@ public class KoboldLairOutsideEncounter extends Encounter {
 	
 	@Override
 	public void init() {
+		Encounter.setMonstersVisible(false);
+		
+		gamal.setCurrentPosition(new Position (-1,-1));
+		percian.setCurrentPosition(new Position (-1,-1));
+		keothi.setCurrentPosition(new Position (-1,-1));
+		travok.setCurrentPosition(new Position (-1,-1));
+		hazel.setCurrentPosition(new Position (-1,-1));
+		
 		/* Set up the monsters */
 		monsters = new ArrayList<Monster>();		
 		
@@ -75,9 +91,6 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		monsters.add(s);
 	
 		/* Set up the player characters */
-		gamal.setCurrentPosition(new Position(3,20));
-//		gamal.setCurrentPosition(new Position(12,12));
-		
 /*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -87,10 +100,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 		gamal.addReadiedWeapon(readiedWeapon);
 		gamal.setReadiedArmor(gamal.getArmor().get(0));
-*/
-		percian.setCurrentPosition(new Position(1,21));
-//		percian.setCurrentPosition(new Position(13,13));
-/*		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(percian.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
@@ -99,9 +109,6 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 		percian.addReadiedWeapon(readiedWeapon);
 		percian.setReadiedArmor(percian.getArmor().get(0));
-*/
-		keothi.setCurrentPosition(new Position(3,18));
-/*		
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(keothi.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -111,10 +118,6 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		}
 		keothi.addReadiedWeapon(readiedWeapon);
 		keothi.setReadiedArmor(keothi.getArmor().get(0));
-*/
-		travok.setCurrentPosition(new Position(1,19));
-//		travok.setCurrentPosition(new Position(12,14));
-/*
 		readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(travok.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
@@ -130,11 +133,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 				travok.setReadiedImplement((Implement) gear);
 			}
 		}
-*/
-		
-		hazel.setCurrentPosition(new Position(4,19));
-//		hazel.setCurrentPosition(new Position(12,12));
-/*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
 		readiedWeapon.setWeapon(hazel.getWeapons().get(0));
 		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
 			readiedWeapon.setHand(Hand.BOTH_HANDS);
@@ -644,14 +643,76 @@ public class KoboldLairOutsideEncounter extends Encounter {
 
 	@Override
 	public void setup() {
-		// TODO Auto-generated method stub
+		// Put the characters on the road.
+		Utils.print("Place characters in the clearing on the left hand edge of the map. Take into consideration whether or not");
+		Utils.print("the PC's will want to sneak attack.");
 		
+		boolean allStealthChecksSucceeded = true;
+		
+		for (DndCharacter character : getCharacters()) {
+			Utils.print("Where do you want to put " + character.getName() + "?");
+
+			Encounter.showCoordinateSystem(true);
+			
+			Utils.print("Please enter the X coordinate (1 - 8).");
+			int x = Utils.getValidIntInputInRange(1, 8);
+
+			Utils.print("Please enter the Y coordinate (1 - 21).");
+			int y = Utils.getValidIntInputInRange(1, 21);
+			Encounter.showCoordinateSystem(false);
+			
+			character.setCurrentPosition(new Position(x,y));
+			
+			Utils.print("Perception Check:");
+			SkillCheck skillCheck = new SkillCheck();
+			skillCheck.setDifficultyClass(13);
+			skillCheck.setSkillType(SkillType.PERCEPTION);
+			int roll = character.skillCheckRoll(skillCheck);
+			if (roll >= 15) {
+				Utils.print("Several kobolds are visible through the trees.");
+				Encounter.setMonstersVisible(true);
+			} else if (roll >= 13) {
+				Utils.print("The sound of many voices is just audible over the din of the waterfall.");
+			}
+			
+			Utils.print("Stealth Check:");
+			skillCheck = new SkillCheck();
+			skillCheck.setDifficultyClass(12);
+			skillCheck.setSkillType(SkillType.STEALTH);
+			if (!character.performSkillCheck(skillCheck)) {
+				Utils.print(character.getName() + " was a little too noisy and the enemies are alerted to your presence.");
+				allStealthChecksSucceeded = false;
+			}
+		}
+		
+		if (allStealthChecksSucceeded) {
+			// Surprise round.
+			m1.setTemporaryCondition(m1, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m1.getCurrentTurn());
+			m2.setTemporaryCondition(m2, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m2.getCurrentTurn());
+			m3.setTemporaryCondition(m3, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m3.getCurrentTurn());
+			m4.setTemporaryCondition(m4, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m4.getCurrentTurn());
+			m5.setTemporaryCondition(m5, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m5.getCurrentTurn());
+			m6.setTemporaryCondition(m6, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m6.getCurrentTurn());
+			m7.setTemporaryCondition(m7, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m7.getCurrentTurn());
+			m8.setTemporaryCondition(m8, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m8.getCurrentTurn());
+			m9.setTemporaryCondition(m9, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m9.getCurrentTurn());
+			m10.setTemporaryCondition(m10, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m10.getCurrentTurn());
+			k.setTemporaryCondition(k, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, k.getCurrentTurn());
+			d.setTemporaryCondition(d, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, d.getCurrentTurn());
+			s.setTemporaryCondition(s, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, s.getCurrentTurn());
+		}
 	}
 
 	@Override
 	protected void makeEncounterInitiativeChanges() {
-		// TODO Auto-generated method stub
+		// The dragonshield and skirmisher are supposed to have an initiative 1 lower than the minion's initiative.
+		d.setInitiativeRoll(m1.getInitiativeRoll()-2); // Setting dragonshield to -2 because they have a +4 initiative while the minions have +3.  So I have to subtract 2 to get a total roll that's 1 less.
+		k.setInitiativeRoll(m1.getInitiativeRoll()-3); // Setting skirmisher to -3 because they have a +5 initiative while the minions have +3.  So I have to subtract 2 to get a total roll that's 1 less.
 		
 	}
 
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
+	}
 }

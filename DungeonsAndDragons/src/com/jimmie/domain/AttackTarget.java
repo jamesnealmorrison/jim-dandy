@@ -1,6 +1,7 @@
 package com.jimmie.domain;
 
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.powers.AttackPower;
 
 public interface AttackTarget {
 	String getName();
@@ -25,5 +26,5 @@ public interface AttackTarget {
 	void pull(String pullDirection);
 	void slide(String direction);
 	int getCurrentHitPoints();
-	void miss(Creature misser);
+	void miss(Creature misser, AttackPower power);
 }

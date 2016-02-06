@@ -59,10 +59,8 @@ public class RadiantDelirium extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.RADIANT);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.RADIANT;
 	}
 
 	@Override
@@ -131,7 +129,7 @@ public class RadiantDelirium extends AttackPower {
 					c.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.RADIANT_DELIRIUM, user.getCurrentTurn());
 				}
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 			return true;
 		}

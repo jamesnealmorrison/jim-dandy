@@ -9,6 +9,8 @@ import com.jimmie.encounters.Encounter;
 
 public class TurnMaster {
 	private static LinkedList<TurnTaker> participantList = new LinkedList<TurnTaker>();
+	private static TurnTaker firstParticipant;
+	private static int round = 0;
 	
 	private TurnMaster() {
 		
@@ -17,6 +19,8 @@ public class TurnMaster {
 	public static void addParticipant(TurnTaker newParticipant) {
 		/* If this is the first participant, just add it. */
 		if (participantList.isEmpty()) {
+			// Make a note of who the first participant is.
+			firstParticipant = newParticipant;
 			participantList.add(newParticipant);
 		} else {
 			boolean added = false;
@@ -42,10 +46,15 @@ public class TurnMaster {
 			while (!activeParticipantFound) {
 				// Pop the next element off the list. */
 				nextParticipant = participantList.pop();
+				
+				if (nextParticipant == firstParticipant) {
+					round++;
+					Utils.print("Starting round " + round);
+				}
 
 				// See if this type of creature is active yet.
 				if (Monster.class.isAssignableFrom(nextParticipant.getClass())) {
-					if (!Encounter.areMonstersActive()) {
+					if (!Encounter.areMonstersActive() || !Encounter.getEncounter().isActive(nextParticipant)) {
 						// Skip this monster, but you have to put them back on the list.
 						participantList.add(nextParticipant);
 						continue;
@@ -72,5 +81,9 @@ public class TurnMaster {
 
 	public static void removeParticipant(TurnTaker participant) {
 		participantList.remove(participant);
+	}
+
+	public static int getCurrentRound() {
+		return round;
 	}
 }

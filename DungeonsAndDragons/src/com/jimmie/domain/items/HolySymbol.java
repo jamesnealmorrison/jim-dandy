@@ -38,4 +38,9 @@ public class HolySymbol extends Implement {
 	public ImplementType getImplementType() {
 		return ImplementType.HOLY_SYMBOL;
 	}
+
+	@Override
+	public String getName() {
+		return "Holy Symbol";
+	}
 }

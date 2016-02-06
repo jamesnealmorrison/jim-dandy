@@ -20,4 +20,9 @@ public class Torch extends Gear {
 	public GearType getGearType() {
 		return GearType.TORCH;
 	}
+
+	@Override
+	public String getName() {
+		return "Torch";
+	}
 }

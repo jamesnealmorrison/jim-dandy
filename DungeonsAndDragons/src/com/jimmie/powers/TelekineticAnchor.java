@@ -58,10 +58,8 @@ public class TelekineticAnchor extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.FORCE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.FORCE;
 	}
 
 	@Override
@@ -131,7 +129,7 @@ public class TelekineticAnchor extends AttackPower {
 				} else {
 					Utils.print("Sorry.  You missed " + target.getName());
 					// Some targets have powers/effects that happen when they are missed.
-					target.miss(user);
+					target.miss(user, this);
 				}
 
 				/* Whether it hits or not, the target will take 5 force damage if it moves on its next turn. */

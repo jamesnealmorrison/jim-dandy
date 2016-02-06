@@ -39,6 +39,7 @@ import com.jimmie.domain.items.weapons.WeaponProperty;
 import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.powers.AidAnother;
 import com.jimmie.powers.MeleeBasicAttack;
+import com.jimmie.powers.Power;
 import com.jimmie.powers.ReadyWeapon;
 import com.jimmie.powers.SecondWind;
 import com.jimmie.powers.SpendActionPoint;
@@ -47,6 +48,28 @@ import com.jimmie.rituals.Ritual;
 import com.jimmie.util.Utils;
 
 public abstract class DndCharacter extends Creature {
+	@Override
+	public List<Power> getPowers() {
+		// First, make a temp copy of the powers list
+		List<Power> tempPowers = new ArrayList<Power>();
+		// Copy the powers to it.
+		if (super.getPowers() != null) {
+			tempPowers.addAll(super.getPowers());
+		}
+		// Now, see if the readied armor and weapons have any powers
+		if ((getReadiedArmor() != null) && (getReadiedArmor().getPowers() != null)) {
+			tempPowers.addAll(getReadiedArmor().getPowers());
+		}
+		
+		for (ReadiedWeapon readiedWeapon : getReadiedWeapons().values()) {
+			if (readiedWeapon.getWeapon().getPowers() != null) {
+				tempPowers.addAll(readiedWeapon.getWeapon().getPowers());
+			}
+		}
+		
+		return tempPowers;
+	}
+
 	private static final long serialVersionUID = 1L;
 	private Armor readiedArmor;
 	private List<Armor> armor;

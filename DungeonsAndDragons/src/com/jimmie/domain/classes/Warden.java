@@ -77,7 +77,7 @@ public class Warden extends DndClass {
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
 			
 			// Some targets have powers/effects that happen when they are missed.
-			target.miss(owner);
+			target.miss(owner, null);
 			return -2;
 		}
 	}

@@ -56,10 +56,8 @@ public class StrengthOfStone extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NORMAL);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NORMAL;
 	}
 
 	@Override
@@ -116,7 +114,7 @@ public class StrengthOfStone extends AttackPower {
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 			return true;
 		}

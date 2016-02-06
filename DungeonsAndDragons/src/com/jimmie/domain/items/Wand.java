@@ -38,4 +38,9 @@ public class Wand extends Implement {
 	public ImplementType getImplementType() {
 		return ImplementType.WAND;
 	}
+
+	@Override
+	public String getName() {
+		return "Wand";
+	}
 }

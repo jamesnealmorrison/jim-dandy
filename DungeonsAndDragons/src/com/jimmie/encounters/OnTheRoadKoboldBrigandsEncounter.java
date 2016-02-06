@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
@@ -711,4 +712,8 @@ Utils.saveCharacter(hazel);
 		s.setInitiativeRoll(m1.getInitiativeRoll()-1);
 	}
 
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
+	}
 }

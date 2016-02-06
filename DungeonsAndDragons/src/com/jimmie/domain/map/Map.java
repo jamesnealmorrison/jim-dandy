@@ -76,6 +76,16 @@ public class Map {
 			return false;
 		}
 	}
+
+	public boolean isGround(Position position) {
+		MapLocation location = locations.get(getKey(position));
+		if (LocationType.GROUND == location.getType()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public boolean isRoad(Position position) {
 		MapLocation location = locations.get(getKey(position));
 		if (LocationType.ROAD == location.getType()) {
@@ -177,4 +187,14 @@ public class Map {
 			return false;
 		}
 	}
+
+	public boolean isCliff(Position position) {
+		MapLocation location = locations.get(getKey(position));
+		if (LocationType.CLIFF == location.getType()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

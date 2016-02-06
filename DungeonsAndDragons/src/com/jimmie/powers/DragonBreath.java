@@ -17,7 +17,7 @@ import com.jimmie.util.Utils;
 
 public class DragonBreath extends AttackPower {
 	private AbilityType abilityType;
-	private List<DamageType> damageTypes;
+	private DamageType damageType;
 
 	public DragonBreath() {
 		super();
@@ -41,7 +41,6 @@ public class DragonBreath extends AttackPower {
 			break;
 		}
 		
-		DamageType damageType = null;
 		Utils.print("Now choose which damage type you want your Dragon Breath to inflict.");
 		Utils.print("1. Acid");
 		Utils.print("2. Cold");
@@ -67,8 +66,6 @@ public class DragonBreath extends AttackPower {
 			damageType = DamageType.POISON;
 			break;
 		}
-		damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(damageType);
 	}
 
 	/**
@@ -107,8 +104,8 @@ public class DragonBreath extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		return damageTypes;
+	public DamageType getDamageType() {
+		return damageType;
 	}
 
 	@Override

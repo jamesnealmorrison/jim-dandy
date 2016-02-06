@@ -51,11 +51,8 @@ public class MindSpike extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.PSYCHIC);
-		damageTypes.add(DamageType.FORCE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.MULTIPLE;
 	}
 
 	@Override

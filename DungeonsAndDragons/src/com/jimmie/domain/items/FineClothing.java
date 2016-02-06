@@ -20,4 +20,9 @@ public class FineClothing extends Gear {
 	public GearType getGearType() {
 		return GearType.FINE_CLOTHING;
 	}
+
+	@Override
+	public String getName() {
+		return "Fine Clothing";
+	}
 }

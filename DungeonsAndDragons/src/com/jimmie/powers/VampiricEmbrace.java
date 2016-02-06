@@ -52,10 +52,8 @@ public class VampiricEmbrace extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NECROTIC);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NECROTIC;
 	}
 
 	@Override

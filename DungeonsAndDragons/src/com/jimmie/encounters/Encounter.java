@@ -1600,4 +1600,6 @@ public abstract class Encounter {
 	public void setCurrentParticipant(TurnTaker currentParticipant) {
 		this.currentParticipant = currentParticipant;
 	}
+
+	public abstract boolean isActive(TurnTaker nextParticipant);
 }

@@ -20,4 +20,9 @@ public class Candle extends Gear {
 	public GearType getGearType() {
 		return GearType.CANDLE;
 	}
+
+	@Override
+	public String getName() {
+		return "Candle";
+	}
 }

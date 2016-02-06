@@ -61,10 +61,8 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.RADIANT);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.RADIANT;
 	}
 
 	@Override
@@ -129,7 +127,7 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 
 					target.hurt(damage/2, DamageType.RADIANT, false, user);
 
-					target.miss(user);
+					target.miss(user, this);
 				}
 			}
 

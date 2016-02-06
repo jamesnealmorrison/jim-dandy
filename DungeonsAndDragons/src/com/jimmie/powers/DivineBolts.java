@@ -50,10 +50,8 @@ public class DivineBolts extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.LIGHTNING);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.LIGHTNING;
 	}
 
 	@Override

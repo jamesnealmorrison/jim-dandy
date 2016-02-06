@@ -38,4 +38,9 @@ public class Orb extends Implement {
 	public ImplementType getImplementType() {
 		return ImplementType.ORB;
 	}
+
+	@Override
+	public String getName() {
+		return "Orb";
+	}
 }

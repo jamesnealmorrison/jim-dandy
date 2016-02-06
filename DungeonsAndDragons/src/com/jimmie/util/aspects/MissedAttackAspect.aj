@@ -7,13 +7,14 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.classes.RunicArtistry;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.powers.AttackPower;
 import com.jimmie.util.Utils;
 
 public aspect MissedAttackAspect {
-	public pointcut missAttack(Creature misser, Creature target) : execution(* com.jimmie.domain.creatures.Creature.miss(..))
-	&& args(misser) && target(target);
+	public pointcut missAttack(Creature misser, AttackPower power, Creature target) : execution(* com.jimmie.domain.creatures.Creature.miss(Creature, AttackPower))
+	&& args(misser, power) && target(target);
 
-	after(Creature misser, Creature target) : missAttack(misser, target) {
+	after(Creature misser, AttackPower power, Creature target) : missAttack(misser, power, target) {
 		// See if target is a Runepriest with Defiant Word
 		if (target.getDndClass() != null) {
 			if (Runepriest.class.isAssignableFrom(target.getDndClass().getClass())) {

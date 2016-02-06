@@ -61,10 +61,8 @@ public class DivineRuneOfThunder extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.THUNDER);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.THUNDER;
 	}
 
 	@Override
@@ -91,63 +89,66 @@ public class DivineRuneOfThunder extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
+		if (timesUsed < 1) {
+			List<AttackTarget> targets = Encounter.getEncounter().chooseMeleeTarget(user, user.getReadiedWeapon().getWeapon());
 
-		if ((targets != null) && !(targets.isEmpty())) {
-			AttackTarget target = targets.get(0);
+			if ((targets != null) && !(targets.isEmpty())) {
+				AttackTarget target = targets.get(0);
 
-			int targetArmorClass = target.getArmorClass(user);
-			Utils.print("Your target has an AC of " + targetArmorClass);
+				int targetArmorClass = target.getArmorClass(user);
+				Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
 
-			if (attackRoll >= targetArmorClass) {
-				/* A HIT! */
-				Utils.print("You successfully hit " + target.getName());
+				if (attackRoll >= targetArmorClass) {
+					/* A HIT! */
+					Utils.print("You successfully hit " + target.getName());
 
-				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
-				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
+					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
+					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				RunicState runicState = null;
-				if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
-					Utils.print("You are about to choose the Runic State.  Here is the info about them.");
-					Utils.print("Destruction: Wisdom bonus to damage roll and target grants combat advantage.");
-					Utils.print("Protection: Push target and daze them");
-					runicState = ((Runepriest) user.getDndClass()).chooseRunicState();
-					if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
-						if (Creature.class.isAssignableFrom(target.getClass())) {
-							Creature cTarget = (Creature) target;
-							int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
-							Utils.print("Adding " + abilityModifier + " damage bonus to this roll and " + cTarget.getName() + " grants combat advantage until the end of my next turn.");
-							cTarget.setTemporaryCombatAdvantage(user, DurationType.END_OF_NEXT_TURN, CombatAdvantageType.DIVINE_RUNE_OF_THUNDER, user.getCurrentTurn());
-						}
-					} else {
-						if (Creature.class.isAssignableFrom(target.getClass())) {
-							Creature cTarget = (Creature) target;
-							int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
-							Utils.print("Pushing " + target.getName() + " " + abilityModifier + " squares and they are dazed until the end of my next turn.");
-							String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
-							for (int i = 0; i < abilityModifier; i++) {
-								target.push(pushDirection);
+					RunicState runicState = null;
+					if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
+						Utils.print("You are about to choose the Runic State.  Here is the info about them.");
+						Utils.print("Destruction: Wisdom bonus to damage roll and target grants combat advantage.");
+						Utils.print("Protection: Push target and daze them");
+						runicState = ((Runepriest) user.getDndClass()).chooseRunicState();
+						if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
+							if (Creature.class.isAssignableFrom(target.getClass())) {
+								Creature cTarget = (Creature) target;
+								int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
+								Utils.print("Adding " + abilityModifier + " damage bonus to this roll and " + cTarget.getName() + " grants combat advantage until the end of my next turn.");
+								cTarget.setTemporaryCombatAdvantage(user, DurationType.END_OF_NEXT_TURN, CombatAdvantageType.DIVINE_RUNE_OF_THUNDER, user.getCurrentTurn());
 							}
-							cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.DIVINE_RUNE_OF_THUNDER, user.getCurrentTurn());
+						} else {
+							if (Creature.class.isAssignableFrom(target.getClass())) {
+								Creature cTarget = (Creature) target;
+								int abilityModifier = user.getAbilityModifier(AbilityType.WISDOM);
+								Utils.print("Pushing " + target.getName() + " " + abilityModifier + " squares and they are dazed until the end of my next turn.");
+								String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), target.getCurrentPosition());
+								for (int i = 0; i < abilityModifier; i++) {
+									target.push(pushDirection);
+								}
+								cTarget.setTemporaryCondition(user, DurationType.END_OF_NEXT_TURN, CreatureConditionType.DAZED, TemporaryEffectReason.DIVINE_RUNE_OF_THUNDER, user.getCurrentTurn());
+							}
 						}
-					}
-					if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + user.getAbilityModifier(AbilityType.WISDOM), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);
-					} else {
-						target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);						
+						if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
+							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + user.getAbilityModifier(AbilityType.WISDOM), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);
+						} else {
+							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);						
+						}
+
 					}
 
+
+				} else {
+					Utils.print("You missed " + target.getName());
+					// Some targets have powers/effects that happen when they are missed.
+					target.miss(user, this);
 				}
-			
-			
-			} else {
-				Utils.print("You missed " + target.getName());
-				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				timesUsed++;
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

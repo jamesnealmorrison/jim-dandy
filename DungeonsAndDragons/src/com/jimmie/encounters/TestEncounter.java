@@ -1,5 +1,7 @@
 package com.jimmie.encounters;
 
+import com.jimmie.domain.TurnTaker;
+
 public class TestEncounter extends Encounter {
 	/**
 	 * @param args
@@ -114,5 +116,10 @@ public class TestEncounter extends Encounter {
 	protected void makeEncounterInitiativeChanges() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
 	}
 }

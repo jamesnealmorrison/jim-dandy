@@ -51,10 +51,8 @@ public class AcidArrow extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.ACID);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.ACID;
 	}
 
 	@Override

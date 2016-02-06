@@ -51,10 +51,8 @@ public class ElementalSpirits extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.VARIES);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.VARIES;
 	}
 
 	@Override

@@ -20,4 +20,9 @@ public class Chest extends Gear {
 	public GearType getGearType() {
 		return GearType.CHEST;
 	}
+
+	@Override
+	public String getName() {
+		return "Chest";
+	}
 }

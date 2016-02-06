@@ -16,7 +16,11 @@ public class KoboldSlinger extends Kobold {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public KoboldSlinger() {
+	public KoboldSlinger(int firepots, int stinkpots, int gluepots) {
+		this.normalShot = 20;
+		this.firepots = firepots;
+		this.stinkpots = stinkpots;
+		this.gluepots = gluepots;
 		setSize(Size.SMALL);
 		setInitiative(3);
 		setMaxHitPoints(24);

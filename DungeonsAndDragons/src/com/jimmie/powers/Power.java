@@ -18,14 +18,14 @@ public abstract class Power implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	protected Creature user;	
 	protected int timesUsed = 0;
 	public abstract String getName();
 	public abstract int getLevel();
 	public abstract PowerUsage getPowerUsage();
 	public abstract PowerSource getPowerSource();
 	public abstract AccessoryType getAccessoryType();
-	public abstract List<DamageType> getDamageType();
+	public abstract DamageType getDamageType();
 	public abstract ActionType getActionType();
 	public abstract int getRangeNumber1(); // This is for ranged/close/area.  The first number.  e.g. close burst 3
 	public abstract int getRangeNumber2(); // This is for area.  The second number.  e.g. area burst 2 within 5 squares
@@ -79,5 +79,11 @@ public abstract class Power implements Serializable {
 	}
 	public void setTimesUsed(int timesUsed) {
 		this.timesUsed = timesUsed;
+	}
+	public Creature getUser() {
+		return user;
+	}
+	public void setUser(Creature user) {
+		this.user = user;
 	}
 }

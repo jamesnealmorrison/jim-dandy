@@ -1031,7 +1031,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	}
 
-	private int skillCheckRoll(SkillCheck skillCheck) {
+	public int skillCheckRoll(SkillCheck skillCheck) {
 		Dice d = new Dice(DiceType.TWENTY_SIDED);
 		int diceRoll = d.roll(DiceRollType.SKILL_CHECK_ROLL);
 		int roll = diceRoll + getSkillModifier(skillCheck.getSkillType());
@@ -2288,7 +2288,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	@Override
-	public void miss(Creature misser) {
+	public void miss(Creature misser, AttackPower power) {
 	}
 
 	public void slideTargets(List<AttackTarget> targets, int distance) {

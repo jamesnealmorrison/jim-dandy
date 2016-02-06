@@ -58,10 +58,8 @@ public class ChillWind extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.COLD);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.COLD;
 	}
 
 	@Override
@@ -134,7 +132,7 @@ public class ChillWind extends AttackPower {
 			} else {
 				Utils.print("Sorry.  You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 		}
 		

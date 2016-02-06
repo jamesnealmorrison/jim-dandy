@@ -215,7 +215,7 @@ public class Sorcerer extends DndClass {
 		pc.setMaxHitPoints(hp);
 		pc.setCurrentHitPoints(hp);
 
-		int healingSurgesPerDay = 68 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
+		int healingSurgesPerDay = 6 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
 		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
 		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 	}

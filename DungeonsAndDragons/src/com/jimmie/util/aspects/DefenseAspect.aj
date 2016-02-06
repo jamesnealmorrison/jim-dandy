@@ -10,7 +10,7 @@ import com.jimmie.domain.Zone;
 import com.jimmie.domain.ZoneType;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
-import com.jimmie.domain.creatures.monsters.KoboldMinion;
+import com.jimmie.domain.creatures.monsters.HumanRabble;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Utils;
 
@@ -42,6 +42,64 @@ public aspect DefenseAspect {
 				if (tempEffect.getEffectType() == TemporaryEffectType.REF_MOD) {
 					if (tempEffect.stillApplies()) {
 						Utils.print(defender.getName() + " is supposed to get a modifier to reflex until " + tempEffect.getDuration());
+						modifier = modifier + tempEffect.getModifier();
+						Utils.print("Modifier still applies.");
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						/* modifier is over.  Reset the modifier. */
+						it.remove();
+						Utils.print("Modifier no longer applies.  Resetting modifier.");
+					}
+				}
+			}
+		}
+		int total = modifier + proceed(defender, attacker);
+		return total;
+	}
+
+	int around(Creature defender, Creature attacker) : getWill(defender, attacker) {
+		int modifier = 0;
+		
+		/* See if there is a temporary modifier to the reflex. */
+		if (defender.getTemporaryEffects() != null) {
+			for (Iterator<TemporaryEffect> it = defender.getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MOD) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(defender.getName() + " is supposed to get a modifier to Will until " + tempEffect.getDuration());
+						modifier = modifier + tempEffect.getModifier();
+						Utils.print("Modifier still applies.");
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						/* modifier is over.  Reset the modifier. */
+						it.remove();
+						Utils.print("Modifier no longer applies.  Resetting modifier.");
+					}
+				}
+			}
+		}
+		int total = modifier + proceed(defender, attacker);
+		return total;
+	}
+
+	int around(Creature defender, Creature attacker) : getArmorClass(defender, attacker) {
+		int modifier = 0;
+		
+		/* See if there is a temporary modifier to the reflex. */
+		if (defender.getTemporaryEffects() != null) {
+			for (Iterator<TemporaryEffect> it = defender.getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.AC_MOD) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(defender.getName() + " is supposed to get a modifier to Armor Class until " + tempEffect.getDuration());
 						modifier = modifier + tempEffect.getModifier();
 						Utils.print("Modifier still applies.");
 						/* If it should be removed now, delete the modifier now. */
@@ -150,20 +208,20 @@ public aspect DefenseAspect {
 			}
 		}
 		
-		// Kobold Minions have a -2 penalty to defenses if they are not adjacent to another minion.
-		if (KoboldMinion.class.isAssignableFrom(defender.getClass())) {
-			List<Creature> adjacentMonsters = Encounter.getEncounter().getAdjacentMonsters(defender.getCurrentPosition());
-			if (adjacentMonsters != null) {
-				boolean foundMinion = false;
-				for (Creature monster : adjacentMonsters) {
-					if ((monster != defender) && (KoboldMinion.class.isAssignableFrom(monster.getClass()))) {
-						foundMinion = true;
-						break;
+		// Human Rabble "Mob Rule"
+		if (HumanRabble.class.isAssignableFrom(defender.getClass())) {
+			// Is the Human Rabble within 5 squares of two other Human Rabble?
+			List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(defender, defender.getCurrentPosition(), 5);
+			if (allies != null) {
+				int count = 0;
+				for (Creature ally : allies) {
+					if (HumanRabble.class.isAssignableFrom(ally.getClass())) {
+						count++;
 					}
 				}
-				if (foundMinion == false) {
-					Utils.print(defender.getName() + " is not adjacent to any other Kobold Minions.  So they take a -2 penalty to all defenses.");
-					modifier -= 2;
+				if (count >= 2) {
+					Utils.print("Because " + defender.getName() + " is within 5 squares of two other Human Rabble, they get a +2 bonus to all defense.");
+					modifier += 2;
 				}
 			}
 		}

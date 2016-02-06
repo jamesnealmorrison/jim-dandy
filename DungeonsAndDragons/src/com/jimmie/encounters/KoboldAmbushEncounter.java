@@ -7,6 +7,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
@@ -30,7 +31,6 @@ public class KoboldAmbushEncounter extends Encounter {
 	private KoboldDragonshield d3;
 	@Autowired
 	private KoboldWyrmpriest w;
-	
 	@Autowired
 	private DndCharacter gamal;
 	@Autowired
@@ -702,6 +702,39 @@ public class KoboldAmbushEncounter extends Encounter {
 
 	@Override
 	public void setup() {
+/*		
+		if (PlayerCharacter.class.isAssignableFrom(gamal.getClass())) {
+			((PlayerCharacter) gamal).setExperiencePoints(220);
+			gamal.addCoins(1, CoinType.GOLD_PIECE);
+			gamal.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(percian.getClass())) {
+			((PlayerCharacter) percian).setExperiencePoints(220);
+			percian.addCoins(1, CoinType.GOLD_PIECE);
+			percian.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(keothi.getClass())) {
+			((PlayerCharacter) keothi).setExperiencePoints(220);
+			keothi.addCoins(1, CoinType.GOLD_PIECE);
+			keothi.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(travok.getClass())) {
+			((PlayerCharacter) travok).setExperiencePoints(220);
+			travok.addCoins(1, CoinType.GOLD_PIECE);
+			travok.addCoins(5, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(hazel.getClass())) {
+			((PlayerCharacter) hazel).setExperiencePoints(220);
+			hazel.addCoins(1, CoinType.GOLD_PIECE);
+			hazel.addCoins(5, CoinType.SILVER_PIECE);
+		}
+		
+Utils.saveCharacter(gamal);
+Utils.saveCharacter(percian);
+Utils.saveCharacter(keothi);
+Utils.saveCharacter(travok);
+Utils.saveCharacter(hazel);
+*/		
 		// Put the characters on the road.
 		Utils.print("Place characters on the road at the western side of the map.");
 		
@@ -822,5 +855,10 @@ public class KoboldAmbushEncounter extends Encounter {
 
 	public void setHazel(DndCharacter hazel) {
 		this.hazel = hazel;
+	}
+
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
 	}
 }

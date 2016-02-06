@@ -57,10 +57,8 @@ public class AspectOfMight extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NORMAL);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NORMAL;
 	}
 
 	@Override
@@ -93,10 +91,10 @@ public class AspectOfMight extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets);
-
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
+
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets);
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -120,7 +118,7 @@ public class AspectOfMight extends AttackPower {
 					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, false, user);
 
 					// Some targets have powers/effects that happen when they are missed.
-					target.miss(user);
+					target.miss(user, this);
 				}
 				Utils.print("Hit or miss, you get a bonus to the end of the encounter to speed, damage and athletics.");
 				if (Avenger.class.isAssignableFrom(user.getDndClass().getClass())) {

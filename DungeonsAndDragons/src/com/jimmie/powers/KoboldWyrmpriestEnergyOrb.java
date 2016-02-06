@@ -54,10 +54,8 @@ public class KoboldWyrmpriestEnergyOrb extends AttackPower {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(damageType);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return damageType;
 	}
 
 	@Override
@@ -110,7 +108,7 @@ public class KoboldWyrmpriestEnergyOrb extends AttackPower {
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
+				target.miss(user, this);
 			}
 			return true;
 		}

@@ -38,4 +38,9 @@ public class Staff extends Implement {
 	public ImplementType getImplementType() {
 		return ImplementType.STAFF;
 	}
+
+	@Override
+	public String getName() {
+		return "Staff";
+	}
 }

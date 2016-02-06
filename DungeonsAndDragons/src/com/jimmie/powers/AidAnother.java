@@ -51,10 +51,8 @@ public class AidAnother extends Power {
 	}
 
 	@Override
-	public List<DamageType> getDamageType() {
-		List<DamageType> damageTypes = new ArrayList<DamageType>();
-		damageTypes.add(DamageType.NONE);
-		return damageTypes;
+	public DamageType getDamageType() {
+		return DamageType.NONE;
 	}
 
 	@Override
@@ -109,10 +107,6 @@ public class AidAnother extends Power {
 					bonusType = TemporaryAidAnotherBonus.DEFENSE;				
 				}
 				ally.setTemporaryAidAnotherBonus(2, user.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, user, TemporaryEffectType.AID_ANOTHER_BONUS, TemporaryEffectReason.AID_ANOTHER, target, bonusType);
-			} else {
-				Utils.print("You missed " + target.getName());
-				// Some targets have powers/effects that happen when they are missed.
-				target.miss(user);
 			}
 			return true;
 		}

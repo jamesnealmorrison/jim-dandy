@@ -3,6 +3,7 @@ package com.jimmie.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.creatures.DndCharacter;
 
 public class RestUtil {
@@ -22,12 +23,21 @@ public class RestUtil {
 		DndCharacter gamal = Utils.loadCharacter("Gamal");
 		DndCharacter keothi = Utils.loadCharacter("Keothi");
 		DndCharacter travok = Utils.loadCharacter("Travok");
+		DndCharacter hazel = Utils.loadCharacter("Hazel");
+		
+Utils.print("Surge Uses");
+Utils.print("Percian: " + percian.getCurrentSurgeUses());
+Utils.print("Gamal: " + gamal.getCurrentSurgeUses());
+Utils.print("Keothi: " + keothi.getCurrentSurgeUses());
+Utils.print("Travok: " + travok.getCurrentSurgeUses());
+Utils.print("Hazel: " + hazel.getCurrentSurgeUses());
 		
 		characters = new ArrayList<DndCharacter>();
 		characters.add(percian);
 		characters.add(gamal);
 		characters.add(keothi);
 		characters.add(travok);
+		characters.add(hazel);
 		
 		Utils.print("Do you want to take an:");
 		Utils.print("1. Extended Rest");
@@ -38,6 +48,7 @@ public class RestUtil {
 			/* Extended Rest. */
 			for (DndCharacter c : characters) {
 				c.setCurrentHitPoints(c.getMaxHitPoints());
+				Utils.print(c.getName() + " blah");
 				c.setActionPoints(1);
 				c.setCurrentSurgeUses(0);
 				c.initializeForEncounter();
@@ -65,6 +76,8 @@ public class RestUtil {
 
 		/* Now save them. */
 		for (DndCharacter c : characters) {
+			// Also, remove temporary effects
+			c.setTemporaryEffects(new ArrayList<TemporaryEffect>());
 			Utils.saveCharacter(c);
 		}
 	}
