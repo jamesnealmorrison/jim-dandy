@@ -95,7 +95,7 @@ public class ShieldingSmite extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */

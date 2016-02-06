@@ -82,7 +82,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
-			int roll = user.attackRoll(7+user.getOtherAttackModifier(targets));
+			int roll = user.attackRoll(7+user.getOtherAttackModifier(target));
 
 			/* Kobold Dragonshields have "Mob Attack" which gives them a +1 bonus to attack rolls for every kobold ally
 			 * adjacent to the target.

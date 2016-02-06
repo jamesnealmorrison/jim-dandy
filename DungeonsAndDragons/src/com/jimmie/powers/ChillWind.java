@@ -120,7 +120,7 @@ public class ChillWind extends AttackPower {
 			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target, " + target.getName() + ", has a Fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
 
 			if (attackRoll >= targetFortitude) {
 				/* A HIT! */

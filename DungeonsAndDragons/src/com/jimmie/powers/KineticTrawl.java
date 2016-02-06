@@ -120,7 +120,7 @@ public class KineticTrawl extends AttackPower {
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */

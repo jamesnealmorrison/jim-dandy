@@ -113,7 +113,7 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 				int targetAC = target.getArmorClass(user);
 				Utils.print("Your target, " + target.getName() + ", has an AC of " + targetAC);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
 
 				if (attackRoll >= targetAC) {
 					/* A HIT! */

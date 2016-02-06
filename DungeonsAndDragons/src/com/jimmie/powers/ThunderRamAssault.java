@@ -97,7 +97,7 @@ public class ThunderRamAssault extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -140,12 +140,10 @@ public class ThunderRamAssault extends AttackPower {
 
 					if (blastTargets != null) {
 						for (Creature secondaryTarget : blastTargets) {
-							List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
 							int secondaryTargetFortitude = secondaryTarget.getFortitude(user);
 							Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
 
-							secondaryTargets.add(secondaryTarget);
-							attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTargets);
+							attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTarget);
 
 							if (attackRoll >= secondaryTargetFortitude) {
 								/* A HIT! */

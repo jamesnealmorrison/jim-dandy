@@ -118,7 +118,7 @@ public class FiresOfLife extends AttackPower {
 				int targetReflex = target.getReflex(user);
 				Utils.print("Your target, " + target.getName() + ", has a Reflex of " + targetReflex);
 
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
 
 				if (attackRoll >= targetReflex) {
 					/* A HIT! */

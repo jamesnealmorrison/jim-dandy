@@ -94,7 +94,7 @@ public class RadiantDelirium extends AttackPower {
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */

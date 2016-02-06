@@ -93,7 +93,7 @@ public class BondOfPursuit extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */

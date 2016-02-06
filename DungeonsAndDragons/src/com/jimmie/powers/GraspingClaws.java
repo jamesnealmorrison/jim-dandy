@@ -94,7 +94,7 @@ public class GraspingClaws extends AttackPower {
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a Reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */

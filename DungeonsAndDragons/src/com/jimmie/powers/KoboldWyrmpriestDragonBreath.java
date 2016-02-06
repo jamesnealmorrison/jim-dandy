@@ -114,7 +114,7 @@ public class KoboldWyrmpriestDragonBreath extends AttackPower {
 					Utils.print(target.getName() + "has an fortitude of " + targetFortitude);
 
 					targets.add(target);
-					int attackRoll = user.attackRoll(7 + user.getOtherAttackModifier(targets));
+					int attackRoll = user.attackRoll(7 + user.getOtherAttackModifier(target));
 
 					if (attackRoll >= targetFortitude) {
 						/* A HIT! */

@@ -119,7 +119,7 @@ public class TelekineticAnchor extends AttackPower {
 				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
 
 				if (attackRoll >= targetFortitude) {
 					/* A HIT! */

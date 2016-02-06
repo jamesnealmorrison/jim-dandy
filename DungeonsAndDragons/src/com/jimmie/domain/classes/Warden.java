@@ -48,7 +48,7 @@ public class Warden extends DndClass {
 		int targetArmorClass = target.getArmorClass(owner);
 		Utils.print("Your target has an AC of " + targetArmorClass);
 		
-		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, targets);
+		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, target);
 		
 		if (attackRoll >= targetArmorClass) {
 			/* A HIT! */

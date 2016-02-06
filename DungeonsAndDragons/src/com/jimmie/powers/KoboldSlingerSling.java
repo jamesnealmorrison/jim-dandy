@@ -128,7 +128,7 @@ public class KoboldSlingerSling extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				int roll = user.attackRoll(6 + user.getOtherAttackModifier(targets));
+				int roll = user.attackRoll(6 + user.getOtherAttackModifier(target));
 
 				Utils.print("You rolled a total of: " + roll);
 

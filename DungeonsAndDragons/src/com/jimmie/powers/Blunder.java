@@ -103,7 +103,7 @@ public class Blunder extends AttackPower {
 				int targetWill = target.getWill(user);
 				Utils.print("Your target has a Will of " + targetWill);
 
-				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, targets);
+				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, target);
 
 				if (attackRoll >= targetWill) {
 					/* A HIT! */

@@ -86,7 +86,7 @@ public class AidAnother extends Power {
 			AttackTarget target = targets.get(0);
 
 			Utils.print("The 'Aid Another' action is against a DC of 10.");
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
 					
 			if (attackRoll >= 10) {
 				/* A HIT! */

@@ -103,7 +103,7 @@ public class FrostFlash extends AttackPower {
 				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has a Fortitude of " + targetFortitude);
 
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.IMPLEMENT, targets);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.IMPLEMENT, target);
 
 				if (attackRoll >= targetFortitude) {
 					/* A HIT! */

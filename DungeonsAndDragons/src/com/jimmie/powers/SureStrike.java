@@ -91,7 +91,8 @@ public class SureStrike extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRollWithPowerModifier(AbilityType.STRENGTH, getAccessoryType(), targets, 2);
+			Utils.print("You will get a +2 bonus to this roll.  It won't be taken into consideration until after all other modifiers are applied.");
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target) + 2;
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */

@@ -57,11 +57,6 @@ public abstract class GenericAttackPower extends AttackPower {
 						}
 					}
 					
-					
-					int roll = user.attackRoll(getAttackModifier()+user.getOtherAttackModifier(targets));
-
-					Utils.print("Your total with modifiers is " + roll + ".");
-
 					int targetDefense = 0;
 					String defense = null;
 
@@ -85,6 +80,9 @@ public abstract class GenericAttackPower extends AttackPower {
 					}
 
 					Utils.print(target.getName() + " has " + defense + " of " + targetDefense);
+
+					int roll = user.attackRoll(getAttackModifier()+user.getOtherAttackModifier(target));
+					Utils.print("Your total with modifiers is " + roll + ".");
 
 					if (roll >= targetDefense) {
 						/* A HIT! */

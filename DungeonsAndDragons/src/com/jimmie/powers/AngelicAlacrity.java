@@ -113,7 +113,7 @@ public class AngelicAlacrity extends AttackPower {
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, targets);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, target);
 
 				if (attackRoll >= targetArmorClass) {
 					// A HIT!

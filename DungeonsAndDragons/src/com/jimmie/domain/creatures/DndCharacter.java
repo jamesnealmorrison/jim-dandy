@@ -652,7 +652,7 @@ public abstract class DndCharacter extends Creature {
 	}
 
 	/* In this method, I will have general other bonus that are hard to define anywhere else. */
-	public int getOtherAttackModifier(List<AttackTarget> targets) {
+	public int getOtherAttackModifier(AttackTarget target) {
 		int total = 0;
 
 		/* See if they have Fighter Weapon Talent. */
@@ -667,7 +667,7 @@ public abstract class DndCharacter extends Creature {
 		
 		// TODO: I think this is probably the best place to put a check for the off hand penalty.
 
-		total = total + super.getOtherAttackModifier(targets);
+		total = total + super.getOtherAttackModifier(target);
 
 		return total;
 	}

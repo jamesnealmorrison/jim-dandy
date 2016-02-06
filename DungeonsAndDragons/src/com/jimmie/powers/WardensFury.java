@@ -94,7 +94,7 @@ public class WardensFury extends AttackPower {
 			AttackTarget target = targets.get(0);
 			Dice d = new Dice(DiceType.TWENTY_SIDED);
 			int diceRoll = d.roll(DiceRollType.ATTACK_ROLL);
-			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(targets);
+			int roll = diceRoll + user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + user.getWeaponProficiencyBonus() + user.getOtherAttackModifier(target);
 
 			Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
 

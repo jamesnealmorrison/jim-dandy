@@ -90,7 +90,7 @@ public class KoboldMinionJavelin extends AttackPower {
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
-				int diceRoll = user.attackRoll(KoboldMinionJavelin.getAttackModifier() + user.getOtherAttackModifier(targets));
+				int diceRoll = user.attackRoll(KoboldMinionJavelin.getAttackModifier() + user.getOtherAttackModifier(target));
 
 				Utils.print("You rolled a total of " + diceRoll);
 

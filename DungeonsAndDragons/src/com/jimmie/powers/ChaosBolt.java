@@ -113,7 +113,7 @@ public class ChaosBolt extends AttackPower {
 			attackedTargets.add(target);
 			Utils.print("Your target has a will of " + targetWill);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
 
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {
@@ -174,7 +174,7 @@ public class ChaosBolt extends AttackPower {
 								targetWill = target.getWill(user);
 								Utils.print("Your target has a reflex of " + targetWill);
 
-								attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+								attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
 
 								if (sorcerer.getUnfetteredPower() == 1) {
 									Utils.print("Because of your unfettered power, you push all creatures within 5 squares.");

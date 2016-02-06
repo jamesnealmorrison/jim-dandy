@@ -379,7 +379,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryEffects.add(temporaryInvisibility);
 	}
 
-	public int getOtherAttackModifier(List<AttackTarget> targets) {
+	public int getOtherAttackModifier(AttackTarget target) {
 		int total = 0;
 
 		/* Check for a temporary attack roll modifier. */
@@ -392,7 +392,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					// See if it's a targeted effect (i.e. only applies to certain targets).
 					if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
 						TargetedTemporaryEffect targetedTempEffect = (TargetedTemporaryEffect) tempEffect;
-						if ((targetedTempEffect.getTarget() == null) || (!targets.contains(targetedTempEffect.getTarget()))) {
+						if ((targetedTempEffect.getTarget() == null) || (target != targetedTempEffect.getTarget())) {
 							appliesToTarget = false;
 						} else {
 							appliesToTarget = true;
@@ -421,12 +421,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 
 		/* Do I have combat advantage against the target? */
-		/* I think I can only check this if it is a single target. */
-		if (targets.size() == 1) {
-			if (Utils.hasCombatAdvantage(this, (Creature) targets.get(0))) {
-				Utils.print(getName() + " has combat advantage over " + targets.get(0).getName() + " and recieves a +2 bonus.");
-				total = total + 2;
-			}
+		if (Utils.hasCombatAdvantage(this, (Creature) target)) {
+			Utils.print(getName() + " has combat advantage over " + target.getName() + " and recieves a +2 bonus.");
+			total = total + 2;
 		}
 
 		return total;
@@ -2241,16 +2238,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.origin = origin;
 	}
 
-	public int attackRollWithPowerModifier(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets,
-			int powerModifiers) {
-		Utils.print("In a bit, you will be told your total dice roll with modifiers.  But please keep in mind that it doesn't include the " + powerModifiers + " of power modifiers.");
-		int totalRoll = attackRoll(abilityType, accessoryType, targets) + powerModifiers;
-		Utils.print("Your real total was " + totalRoll);
-		return totalRoll;
-	}
-	
-	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, List<AttackTarget> targets) {
-		int diceRoll = rawAttackRoll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(targets);
+	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, AttackTarget target) {
+		int diceRoll = rawAttackRoll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(target);
 		
 		if (accessoryType == AccessoryType.IMPLEMENT) {
 			diceRoll += getImplementAttackBonus();

@@ -94,7 +94,7 @@ public class CoveringAttack extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), targets);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */

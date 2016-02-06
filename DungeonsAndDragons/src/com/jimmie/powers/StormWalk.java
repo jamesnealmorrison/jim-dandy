@@ -116,7 +116,7 @@ public class StormWalk extends AttackPower {
 			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target has a fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
 
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {

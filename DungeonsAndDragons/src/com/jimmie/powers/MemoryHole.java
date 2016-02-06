@@ -154,7 +154,7 @@ public class MemoryHole extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a Will of " + targetWill);
 			
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), targets);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
 			
 			if (attackRoll >= targetWill) {
 				/* A HIT! */
