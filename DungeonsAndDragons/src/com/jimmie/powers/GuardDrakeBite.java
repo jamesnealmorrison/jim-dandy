@@ -123,7 +123,7 @@ public class GuardDrakeBite extends GenericAttackPower {
 		// If within 2 squares of an ally, it should be 1d10 + 9.
 		List<Creature> allies = Encounter.getEncounter().getAlliesWithinRangeOf(user, user.getCurrentPosition(), 2);
 		if ((allies != null) && (allies.size() > 0)) {
-			Utils.print(getName() + " is within two squares of an ally, so doing 1d10+9 damage.");
+			Utils.print(user.getName() + " is within two squares of an ally, so doing 1d10+9 damage.");
 			return 9;
 		}
 		return 3;

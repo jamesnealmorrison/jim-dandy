@@ -15,6 +15,7 @@ import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.PowerSource;
@@ -170,7 +171,7 @@ public class MemoryHole extends AttackPower {
 				target.miss(user, this);
 			}
 		}
-		user.setTemporaryInvisibility(user, durationType, hitTargets);
+		user.setTemporaryInvisibility(user, durationType, hitTargets, TemporaryEffectReason.MEMORY_HOLE);
 		return true;
 	}
 

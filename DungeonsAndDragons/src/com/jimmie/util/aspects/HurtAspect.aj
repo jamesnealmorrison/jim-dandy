@@ -7,6 +7,7 @@ import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.RunicState;
 import com.jimmie.domain.TemporaryEffect;
 import com.jimmie.domain.TemporaryEffectReason;
@@ -14,6 +15,7 @@ import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.monsters.Gnome;
 import com.jimmie.domain.creatures.monsters.GnomeSkulk;
 import com.jimmie.domain.creatures.monsters.HalflingSlinger;
 import com.jimmie.encounters.Encounter;
@@ -105,6 +107,17 @@ public aspect HurtAspect {
 						}
 					}
 				}
+			}
+		}
+		
+		// Gnome Fade Away
+		if (com.jimmie.domain.creatures.monsters.Gnome.class.isAssignableFrom(hurtee.getClass())) {
+			Gnome gnome = (Gnome) hurtee;
+			if (!gnome.isUsedFadeAway()) {
+				Utils.print(gnome.getName() + " is a Gnome with Fade Away.  Would they like to turn invisible now (Y or N)?");
+				if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+					gnome.setTemporaryInvisibility(gnome, DurationType.SPECIAL, null, TemporaryEffectReason.FADE_AWAY);
+				}				
 			}
 		}
 		

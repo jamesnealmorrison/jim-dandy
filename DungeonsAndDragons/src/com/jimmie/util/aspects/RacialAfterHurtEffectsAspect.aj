@@ -1,6 +1,7 @@
 package com.jimmie.util.aspects;
 
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Gnome;
 import com.jimmie.domain.creatures.HalfOrc;
@@ -27,7 +28,7 @@ public aspect RacialAfterHurtEffectsAspect {
 					String choice = Utils.getYesOrNoInput();
 					if ("Y".equalsIgnoreCase(choice)) {
 						gnome.setUsedFadeAway(true);
-						creature.setTemporaryInvisibility(creature, DurationType.END_OF_NEXT_TURN, null);
+						creature.setTemporaryInvisibility(creature, DurationType.END_OF_NEXT_TURN, null, TemporaryEffectReason.FADE_AWAY);
 
 					}
 				}

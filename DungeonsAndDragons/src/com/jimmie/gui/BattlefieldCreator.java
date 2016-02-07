@@ -64,6 +64,7 @@ public class BattlefieldCreator extends JPanel {
 		battlefieldViewerScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		battlefieldViewerScrollPane.add(battlefieldViewerPanel);
 		battlefieldViewerScrollPane.setViewportView(battlefieldViewerPanel);
+		battlefieldViewerScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 		partSelectionScrollPane = new JScrollPane();
 		Dimension partSelectionScrollPaneDimension = new Dimension(1890,400);
@@ -74,6 +75,7 @@ public class BattlefieldCreator extends JPanel {
 		partSelectionScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		partSelectionScrollPane.add(partSelectionPanel);
 		partSelectionScrollPane.setViewportView(partSelectionPanel);
+		partSelectionScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 		topPanel.add(editorPanel, BorderLayout.EAST);
 		topPanel.add(battlefieldViewerScrollPane, BorderLayout.CENTER);
@@ -84,7 +86,7 @@ public class BattlefieldCreator extends JPanel {
 	
 	public static void main(String[] args) {
 		frame = new JFrame("Dungeon Creator");
-		wildernessBackgroundImageSrc  = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\TheWilderness\\BackgroundTile.jpg");
+		wildernessBackgroundImageSrc  = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\TheDungeon\\BackgroundTile.jpg");
 		try {
 			wildernessBackgroundImage = ImageIO.read(wildernessBackgroundImageSrc);
 		} catch (IOException e) {

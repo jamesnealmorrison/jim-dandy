@@ -10,6 +10,7 @@ import com.jimmie.util.Utils;
 
 public class HalflingSlinger extends Halfling implements AmmunitionUser {
 	private int bullets;
+	// TODO: Sniper
 	
 	/**
 	 * 

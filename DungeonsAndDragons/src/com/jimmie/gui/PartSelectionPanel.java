@@ -21,14 +21,21 @@ public class PartSelectionPanel extends JPanel implements MouseListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	// For Wilderness
+//	private static final int TOTAL_HEIGHT = 1620;
+	// For Dungeon
+	private static final int TOTAL_HEIGHT = 2430;
 	private HashMap<Integer, Image> parts = null;
 	private Image allPartsImage = null;
 
 	public void init() {
-		Dimension dimension = new Dimension(10125, 1620);
+		// For Wilderness
+//		Dimension dimension = new Dimension(10125, TOTAL_HEIGHT);
+		// For Dungeon
+		Dimension dimension = new Dimension(10125, TOTAL_HEIGHT);
 		this.setPreferredSize(dimension);
 		parts = new HashMap<Integer, Image>();
-		allPartsImage = new BufferedImage(10125, 1620, BufferedImage.TYPE_INT_RGB);
+		allPartsImage = new BufferedImage(10125, TOTAL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		int imageRow = 1;
 		int imageCol = 0;
 		
@@ -36,16 +43,18 @@ public class PartSelectionPanel extends JPanel implements MouseListener {
 		
 		Graphics g = allPartsImage.getGraphics();
 		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, 10125, 1620);
+		g.fillRect(0, 0, 10125, TOTAL_HEIGHT);
 		
 		// Read all of the wilderness tiles in.
-		for (int index = 1; index <= 99; index++) {
+//		for (int index = 1; index <= 99; index++) {
+		// Read all of the dungeon tiles in.
+		for (int index = 1; index <= 133; index++) {		
 			imageCol++;
 			if (imageCol == 26) {
 				imageCol = 1;
 				imageRow++;
 			}
-			File tempFile  = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\TheWilderness\\DungeonTile00"+index+".jpg");
+			File tempFile  = new File("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\TheDungeon\\DungeonTile00"+index+".jpg");
 			Image tempImage = null;
 			try {
 				tempImage = ImageIO.read(tempFile);

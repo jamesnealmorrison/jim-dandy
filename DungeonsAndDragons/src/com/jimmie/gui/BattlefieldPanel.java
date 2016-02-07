@@ -43,6 +43,7 @@ public class BattlefieldPanel extends JPanel {
 	@Autowired
 	private String battlefieldImageFilePath;
 	private HashMap<String, Image> images;
+	private boolean printedInvisibilityMessage = false;
 
 	public void init(Map map, List<Creature> creatures) {
 		this.setMap(map);
@@ -93,14 +94,30 @@ public class BattlefieldPanel extends JPanel {
 			/* Now draw the characters. */
 			for (Iterator<Creature> it = creatures.iterator(); it.hasNext();) {
 				Creature creature = it.next();
-				// Don't draw dead monsters.
 				if (Monster.class.isAssignableFrom(creature.getClass())) {
+					// Don't draw dead monsters.
 					if (creature.getCurrentHitPoints() <= 0) {
 						it.remove();
 						continue;
 					}
 					
 					if (!Encounter.areMonstersVisible()) {
+						continue;
+					}
+				}
+
+				// Check for invisibility.
+				if (creature.isInvisibleTo(Encounter.getEncounter().getCurrentParticipant())) {
+					// Don't just continue.  If the creature is invisible to everyone, the "isInvisibleTo" method will return true always.
+					// But I still need to be able to see the creature during its own turn so I can move it appropriately.
+					if (creature == Encounter.getEncounter().getCurrentParticipant()) {
+						// Print this only once.
+						if (!printedInvisibilityMessage ) {
+							Utils.print("Even though " + creature.getName() + " is invisible right now, I'm drawing them on the screen during their turn.");
+							Utils.print("Everyone except the DM and " + creature.getName() + " should 'forget' what they see now. ;-) ");
+							printedInvisibilityMessage = true;
+						}
+					} else {
 						continue;
 					}
 				}

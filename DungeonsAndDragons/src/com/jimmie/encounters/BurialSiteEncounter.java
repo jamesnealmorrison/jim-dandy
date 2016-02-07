@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.DndCharacter;
+import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.monsters.GnomeSkulk;
 import com.jimmie.domain.creatures.monsters.GuardDrake;
 import com.jimmie.domain.creatures.monsters.HalflingSlinger;
@@ -58,35 +59,91 @@ public class BurialSiteEncounter extends Encounter {
 		keothi.setCurrentPosition(new Position (-1,-1));
 		travok.setCurrentPosition(new Position (-1,-1));
 		hazel.setCurrentPosition(new Position (-1,-1));
-		
 
-gamal.setCurrentPosition(new Position (5,5));
-percian.setCurrentPosition(new Position (5,6));
-keothi.setCurrentPosition(new Position (5,7));
-travok.setCurrentPosition(new Position (5,15));
-hazel.setCurrentPosition(new Position (6,6));
-		
-		
 		/* Set up the monsters */
 		monsters = new ArrayList<Monster>();		
 		
-//		monsters.add(d1);		
+		monsters.add(d1);		
 //		monsters.add(d2);		
 //		monsters.add(r1);		
 //		monsters.add(r2);		
 //		monsters.add(r3);		
 //		monsters.add(r4);		
-//		monsters.add(s);		
-		monsters.add(h);		
+//		monsters.add(s);
+//		monsters.add(h);		
+
+		if (PlayerCharacter.class.isAssignableFrom(gamal.getClass())) {
+//			((PlayerCharacter) gamal).setExperiencePoints(((PlayerCharacter) gamal).getExperiencePoints()+120);
+//			gamal.addCoins(136, CoinType.GOLD_PIECE);
+//			gamal.addCoins(2, CoinType.SILVER_PIECE);
+			Utils.print("Gamal has " + ((PlayerCharacter) gamal).getExperiencePoints() + " experience points.");
+			Utils.printCoins(gamal);			
+		}
+		if (PlayerCharacter.class.isAssignableFrom(percian.getClass())) {
+//			((PlayerCharacter) percian).setExperiencePoints(((PlayerCharacter) percian).getExperiencePoints()+120);
+//			percian.addCoins(136, CoinType.GOLD_PIECE);
+//			percian.addCoins(3, CoinType.SILVER_PIECE);
+			Utils.print("Percian has " + ((PlayerCharacter) percian).getExperiencePoints() + " experience points.");
+			Utils.printCoins(percian);			
+		}
+		if (PlayerCharacter.class.isAssignableFrom(keothi.getClass())) {
+//			((PlayerCharacter) keothi).setExperiencePoints(((PlayerCharacter) keothi).getExperiencePoints()+120);
+//			keothi.addCoins(136, CoinType.GOLD_PIECE);
+//			keothi.addCoins(2, CoinType.SILVER_PIECE);
+			Utils.print("Keothi has " + ((PlayerCharacter) keothi).getExperiencePoints() + " experience points.");
+			Utils.printCoins(keothi);			
+		}
+		if (PlayerCharacter.class.isAssignableFrom(travok.getClass())) {
+//			((PlayerCharacter) travok).setExperiencePoints(((PlayerCharacter) travok).getExperiencePoints()+120);
+//			travok.addCoins(136, CoinType.GOLD_PIECE);
+//			travok.addCoins(3, CoinType.SILVER_PIECE);
+			Utils.print("Travok has " + ((PlayerCharacter) travok).getExperiencePoints() + " experience points.");
+			Utils.printCoins(travok);			
+		}
+		if (PlayerCharacter.class.isAssignableFrom(hazel.getClass())) {
+//			((PlayerCharacter) hazel).setExperiencePoints(((PlayerCharacter) hazel).getExperiencePoints()+120);
+//			hazel.addCoins(136, CoinType.GOLD_PIECE);
+//			hazel.addCoins(3, CoinType.SILVER_PIECE);
+			Utils.print("Hazel has " + ((PlayerCharacter) hazel).getExperiencePoints() + " experience points.");
+			Utils.printCoins(hazel);			
+		}
+
+/*		
+try {
+	gamal.spendCoins(new Price(50,CoinType.GOLD_PIECE));
+	keothi.spendCoins(new Price(50,CoinType.GOLD_PIECE));
+	gamal.addGear(new PotionOfHealing());
+	keothi.addGear(new PotionOfHealing());
+} catch (NotEnoughCurrencyException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+
+
+gamal.addPower(new ReadyPotion());
+gamal.addPower(new QuaffPotion());
+percian.addPower(new ReadyPotion());
+percian.addPower(new QuaffPotion());
+keothi.addPower(new ReadyPotion());
+keothi.addPower(new QuaffPotion());
+travok.addPower(new ReadyPotion());
+travok.addPower(new QuaffPotion());
+hazel.addPower(new ReadyPotion());
+hazel.addPower(new QuaffPotion());
+Utils.saveCharacter(gamal);
+Utils.saveCharacter(percian);
+Utils.saveCharacter(keothi);
+Utils.saveCharacter(travok);
+Utils.saveCharacter(hazel);
+*/
 		
 		
 		characters = new ArrayList<DndCharacter>();
-		Utils.print("percian armor = " + percian.getReadiedArmor());
-//		characters.add(gamal);
-//		characters.add(percian);
-//		characters.add(keothi);
+		characters.add(gamal);
+		characters.add(percian);
+		characters.add(keothi);
 		characters.add(travok);
-//		characters.add(hazel);
+		characters.add(hazel);
 		
 		map = new Map();
 		map.setWidth(30);
@@ -725,8 +782,27 @@ hazel.setCurrentPosition(new Position (6,6));
 
 	@Override
 	public void setup() {
-		// TODO Auto-generated method stub
+		Utils.print("A steep-sided crater punctures the wilderness.  Near the center of the depression, several humanoid figures cluster around a");
+		Utils.print("collection of bones.  Two small, dragonlike creatures near the crater rim stand alert and stare at your approach.");
+		
+		// Put the characters on the road.
+		Utils.print("Place characters at the southeast corner of the map.");
+		
+		for (DndCharacter character : getCharacters()) {
+			Utils.print("Where do you want to put " + character.getName() + "?");
 
+			Encounter.showCoordinateSystem(true);
+			
+			Utils.print("Please enter the X coordinate (26 - 30).");
+			int x = Utils.getValidIntInputInRange(26, 30);
+
+			Utils.print("Please enter the Y coordinate (1 - 3).");
+			int y = Utils.getValidIntInputInRange(1, 3);
+			Encounter.showCoordinateSystem(false);
+			
+			character.setCurrentPosition(new Position(x,y));
+			
+		}
 	}
 
 	@Override

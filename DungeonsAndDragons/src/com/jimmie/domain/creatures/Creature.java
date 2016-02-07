@@ -41,6 +41,7 @@ import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.monsters.Monster;
+import com.jimmie.domain.items.Potion;
 import com.jimmie.domain.items.armor.Armor;
 import com.jimmie.domain.items.weapons.Hand;
 import com.jimmie.domain.items.weapons.ReadiedWeapon;
@@ -50,6 +51,8 @@ import com.jimmie.powers.BullRush;
 import com.jimmie.powers.Charge;
 import com.jimmie.powers.DivineChallenge;
 import com.jimmie.powers.Power;
+import com.jimmie.powers.QuaffPotion;
+import com.jimmie.powers.ReadyPotion;
 import com.jimmie.util.Dice;
 import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
@@ -109,6 +112,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	private boolean turnOver;
 	private List<Mark> marks;
 	protected Origin origin;
+	private Potion readiedPotion = null;
 
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
@@ -158,6 +162,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		// Add some default powers that all creatures should have
 		powers.add(new BullRush());
 		powers.add(new Charge());
+		powers.add(new ReadyPotion());
+		powers.add(new QuaffPotion());
+// TODO		powers.add(new AdministerPotion());
 	}
 	
 	public int getTemporaryHitPoints() {
@@ -367,11 +374,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		temporaryEffects.add(temporaryCondition);
 	}
 
-	public void setTemporaryInvisibility(Creature source, DurationType durationType, List<Creature> target) {
+	public void setTemporaryInvisibility(Creature source, DurationType durationType, List<Creature> target, TemporaryEffectReason reason) {
 		TemporaryInvisibility temporaryInvisibility = new TemporaryInvisibility();
 		temporaryInvisibility.setSource(source);
 		temporaryInvisibility.setDuration(durationType);
 		temporaryInvisibility.setStartTurn(source.getCurrentTurn());
+		temporaryInvisibility.setEffectType(TemporaryEffectType.INVISIBILITY);
+		temporaryInvisibility.setReason(reason);
 		/* If target is null, then you became invisible to everyone. */
 		if (target != null) {
 			temporaryInvisibility.setTargets(target);
@@ -2021,7 +2030,20 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				if (TemporaryInvisibility.class.isAssignableFrom(tempEffect.getClass())) {
 					TemporaryInvisibility temporaryInvisibility = (TemporaryInvisibility) tempEffect;
 
+					// Gnome Fade Away is marked as special because it ends either at the end of its next turn or when it attacks.
+					// Temporarily setting duration to end of next turn, so the stillApplies method can check for it.
+					boolean gnomeFadeAway = false;
+					if (com.jimmie.domain.creatures.monsters.Gnome.class.isAssignableFrom(this.getClass())) {
+						if (temporaryInvisibility.getReason() == TemporaryEffectReason.FADE_AWAY) {
+							temporaryInvisibility.setDuration(DurationType.END_OF_NEXT_TURN);
+							gnomeFadeAway = true;
+						}
+					}
 					if (temporaryInvisibility.stillApplies()) {
+						if (gnomeFadeAway) {
+							// Set duration type back to special for gnome fade away.
+							temporaryInvisibility.setDuration(DurationType.SPECIAL);
+						}
 						/* Does it apply to this creature? */
 						if (temporaryInvisibility.getTargets() == null) {
 							/* If it should be removed now, delete the modifier now. */
@@ -2523,5 +2545,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			}
 		}
 		return false;
+	}
+
+	public void setReadiedPotion(Potion readiedPotion) {
+		this.readiedPotion = readiedPotion;
+	}
+
+	public Potion getReadiedPotion() {
+		return readiedPotion;
 	}
 }

@@ -2,6 +2,9 @@ package com.jimmie.util.aspects;
 
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.AccessoryType;
+import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
@@ -15,6 +18,7 @@ import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Deva;
 import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.Elf;
+import com.jimmie.domain.creatures.monsters.Halfling;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.powers.ElvenAccuracy;
 import com.jimmie.powers.MemoryOfAThousandLifetimes;
@@ -23,16 +27,28 @@ import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public aspect AttackRollAspect {
-	public pointcut attackRoll(Creature creature) : execution(int com.jimmie.domain.creatures.Creature.attackRoll(..))
-	&& this(creature);
+	public pointcut attackRoll(AbilityType abilityType, AccessoryType accessoryType, AttackTarget attackTarget, Creature creature) : execution(int com.jimmie.domain.creatures.Creature.attackRoll(AbilityType, AccessoryType, AttackTarget))
+	&& args(abilityType, accessoryType, attackTarget) && this(creature);
 
 	public pointcut rawAttackRoll(Creature creature) : execution(int com.jimmie.domain.creatures.Creature.rawAttackRoll(..))
 	&& this(creature);
 	
-	int around(Creature creature) : attackRoll(creature) {
+	int around(AbilityType abilityType, AccessoryType accessoryType, AttackTarget attackTarget, Creature creature) : attackRoll(abilityType, accessoryType, attackTarget, creature) {
 		
-		int result = proceed(creature);		
+		int result = proceed(abilityType, accessoryType, attackTarget, creature);		
 		
+		// Halfling Second Chance
+		if (com.jimmie.domain.creatures.monsters.Halfling.class.isAssignableFrom(attackTarget.getClass())) {
+			Halfling halfling = (Halfling) attackTarget;
+			if (!halfling.isUsedSecondChance()) {
+				Utils.print(attackTarget.getName() + " is a Halfling with Second Chance.  Would they like to force a reroll (Y or N)?");
+				if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+					result = proceed(abilityType, accessoryType, attackTarget, creature);
+					halfling.setUsedSecondChance(true);
+				}
+			}
+		}
+
 		// Deva Memory of a Thousand Lifetimes
 		if (creature.getRace() != null) {
 			if (Deva.class.isAssignableFrom(creature.getRace().getClass())) {
@@ -62,7 +78,7 @@ public aspect AttackRollAspect {
 							Utils.print("Your choice (Y or N):");
 							if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
 								// Just reroll
-								result = proceed(creature);
+								result = proceed(abilityType, accessoryType, attackTarget, creature);
 								power.setTimesUsed(power.getTimesUsed()+1);
 							}
 						}

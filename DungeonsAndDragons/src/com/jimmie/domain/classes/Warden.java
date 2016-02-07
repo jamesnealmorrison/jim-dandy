@@ -16,6 +16,7 @@ import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 
 import com.jimmie.powers.NaturesWrath;
+import com.jimmie.powers.RemoveFormOfTheWillowSentinel;
 import com.jimmie.powers.WardensFury;
 import com.jimmie.powers.WardensGrasp;
 import com.jimmie.util.Utils;
@@ -192,6 +193,7 @@ public class Warden extends DndClass {
 		
 		pc.addPower(new WardensFury());
 		pc.addPower(new WardensGrasp());
+		pc.addPower(new RemoveFormOfTheWillowSentinel());
 		
 		// Implementing "Nature's Wrath" as a power.
 		pc.addPower(new NaturesWrath());
