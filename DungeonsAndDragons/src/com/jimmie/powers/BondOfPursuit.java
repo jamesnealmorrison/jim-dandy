@@ -93,7 +93,7 @@ public class BondOfPursuit extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -113,9 +113,9 @@ public class BondOfPursuit extends AttackPower {
 				}
 
 				if (aspectOfMightEncounterBonus == false) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user, getAttackType());
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus()+2, user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user, getAttackType());
 					Utils.print("You got an aspect of might bonus of two to this damage roll.");
 				}
 

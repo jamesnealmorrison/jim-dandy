@@ -97,7 +97,7 @@ public class EnfeeblingStrike extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -110,7 +110,7 @@ public class EnfeeblingStrike extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user, getAttackType());
 
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Creature c = (Creature) target;

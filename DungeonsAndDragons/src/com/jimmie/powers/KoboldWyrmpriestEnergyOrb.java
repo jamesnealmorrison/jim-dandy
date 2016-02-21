@@ -82,7 +82,7 @@ public class KoboldWyrmpriestEnergyOrb extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
@@ -104,7 +104,7 @@ public class KoboldWyrmpriestEnergyOrb extends AttackPower {
 
 				int attributeBonus = 0;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), damageType, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), damageType, true, user, getAttackType());
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

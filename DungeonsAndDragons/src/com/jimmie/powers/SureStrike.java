@@ -92,7 +92,7 @@ public class SureStrike extends AttackPower {
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
 			Utils.print("You will get a +2 bonus to this roll.  It won't be taken into consideration until after all other modifiers are applied.");
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target) + 2;
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType()) + 2;
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -105,7 +105,7 @@ public class SureStrike extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), 0, user), DamageType.NORMAL, true, user, getAttackType());
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

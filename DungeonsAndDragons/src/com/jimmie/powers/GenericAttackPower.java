@@ -5,9 +5,13 @@ import java.util.List;
 import com.jimmie.domain.AmmunitionType;
 import com.jimmie.domain.AttackTarget;
 import com.jimmie.domain.AttackType;
+import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DefenseType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.PowerUsage;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.AmmunitionUser;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.encounters.Encounter;
@@ -31,7 +35,7 @@ public abstract class GenericAttackPower extends AttackPower {
 			if (getAttackType() == AttackType.MELEE_NUMBER) {
 				targets = Encounter.getEncounter().chooseMeleeTargetInRange(user, getRangeNumber1());
 			} else if (getAttackType() == AttackType.RANGED_NUMBER) {
-				targets = Encounter.getEncounter().chooseRangedTarget(user, getRangeNumber1(), getRangeNumber2());
+				targets = Encounter.getEncounter().chooseRangedTarget(user, getRangeNumber1(), getRangeNumber2(), getAttackType());
 			} else { // TODO: Other attack types here.
 
 			}
@@ -41,6 +45,10 @@ public abstract class GenericAttackPower extends AttackPower {
 				// Defining the damage outside of the loop because there should be just one damage roll.
 				int damage = -1; // Defaulting to -1 as an indicator that it hasn't been set yet.
 				for (AttackTarget target : targets) {
+					Creature cTarget = null;
+					if (Creature.class.isAssignableFrom(target.getClass())) {
+						cTarget = (Creature) target;
+					}
 					// If uses ammo
 					if (getAmmunitionType() != AmmunitionType.NONE) {
 						if (AmmunitionUser.class.isAssignableFrom(user.getClass())) {
@@ -98,13 +106,20 @@ public abstract class GenericAttackPower extends AttackPower {
 							}
 						}
 
-						target.hurt(damage, getDamageType(), true, user);
+						target.hurt(damage, getDamageType(), true, user, getAttackType());
+						
+						// Does this attack add any ongoing damage?
+						if (hasOngoingDamage()) {
+							if (cTarget != null) {
+								cTarget.setTemporaryOngoingDamage(getOngoingDamage(), cTarget.getCurrentTurn(), getOngoingDamageDurationType(), user, TemporaryEffectType.ONGOING_DMG, TemporaryEffectReason.GENERIC_ATTACK, getOngoingDamageType());
+							}
+						}
 					} else {
 						Utils.print("You missed " + target.getName());
 
 						// Cause half damage if necessary.
 						if (missCausesHalfDamage()) {
-							target.hurt(damage/2, getDamageType(), false, user);
+							target.hurt(damage/2, getDamageType(), false, user, getAttackType());
 						}
 
 						// Some targets have powers/effects that happen when they are missed.
@@ -118,6 +133,22 @@ public abstract class GenericAttackPower extends AttackPower {
 			Utils.print("Not sure how you got here, but " + user.getName() + " actually can't use " + getName() + " now.");
 			return false;
 		}
+	}
+
+	public DamageType getOngoingDamageType() {
+		return null;
+	}
+
+	public DurationType getOngoingDamageDurationType() {
+		return null;
+	}
+
+	public int getOngoingDamage() {
+		return 0;
+	}
+
+	public boolean hasOngoingDamage() {
+		return false;
 	}
 
 	public abstract AmmunitionType getAmmunitionType();

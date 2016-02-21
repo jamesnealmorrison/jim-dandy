@@ -6,7 +6,7 @@ import com.jimmie.powers.AttackPower;
 public interface AttackTarget {
 	String getName();
 	int getArmorClass(Creature attacker);
-	void hurt(int damage, DamageType damageType, boolean hit, Object hurter);
+	void hurt(int damage, DamageType damageType, boolean hit, Object hurter, AttackType attackType);
 	Position getCurrentPosition();
 	void push(String pushDirection);
 //	void markByCombatChallenge(Creature owner, DurationType durationType);
@@ -19,7 +19,7 @@ public interface AttackTarget {
 	void hitByBondOfPursuit(Creature pursuer);
 	void hitByStirringShout(int charismaModifier);
 	void hitByTelekineticAnchor();
-	void moveCreature(String direction, MovementType movementType);
+	boolean moveCreature(String direction, MovementType movementType);
 	boolean isHitByStirringShout();
 	int getStirringShoutCharismaModifier();
 	void knockProne();

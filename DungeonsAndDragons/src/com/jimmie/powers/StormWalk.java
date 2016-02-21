@@ -99,7 +99,7 @@ public class StormWalk extends AttackPower {
 			user.shift(1, true);
 		}
 		
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 		
 		DndCharacter c = null;
 		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
@@ -116,7 +116,7 @@ public class StormWalk extends AttackPower {
 			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target has a fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {
@@ -144,7 +144,7 @@ public class StormWalk extends AttackPower {
 
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.THUNDER, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.THUNDER, true, user, getAttackType());
 
 				if (sorcerer.getUnfetteredPower() == 20) {
 					Utils.print("Because of your unfettered power, you get to slide " + target.getName() + " 1 square and knock them prone.");

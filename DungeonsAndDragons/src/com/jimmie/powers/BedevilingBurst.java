@@ -143,7 +143,7 @@ public class BedevilingBurst extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a Will of " + targetWill);
 			
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 			
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {
@@ -156,7 +156,7 @@ public class BedevilingBurst extends AttackPower {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(damage, DamageType.PSYCHIC, true, user);
+				target.hurt(damage, DamageType.PSYCHIC, true, user, getAttackType());
 				
 				Creature cTarget = null;
 				

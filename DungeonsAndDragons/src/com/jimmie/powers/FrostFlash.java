@@ -96,14 +96,14 @@ public class FrostFlash extends AttackPower {
 				c = (DndCharacter) user;
 			}
 
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has a Fortitude of " + targetFortitude);
 
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.IMPLEMENT, target);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.IMPLEMENT, target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetFortitude) {
 					/* A HIT! */
@@ -122,7 +122,7 @@ public class FrostFlash extends AttackPower {
 						}
 					}
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), wisdomModifier+constitutionModifier, user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), wisdomModifier+constitutionModifier, user), DamageType.NORMAL, true, user, getAttackType());
 					
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;

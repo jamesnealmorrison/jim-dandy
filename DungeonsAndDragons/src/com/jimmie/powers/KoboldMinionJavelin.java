@@ -86,7 +86,7 @@ public class KoboldMinionJavelin extends AttackPower {
 				return false;
 			}
 
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20, getAttackType());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
@@ -101,7 +101,7 @@ public class KoboldMinionJavelin extends AttackPower {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 
-					target.hurt(4, DamageType.NORMAL, true, user);
+					target.hurt(4, DamageType.NORMAL, true, user, getAttackType());
 				} else {
 					Utils.print("You missed " + target.getName());
 					// Some targets have powers/effects that happen when they are missed.

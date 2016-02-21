@@ -1,6 +1,12 @@
 package com.jimmie.domain.items;
 
-public class Candle extends Gear {
+import com.jimmie.domain.IlluminationType;
+import com.jimmie.domain.LightSource;
+import com.jimmie.domain.Position;
+
+public class Candle extends Gear implements LightSource {
+	private Position position;
+	
 	/**
 	 * 
 	 */
@@ -24,5 +30,23 @@ public class Candle extends Gear {
 	@Override
 	public String getName() {
 		return "Candle";
+	}
+
+	@Override
+	public int getRadius() {
+		return 2;
+	}
+
+	@Override
+	public IlluminationType getIlluminationType() {
+		return IlluminationType.DIM_LIGHT;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 }

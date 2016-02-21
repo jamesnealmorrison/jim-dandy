@@ -113,19 +113,19 @@ public class RuneOfTheUndeniableDawn extends AttackPower {
 				int targetAC = target.getArmorClass(user);
 				Utils.print("Your target, " + target.getName() + ", has an AC of " + targetAC);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetAC) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 
-					target.hurt(damage, DamageType.RADIANT, true, user);
+					target.hurt(damage, DamageType.RADIANT, true, user, getAttackType());
 
 					hitTargets.add((Creature) target);
 				} else {
 					Utils.print("Sorry.  You missed " + target.getName() + ". Doing half damage.");
 
-					target.hurt(damage/2, DamageType.RADIANT, false, user);
+					target.hurt(damage/2, DamageType.RADIANT, false, user, getAttackType());
 
 					target.miss(user, this);
 				}

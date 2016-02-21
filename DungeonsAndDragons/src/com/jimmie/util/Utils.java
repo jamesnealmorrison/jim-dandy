@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
-
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.TemporaryCombatAdvantage;
@@ -366,31 +366,33 @@ public class Utils {
 			/* Get all the other adjacent allies.  PLEASE NOTE: I'm calling the "getAdjacentEnemies method on purpose.
 			 * It finds enemies of the TARGET, which would be MY allies!!!!!!!! */
 			List<Creature> adjacentAllies = Encounter.getEncounter().getAdjacentEnemies(target);
-			for (Creature adjacentAlly : adjacentAllies) {
-				if (adjacentAlly.canFlank()) {
-					if ((source.getCurrentPosition().isNorthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isNorthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthEastOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isEastOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isNorthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthEastOf(target.getCurrentPosition()))) {
-						return true;
+			if (adjacentAllies != null) {
+				for (Creature adjacentAlly : adjacentAllies) {
+					if (adjacentAlly.canFlank()) {
+						if ((source.getCurrentPosition().isNorthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isNorthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isNorthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
 					}
 				}
 			}
@@ -457,5 +459,20 @@ public class Utils {
 		print("Gold pieces:     " + c.getCoins().getGoldPieces());
 		print("Platinum pieces: " + c.getCoins().getPlatinumPieces());
 		print("Astral diamonds: " + c.getCoins().getAstralDiamonds());
+	}
+
+	public static boolean isMeleeAttack(AttackType attackType) {
+		if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_WEAPON)
+				|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isRangedAttack(AttackType attackType) {
+		if ((attackType == AttackType.RANGED_NUMBER) || (attackType == AttackType.RANGED_SIGHT) || (attackType == AttackType.RANGED_WEAPON)) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -85,7 +85,7 @@ public class WardensGrasp extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 0);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 0, getAttackType());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);

@@ -94,7 +94,7 @@ public class BullRush extends AttackPower {
 					int targetFortitude = target.getFortitude(user);
 					Utils.print("Your target has a Fortitude of " + targetFortitude);
 
-					int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+					int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 					if (attackRoll >= targetFortitude) {
 						/* A HIT! */

@@ -127,7 +127,7 @@ public class MemoryHole extends AttackPower {
 				targets.add(creature);
 			}
 		} else {
-			Creature target = (Creature) Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+			Creature target = (Creature) Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 			Utils.print("UMMMMM....." + target.getName() + " laughs at you because I forgot to finish programming this attack.  DORK!");
 		}
 		
@@ -155,13 +155,13 @@ public class MemoryHole extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a Will of " + targetWill);
 			
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 			
 			if (attackRoll >= targetWill) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(damage, DamageType.PSYCHIC, true, user);
+				target.hurt(damage, DamageType.PSYCHIC, true, user, getAttackType());
 				
 				hitTargets.add((Creature) target);
 				Utils.print("You just became invisible to " + target.getName());

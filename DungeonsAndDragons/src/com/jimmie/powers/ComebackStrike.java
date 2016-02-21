@@ -95,7 +95,7 @@ public class ComebackStrike extends AttackPower {
 
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -104,7 +104,7 @@ public class ComebackStrike extends AttackPower {
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls() * 2;
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user, getAttackType());
 
 					Utils.print("I get to spend a healing surge.");
 					if (DndCharacter.class.isAssignableFrom(user.getClass())) {

@@ -96,14 +96,14 @@ public class Blunder extends AttackPower {
 				c = (DndCharacter) user;
 			}
 
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 5, 5, getAttackType());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
 				int targetWill = target.getWill(user);
 				Utils.print("Your target has a Will of " + targetWill);
 
-				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, target);
+				int attackRoll = user.attackRoll(AbilityType.CHARISMA, AccessoryType.IMPLEMENT, target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetWill) {
 					/* A HIT! */
@@ -112,7 +112,7 @@ public class Blunder extends AttackPower {
 					int damageRolls = 1;
 					DiceType damageDiceType = DiceType.SIX_SIDED;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.NORMAL, true, user, getAttackType());
 
 					/* I get to slide the target 2 squares and allow an ally to do a basic attack against them as a free action with a +2 power bonus. */
 					Utils.print("You now get to slide " + target.getName() + " 2 squares and allow someone a free attack with a +2 bonus.");
@@ -148,8 +148,9 @@ public class Blunder extends AttackPower {
 
 							Utils.print("Your choice?");
 							String direction = Utils.getValidInput(validDirections);
-							target.moveCreature(direction, MovementType.SLIDE);
-							distanceLeft--;
+							if (target.moveCreature(direction, MovementType.SLIDE)) {
+								distanceLeft--;
+							}
 						} else if ("Attack".equalsIgnoreCase(choice)) {
 							/* Pick which ally will make the attack. */
 							Utils.print("Please pick which ally will attack.");

@@ -209,4 +209,86 @@ public class Druid extends DndClass {
 		this.beastFormBloodiedImagePath = beastFormBloodiedImagePath;
 	}
 
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather hide.";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "Weapon Prof: Simple melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Implements: Staffs, totems";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Balance of Nature: I begin with 3 at will";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "powers. At least one (and no more than two)";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "must have the Beast Form keyword.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "Primal Guardian: While not wearing heavy";
+		} else {
+			return "Primal Predator: While not wearing heavy";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "armor, I use my Con modifier to determine";
+		} else {
+			return "armor, I gain a +1 bonus to speed.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "my AC.";
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		return "Ritual Casting: I own a ritual book and it";
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		return "contains Animal Messenger and one other";
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		return "1st level ritual. Once per day I can cast";
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		return "Animal Messenger without expending components.";
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		return "Wild Shape: I can transform into a beast.";
+	}
+
 }

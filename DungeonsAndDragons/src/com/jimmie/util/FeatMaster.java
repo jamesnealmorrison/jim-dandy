@@ -251,6 +251,15 @@ public class FeatMaster {
 		feats.add(new SpiritbondDefense());
 		feats.add(new StrengthenedBond());
 		
+		// Arcane Powers book
+		feats.add(new RisingSpellfury());
+		
+		// Primal Powers book
+		feats.add(new LifespiritHealing());
+		
+		// Divine Powers book
+		feats.add(new DevotedPaladin());
+		
 		return feats;
 	}
 

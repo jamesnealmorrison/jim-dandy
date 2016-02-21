@@ -6,6 +6,7 @@ import java.util.List;
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.creatures.DndCharacter;
@@ -49,7 +50,8 @@ public class Warden extends DndClass {
 		int targetArmorClass = target.getArmorClass(owner);
 		Utils.print("Your target has an AC of " + targetArmorClass);
 		
-		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, target);
+		// TODO: This shouldn't be the target's position
+		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, target, target.getCurrentPosition(), AttackType.MELEE_NUMBER);
 		
 		if (attackRoll >= targetArmorClass) {
 			/* A HIT! */
@@ -64,7 +66,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, true, owner);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, true, owner, AttackType.MELEE_NUMBER);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
@@ -73,7 +75,7 @@ public class Warden extends DndClass {
 			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
 			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, false, owner);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, false, owner, AttackType.MELEE_NUMBER);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
 			
@@ -242,5 +244,97 @@ public class Warden extends DndClass {
 
 	public void setWillowSentinelBloodiedImagePath(String willowSentinelBloodiedImagePath) {
 		this.willowSentinelBloodiedImagePath = willowSentinelBloodiedImagePath;
+	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, light shield,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "heavy shield. Wpn Prof: Simple melee, military";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Font of Life: Saving throw at start of turn.";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "Earthstrength: While not wearing heavy armor";
+		} else {
+			return "Wildblood: While not wearing heavy armor";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "use my Con modifier for AC. Also, when using";
+		} else {
+			return "use my Wid modifier for AC. Also, when using";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "2nd wind, I add my Con modifier to my AC until";
+		} else {
+			return "2nd wind, each enemy marked by me takes an";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "the end of my next turn.";
+		} else {
+			return "attack penalty if their attack does not";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return null;
+		} else {
+			return "include me.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		return "Nature's Wrath: I can mark adj enemies.";
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		return "I have Warden's Fury and Warden's Grasp";
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		return "powers.";
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		// TODO Auto-generated method stub
+		return super.getClassFeaturesText13();
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		// TODO Auto-generated method stub
+		return super.getClassFeaturesText14();
 	}
 }

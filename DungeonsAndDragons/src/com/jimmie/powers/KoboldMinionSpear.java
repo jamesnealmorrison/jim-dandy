@@ -97,7 +97,7 @@ public class KoboldMinionSpear extends AttackPower {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(4, DamageType.NORMAL, true, user);
+				target.hurt(4, DamageType.NORMAL, true, user, getAttackType());
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

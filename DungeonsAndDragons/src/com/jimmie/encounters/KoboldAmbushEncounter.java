@@ -14,9 +14,7 @@ import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldWyrmpriest;
 import com.jimmie.domain.creatures.monsters.Monster;
-import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
-import com.jimmie.domain.map.MapLocation;
 import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
 
@@ -68,6 +66,7 @@ public class KoboldAmbushEncounter extends Encounter {
 		map = new Map();
 		map.setWidth(30);
 		map.setHeight(21);
+		/* Commenting out.  If I want to run this encounter again, I'll have to refactor all this.
 		map.addLocation(new MapLocation(new Position(1,1), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(1,2), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(1,3), LocationType.GRASS));
@@ -697,7 +696,8 @@ public class KoboldAmbushEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(30,18), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(30,19), LocationType.FOLIAGE));
 		map.addLocation(new MapLocation(new Position(30,20), LocationType.FOLIAGE));
-		map.addLocation(new MapLocation(new Position(30,21), LocationType.FOLIAGE));		
+		map.addLocation(new MapLocation(new Position(30,21), LocationType.FOLIAGE));
+		*/		
 	}	
 
 	@Override

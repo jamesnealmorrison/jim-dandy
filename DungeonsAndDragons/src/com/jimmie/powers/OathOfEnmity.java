@@ -92,7 +92,7 @@ public class OathOfEnmity extends AttackPower {
 			timesUsed++;
 
 			/* This is supposed to be a close burst 10, but the ranged will work for it. */
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 
 			oathOfEnmityTarget = targets.get(0);
 			return true;

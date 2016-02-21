@@ -91,7 +91,7 @@ public class StrengthOfStone extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -104,7 +104,7 @@ public class StrengthOfStone extends AttackPower {
 				if (user.getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user, getAttackType());
 
 				Utils.print(user.getName() + " gets 3 temporary HP");
 				/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */

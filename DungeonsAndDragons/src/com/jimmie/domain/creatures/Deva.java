@@ -130,9 +130,44 @@ public class Deva extends Race {
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
-		Utils.print("As a Dwarf you get +2 to Intelligence and Wisdom.");
+		Utils.print("As a Deva you get +2 to Intelligence and Wisdom.");
 		setIntelligenceBonus(getIntelligenceBonus()+2);
 		setWisdomBonus(getWisdomBonus()+2);
 	}
 
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Astral Majesty: +1 bonus to all defenses";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "against attacks made by bloodied creatures.";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "Astral Resistance: Resist necrotic and radiant";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "damage equal to 5 + 1/2 level";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "Immortal Origin: Considered an immortal creature.";
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		return "I have the Memory of a Thousand Lifetimes power";
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		return "which allows me to add 1d6 to certain rolls.";
+	}
 }
+

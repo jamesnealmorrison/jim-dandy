@@ -119,13 +119,13 @@ public class TelekineticAnchor extends AttackPower {
 				int targetFortitude = target.getFortitude(user);
 				Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetFortitude) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
 
-					target.hurt(damage, DamageType.FORCE, true, user);
+					target.hurt(damage, DamageType.FORCE, true, user, getAttackType());
 				} else {
 					Utils.print("Sorry.  You missed " + target.getName());
 					// Some targets have powers/effects that happen when they are missed.

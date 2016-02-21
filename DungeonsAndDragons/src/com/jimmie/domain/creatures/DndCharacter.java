@@ -40,6 +40,7 @@ import com.jimmie.domain.items.weapons.WeaponType;
 import com.jimmie.powers.AidAnother;
 import com.jimmie.powers.MeleeBasicAttack;
 import com.jimmie.powers.Power;
+import com.jimmie.powers.ReadyLightSource;
 import com.jimmie.powers.ReadyWeapon;
 import com.jimmie.powers.SecondWind;
 import com.jimmie.powers.SpendActionPoint;
@@ -629,6 +630,7 @@ public abstract class DndCharacter extends Creature {
 		addPower(new SpendActionPoint());
 		addPower(new SecondWind());
 		addPower(new AidAnother());
+		addPower(new ReadyLightSource());
 
 		coins = new Coins();
 		age = 0;

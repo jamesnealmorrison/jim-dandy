@@ -145,4 +145,44 @@ public class Paladin extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, chainmail, scale,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "plate; light shield, heavy shield. Wpn Prof: Simple";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "melee, military melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Implement: Holy Symbol";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "Channel Divinity: Once per encounter, I can use";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "one of my Channel Divinity powers.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		return "I can mark an enemy with my Divine Challenge.";
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		return "I can heal allies with my Lay on Hands power.";
+	}
 }

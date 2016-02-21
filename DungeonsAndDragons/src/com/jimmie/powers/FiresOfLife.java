@@ -102,7 +102,8 @@ public class FiresOfLife extends AttackPower {
 			Encounter.showCoordinateSystem(false);
 
 			/* Got to do this weird conversion between creatures and attack targets. */
-			targets = Encounter.getEncounter().getAllEnemiesInAreaBurst(user, new Position(x, y), 1);
+			Position attackPosition = new Position(x, y);
+			targets = Encounter.getEncounter().getAllEnemiesInAreaBurst(user, attackPosition, 1);
 
 			Utils.print("Since this might affect multiple targets, rolling for damage first.");
 			int damageRolls = 1;
@@ -118,12 +119,12 @@ public class FiresOfLife extends AttackPower {
 				int targetReflex = target.getReflex(user);
 				Utils.print("Your target, " + target.getName() + ", has a Reflex of " + targetReflex);
 
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target, attackPosition, getAttackType());
 
 				if (attackRoll >= targetReflex) {
 					/* A HIT! */
 					Utils.print("You successfully hit " + target.getName());
-					target.hurt(damage+user.getAbilityModifier(AbilityType.WISDOM), DamageType.FIRE, true, user);
+					target.hurt(damage+user.getAbilityModifier(AbilityType.WISDOM), DamageType.FIRE, true, user, getAttackType());
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;
 						cTarget.setTemporaryOngoingDamage(5,user.getCurrentTurn(), DurationType.SAVE_ENDS, user, TemporaryEffectType.ONGOING_DMG, TemporaryEffectReason.FIRES_OF_LIFE, DamageType.FIRE);

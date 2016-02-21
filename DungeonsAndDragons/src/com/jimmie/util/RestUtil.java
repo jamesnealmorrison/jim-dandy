@@ -48,7 +48,7 @@ Utils.print("Hazel: " + hazel.getCurrentSurgeUses());
 			/* Extended Rest. */
 			for (DndCharacter c : characters) {
 				c.setCurrentHitPoints(c.getMaxHitPoints());
-				Utils.print(c.getName() + " blah");
+				Utils.print(c.getName());
 				c.setActionPoints(1);
 				c.setCurrentSurgeUses(0);
 				c.initializeForEncounter();

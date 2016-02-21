@@ -95,4 +95,44 @@ public class Dwarf extends Race {
 		setWisdomBonus(getWisdomBonus()+2);
 	}
 
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Cast-Iron Stomach: +5 to saving throws vs poison.";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "Dwarven Resilience: 2nd wind is minor action.";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "Dwarf Wpn Prof: Throw Hammer & Warhammer.";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "Encumbered Speed: Load does not affect my speed.";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "Stand Your Ground: Effects that pull/push/slide me";
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		return "move me 1 less than specified. And I get to make a";
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		return "saving throw against something that would knock";
+	}
+
+	@Override
+	public String getRaceFeaturesText8() {
+		return "me prone.";
+	}
+
 }

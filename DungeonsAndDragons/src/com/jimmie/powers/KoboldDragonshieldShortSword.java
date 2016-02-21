@@ -117,7 +117,7 @@ public class KoboldDragonshieldShortSword extends AttackPower {
 
 				int attributeBonus = 0;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user, getAttackType());
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

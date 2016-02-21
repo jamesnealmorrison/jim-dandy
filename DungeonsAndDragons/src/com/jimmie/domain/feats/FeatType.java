@@ -46,5 +46,15 @@ public enum FeatType {
 	
 	
 	// Rune feats (mix in with others later)
-	RUNE_OF_ESCAPE, RUNE_OF_TORMENT, RUNE_OF_BATTLE, RUNE_OF_HEALTH
+	RUNE_OF_ESCAPE, RUNE_OF_TORMENT, RUNE_OF_BATTLE, RUNE_OF_HEALTH,
+	
+	// Arcane Powers
+	RISING_SPELLFURY,
+
+	// Divine Powers
+	DEVOTED_PALADIN,
+
+	// Primal Powers
+	LIFESPIRIT_HEALING
+	
 }

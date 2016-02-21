@@ -6,6 +6,7 @@ import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.EffectType;
@@ -86,7 +87,7 @@ public class AidAnother extends Power {
 			AttackTarget target = targets.get(0);
 
 			Utils.print("The 'Aid Another' action is against a DC of 10.");
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), AttackType.NONE);
 					
 			if (attackRoll >= 10) {
 				/* A HIT! */

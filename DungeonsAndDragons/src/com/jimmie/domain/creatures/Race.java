@@ -88,4 +88,33 @@ public abstract class Race implements Serializable {
 		wisdomBonus = 0;
 		charismaBonus = 0;
 	}
+
+	public String getRaceFeaturesText1() {
+		return null;
+	}
+
+	public String getRaceFeaturesText2() {
+		return null;
+	}
+	public String getRaceFeaturesText3() {
+		return null;
+	}
+	public String getRaceFeaturesText4() {
+		return null;
+	}
+	public String getRaceFeaturesText5() {
+		return null;
+	}
+	public String getRaceFeaturesText6() {
+		return null;
+	}
+	public String getRaceFeaturesText7() {
+		return null;
+	}
+	public String getRaceFeaturesText8() {
+		return null;
+	}
+	public String getRaceFeaturesText9() {
+		return null;
+	}
 }

@@ -124,7 +124,7 @@ public class KoboldSlingerSling extends AttackPower {
 			int choice = Utils.getValidIntInputInRange(1, i);
 			int shot = shotChoices.get(choice);
 
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 20, getAttackType());
 
 			if ((targets != null) && !(targets.isEmpty())) {
 				AttackTarget target = targets.get(0);
@@ -146,7 +146,7 @@ public class KoboldSlingerSling extends AttackPower {
 
 					int attributeBonus = 0;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, weaponBonus, attributeBonus, user), DamageType.NORMAL, true, user, getAttackType());
 					
 					if (Creature.class.isAssignableFrom(target.getClass())) {
 						Creature cTarget = (Creature) target;

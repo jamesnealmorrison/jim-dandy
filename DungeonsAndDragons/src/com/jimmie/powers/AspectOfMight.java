@@ -94,7 +94,7 @@ public class AspectOfMight extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, target);
+				int attackRoll = user.attackRoll(AbilityType.WISDOM, AccessoryType.WEAPON, target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -105,7 +105,7 @@ public class AspectOfMight extends AttackPower {
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user, getAttackType());
 
 				} else {
 					Utils.print("You missed " + target.getName() + ".  But you still do half damage.");
@@ -115,7 +115,7 @@ public class AspectOfMight extends AttackPower {
 
 					damageRolls = damageRolls * 3;
 
-					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, false, user);
+					target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, false, user, getAttackType());
 
 					// Some targets have powers/effects that happen when they are missed.
 					target.miss(user, this);

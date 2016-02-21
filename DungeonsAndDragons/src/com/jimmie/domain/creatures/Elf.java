@@ -84,4 +84,39 @@ public class Elf extends Race {
 		setDexterityBonus(getDexterityBonus()+2);
 		setWisdomBonus(getWisdomBonus()+2);
 	}
+
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Elven Weapon Proviciency: Longbow and Shortbow.";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "Fey Origin: Considered a Fey Creature.";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "Group Awareness: I grant non-elf allies a +1";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "bonus to Perception when within 5 squares.";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "Wild Step: I ignore difficult terrain when";
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		return "I shift.";
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		return "Elven Accuracy power: Reroll an attack roll.";
+	}
 }

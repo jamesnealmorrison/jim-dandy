@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.Zone;
 import com.jimmie.domain.ZoneShape;
 import com.jimmie.domain.creatures.Creature;
@@ -34,7 +35,7 @@ import com.jimmie.util.Utils;
 @Component
 public class BattlefieldPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private static final int SQUARE_SIZE = 69;
+	public static final int SQUARE_SIZE = 69;
 	private Map map;
 	List<Creature> creatures;
 	private Image img;
@@ -89,7 +90,7 @@ public class BattlefieldPanel extends JPanel {
 //			g2d.setBackground(Color.black);
 //			g2d.clearRect(0,0,getBounds().width,getBounds().height);
 			
-			g.drawImage(img, 0, 0, null);
+			g.drawImage(getImg(), 0, 0, null);
 			
 			/* Now draw the characters. */
 			for (Iterator<Creature> it = creatures.iterator(); it.hasNext();) {
@@ -199,6 +200,61 @@ public class BattlefieldPanel extends JPanel {
 				}
 			}
 			
+			// Do any shading based on visibility/line of sight/etc.
+			TurnTaker currentTurnTaker = Encounter.getEncounter().getCurrentParticipant();
+			if (currentTurnTaker != null) {
+				// Loop through all of the squares on the board.
+				for (int row = 0; row <= map.getWidth(); row++) {
+					for (int col = 0; col <= map.getHeight(); col++) {
+						Position mapPosition = new Position(row,col);
+						// If they don't have line of sight, then they can't even see it.
+						if (!Encounter.getEncounter().hasLineOfSight(currentTurnTaker.getCurrentPosition(), mapPosition, null, null)) {
+							ScreenPosition screenPosition = new ScreenPosition(mapPosition, new Dimension(map.getWidth(),map.getHeight()), SQUARE_SIZE);
+							g2d.setColor(Color.BLACK);
+							g2d.fillRect(screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), SQUARE_SIZE, SQUARE_SIZE);
+						} else {
+							// They have line of sight, but see if it's obscured
+							if (Creature.class.isAssignableFrom(currentTurnTaker.getClass())) {
+								Creature currentCreature = (Creature) currentTurnTaker;
+								int increment = 0;
+								if (Encounter.getEncounter().hasTotalConcealment(currentCreature, mapPosition)) {
+									ScreenPosition screenPosition = new ScreenPosition(mapPosition, new Dimension(map.getWidth(),map.getHeight()), SQUARE_SIZE);
+									g2d.setColor(Color.BLACK);
+									g2d.fillRect(screenPosition.getTopLeftCorner().getX(), screenPosition.getTopLeftCorner().getY(), SQUARE_SIZE, SQUARE_SIZE);									
+								} else if (Encounter.getEncounter().hasConcealment(currentCreature, mapPosition)) {
+									g2d.setColor(Color.BLACK);
+									increment = 3;
+								}
+
+								if (increment > 0) {
+									ScreenPosition screenPosition = new ScreenPosition(mapPosition, new Dimension(map.getWidth(),map.getHeight()), SQUARE_SIZE);
+									// Fill every other dot with black.
+									int topLeftX = screenPosition.getTopLeftCorner().getX();
+									boolean evenRow = false;
+									for (int x = topLeftX; x < topLeftX + (SQUARE_SIZE-1); x = x + increment) {
+										int topLeftY = screenPosition.getTopLeftCorner().getY();
+										for (int y = topLeftY; y < topLeftY + SQUARE_SIZE; y = y + increment) {
+											if (evenRow) {
+												g2d.drawRect(x, y, 1, 1);
+											} else {
+												g2d.drawRect(x, y+2, 1, 1);
+											}
+										}
+										if (evenRow) {
+											evenRow = false;
+										} else {
+											evenRow = true;
+										}
+									}
+									
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			
 			// See if the coordinate system should be shown or not.
 			if (Encounter.isShowCoordinateSystem()) {
 				for (int row = 0; row <= map.getWidth(); row++) {
@@ -275,6 +331,14 @@ public class BattlefieldPanel extends JPanel {
 			return true;
 		}
 		
+	}
+
+	public Image getImg() {
+		return img;
+	}
+
+	public void setImg(Image img) {
+		this.img = img;
 	}	
 
 

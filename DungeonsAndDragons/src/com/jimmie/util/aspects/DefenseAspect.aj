@@ -190,7 +190,7 @@ public aspect DefenseAspect {
 		}
 		
 		// Are you in a "Rune of the undeniable dawn" zone?
-		if (Encounter.getEncounter().getZones() != null) {
+		if ((Encounter.getEncounter() != null) && (Encounter.getEncounter().getZones() != null)) {
 			for (Iterator<Zone> it = Encounter.getEncounter().getZones().iterator(); it.hasNext();) {
 				Zone zone = it.next();
 				if (zone.getZoneType() == ZoneType.RUNE_OF_THE_UNDENIABLE_DAWN) {

@@ -234,4 +234,118 @@ public class Sorcerer extends DndClass {
 		return 0;
 	}
 
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth. Weapon Prof: Simple melee,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Implements: Daggers, Staffs";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Draconic Power: Damage roll bonus to arcane powers"; 
+		} else {
+			return "Chaos Burst: If my first attack roll in a turn is";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "equal to my Str modifier."; 
+		} else {
+			return "even, I gain a +1 bonus to AC. If odd, saving throw.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Draconic Resilience: While not wearing heavy"; 
+		} else {
+			return "Chaos Power: Add Dex modifier to damage rolls of";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "armor, use Str modifier for AC."; 
+		} else {
+			return "my arcane powers.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Dragon Soul: I gain resist 5 to a damage type"; 
+		} else {
+			return "Unfettered Power: When I roll a natural 20 on an";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "and my arcane powers ignore any target's"; 
+		} else {
+			return "attack roll, I slide the target and knock it";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "resistance to that damage type."; 
+		} else {
+			return "prone. If a natural 1, I push ALL creatures";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Scales of the Dragon: The first time I am"; 
+		} else {
+			return "within 5 squares one square.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "bloodied I gain a +2 to AC until the end"; 
+		} else {
+			return "Wild Soul: At an extended rest, I gain resist";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "of the encounter."; 
+		} else {
+			return "5 to a random damage type, and my powers";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return null; 
+		} else {
+			return "ignore enemies resistance to it.";
+		}
+	}
+
 }

@@ -101,7 +101,8 @@ public class ChillWind extends AttackPower {
 		Encounter.showCoordinateSystem(false);
 
 		/* Got to do this weird conversion between creatures and attack targets. */
-		List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(new Position(x, y), 1);
+		Position attackPosition = new Position(x, y);
+		List<Creature> creatureTargets = Encounter.getEncounter().getAllCreaturesInAreaBurst(attackPosition, 1);
 		for (Creature creature : creatureTargets) {
 			targets.add(creature);
 		}
@@ -120,13 +121,13 @@ public class ChillWind extends AttackPower {
 			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target, " + target.getName() + ", has a Fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target, attackPosition, getAttackType());
 
 			if (attackRoll >= targetFortitude) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 				Utils.print("Doing " + damage + " cold damage and you get to slide them 1 square.");
-				target.hurt(damage, DamageType.COLD, true, user);
+				target.hurt(damage, DamageType.COLD, true, user, getAttackType());
 				sliders.add(target);
 				sliding = true;
 			} else {

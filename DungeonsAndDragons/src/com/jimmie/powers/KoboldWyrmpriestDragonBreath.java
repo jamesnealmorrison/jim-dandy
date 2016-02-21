@@ -120,10 +120,10 @@ public class KoboldWyrmpriestDragonBreath extends AttackPower {
 						/* A HIT! */
 						Utils.print("You successfully hit " + target.getName());
 
-						target.hurt(damage, damageType, true, user);
+						target.hurt(damage, damageType, true, user, getAttackType());
 					} else {
 						Utils.print("Sorry.  You missed " + target.getName() + ". doing half damage.");
-						target.hurt(damage/2, damageType, false, user);
+						target.hurt(damage/2, damageType, false, user, getAttackType());
 						// Some targets have powers/effects that happen when they are missed.
 						target.miss(user, this);
 					}

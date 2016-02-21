@@ -16,10 +16,10 @@ import com.jimmie.powers.Power;
 import com.jimmie.util.Utils;
 
 public aspect MovementAspect {
-	public pointcut moveCreature(String direction, MovementType movementType) : execution(* com.jimmie.domain.creatures.*.moveCreature(..))
+	public pointcut moveCreature(String direction, MovementType movementType) : execution(boolean com.jimmie.domain.creatures.*.moveCreature(..))
 	&& args(direction, movementType);
 
-	void around(String direction, MovementType movementType) : moveCreature(direction, movementType) {
+	boolean around(String direction, MovementType movementType) : moveCreature(direction, movementType) {
 		Object o = thisJoinPoint.getThis();
 		Creature creature = null;
 		if (Creature.class.isAssignableFrom(o.getClass())) {
@@ -28,7 +28,7 @@ public aspect MovementAspect {
 			// See if the creature is immobilized
 			if (creature.isImmobilized()) {
 				Utils.print(creature.getName() + " is immobilized.  They can not move.");
-				return;
+				return false;
 			}
 			
 			// Page 290 of the Player Handbook says pushing, pulling and sliding also does not invoke opportunity attacks.
@@ -80,7 +80,7 @@ public aspect MovementAspect {
 			/* Also need a list of creatures that are adjacent before the move. */
 			List<Creature> adjacentCreaturesBeforeMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);
 
-			proceed(direction, movementType);
+			boolean moved = proceed(direction, movementType);
 
 			/* Get a list of adjacentCreatures after the move. */
 			List<Creature> adjacentCreaturesAfterMove = Encounter.getEncounter().getAllAdjacentCreatures(creature);
@@ -117,7 +117,8 @@ public aspect MovementAspect {
 					}
 				}
 			}
+			return moved;
 		}
-	
+		return false;
 	}
 }

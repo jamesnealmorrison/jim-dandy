@@ -90,4 +90,29 @@ public class Goliath extends Race {
 		setStrengthBonus(getStrengthBonus()+2);
 		setConstitutionBonus(getConstitutionBonus()+2);
 	}
+
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Mountain's Tenacity: I have a +1 bonus to Will.";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "Powerful Athlete: Roll twice for Athletics";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "checks to jump or climb. Use either roll.";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "Stone's Endurance Power: Resist 5 to all";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "damage until the end of my next turn.";
+	}
 }

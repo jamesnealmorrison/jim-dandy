@@ -94,7 +94,7 @@ public class CoveringAttack extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -103,7 +103,7 @@ public class CoveringAttack extends AttackPower {
 					int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls() * 2;
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user, getAttackType());
 
 					/* An ally adjacent to the target can shift two squares. */
 					Creature ally = Encounter.getEncounter().chooseAllyAdjacentTo(user, target.getCurrentPosition());

@@ -94,7 +94,7 @@ public class GraspingClaws extends AttackPower {
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a Reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */
@@ -107,7 +107,7 @@ public class GraspingClaws extends AttackPower {
 				if (getLevel() >= 21) {
 					damageRolls = damageRolls * 2;
 				}
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.NORMAL, true, user, getAttackType());
 				
 				if (Creature.class.isAssignableFrom(target.getClass())) {
 					Creature cTarget = (Creature) target;

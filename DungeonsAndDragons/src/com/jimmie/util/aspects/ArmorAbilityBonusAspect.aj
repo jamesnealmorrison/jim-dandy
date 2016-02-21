@@ -4,7 +4,6 @@ import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.classes.GuardianMight;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.DndCharacter;
-import com.jimmie.util.Utils;
 
 public aspect ArmorAbilityBonusAspect {
 	public pointcut getArmorAbilityBonus(DndCharacter c) : execution(* com.jimmie.domain.creatures.*.getArmorAbilityBonus(..))
@@ -37,7 +36,6 @@ public aspect ArmorAbilityBonusAspect {
 			}
 		}
 		int returnVal = proceed(c);
-		Utils.print("In ArmorAbility aspect. Returning " + returnVal);
 		return returnVal;
 	}
 }

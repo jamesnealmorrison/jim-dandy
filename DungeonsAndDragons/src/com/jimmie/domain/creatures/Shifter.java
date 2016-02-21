@@ -158,4 +158,67 @@ public class Shifter extends Race {
 		}
 	}
 
+	@Override
+	public String getRaceFeaturesText1() {
+		if (shifterType == ShifterType.LONGTOOTH) {
+			return "Longtooth Shifting: When bloodied, I gain a +2";
+		} else {
+			return "Razorclaw Shifting: When bloodied, my speed";
+		}
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		if (shifterType == ShifterType.LONGTOOTH) {
+			return "bonus to damage rolls and regeneration 2.";
+		} else {
+			return "increases by 2 and I gain a +1 bonus to AC";
+		}
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		if (shifterType == ShifterType.LONGTOOTH) {
+			return null;
+		} else {
+			return "and reflex.";
+		}
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText4();
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText5();
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText6();
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText7();
+	}
+
+	@Override
+	public String getRaceFeaturesText8() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText8();
+	}
+
+	@Override
+	public String getRaceFeaturesText9() {
+		// TODO Auto-generated method stub
+		return super.getRaceFeaturesText9();
+	}
+
 }

@@ -125,7 +125,7 @@ public class PlayerCharacter extends DndCharacter implements Serializable {
 		addFeat(chosenFeat);
 	}
 
-	private void addFeat(Feat chosenFeat) {
+	public void addFeat(Feat chosenFeat) {
 		if (feats == null) {
 			feats = new ArrayList<Feat>();
 		}

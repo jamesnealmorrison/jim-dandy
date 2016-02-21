@@ -88,7 +88,7 @@ public class DazzlingRay extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 		
 		DndCharacter c = null;
 		if (DndCharacter.class.isAssignableFrom(user.getClass())) {
@@ -105,7 +105,7 @@ public class DazzlingRay extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target has a will of " + targetWill);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {
@@ -122,7 +122,7 @@ public class DazzlingRay extends AttackPower {
 
 				DiceType damageDiceType = DiceType.SIX_SIDED;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.RADIANT, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.RADIANT, true, user, getAttackType());
 
 				if (sorcerer.getUnfetteredPower() == 20) {
 					Utils.print("Because of your unfettered power, you get to slide " + target.getName() + " 1 square and knock them prone.");
@@ -135,7 +135,7 @@ public class DazzlingRay extends AttackPower {
 				}
 			} else {
 				Utils.print("You missed " + target.getName() + ". Doing half damage.");
-				target.hurt(Utils.rollForHalfDamage(6, DiceType.SIX_SIDED, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.RADIANT, false, user);
+				target.hurt(Utils.rollForHalfDamage(6, DiceType.SIX_SIDED, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.RADIANT, false, user, getAttackType());
 				// Some targets have powers/effects that happen when they are missed.
 				target.miss(user, this);
 			}

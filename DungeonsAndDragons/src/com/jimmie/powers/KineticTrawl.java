@@ -113,14 +113,14 @@ public class KineticTrawl extends AttackPower {
 			psion.setPowerPoints(powerPoints);
 		}
 
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 
 		if ((targets != null) && !(targets.isEmpty())) {
 			AttackTarget target = targets.get(0);
 			int targetReflex = target.getReflex(user);
 			Utils.print("Your target has a reflex of " + targetReflex);
 
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetReflex) {
 				/* A HIT! */
@@ -138,7 +138,7 @@ public class KineticTrawl extends AttackPower {
 					damageDiceType = DiceType.TEN_SIDED;
 				}
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user, getAttackType());
 
 				int targetPullDistance = 1;
 

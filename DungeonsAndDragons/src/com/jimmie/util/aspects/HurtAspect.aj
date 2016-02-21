@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
@@ -17,20 +18,32 @@ import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.monsters.Gnome;
 import com.jimmie.domain.creatures.monsters.GnomeSkulk;
+import com.jimmie.domain.creatures.monsters.GoblinSharpshooter;
 import com.jimmie.domain.creatures.monsters.HalflingSlinger;
+import com.jimmie.domain.creatures.monsters.Zombie;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public aspect HurtAspect {
-	public pointcut hurt(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter) : execution(* com.jimmie.domain.creatures.Creature.hurt(..))
-	&& args(damage, damageType, hit, hurter) && target(hurtee);
+	public pointcut hurt(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter, AttackType attackType) : execution(* com.jimmie.domain.creatures.Creature.hurt(..))
+	&& args(damage, damageType, hit, hurter, attackType) && target(hurtee);
 
-	void around(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter) : hurt(hurtee, damage, damageType, hit, hurter) {
+	void around(Creature hurtee, int damage, DamageType damageType, boolean hit, Object hurter, AttackType attackType) : hurt(hurtee, damage, damageType, hit, hurter, attackType) {
 		Utils.print("Hurter = " + hurter);
 		Utils.print("Hurtee = " + hurtee);
+		
+		// TODO: Gravehound, and other zombies
+		if (Zombie.class.isInstance(hurtee)) {
+			if (Encounter.getEncounter().isCriticalHit()) {
+				Utils.print("Because of Zombie Weakness, this critical hit automatically reduces the zombie to 0 HP.");
+				// Don't even call the hurt method, because they might have resistance that effects the HP result.  Just set current HP to 0 directly.
+				hurtee.setCurrentHitPoints(0);
+				return;
+			}
+		}
 
-		if (Creature.class.isAssignableFrom(hurter.getClass())) {
+		if ((hurter != null) && (Creature.class.isAssignableFrom(hurter.getClass()))) {
 			Creature cHurter = (Creature) hurter; 
 
 			// Is there a temporary damage modifier to the hurtee?
@@ -77,8 +90,9 @@ public aspect HurtAspect {
 		}
 		
 		// Combat Advantage feature
-		if ((GnomeSkulk.class.isAssignableFrom(hurter.getClass()))
-				|| (HalflingSlinger.class.isAssignableFrom(hurter.getClass()))) {
+		if ((hurter != null) && ((GnomeSkulk.class.isAssignableFrom(hurter.getClass()))
+				|| (HalflingSlinger.class.isAssignableFrom(hurter.getClass()))
+				|| (GoblinSharpshooter.class.isAssignableFrom(hurter.getClass())))) {
 			if (Utils.hasCombatAdvantage((Creature) hurter, hurtee)) {
 				Utils.print("Because of " + ((Creature) hurter).getName() + "'s Combat Advantage feature, they deal an extra 1d6 damage.");
 				// TODO: Some creatures (halfling slinger) this only applies to ranged, others to melee, other to both.
@@ -88,7 +102,7 @@ public aspect HurtAspect {
 			}
 		}
 
-		proceed(hurtee, damage, damageType, hit, hurter);
+		proceed(hurtee, damage, damageType, hit, hurter, attackType);
 		
 		// See if hurting the creature killed it for the Druid Fires of Life power
 		if (hurtee.getCurrentHitPoints() <= 0) {

@@ -1,8 +1,6 @@
 package com.jimmie.domain.creatures.monsters;
 
-import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.Size;
-import com.jimmie.powers.AttackPower;
 import com.jimmie.powers.IrontoothBattleaxe;
 import com.jimmie.powers.IrontoothDualAxe;
 import com.jimmie.util.Utils;
@@ -22,21 +20,6 @@ public class Irontooth extends Goblin {
 		if (isBloodied()) {
 			Utils.print("When Irontooth is bloodied, he is Blood Crazed, and heals 5 hp at the end of each turn.");
 			heal(5);
-		}
-	}
-
-	@Override
-	public void miss(Creature misser, AttackPower power) {
-		super.miss(misser, power);
-		if (power != null) {
-			if (power.isMeleeAttack()) {
-				if (isBloodied()) {
-					Utils.print("Normally Irontooth would be able to shift now due to his Goblin Tactics power, but he is Blood Crazed now.");
-				} else {
-					Utils.print("Irontooth has Goblin Tactics power and can shift whenever missed by a melee atack.");
-					shift(1, true);
-				}
-			}
 		}
 	}
 

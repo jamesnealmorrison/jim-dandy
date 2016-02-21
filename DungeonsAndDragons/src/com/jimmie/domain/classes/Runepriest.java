@@ -11,6 +11,7 @@ import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.domain.items.weapons.WeaponGroup;
 import com.jimmie.powers.RuneOfMending;
 import com.jimmie.util.Utils;
 
@@ -82,7 +83,7 @@ public class Runepriest extends DndClass {
 		
 		Utils.print("Adding Weapon Proficiencies: Simple Melee, Simple Ranged");
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
-		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);		
 		
 		Utils.print("Adding bonus of +2 Will");
 		setWillBonus(getWillBonus() + 2);
@@ -123,6 +124,8 @@ public class Runepriest extends DndClass {
 			setRunicArtistry(RunicArtistry.DEFIANT_WORD);
 		} else {
 			setRunicArtistry(RunicArtistry.WRATHFUL_HAMMER);
+			pc.addWeaponGroupProficiency(WeaponGroup.HAMMER);		
+			pc.addWeaponGroupProficiency(WeaponGroup.MACE);		
 		}
 		
 		pc.addPower(new RuneOfMending());
@@ -178,4 +181,58 @@ public class Runepriest extends DndClass {
 		}
 		return runicState;
 	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, chainmail, scale,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "light shld. Wpn Prof: Simple melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Rune Master: I choose to enter Rune of Destruction";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "or Rune of Protection state when using Runic";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "powers. Destruction gives allies attack roll.";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "bonus. Protection gives them resist damage.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		return "Rune of Mending power: Healing allies.";
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (runicArtistry == RunicArtistry.DEFIANT_WORD) {
+			return "Runic Artistry: Defiant Word. Damage Roll bonus";
+		} else {
+			return "Runic Artistry: Wrathful Hammer. Mace/Hammer";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (runicArtistry == RunicArtistry.DEFIANT_WORD) {
+			return "when an enemy misses me.";
+		} else {
+			return "prof and damage roll bonus when hurt.";
+		}
+	}
+
 }

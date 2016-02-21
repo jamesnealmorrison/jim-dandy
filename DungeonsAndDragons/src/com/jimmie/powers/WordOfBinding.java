@@ -96,13 +96,13 @@ public class WordOfBinding extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
 				Utils.print("You successfully hit " + target.getName());
 
-				target.hurt(user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), DamageType.NORMAL, true, user);
+				target.hurt(user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), DamageType.NORMAL, true, user, getAttackType());
 
 				Utils.print("Target is immobilized.  Please note, I haven't implemented the part saying 'or until I'm not adjacent to it'.");
 				if (Creature.class.isAssignableFrom(target.getClass())) {

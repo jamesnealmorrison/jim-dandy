@@ -98,7 +98,7 @@ public class DivineRuneOfThunder extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -133,9 +133,9 @@ public class DivineRuneOfThunder extends AttackPower {
 							}
 						}
 						if (runicState == RunicState.RUNE_OF_DESTRUCTION) {
-							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + user.getAbilityModifier(AbilityType.WISDOM), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);
+							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus() + user.getAbilityModifier(AbilityType.WISDOM), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user, getAttackType());
 						} else {
-							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);						
+							target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user, getAttackType());						
 						}
 
 					}

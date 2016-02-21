@@ -12,6 +12,7 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.EffectType;
+import com.jimmie.domain.Position;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.GuardianMight;
@@ -97,7 +98,7 @@ public class ThunderRamAssault extends AttackPower {
 				int targetArmorClass = target.getArmorClass(user);
 				Utils.print("Your target has an AC of " + targetArmorClass);
 
-				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+				int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 				if (attackRoll >= targetArmorClass) {
 					/* A HIT! */
@@ -107,7 +108,7 @@ public class ThunderRamAssault extends AttackPower {
 					DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
 					/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.THUNDER, true, user, getAttackType());
 
 					DndClass dndClass = user.getDndClass();
 					GuardianMight guardianMight = null;
@@ -143,13 +144,13 @@ public class ThunderRamAssault extends AttackPower {
 							int secondaryTargetFortitude = secondaryTarget.getFortitude(user);
 							Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
 
-							attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTarget);
+							attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), secondaryTarget, new Position(lowerLeftX, lowerLeftY), AttackType.CLOSE_BLAST);
 
 							if (attackRoll >= secondaryTargetFortitude) {
 								/* A HIT! */
 								Utils.print("You successfully hit " + secondaryTarget.getName());
 
-								secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, true, user);
+								secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER, true, user, getAttackType());
 
 								/* If you chose the Earth Strength build, you can push the primary target. */
 								String pushDirection = Encounter.getEncounter().getPushDirection(user.getCurrentPosition(), secondaryTarget.getCurrentPosition());

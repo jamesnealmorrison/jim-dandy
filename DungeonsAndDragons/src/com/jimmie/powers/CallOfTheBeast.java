@@ -108,7 +108,7 @@ public class CallOfTheBeast extends AttackPower {
 			int targetWill = target.getWill(user);
 			Utils.print("Your target, " + target.getName() + ", has a Will of " + targetWill);
 
-			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.WISDOM, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetWill) {
 				/* A HIT! */

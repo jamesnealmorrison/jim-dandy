@@ -130,7 +130,7 @@ public class KoboldSkirmisherSpear extends AttackPower {
 						rollForDamage = rollForDamage + combatAdvantageRoll;
 					}
 				}
-				target.hurt(rollForDamage, DamageType.NORMAL, true, user);
+				target.hurt(rollForDamage, DamageType.NORMAL, true, user, getAttackType());
 			} else {
 				Utils.print("You missed " + target.getName());
 				// Some targets have powers/effects that happen when they are missed.

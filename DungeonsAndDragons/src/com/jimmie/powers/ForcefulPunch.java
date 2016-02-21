@@ -82,7 +82,7 @@ public class ForcefulPunch extends AttackPower {
 	public boolean process(Creature user) {
 		if (timesUsed == 0) {
 			timesUsed++;
-			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+			List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 
 			int targetSlideDistance = 0;
 			if (user.getLevel() < 11) {

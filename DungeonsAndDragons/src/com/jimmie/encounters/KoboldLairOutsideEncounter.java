@@ -14,9 +14,7 @@ import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
 import com.jimmie.domain.creatures.CreatureConditionType;
 import com.jimmie.domain.creatures.DndCharacter;
-import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
-import com.jimmie.domain.map.MapLocation;
 import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
 
@@ -179,6 +177,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		map = new Map();
 		map.setWidth(15);
 		map.setHeight(21);
+		/* Commenting out.  If I want to run this encounter again, I'll have to refactor all this.		
 		map.addLocation(new MapLocation(new Position(1,1), LocationType.SHALLOW_RIVER));
 		map.addLocation(new MapLocation(new Position(1,2), LocationType.SHALLOW_RIVER));
 		map.addLocation(new MapLocation(new Position(1,3), LocationType.GRASS));
@@ -494,6 +493,7 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(15,19), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(15,20), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(15,21), LocationType.GRASS));
+		*/
 	}
 	
 	public KoboldMinion getM1() {

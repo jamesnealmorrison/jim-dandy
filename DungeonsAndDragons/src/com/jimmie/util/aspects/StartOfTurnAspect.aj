@@ -1,16 +1,23 @@
 package com.jimmie.util.aspects;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.jimmie.domain.ActionType;
+import com.jimmie.domain.AttackType;
+import com.jimmie.domain.TemporaryCondition;
 import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.Zone;
 import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.classes.Sorcerer;
 import com.jimmie.domain.classes.Warden;
 import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.CreatureConditionType;
+import com.jimmie.domain.creatures.monsters.RatSwarm;
 import com.jimmie.encounters.Encounter;
+import com.jimmie.powers.Power;
 import com.jimmie.util.Utils;
 
 public aspect StartOfTurnAspect {
@@ -30,7 +37,6 @@ public aspect StartOfTurnAspect {
 				((Sorcerer) creature.getDndClass()).setUnfetteredPower(0);
 			}
 		}
-		
 	}
 	
 	after(Creature creature) : startOfTurn(creature) {
@@ -61,9 +67,45 @@ public aspect StartOfTurnAspect {
 					TemporaryOngoingDamage damage = (TemporaryOngoingDamage) tempEffect;
 					if (damage.stillApplies()) {
 						Utils.print(creature.getName() + " is taking on going " + damage.getModifier() + " " + damage.getDamageType() + " damage.");
-						creature.hurt(damage.getModifier(), damage.getDamageType(), true, damage.getSource());
+						creature.hurt(damage.getModifier(), damage.getDamageType(), true, damage.getSource(), AttackType.NONE);
 					}
 				}
+			}
+		}
+
+		// Check if they are in a Rat Swarm aura.
+		List<Creature> enemies = Encounter.getEncounter().getAdjacentEnemies(creature);
+		if (enemies != null) {
+			for (Creature enemy : enemies) {
+				if (RatSwarm.class.isAssignableFrom(enemy.getClass())) {
+					Utils.print(creature.getName() + " started their turn in a Rat Swarm aura. " + enemy.getName() + " gets to make a basic attack.");
+					Utils.print("Make sure you choose " + creature.getName() + " when asked who to attack.");
+					Power power = enemy.getBasicMeleeAttack();
+					if (power != null) {
+						power.process(enemy);
+					}
+				}
+			}
+		}
+		
+		// See if they are currently grabbing anyone.
+		if (creature.getGrabbedCreature() != null) {
+			Utils.print(creature.getName() + " is currently grabbing " + creature.getGrabbedCreature().getName() + ".  Would you like to sustain this with a minor action?");
+			if ("Y".equalsIgnoreCase(Utils.getYesOrNoInput())) {
+				creature.useAction(ActionType.MINOR);				
+			} else {
+				// Find the immobilized condition on that creature and end it.
+				for (TemporaryEffect effect : creature.getGrabbedCreature().getTemporaryEffects()) {
+					if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+						TemporaryCondition condition = (TemporaryCondition) effect;
+						if ((condition.getConditionType() == CreatureConditionType.IMMOBILIZED) && (condition.getSource() == creature) && (condition.getReason() == TemporaryEffectReason.GRABBED)) {
+							creature.getGrabbedCreature().getTemporaryEffects().remove(condition);
+							Utils.print(creature.getGrabbedCreature().getName() + " is no longer grabbed.");
+							break;
+						}
+					}
+				}
+				creature.setGrabbedCreature(null);
 			}
 		}
 	}

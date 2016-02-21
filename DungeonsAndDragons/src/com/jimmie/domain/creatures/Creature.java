@@ -14,18 +14,17 @@ import com.jimmie.domain.AttackType;
 import com.jimmie.domain.TemporaryCombatAdvantage;
 import com.jimmie.domain.TemporaryCondition;
 import com.jimmie.domain.CombatAdvantageType;
-import com.jimmie.domain.Condition;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Effect;
 import com.jimmie.domain.Equipment;
+import com.jimmie.domain.LightSource;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.Position;
-import com.jimmie.domain.Prone;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
@@ -50,9 +49,13 @@ import com.jimmie.powers.AttackPower;
 import com.jimmie.powers.BullRush;
 import com.jimmie.powers.Charge;
 import com.jimmie.powers.DivineChallenge;
+import com.jimmie.powers.Escape;
+import com.jimmie.powers.OpenDoor;
 import com.jimmie.powers.Power;
 import com.jimmie.powers.QuaffPotion;
 import com.jimmie.powers.ReadyPotion;
+import com.jimmie.powers.StandUp;
+import com.jimmie.powers.CloseDoor;
 import com.jimmie.util.Dice;
 import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
@@ -103,21 +106,35 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	protected int channelDivinityUses;
 	protected List<Sense> senses;
 	protected List<AlternativeMovementMode> alternativeMovementModes;
-	protected List<Condition> currentConditions;
 	protected List<Effect> currentEffects;
 	private HashMap<DamageType, Integer> damageResistances;
+	private HashMap<AttackType, Integer> attackTypeResistances;
+	private HashMap<DamageType, Double> percentDamageResistances;
+	private HashMap<AttackType, Double> percentAttackTypeResistances;
 	private HashMap<DamageType, Integer> damageVulnerabilities;
+	private HashMap<AttackType, Integer> attackTypeVulnerabilities;
 	protected Race race;
 	protected DndClass dndClass;
 	private boolean turnOver;
 	private List<Mark> marks;
 	protected Origin origin;
 	private Potion readiedPotion = null;
+	private LightSource readiedLightSource;
+	private Creature grabbedCreature = null;
 
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
+		attackTypeResistances = new HashMap<AttackType, Integer>();
+		percentDamageResistances = new HashMap<DamageType, Double>();
+		percentAttackTypeResistances = new HashMap<AttackType, Double>();
 		damageVulnerabilities = new HashMap<DamageType, Integer>();		
+		attackTypeVulnerabilities = new HashMap<AttackType, Integer>();		
 		powers = new ArrayList<Power>();
+		addPower(new StandUp());
+		addPower(new OpenDoor());
+		addPower(new CloseDoor());
+		addPower(new Escape());
+
 		/* Initialize skills. */
 		addSkill(new Skill(SkillType.ACROBATICS));
 		addSkill(new Skill(SkillType.ARCANA));
@@ -494,8 +511,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				moveCreature(direction, MovementType.SHIFTING);
-				distanceLeft--;
+				if (moveCreature(direction, MovementType.SHIFTING)) {
+					distanceLeft--;
+				}
 			}
 		}
 	}
@@ -520,8 +538,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		int distanceLeft = distance;
 
 		while (distanceLeft > 0) {
-			moveCreature(direction, MovementType.SHIFTING);
-			distanceLeft--;
+			if (moveCreature(direction, MovementType.SHIFTING)) {
+				distanceLeft--;
+			}
 		}
 	}
 
@@ -530,6 +549,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
+	// TODO: Creatures that take more than one square.
 	public boolean isAdjacentTo(Creature target) {
 		if (target.getCurrentPosition().isWithinReachOf(this.getCurrentPosition(), 1)) {
 			return true;
@@ -538,6 +558,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 	}
 
+	public boolean isAdjacentTo(Position position) {
+		if (position.isWithinReachOf(this.getCurrentPosition(), 1)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public boolean canFlank() {
 		/* Some conditions don't allow you to flank. */
@@ -549,7 +576,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public void knockProne() {
-		currentConditions.add(new Prone());
+		setTemporaryCondition(this, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.KNOCKED_PRONE, getCurrentTurn());
 	}
 
 	public String getImagePath() {
@@ -832,21 +859,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.initiativeRoll = initiativeRoll;
 	}
 
-
-	public List<Condition> getCurrentConditions() {
-		return currentConditions;
-	}
-
-
-	public void setCurrentConditions(List<Condition> currentConditions) {
-		this.currentConditions = currentConditions;
-	}
-
-
 	public List<Effect> getCurrentEffects() {
 		return currentEffects;
 	}
-
 
 	public void setCurrentEffects(List<Effect> currentEffects) {
 		this.currentEffects = currentEffects;
@@ -957,8 +972,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				Position newPosition = Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction);
-				/* Do they have to perform a check to enter? */
+/*				Position newPosition = Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction);
+				// Do they have to perform a check to enter?
 				if (Encounter.getEncounter().requiresCheckToEnter(newPosition, getCurrentPosition())) {
 					int costForEntering = Encounter.getEncounter().getCostForEnteringSquare();
 					if (distanceLeft < costForEntering) {
@@ -968,14 +983,14 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					SkillCheck skillCheck = Encounter.getEncounter().getGenericSkillCheck();
 					if (performSkillCheck(skillCheck)) {
 						Utils.print("You successfully passed the skill check.");
-						/* An extra 1 will be subtracted later. */
+						// An extra 1 will be subtracted later.
 						distanceLeft = distanceLeft - (costForEntering - 1);
 					} else {
 						Utils.print("You failed the skill check.  Staying where you are.");
 						continue;
 					}
-				}/* Are they about to move into difficult terrain? */
-				else if (isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction), movementType)) {
+				}// Are they about to move into difficult terrain? 
+				else  */if (isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction), movementType)) {
 					if (distanceLeft < 2) {
 						Utils.print("Sorry.  Can't enter that square.  It's difficult terrain.");
 						continue;
@@ -985,8 +1000,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					}
 				}
 
-				moveCreature(direction, movementType);
-				distanceLeft--;
+				if (moveCreature(direction, movementType)) {
+					distanceLeft--;
+				}
 
 			}
 		}
@@ -995,31 +1011,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	private boolean isDifficultTerrain(Position position, MovementType movementType) {
 		return Encounter.getEncounter().isDifficultTerrain(position);
-	}
-	
-	public Power getBasicMeleeAttack() {
-		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
-		int count = 0;
-		for (Power power : getPowers()) {
-			if (AttackPower.class.isAssignableFrom(power.getClass())) {
-				if (power.isBasicAttack() && ((AttackPower)power).isMeleeAttack()) {
-					// If it's a melee weapon attack, make sure they have a melee weapon readied.
-					AttackType attackType = ((AttackPower)power).getAttackType();
-					if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)
-							|| (((attackType == AttackType.MELEE_WEAPON)	|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isMeleeWeapon())) {
-						count++;
-						basicMeleeAttacks.put(count, power);							
-					}
-				}
-			}
-		}
-		
-		if (count == 1) {
-			return basicMeleeAttacks.get(1);
-		} else {
-			// TODO: Implement choosing from multiples.
-		}
-		return basicMeleeAttacks.get(1);
 	}
 
 	public boolean performSkillCheck(SkillCheck skillCheck) {
@@ -1135,39 +1126,134 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public void moveCreature(String direction, MovementType movementType) {
+	public boolean moveCreature(String direction, MovementType movementType) {
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
 			// TODO, shouldn't pass "this" in as the hurter.
-			hurt(5, DamageType.FORCE, true, this);
+			hurt(5, DamageType.FORCE, true, this, AttackType.AREA_BURST);
 			hitByTelekineticAnchor = false;
 		}
 
-		/* For now, I'm trusting the user input, and not doing any validation about whether the creature can actually
-		 * move that direction or not.
-		 */
 		if ("N".equalsIgnoreCase(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);		
+			// Check that position to see if they can move there.
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+				currentPosition.setY(currentPosition.getY()+1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("E".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY())))) {
+				currentPosition.setX(currentPosition.getX()+1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("S".equalsIgnoreCase(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1))) && 
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+				currentPosition.setY(currentPosition.getY()-1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("W".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY())))) {
+				currentPosition.setX(currentPosition.getX()-1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("NE".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-			currentPosition.setY(currentPosition.getY()+1);
+			//For going caddy-corner, check doors in all directions.
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()+1,currentPosition.getY()), new Position(currentPosition.getX()+1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()+1), new Position(currentPosition.getX()+1,currentPosition.getY()+1)))
+					) {
+				// Diagonals also have to check about going around corners.
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+					currentPosition.setX(currentPosition.getX()+1);
+					currentPosition.setY(currentPosition.getY()+1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+					return false;
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("NW".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-			currentPosition.setY(currentPosition.getY()+1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()-1,currentPosition.getY()), new Position(currentPosition.getX()-1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()+1), new Position(currentPosition.getX()-1,currentPosition.getY()+1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+					currentPosition.setX(currentPosition.getX()-1);
+					currentPosition.setY(currentPosition.getY()+1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+					return false;
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("SE".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-			currentPosition.setY(currentPosition.getY()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()-1))) && 
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()+1,currentPosition.getY()), new Position(currentPosition.getX()+1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()-1), new Position(currentPosition.getX()+1,currentPosition.getY()-1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+					currentPosition.setX(currentPosition.getX()+1);
+					currentPosition.setY(currentPosition.getY()-1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("SW".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-			currentPosition.setY(currentPosition.getY()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()-1,currentPosition.getY()), new Position(currentPosition.getX()-1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()-1), new Position(currentPosition.getX()-1,currentPosition.getY()-1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+					currentPosition.setX(currentPosition.getX()-1);
+					currentPosition.setY(currentPosition.getY()-1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public void startOfTurn() {
@@ -1492,11 +1578,39 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		damageResistances.put(damageType, resistance);
 	}
 
+	public void addAttackTypeResistance(AttackType attackType, Integer resistance) {
+		if (attackTypeResistances == null) {
+			attackTypeResistances = new HashMap<AttackType, Integer>();
+		}
+		attackTypeResistances.put(attackType, resistance);
+	}
+
+	public void addPercentDamageResistance(DamageType damageType, Double percentResistance) {
+		if (percentDamageResistances == null) {
+			percentDamageResistances = new HashMap<DamageType, Double>();
+		}
+		percentDamageResistances.put(damageType, percentResistance);
+	}
+
+	public void addPercentAttackTypeResistance(AttackType attackType, Double percentResistance) {
+		if (percentAttackTypeResistances == null) {
+			percentAttackTypeResistances = new HashMap<AttackType, Double>();
+		}
+		percentAttackTypeResistances.put(attackType, percentResistance);
+	}
+
 	public void addDamageVulnerability(DamageType damageType, Integer vulnerability) {
 		if (damageVulnerabilities == null) {
 			damageVulnerabilities = new HashMap<DamageType, Integer>();
 		}
 		damageVulnerabilities.put(damageType, vulnerability);
+	}
+
+	public void addAttackTypeVulnerability(AttackType attackType, Integer vulnerability) {
+		if (attackTypeVulnerabilities == null) {
+			attackTypeVulnerabilities = new HashMap<AttackType, Integer>();
+		}
+		attackTypeVulnerabilities.put(attackType, vulnerability);
 	}
 
 	public Alignment getAlignment() {
@@ -1686,7 +1800,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.currentPosition = currentPosition;
 	}
 
-	public void hurt(int damage, DamageType damageType, boolean hit, Object hurter) {
+	public void hurt(int damage, DamageType damageType, boolean hit, Object hurter, AttackType attackType) {
 		/* Is this a minion? They don't get hurt by missed attacks. */
 		if ((getMaxHitPoints() == 1) && (!hit)) {
 			return;
@@ -1703,11 +1817,51 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			Utils.print("Lowering to " + damage + " damage.");
 		}
 
+		/* Attack Type Resistance. */
+		int attackTypeResistance = getAttackTypeResistance(attackType);
+		if (attackTypeResistance > 0) {
+			Utils.print(getName() + " has Resistance " + attackTypeResistance + " to this type of attack.");
+			damage = damage - attackTypeResistance;
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
+		/* Percent Resistance. */
+		double percentResistance = getPercentDamageResistance(damageType);
+		if (percentResistance > 0) {
+			Utils.print(getName() + " has " + (percentResistance * 100) + "% Resistance to this type of damage.");
+			damage = (int) (damage * percentResistance);
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
+		/* Percent Resistance. */
+		double percentAttackTypeResistance = getPercentAttackTypeResistance(attackType);
+		if (percentAttackTypeResistance > 0) {
+			Utils.print(getName() + " has " + (percentAttackTypeResistance * 100) + "% Resistance to this type of attack.");
+			damage = (int) (damage * percentAttackTypeResistance);
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
 		/* Vulnerability. */
 		int vulnerability = getDamageVulnerability(damageType);
 		if (vulnerability > 0) {
 			Utils.print(getName() + " has Vulnerability " + vulnerability + " to this type of damage.");
-			damage = damage + resistance;
+			damage = damage + vulnerability;
+			Utils.print("Increasing to " + damage + " damage.");
+		}
+
+		int attackTypeVulnerability = getAttackTypeVulnerability(attackType);
+		if (attackTypeVulnerability > 0) {
+			Utils.print(getName() + " has Vulnerability " + attackTypeVulnerability + " to this type of attack.");
+			damage = damage + attackTypeVulnerability;
 			Utils.print("Increasing to " + damage + " damage.");
 		}
 
@@ -1744,28 +1898,31 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	private int getDamageResistance(DamageType damageType) {
 		int resistance = 0;
 
-		if (damageResistances.containsKey(damageType)) {
-			resistance = damageResistances.get(damageType);
-		}
-		
-		// Check for temporary damage resistance.
-		if (temporaryEffects != null) {
-			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
-				TemporaryEffect tempEffect = it.next();
-				if (TemporaryDamageResistance.class.isAssignableFrom(tempEffect.getClass())) {
-					TemporaryDamageResistance temporaryDamageResistance = (TemporaryDamageResistance) tempEffect;
-					if (temporaryDamageResistance.stillApplies()) {
-						if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
-							resistance += temporaryDamageResistance.getModifier();
-							/* If it should be removed now, delete the modifier now. */
-							if (tempEffect.shouldBeRemoved()) {
-								Utils.print("Temporary damage resistance will no longer apply.");
-								it.remove();
+		if ((damageType != null) && (damageResistances != null)) {
+
+			if (damageResistances.containsKey(damageType)) {
+				resistance = damageResistances.get(damageType);
+			}
+
+			// Check for temporary damage resistance.
+			if (temporaryEffects != null) {
+				for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+					TemporaryEffect tempEffect = it.next();
+					if (TemporaryDamageResistance.class.isAssignableFrom(tempEffect.getClass())) {
+						TemporaryDamageResistance temporaryDamageResistance = (TemporaryDamageResistance) tempEffect;
+						if (temporaryDamageResistance.stillApplies()) {
+							if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
+								resistance += temporaryDamageResistance.getModifier();
+								/* If it should be removed now, delete the modifier now. */
+								if (tempEffect.shouldBeRemoved()) {
+									Utils.print("Temporary damage resistance will no longer apply.");
+									it.remove();
+								}
 							}
+						} else {
+							Utils.print("Temporary damage resistance no longer applies.  Removing.");
+							it.remove();
 						}
-					} else {
-						Utils.print("Temporary damage resistance no longer applies.  Removing.");
-						it.remove();
 					}
 				}
 			}
@@ -1773,11 +1930,60 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return resistance;
 	}
 
+	private int getAttackTypeResistance(AttackType attackType) {
+		int resistance = 0;
+
+		if ((attackType != null) && (attackTypeResistances != null)) {
+			if (attackTypeResistances.containsKey(attackType)) {
+				resistance = attackTypeResistances.get(attackType);
+			}
+		}
+		
+		return resistance;
+	}
+
+	private double getPercentDamageResistance(DamageType damageType) {
+		double resistance = 0.0;
+
+		if ((damageType != null) && (percentDamageResistances != null)) {
+			if (percentDamageResistances.containsKey(damageType)) {
+				resistance = percentDamageResistances.get(damageType);
+			}
+		}
+		
+		return resistance;
+	}
+
+	private double getPercentAttackTypeResistance(AttackType attackType) {
+		double resistance = 0.0;
+
+		if ((attackType != null) && (percentAttackTypeResistances != null)) {
+			if (percentAttackTypeResistances.containsKey(attackType)) {
+				resistance = percentAttackTypeResistances.get(attackType);
+			}
+		}
+		
+		return resistance;
+	}
+
 	private int getDamageVulnerability(DamageType damageType) {
 		int vulnerability = 0;
 
-		if (damageVulnerabilities.containsKey(damageType)) {
-			vulnerability = damageVulnerabilities.get(damageType);
+		if ((damageType != null) && (damageVulnerabilities != null)) {
+			if (damageVulnerabilities.containsKey(damageType)) {
+				vulnerability = damageVulnerabilities.get(damageType);
+			}
+		}
+		return vulnerability;
+	}
+
+	private int getAttackTypeVulnerability(AttackType attackType) {
+		int vulnerability = 0;
+
+		if ((attackType != null) && (attackTypeVulnerabilities != null)) {
+			if (attackTypeVulnerabilities.containsKey(attackType)) {
+				vulnerability = attackTypeVulnerabilities.get(attackType);
+			}
 		}
 		return vulnerability;
 	}
@@ -2157,7 +2363,6 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					TemporaryCondition condition = (TemporaryCondition) effect;
 					if (condition.getConditionType() == CreatureConditionType.PRONE) {
 						if (condition.stillApplies()) {
-							Utils.print(getName() + " is still prone.");
 							/* If it should be removed now, delete the modifier now. */
 							if (condition.shouldBeRemoved()) {
 								Utils.print("But will not be prone after this.");
@@ -2260,7 +2465,7 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.origin = origin;
 	}
 
-	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, AttackTarget target) {
+	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, AttackTarget target, Position attackOriginSquare, AttackType attackType) {
 		int diceRoll = rawAttackRoll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(target);
 		
 		if (accessoryType == AccessoryType.IMPLEMENT) {
@@ -2554,4 +2759,78 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public Potion getReadiedPotion() {
 		return readiedPotion;
 	}
+
+	public Power getBasicMeleeAttack() {
+		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
+		int count = 0;
+		for (Power power : getPowers()) {
+			if (AttackPower.class.isAssignableFrom(power.getClass())) {
+				if (power.isBasicAttack() && Utils.isMeleeAttack(((AttackPower)power).getAttackType())) {
+					// If it's a melee weapon attack, make sure they have a melee weapon readied.
+					AttackType attackType = ((AttackPower)power).getAttackType();
+					if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)
+							|| (((attackType == AttackType.MELEE_WEAPON)	|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isMeleeWeapon())) {
+						count++;
+						basicMeleeAttacks.put(count, power);							
+					}
+				}
+			}
+		}
+		
+		if (count == 1) {
+			return basicMeleeAttacks.get(1);
+		} else {
+			// TODO: Implement choosing from multiples.
+		}
+		return basicMeleeAttacks.get(1);
+	}
+
+	public Power getBasicRangedAttack() {
+		HashMap<Integer, Power> basicRangedAttacks = new HashMap<Integer, Power>();
+		int count = 0;
+		for (Power power : getPowers()) {
+			if (AttackPower.class.isAssignableFrom(power.getClass())) {
+				if (power.isBasicAttack() && Utils.isRangedAttack(((AttackPower)power).getAttackType())) {
+					// If it's a ranged weapon attack, make sure they have a ranged weapon readied.
+					AttackType attackType = ((AttackPower)power).getAttackType();
+					if ((attackType == AttackType.RANGED_NUMBER) || (attackType == AttackType.RANGED_SIGHT) ||
+							(((attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isRangedWeapon())) {
+						count++;
+						basicRangedAttacks.put(count, power);							
+					}
+				}
+			}
+		}
+		
+		if (count == 1) {
+			return basicRangedAttacks.get(1);
+		} else {
+			// TODO: Implement choosing from multiples.
+		}
+		return basicRangedAttacks.get(1);
+	}
+
+	public boolean isCarryingLightSource() {
+		if (readiedLightSource != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public LightSource getReadiedLightSource() {
+		return readiedLightSource;
+	}
+
+	public void setReadiedLightSource(LightSource readiedLightSource) {
+		this.readiedLightSource = readiedLightSource;
+	}
+
+	public void setGrabbedCreature(Creature creature) {
+		grabbedCreature  = creature;
+	}
+
+	public Creature getGrabbedCreature() {
+		return grabbedCreature;
+	}
+
 }

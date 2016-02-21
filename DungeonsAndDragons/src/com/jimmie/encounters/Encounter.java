@@ -5,8 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.IlluminationType;
+import com.jimmie.domain.LightSource;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.Sense;
+import com.jimmie.domain.SenseType;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.Zone;
@@ -37,38 +42,6 @@ public abstract class Encounter {
 	private static boolean charactersActive = true;
 	@SuppressWarnings("rawtypes")
 	private HashMap<Class, Integer> monsterInitiatives = new HashMap<Class, Integer>();
-
-	public Map getMap() {
-		return map;
-	}
-
-	public void setMap(Map map) {
-		this.map = map;
-	}
-
-	public List<Creature> getCreatures() {
-		List<Creature> creatures = new ArrayList<Creature>();
-		creatures.addAll(characters);
-		creatures.addAll(monsters);
-		return creatures;
-	}
-
-	public List<DndCharacter> getCharacters() {
-		return characters;
-	}
-
-	public void setCharacters(List<DndCharacter> characters) {
-		this.characters = characters;
-	}
-
-	public List<Monster> getMonsters() {
-		return monsters;
-	}
-
-	public void setMonsters(List<Monster> monsters) {
-		this.monsters = monsters;
-	}
-
 	protected List<DndCharacter> characters; /*
 	 * This is the list of player characters
 	 * and NPC's. ie the good guys.
@@ -76,6 +49,7 @@ public abstract class Encounter {
 	protected List<Monster> monsters;
 	private TurnTaker currentParticipant;
 	private List<Zone> zones;
+	private boolean criticalHit;
 
 	public List<Zone> getZones() {
 		return zones;
@@ -763,7 +737,7 @@ public abstract class Encounter {
 		}
 	}
 
-	public List<AttackTarget> chooseRangedTarget(TurnTaker attacker, int range, int longRange) {
+	public List<AttackTarget> chooseRangedTarget(TurnTaker attacker, int range, int longRange, AttackType attackType) {
 		/* TODO: Need to add logic for visibility/cover/etc. */
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 
@@ -778,10 +752,13 @@ public abstract class Encounter {
 					/* Check for invisibility. */
 					if (!c.isInvisibleTo(attacker)) {
 						/* Do you have line of sight? */
-						if (hasLineOfSight(attacker.getCurrentPosition(), c.getCurrentPosition())) {
-							index++;
-							validChoices.put(index, c);
-							Utils.print(index + ". " + c.getName());
+						if (Creature.class.isAssignableFrom(attacker.getClass())) {
+							Creature cAttacker = (Creature) attacker;
+							if (hasLineOfSight(attacker.getCurrentPosition(), c.getCurrentPosition(), cAttacker, attackType)) {
+								index++;
+								validChoices.put(index, c);
+								Utils.print(index + ". " + c.getName());
+							}
 						}
 					}
 				}
@@ -796,10 +773,13 @@ public abstract class Encounter {
 					/* Check for invisibility. */
 					if (!m.isInvisibleTo(attacker)) {
 						/* Do you have line of sight? */
-						if (hasLineOfSight(attacker.getCurrentPosition(), m.getCurrentPosition())) {
-							index++;
-							validChoices.put(index, m);
-							Utils.print(index + ". " + m.getName());
+						if (Creature.class.isAssignableFrom(attacker.getClass())) {
+							Creature cAttacker = (Creature) attacker;
+							if (hasLineOfSight(attacker.getCurrentPosition(), m.getCurrentPosition(), cAttacker, attackType)) {
+								index++;
+								validChoices.put(index, m);
+								Utils.print(index + ". " + m.getName());
+							}
 						}
 					}
 				}
@@ -825,7 +805,7 @@ public abstract class Encounter {
 
 	
 	// Use this one when you want to pick an enemy of the attacker, but not from the attacker's position.  See Sorcerer Chaos Bolt as an example.
-	public List<AttackTarget> chooseRangedTargetFromPosition(TurnTaker attacker, Position position, int range, int longRange) {
+	public List<AttackTarget> chooseRangedTargetFromPosition(TurnTaker attacker, Position position, int range, int longRange, AttackType attackType) {
 		/* TODO: Need to add logic for visibility/cover/etc. */
 		HashMap<Integer, AttackTarget> validChoices = new HashMap<Integer, AttackTarget>();
 
@@ -840,10 +820,13 @@ public abstract class Encounter {
 					/* Check for invisibility. */
 					if (!c.isInvisibleTo(attacker)) {
 						/* Do you have line of sight? */
-						if (hasLineOfSight(position, c.getCurrentPosition())) {
-							index++;
-							validChoices.put(index, c);
-							Utils.print(index + ". " + c.getName());
+						if (Creature.class.isAssignableFrom(attacker.getClass())) {
+							Creature cAttacker = (Creature) attacker;
+							if (hasLineOfSight(position, c.getCurrentPosition(), cAttacker, attackType)) {
+								index++;
+								validChoices.put(index, c);
+								Utils.print(index + ". " + c.getName());
+							}
 						}
 					}
 				}
@@ -858,10 +841,13 @@ public abstract class Encounter {
 					/* Check for invisibility. */
 					if (!m.isInvisibleTo(attacker)) {
 						/* Do you have line of sight? */
-						if (hasLineOfSight(position, m.getCurrentPosition())) {
-							index++;
-							validChoices.put(index, m);
-							Utils.print(index + ". " + m.getName());
+						if (Creature.class.isAssignableFrom(attacker.getClass())) {
+							Creature cAttacker = (Creature) attacker;
+							if (hasLineOfSight(position, m.getCurrentPosition(), cAttacker, attackType)) {
+								index++;
+								validChoices.put(index, m);
+								Utils.print(index + ". " + m.getName());
+							}
 						}
 					}
 				}
@@ -885,8 +871,8 @@ public abstract class Encounter {
 		return targets;
 	}
 	
-	/* TODO: Check for enemies providing cover. */
-	public int getCoverPenalty(Position attackerPosition, Position targetPosition) {
+	public boolean hasSuperiorCover(Creature attacker, Position attackOriginSquare, AttackType attackType,
+			AttackTarget attackTarget) {
 		int fewestLinesBlocked = 4;
 
 		List<String> attackerCorners = new ArrayList<String>();
@@ -902,20 +888,18 @@ public abstract class Encounter {
 
 		/* We can have special EASY processing if the positions are lined up. */
 		/* Are they on the same column? */
-		if (attackerPosition.getX() == targetPosition.getX()) {
-			if (!isVerticalLineClear(attackerPosition,
-					targetPosition)) {
-				Utils.print("Superior Cover: -5");
-				return -5;
+		if (attackOriginSquare.getX() == attackTarget.getCurrentPosition().getX()) {
+			if (!isVerticalLineClear(attackOriginSquare,
+					attackTarget.getCurrentPosition(), attacker, attackType)) {
+				return true;
 			}
 		}
 
 		/* Are they on the same row? */
-		if (attackerPosition.getY() == targetPosition.getY()) {
-			if (!isHorizontalLineClear(attackerPosition,
-					targetPosition)) {
-				Utils.print("Superior Cover: -5");
-				return -5;
+		if (attackOriginSquare.getY() == attackTarget.getCurrentPosition().getY()) {
+			if (!isHorizontalLineClear(attackOriginSquare,
+					attackTarget.getCurrentPosition(), attacker, attackType)) {
+				return true;
 			}
 		}
 
@@ -923,12 +907,12 @@ public abstract class Encounter {
 		for (String attackerCorner : attackerCorners) {
 			int currentLinesBlocked = 0; 
 			Position aCornerPos = getCornerPosition(
-					attackerPosition, attackerCorner);
+					attackOriginSquare, attackerCorner);
 			for (String targetCorner : targetCorners) {
 				Position tCornerPos = getCornerPosition(
-						targetPosition, targetCorner);
+						attackTarget.getCurrentPosition(), targetCorner);
 
-				if (!isCornerLineClear(aCornerPos, tCornerPos)) {
+				if (!isCornerLineClear(aCornerPos, tCornerPos, attacker, attackType, attackOriginSquare, attackTarget.getCurrentPosition())) {
 					currentLinesBlocked++;
 				}
 			}
@@ -938,20 +922,17 @@ public abstract class Encounter {
 			}
 		}
 		/* How much cover did they have? */
-		if (fewestLinesBlocked == 0) {
-			Utils.print("Clear shot!  No penalty.");
-			return 0;
-		} else if (fewestLinesBlocked < 3) {
-			Utils.print("Target has cover!  -2 penalty.");
-			return -2;
-		} else {
-			Utils.print("Target has superior cover! -5 penalty.");
-			return -5;
+		if (fewestLinesBlocked >= 3) {
+			return true;
 		}
 
+		return false;
 	}
+	
+	public boolean hasCover(Creature attacker, Position attackOriginSquare, AttackType attackType,
+			AttackTarget attackTarget) {
+		int fewestLinesBlocked = 4;
 
-	private boolean hasLineOfSight(Position attackerPosition, Position targetPosition) {
 		List<String> attackerCorners = new ArrayList<String>();
 		List<String> targetCorners = new ArrayList<String>();
 		attackerCorners.add("NW");
@@ -965,15 +946,127 @@ public abstract class Encounter {
 
 		/* We can have special EASY processing if the positions are lined up. */
 		/* Are they on the same column? */
+		if (attackOriginSquare.getX() == attackTarget.getCurrentPosition().getX()) {
+			if (!isVerticalLineClear(attackOriginSquare,
+					attackTarget.getCurrentPosition(), attacker, attackType)) {
+				return true;
+			}
+		}
+
+		/* Are they on the same row? */
+		if (attackOriginSquare.getY() == attackTarget.getCurrentPosition().getY()) {
+			if (!isHorizontalLineClear(attackOriginSquare,
+					attackTarget.getCurrentPosition(), attacker, attackType)) {
+				return true;
+			}
+		}
+
+		/* We have no way of knowing which corner provides the least amount of blocking, so we have to go through them all. */
+		for (String attackerCorner : attackerCorners) {
+			int currentLinesBlocked = 0; 
+			Position aCornerPos = getCornerPosition(
+					attackOriginSquare, attackerCorner);
+			for (String targetCorner : targetCorners) {
+				Position tCornerPos = getCornerPosition(
+						attackTarget.getCurrentPosition(), targetCorner);
+
+				if (!isCornerLineClear(aCornerPos, tCornerPos, attacker, attackType, attackOriginSquare, attackTarget.getCurrentPosition())) {
+					currentLinesBlocked++;
+				}
+			}
+			Utils.print("Lines blocked = " + currentLinesBlocked);
+			if (currentLinesBlocked < fewestLinesBlocked) {
+				fewestLinesBlocked = currentLinesBlocked;
+			}
+		}
+		/* How much cover did they have? */
+		if ((fewestLinesBlocked > 1) && (fewestLinesBlocked < 3)) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	public boolean hasLineOfSight(Position attackerPosition, Position targetPosition, Creature attacker, AttackType attackType) {
+		List<String> attackerCorners = new ArrayList<String>();
+		List<String> targetCorners = new ArrayList<String>();
+		attackerCorners.add("NW");
+		targetCorners.add("NW");
+		attackerCorners.add("NE");
+		targetCorners.add("NE");
+		attackerCorners.add("SE");
+		targetCorners.add("SE");
+		attackerCorners.add("SW");
+		targetCorners.add("SW");
+		
+		// Check for if the targetPosition EQUALS the attacker position.
+		if ((targetPosition.getX() == attackerPosition.getX()) && (targetPosition.getY() == attackerPosition.getY())) {
+			return true;
+		}
+		
+		// Start out with some simple processing for when standing right next to a closed door.
+		// North
+		if (targetPosition.getY() > attackerPosition.getY()) {
+			if (map.isClosedDoorBetween(attackerPosition, new Position(attackerPosition.getX(), attackerPosition.getY() + 1))) {
+				return false;
+			}
+		}
+		// South
+		if (targetPosition.getY() < attackerPosition.getY()) {
+			if (map.isClosedDoorBetween(attackerPosition, new Position(attackerPosition.getX(), attackerPosition.getY() - 1))) {
+				return false;
+			}
+		}
+		// East
+		if (targetPosition.getX() > attackerPosition.getX()) {
+			if (map.isClosedDoorBetween(attackerPosition, new Position(attackerPosition.getX()+1, attackerPosition.getY()))) {
+				return false;
+			}
+		}
+		// West
+		if (targetPosition.getX() < attackerPosition.getX()) {
+			if (map.isClosedDoorBetween(attackerPosition, new Position(attackerPosition.getX()-1, attackerPosition.getY()))) {
+				return false;
+			}
+		}
+		
+		// One last (hopefully) special case to consider.  This is for when there is a closed door caddy-corner to the TARGET square.
+		if (targetPosition.isNorthEastOf(attackerPosition)) {
+			if (map.isClosedDoorBetween(new Position(targetPosition.getX()-1,targetPosition.getY()), new Position(targetPosition.getX()-1,targetPosition.getY()-1)) ||
+					map.isClosedDoorBetween(new Position(targetPosition.getX(),targetPosition.getY()-1), new Position(targetPosition.getX()-1,targetPosition.getY()-1))) {
+				return false;
+			}
+		}
+		if (targetPosition.isNorthWestOf(attackerPosition)) {
+			if (map.isClosedDoorBetween(new Position(targetPosition.getX()+1,targetPosition.getY()), new Position(targetPosition.getX()+1,targetPosition.getY()-1)) ||
+					map.isClosedDoorBetween(new Position(targetPosition.getX(),targetPosition.getY()-1), new Position(targetPosition.getX()+1,targetPosition.getY()-1))) {
+				return false;
+			}
+		}
+		if (targetPosition.isSouthEastOf(attackerPosition)) {
+			if (map.isClosedDoorBetween(new Position(targetPosition.getX()-1,targetPosition.getY()), new Position(targetPosition.getX()-1,targetPosition.getY()+1)) ||
+					map.isClosedDoorBetween(new Position(targetPosition.getX(),targetPosition.getY()+1), new Position(targetPosition.getX()-1,targetPosition.getY()+1))) {
+				return false;
+			}
+		}
+		if (targetPosition.isSouthWestOf(attackerPosition)) {
+			if (map.isClosedDoorBetween(new Position(targetPosition.getX()+1,targetPosition.getY()), new Position(targetPosition.getX()+1,targetPosition.getY()+1)) ||
+					map.isClosedDoorBetween(new Position(targetPosition.getX(),targetPosition.getY()+1), new Position(targetPosition.getX()+1,targetPosition.getY()+1))) {
+				return false;
+			}
+		}
+
+		// We can have special EASY processing if the positions are lined up.
+		// Are they on the same column?
 		if (attackerPosition.getX() == targetPosition.getX()) {
 			return isVerticalLineClear(attackerPosition,
-					targetPosition);
+					targetPosition, attacker, attackType);
 		}
 
 		/* Are they on the same row? */
 		if (attackerPosition.getY() == targetPosition.getY()) {
 			return isHorizontalLineClear(attackerPosition,
-					targetPosition);
+					targetPosition, attacker, attackType);
 		}
 
 		for (String attackerCorner : attackerCorners) {
@@ -983,16 +1076,20 @@ public abstract class Encounter {
 				Position tCornerPos = getCornerPosition(
 						targetPosition, targetCorner);
 				/*For line of site, you only need one clear path. */
-				if (isCornerLineClear(aCornerPos, tCornerPos)) {
-					return true;
-				}
+				// This could be a situation where the attacker and corner are exactly one row or column off from each other
+				// so some of the lines from corners are horizontal or vertical lines.  Those lines can be ignored.
+//				if ((aCornerPos.getX() != tCornerPos.getX()) && (aCornerPos.getY() != tCornerPos.getY())) {
+					if (isCornerLineClear(aCornerPos, tCornerPos, attacker, attackType, attackerPosition, targetPosition)) {
+						return true;
+					}
+//				}
 			}
 		}
 		/* If we got here, then no path was open. */
 		return false;
 	}
 
-	private boolean isCornerLineClear(Position aCornerPos, Position tCornerPos) {
+	private boolean isCornerLineClear(Position aCornerPos, Position tCornerPos, Creature attacker, AttackType attackType, Position aMapPos, Position tMapPos) {
 		/*
 		 * In the hasLineOfSight method, we checked for when the MAP squares
 		 * were on the same row/col. In that case, we simply needed to check
@@ -1002,22 +1099,59 @@ public abstract class Encounter {
 		 * That would NOT be blocking, but going BETWEEN two map spaces that
 		 * provide cover WOULD be blocking.
 		 */
+		
+		// aMapPos and tMapPos are the actual map squares of the attacker and target, not the corners of the map positions.  These are needed to check for closed doors.
+		// Need to check for closed doors right next to the target.
+		if (tMapPos.isNorthWestOf(aMapPos)) {
+			// Check door to East or South
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX(),tMapPos.getY()-1))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX()+1,tMapPos.getY()))) {
+				return false;
+			}			
+		} else if (tMapPos.isNorthEastOf(aMapPos)) {
+			// Check door to West or South
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX(),tMapPos.getY()-1))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX()-1,tMapPos.getY()))) {
+				return false;
+			}						
+		} else if (tMapPos.isSouthWestOf(aMapPos)) {
+			// Check door to East or North
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX(),tMapPos.getY()+1))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX()+1,tMapPos.getY()))) {
+				return false;
+			}
+		} else if (tMapPos.isSouthEastOf(aMapPos)) {
+			// Check door to West or North
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX(),tMapPos.getY()+1))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(tMapPos, new Position(tMapPos.getX()-1,tMapPos.getY()))) {
+				return false;
+			}			
+		} // Don't need to check for N/E/S/W because they wouldn't call "isCornerLineClear".
+		
 		/* Are they on the same column? */
 		if (aCornerPos.getX() == tCornerPos.getX()) {
-			return isVerticalCornerLineClear(aCornerPos, tCornerPos);
+			return isVerticalCornerLineClear(aCornerPos, tCornerPos, attacker, attackType);
 		}
 
 		/* Are they on the same row? */
 		if (aCornerPos.getY() == tCornerPos.getY()) {
-			return isHorizontalCornerLineClear(aCornerPos, tCornerPos);
+			return isHorizontalCornerLineClear(aCornerPos, tCornerPos, attacker, attackType);
 		}
 
 		/* We're dealing with an angle other than 0 or 90. */
-		return isAngledCornerLineClear(aCornerPos, tCornerPos);
+		return isAngledCornerLineClear(aCornerPos, tCornerPos, attacker, attackType);
 
 	}
 
-	private boolean isVerticalLineClear(Position aPos, Position tPos) {
+	private boolean isVerticalLineClear(Position aPos, Position tPos, Creature attacker, AttackType attackType) {
 		Position p1 = null;
 		Position p2 = null;
 		/* Sort bottom to top. */
@@ -1028,18 +1162,29 @@ public abstract class Encounter {
 			p1 = tPos;
 			p2 = aPos;
 		}
-		boolean clear = true;
+		// Need to leave the for loop as starting with X+1, because we don't care if X itself provides cover.
+		// But I do need to check if a closed door is between position x and x +1;
+		if (map.isClosedDoorBetween(p1, new Position(p1.getX(),p1.getY()+1))) {
+			return false;
+		}
 		for (int y = p1.getY() + 1; y < p2.getY(); y++) {
 			Position currentPos = new Position(p1.getX(), y);
-			if (map.providesCover(currentPos)) {
-				clear = false;
+			if (map.providesCover(currentPos, attacker, attackType)) {
+				return false;
+			}
+			// See if there is a door between this square and the next.
+			if (y < p2.getY()) {
+				Position nextPos = new Position(p1.getX(), y+1);
+				if (map.isClosedDoorBetween(currentPos,nextPos)) {
+					return false;
+				}
 			}
 		}
-		return clear;
+		return true;
 	}
 
 	private boolean isVerticalCornerLineClear(Position aCornerPos,
-			Position tCornerPos) {
+			Position tCornerPos, Creature attacker, AttackType attackType) {
 		Position p1 = null;
 		Position p2 = null;
 		/* Sort bottom to top. */
@@ -1051,19 +1196,32 @@ public abstract class Encounter {
 			p2 = aCornerPos;
 		}
 		boolean clear = true;
-		for (int y = p1.getY() + 1; y < p2.getY(); y++) {
+		// Need to leave the for loop as starting with Y+1, because we don't care if Y itself provides cover.
+		// But I do need to check if a closed door is between position Y and Y +1;
+		if (map.isClosedDoorBetween(p1, new Position(p1.getX(),p1.getY()+1))) {
+			return false;
+		}
+		for (int y = p1.getY() + 1; y <= p2.getY(); y++) {
 			Position leftSquare = new Position(p1.getX() - 1, y - 1);
 			Position rightSquare = new Position(p1.getX(), y - 1);
-			if ((map.providesCover(leftSquare))
-					&& (map.providesCover(rightSquare))) {
-				clear = false;
+			if ((map.providesCover(leftSquare, attacker, attackType))
+					&& (map.providesCover(rightSquare, attacker, attackType))) {
+				return false;
+			}
+			// See if there is a door between this square and the next.
+			// Check for a door on either col.
+			if (map.isClosedDoorBetween(leftSquare,new Position(leftSquare.getX(),leftSquare.getY()+1))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(rightSquare,new Position(rightSquare.getX(),rightSquare.getY()+1))) {
+				return false;
 			}
 		}
 		return clear;
 	}
 
 	private boolean isHorizontalCornerLineClear(Position aCornerPos,
-			Position tCornerPos) {
+			Position tCornerPos, Creature attacker, AttackType attackType) {
 		Position p1 = null;
 		Position p2 = null;
 		/* Sort left to right. */
@@ -1074,22 +1232,37 @@ public abstract class Encounter {
 			p1 = tCornerPos;
 			p2 = aCornerPos;
 		}
-		boolean clear = true;
-		for (int x = p1.getX() + 1; x < p2.getX(); x++) {
+		int x = 0;
+		// Need to leave the for loop as starting with X+1, because we don't care if X itself provides cover.
+		// But I do need to check if a closed door is between position x and x +1;
+		if (map.isClosedDoorBetween(p1, new Position(p1.getX()+1,p1.getY()))) {
+			return false;
+		}
+		for (x = p1.getX() + 1; x <= p2.getX(); x++) {
 			Position bottomSquare = new Position(x - 1, p1.getY() - 1);
 			Position topSquare = new Position(x - 1, p1.getY());
-			if ((map.providesCover(bottomSquare))
-					&& (map.providesCover(topSquare))) {
-				clear = false;
+			if ((map.providesCover(bottomSquare, attacker, attackType))
+					&& (map.providesCover(topSquare, attacker, attackType))) {
+				return false;
+			}
+			// See if there is a door between this square and the next.
+			// Check for a door in either row.
+			if (map.isClosedDoorBetween(bottomSquare,new Position(bottomSquare.getX()+1,bottomSquare.getY()))) {
+				return false;
+			}
+			if (map.isClosedDoorBetween(topSquare,new Position(topSquare.getX()+1,topSquare.getY()))) {
+				return false;
 			}
 		}
-		return clear;
+		return true;
 	}
 
 	private boolean isAngledCornerLineClear(Position aCornerPos,
-			Position tCornerPos) {
+			Position tCornerPos, Creature attacker, AttackType attackType) {
 		Position p1 = null;
 		Position p2 = null;
+		Position previousPos = null;
+		
 		/* Sort left to right. */
 		if (aCornerPos.getX() < tCornerPos.getX()) {
 			p1 = aCornerPos;
@@ -1098,7 +1271,6 @@ public abstract class Encounter {
 			p1 = tCornerPos;
 			p2 = aCornerPos;
 		}
-		boolean clear = true;
 
 		/* Calculate the slope of the line. */
 		double slope = (double) (p2.getY() - p1.getY())
@@ -1111,6 +1283,12 @@ public abstract class Encounter {
 		double currentX = p1.getX();
 		double currentY = 0.0;
 		double incrementValue = 0.05;
+		
+		// If its a downward slope, I don't want to start exactly on the corner, because that tests the wrong box, start one increment in...
+		if (slope < 0) {
+			currentX += incrementValue;
+		}
+		
 		/* Calculate the y intercept (b) */
 		double b = p1.getY() - (slope * p1.getX());
 
@@ -1147,39 +1325,71 @@ public abstract class Encounter {
 				 */
 				/* NW square. */
 				Position nw = new Position(wholeX-1, wholeY);
-				if (map.providesCover(nw)) {
+				if (map.providesCover(nw, attacker, attackType)) {
 					return false;
 				}
 				/* NE square. */
 				Position ne = new Position(wholeX, wholeY);
-				if (map.providesCover(ne)) {
+				if (map.providesCover(ne, attacker, attackType)) {
 					return false;
 				}
 				/* SE square. */
 				Position se = new Position(wholeX, wholeY-1);
-				if (map.providesCover(se)) {
+				if (map.providesCover(se, attacker, attackType)) {
 					return false;
 				}
 				/* SW square. */
 				Position sw = new Position(wholeX-1, wholeY-1);
-				if (map.providesCover(sw)) {
+				if (map.providesCover(sw, attacker, attackType)) {
 					return false;
 				}
 			} else {
-				Position pos = new Position(currentX, currentY);
+				Position pos = null;
+				pos = new Position(currentX, currentY);
+				
+				// If we are switching from one square to the next, see if there is a closed door between them.
+				if (previousPos != null) {
+					if ((previousPos.getX() != pos.getX()) || (previousPos.getY() != pos.getY())) {
+						// See if we are going exactly through a corner (i.e. both x and y are different).
+						// If so, Let's check four times.  Once for each of the two X rows, and once for each of the to Y columns.
+						if ((previousPos.getX() != pos.getX()) && (previousPos.getY() != pos.getY())) {
+							Position pos1 = new Position(previousPos.getX(),pos.getY());
+							Position pos2 = new Position(pos.getX(),previousPos.getY());
+							
+							if (map.isClosedDoorBetween(previousPos,pos2)) {
+								return false;
+							}
+							if (map.isClosedDoorBetween(previousPos,pos1)) {
+								return false;
+							}
+							if (map.isClosedDoorBetween(pos1,pos)) {
+								return false;
+							}
+							if (map.isClosedDoorBetween(pos2,pos)) {
+								return false;
+							}
+						} else {
+							// Otherwise only one check is needed.
+							if (map.isClosedDoorBetween(previousPos,pos)) {
+								return false;
+							}
+						}
+					}
+				}
 
-				if (map.providesCover(pos)) {
+				if (map.providesCover(pos, attacker, attackType)) {
 					return false;
 				}
+				previousPos = new Position(currentX, currentY);
 			}
 
 			currentX = currentX + incrementValue;
 		}
 
-		return clear;
+		return true;
 	}
 
-	private boolean isHorizontalLineClear(Position aPos, Position tPos) {
+	private boolean isHorizontalLineClear(Position aPos, Position tPos, Creature attacker, AttackType attackType) {
 		Position p1 = null;
 		Position p2 = null;
 		/* Sort left to right. */
@@ -1190,14 +1400,25 @@ public abstract class Encounter {
 			p1 = tPos;
 			p2 = aPos;
 		}
-		boolean clear = true;
+		// Need to leave the for loop as starting with X+1, because we don't care if X itself provides cover.
+		// But I do need to check if a closed door is between position x and x +1;
+		if (map.isClosedDoorBetween(p1, new Position(p1.getX()+1,p1.getY()))) {
+			return false;
+		}
 		for (int x = p1.getX() + 1; x < p2.getX(); x++) {
 			Position currentPos = new Position(x, p1.getY());
-			if (map.providesCover(currentPos)) {
-				clear = false;
+			if (map.providesCover(currentPos, attacker, attackType)) {
+				return false;
+			}
+			// See if there is a door between this square and the next.
+			if (x < p2.getX()) {
+				Position nextPos = new Position(x+1, p1.getY());
+				if (map.isClosedDoorBetween(currentPos,nextPos)) {
+					return false;
+				}
 			}
 		}
-		return clear;
+		return true;
 	}
 
 	private Position getCornerPosition(Position mapPos, String corner) {
@@ -1375,20 +1596,6 @@ public abstract class Encounter {
 		return tempPosition;
 	}
 
-	public boolean isDifficultTerrain(Position position) {
-		return map.isDifficultTerrain(position);
-	}
-
-	public boolean requiresCheckToEnter(Position newPosition,
-			Position currentPosition) {
-		/* Right now, only know about boulders. */
-		/* If moving from a non-boulder to a boulder. */
-		if ((map.isBoulder(newPosition)) && (!map.isBoulder(currentPosition))) {
-			return true;
-		}
-		return false;
-	}
-
 	public SkillCheck getGenericSkillCheck() {
 		Utils.print("I'm trying to keep this generic.  Please enter the skill that needs to be used for the skill test to enter this location.");
 		List<String> validChoices = new ArrayList<String>();
@@ -1474,10 +1681,6 @@ public abstract class Encounter {
 		Utils.print("Enter the cost for entering this square.");
 		int cost = Utils.getValidIntInputInRange(0, 20);
 		return cost;
-	}
-
-	public boolean isSacredCircle(Position pos) {
-		return map.isSacredCircle(pos);
 	}
 
 	public abstract void init();
@@ -1602,4 +1805,218 @@ public abstract class Encounter {
 	}
 
 	public abstract boolean isActive(TurnTaker nextParticipant);
+
+	public boolean isDifficultTerrain(Position position) {
+		return map.isDifficultTerrain(position);
+	}
+	
+	public boolean isLightlyObscured(Position position) {
+		return map.isLightlyObscured(position);
+	}
+
+	public boolean isHeavilyObscured(Position position) {
+		return map.isHeavilyObscured(position);
+	}
+
+	public boolean isTotallyObscured(Position position) {
+		return map.isTotallyObscured(position);
+	}
+
+	public boolean isOpenSquare(Position position) {
+		return map.isOpenSquare(position);
+	}
+
+	public boolean isClosedSquare(Position position) {
+		return map.isObstacleSquare(position);
+	}
+
+	public boolean isClosedDoorBetween(Position currentPos, Position nextPos) {
+		return map.isClosedDoorBetween(currentPos, nextPos);
+	}
+	
+	public boolean isOpenDoorBetween(Position currentPos, Position nextPos) {
+		return map.isOpenDoorBetween(currentPos, nextPos);
+	}
+
+	public boolean hasTotalConcealment(Creature attacker, Creature attackTargetCreature) {
+		if (attackTargetCreature.isInvisibleTo(attacker)) {
+			return true;
+		} else if (hasTotalConcealment(attacker, attackTargetCreature.getCurrentPosition())) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean hasTotalConcealment(Creature attacker, Position position) {
+		if ((attacker.getCurrentPosition().getX() == position.getX()) && (attacker.getCurrentPosition().getY() == position.getY())) {
+			return false;
+		}
+		// First, determine if the square itself is obscured (could be because of thick foliage, fog, etc).  If it is, then it provides concealement regardless
+		// of whether the room is lit or not.
+		if ((Encounter.getEncounter().isTotallyObscured(position)) || (Encounter.getEncounter().isHeavilyObscured(position) && !attacker.isAdjacentTo(position))) {
+			return true;
+		}
+		
+		// If we are at this point, then the square itself doesn't provide concealment.  But the lighting still could.
+		if ((map.getIllumination() == IlluminationType.BRIGHT_LIGHT) || (map.getIllumination() == IlluminationType.DIM_LIGHT)) {
+			// Bright light doesn't hamper anyone.  Dim Light might provide concealment, but not total concealment.
+			return false;
+		} else if (map.getIllumination() == IlluminationType.DARKNESS) {
+			// Darkness doesn't hamper creatures with dark vision
+			if (attacker.getSenses() != null) {
+				for (Sense sense : attacker.getSenses()) {
+					if (sense.getType() == SenseType.DARKVISION) {
+						return false;
+					}
+				}
+			}
+			// Finally, see if the target square is near a light source.
+			if (getLightSources() != null) {
+				for (LightSource lightSource : getLightSources()) {
+					if (position.isWithinReachOf(lightSource.getPosition(), lightSource.getRadius())) {
+						if (hasLineOfSight(lightSource.getPosition(), position, null, null)) {
+							return false;
+						}
+					}
+				}
+			}
+			
+			return true; // Character didn't have darkvision or lowlight vision
+		}
+		return false;
+	}
+
+	private List<LightSource> getLightSources() {
+		List<LightSource> lightSources = new ArrayList<LightSource>();
+		// Get stationary light sources from the map.
+		if (map.getLightSources() != null) {
+			lightSources.addAll(map.getLightSources());
+		}
+		
+		// Then get light sources held by creatures.
+		for (Creature monster : monsters) {
+			if (monster.isCarryingLightSource()) {
+				LightSource lightSource = monster.getReadiedLightSource();
+				// Carried light sources have the position of the creature
+				lightSource.setPosition(monster.getCurrentPosition());
+				lightSources.add(lightSource);
+			}
+		}
+		
+		for (Creature character : characters) {
+			if (character.isCarryingLightSource()) {
+				LightSource lightSource = character.getReadiedLightSource();
+				// Carried light sources have the position of the creature
+				lightSource.setPosition(character.getCurrentPosition());
+				lightSources.add(lightSource);
+			}
+		}
+
+		return lightSources;
+	}
+
+	public boolean hasConcealment(Creature attacker, Position position) {
+		// First, determine if the square itself is obscured (could be because of thick foliage, fog, etc).  If it is, then it provides concealement regardless
+		// of whether the room is lit or not.
+		if ((Encounter.getEncounter().isLightlyObscured(position)) || (Encounter.getEncounter().isHeavilyObscured(position) && attacker.isAdjacentTo(position))) {
+			return true;
+		}
+
+		// If we are at this point, then the square itself doesn't provide concealment.  But the lighting still could.
+		if (map.getIllumination() == IlluminationType.BRIGHT_LIGHT) {
+			// Bright light doesn't hamper anyone.
+			return false;
+		} else if (map.getIllumination() == IlluminationType.DIM_LIGHT) {
+			// Dim light doesn't hamper creatures with low-light vision or Dark vision.
+			if (attacker.getSenses() != null) {
+				for (Sense sense : attacker.getSenses()) {
+					if ((sense.getType() == SenseType.DARKVISION) || (sense.getType() == SenseType.LOWLIGHT_VISION)) {
+						return false;
+					}
+				}
+			}
+		} else if (map.getIllumination() == IlluminationType.DARKNESS) {
+			// Finally, see if the target square is near a light source.
+			if (getLightSources() != null) {
+				for (LightSource lightSource : getLightSources()) {
+					if (position.isWithinReachOf(lightSource.getPosition(), lightSource.getRadius())) {
+						if (hasLineOfSight(lightSource.getPosition(), position, null, null)) {
+							if (lightSource.getIlluminationType() == IlluminationType.DIM_LIGHT) {
+								return true;  // Yes, this will void out any brighter lightsources later in the list.  TODO.
+							}
+							return false;
+						}
+					}
+				}
+			}
+			return true; // Character didn't have darkvision or lowlight vision
+		}
+		return false;
+	}
+
+	public boolean isSquareOccupiedByEnemyOf(Creature attacker, Position position) {
+		if (Monster.class.isInstance(attacker)) {
+			for (DndCharacter character : characters) {
+				if ((character.getCurrentPosition().getX() == position.getX()) && (character.getCurrentPosition().getY() == position.getY())) {
+					return true;
+				}
+			}
+		} else {
+			for (Monster monster : monsters) {
+				if ((monster.getCurrentPosition().getX() == position.getX()) && (monster.getCurrentPosition().getY() == position.getY())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public void openDoor(String direction, Position currentPosition) {
+		map.openDoor(direction,currentPosition);		
+	}
+
+	public void closeDoor(String direction, Position currentPosition) {
+		map.closeDoor(direction,currentPosition);	
+	}
+
+	public void setCriticalHit(boolean crit) {
+		criticalHit = crit;		
+	}
+
+
+	public boolean isCriticalHit() {
+		return criticalHit;
+	}
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
+	}
+
+	public List<Creature> getCreatures() {
+		List<Creature> creatures = new ArrayList<Creature>();
+		creatures.addAll(characters);
+		creatures.addAll(monsters);
+		return creatures;
+	}
+
+	public List<DndCharacter> getCharacters() {
+		return characters;
+	}
+
+	public void setCharacters(List<DndCharacter> characters) {
+		this.characters = characters;
+	}
+
+	public List<Monster> getMonsters() {
+		return monsters;
+	}
+
+	public void setMonsters(List<Monster> monsters) {
+		this.monsters = monsters;
+	}
 }

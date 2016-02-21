@@ -93,7 +93,7 @@ public class ChaosBolt extends AttackPower {
 
 	@Override
 	public boolean process(Creature user) {
-		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10);
+		List<AttackTarget> targets = Encounter.getEncounter().chooseRangedTarget(user, 10, 10, getAttackType());
 		List<AttackTarget> attackedTargets = new ArrayList<AttackTarget>();
 		Position lastTargetPosition = null;
 
@@ -113,7 +113,7 @@ public class ChaosBolt extends AttackPower {
 			attackedTargets.add(target);
 			Utils.print("Your target has a will of " + targetWill);
 
-			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			// Check for unfettered power.
 			if (sorcerer.getUnfetteredPower() == 1) {
@@ -141,7 +141,7 @@ public class ChaosBolt extends AttackPower {
 
 				DiceType damageDiceType = DiceType.TEN_SIDED;
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.PSYCHIC, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.PSYCHIC, true, user, getAttackType());
 				lastTargetPosition = target.getCurrentPosition();
 
 				if (sorcerer.getUnfetteredPower() == 20) {
@@ -159,7 +159,7 @@ public class ChaosBolt extends AttackPower {
 						while (sorcerer.getLastAttackRollEven()) {
 							Utils.print("You rolled an even number.  As a sorcerer with Wild Magic, you get to make a secondary attack.");
 							Utils.print("Make sure you pick a target you haven't attacked already.");
-							List<AttackTarget> secondaryTargets = Encounter.getEncounter().chooseRangedTargetFromPosition(user, lastTargetPosition, 5, 5);
+							List<AttackTarget> secondaryTargets = Encounter.getEncounter().chooseRangedTargetFromPosition(user, lastTargetPosition, 5, 5, getAttackType());
 
 							if ((secondaryTargets != null) && !(secondaryTargets.isEmpty())) {
 								target = secondaryTargets.get(0);
@@ -174,7 +174,7 @@ public class ChaosBolt extends AttackPower {
 								targetWill = target.getWill(user);
 								Utils.print("Your target has a reflex of " + targetWill);
 
-								attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target);
+								attackRoll = user.attackRoll(AbilityType.CHARISMA, getAccessoryType(), target, lastTargetPosition, getAttackType());
 
 								if (sorcerer.getUnfetteredPower() == 1) {
 									Utils.print("Because of your unfettered power, you push all creatures within 5 squares.");
@@ -201,7 +201,7 @@ public class ChaosBolt extends AttackPower {
 
 									damageDiceType = DiceType.SIX_SIDED;
 
-									target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.PSYCHIC, true, user);
+									target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.CHARISMA), user), DamageType.PSYCHIC, true, user, getAttackType());
 									
 									// Check for unfettered power.
 									if (sorcerer.getUnfetteredPower() == 20) {

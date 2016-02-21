@@ -118,7 +118,7 @@ public class ForcePunch extends AttackPower {
 			int targetFortitude = target.getFortitude(user);
 			Utils.print("Your target has an Fortitude of " + targetFortitude);
 
-			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.INTELLIGENCE, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetFortitude) {
 				/* A HIT! */
@@ -128,9 +128,9 @@ public class ForcePunch extends AttackPower {
 				DiceType damageDiceType = DiceType.EIGHT_SIDED;
 
 				if (augment == 2) {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.FORCE, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE) + user.getAbilityModifierPlusHalfLevel(AbilityType.WISDOM), user), DamageType.FORCE, true, user, getAttackType());
 				} else {
-					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user);
+					target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, c.getImplementDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.INTELLIGENCE), user), DamageType.FORCE, true, user, getAttackType());
 				}
 
 				int targetPushDistance = 1;

@@ -96,7 +96,7 @@ public class WordOfExchange extends AttackPower {
 			int targetArmorClass = target.getArmorClass(user);
 			Utils.print("Your target has an AC of " + targetArmorClass);
 
-			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target);
+			int attackRoll = user.attackRoll(AbilityType.STRENGTH, getAccessoryType(), target, user.getCurrentPosition(), getAttackType());
 
 			if (attackRoll >= targetArmorClass) {
 				/* A HIT! */
@@ -105,7 +105,7 @@ public class WordOfExchange extends AttackPower {
 				int damageRolls = user.getReadiedWeapon().getWeapon().getDamageRolls();
 				DiceType damageDiceType = user.getReadiedWeapon().getWeapon().getDamageDice();
 
-				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user);
+				target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, user.getReadiedWeapon().getWeapon().getDamageBonus(), user.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), user), DamageType.NORMAL, true, user, getAttackType());
 				if (Runepriest.class.isAssignableFrom(user.getDndClass().getClass())) {
 					Utils.print("You are about to choose the Runic State.  Here is the info about them.");
 					Utils.print("Destruction: Next ally attack of this target will deal extra damage and give the ally temp hit points.");

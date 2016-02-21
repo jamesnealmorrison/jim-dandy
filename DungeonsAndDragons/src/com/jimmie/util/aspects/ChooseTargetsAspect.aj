@@ -16,6 +16,7 @@ import com.jimmie.powers.WardensGrasp;
 import com.jimmie.util.Utils;
 import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Mark;
@@ -96,7 +97,7 @@ public aspect ChooseTargetsAspect {
 									if (!divineChallenge.hasTakenOneTimePenalty()) {
 										int damage = 3 + mark.getMarker().getAbilityModifier(AbilityType.CHARISMA);
 										Utils.print(attacker.getName() + " takes a " + damage + " damage because of Divine Challenge.");
-										cAttacker.hurt(damage, DamageType.RADIANT, true, mark.getMarker());
+										cAttacker.hurt(damage, DamageType.RADIANT, true, mark.getMarker(), AttackType.CLOSE_BURST);
 										divineChallenge.setTakenOneTimePenalty(true);
 									}
 								}
@@ -153,7 +154,7 @@ public aspect ChooseTargetsAspect {
 							}
 							if (foundClosestTarget == false) {
 								Utils.print(attacker.getName() + " did not attack their closest target.  Because they are impacted by the Call of the Beast power, they are taking " + tempEffect.getModifier() + " psychic damage.");
-								cAttacker.hurt(tempEffect.getModifier(), DamageType.PSYCHIC, true, tempEffect.getSource());
+								cAttacker.hurt(tempEffect.getModifier(), DamageType.PSYCHIC, true, tempEffect.getSource(), AttackType.AREA_BURST);
 							}
 							if (tempEffect.shouldBeRemoved()) {
 								Utils.print("Call of the Beast effect no longer applies.  Removing.");
