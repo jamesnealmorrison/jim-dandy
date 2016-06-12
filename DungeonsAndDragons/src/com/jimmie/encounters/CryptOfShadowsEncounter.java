@@ -3,9 +3,7 @@ package com.jimmie.encounters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jimmie.domain.IlluminationType;
 import com.jimmie.domain.Position;
 import com.jimmie.domain.TurnTaker;
@@ -124,7 +122,7 @@ public class CryptOfShadowsEncounter extends Encounter {
 //			((PlayerCharacter) keothi).setExperiencePoints(1016);
 //			keothi.addCoins(9, CoinType.GOLD_PIECE);
 //			keothi.addCoins(7, CoinType.SILVER_PIECE);
-//			Utils.print("Keothi has " + ((PlayerCharacter) keothi).getExperiencePoints() + " experience points.");
+			Utils.print("Keothi has " + ((PlayerCharacter) keothi).getExperiencePoints() + " experience points.");
 			Utils.printCoins(keothi);			
 		}
 		if (PlayerCharacter.class.isAssignableFrom(travok.getClass())) {
@@ -353,6 +351,20 @@ keothi.setMaxHitPoints(40);
 keothi.setCurrentHitPoints(40);
 gamal.setMaxHitPoints(30);
 gamal.setCurrentHitPoints(30);
+
+if (PlayerCharacter.class.isAssignableFrom(gamal.getClass())) {
+	PlayerCharacter pc = (PlayerCharacter) gamal;
+	Iterator<Armor> it = pc.getArmor().iterator();
+	while (it.hasNext()) {
+		Armor armor = it.next();
+		if (ClothArmor.class.isAssignableFrom(armor.getClass())) {
+			it.remove();
+		}
+		if (ScaleArmor.class.isAssignableFrom(armor.getClass())) {
+			pc.setReadiedArmor(armor);
+		}
+	}
+}
 		
 Utils.saveCharacter(gamal);
 Utils.saveCharacter(percian);

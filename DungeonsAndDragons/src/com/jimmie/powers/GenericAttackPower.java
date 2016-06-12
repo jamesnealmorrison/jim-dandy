@@ -9,6 +9,7 @@ import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DefenseType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
+import com.jimmie.domain.MarkType;
 import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.TemporaryEffectReason;
 import com.jimmie.domain.TemporaryEffectType;
@@ -108,6 +109,10 @@ public abstract class GenericAttackPower extends AttackPower {
 
 						target.hurt(damage, getDamageType(), true, user, getAttackType());
 						
+						if (marksTarget()) {
+							cTarget.mark(user, DurationType.END_OF_NEXT_TURN, MarkType.NORMAL, user.getCurrentTurn());
+						}
+						
 						// Does this attack add any ongoing damage?
 						if (hasOngoingDamage()) {
 							if (cTarget != null) {
@@ -133,6 +138,10 @@ public abstract class GenericAttackPower extends AttackPower {
 			Utils.print("Not sure how you got here, but " + user.getName() + " actually can't use " + getName() + " now.");
 			return false;
 		}
+	}
+
+	public boolean marksTarget() {
+		return false;
 	}
 
 	public DamageType getOngoingDamageType() {

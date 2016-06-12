@@ -13,7 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import com.jimmie.DungeonConfig;
-import com.jimmie.CryptOfShadowsEncounterConfig;
+import com.jimmie.SkeletalLegionEncounterConfig;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.util.IntegratedCommandConsole;
 import com.jimmie.util.Utils;
@@ -62,7 +62,6 @@ public class DungeonGUI extends JPanel {
 	@Autowired
 	private BattleCardPanel battleCardPanel;
 	private JScrollPane battleCardsScrollPane;
-	
 	@Autowired
 	private Encounter encounter;
 
@@ -155,7 +154,7 @@ public class DungeonGUI extends JPanel {
 	public static void main(String[] args)
 	{
 		@SuppressWarnings("resource")
-		ApplicationContext context = new AnnotationConfigApplicationContext(CryptOfShadowsEncounterConfig.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(SkeletalLegionEncounterConfig.class);
 		
 		frame = new JFrame("Dungeon GUI");      
 
