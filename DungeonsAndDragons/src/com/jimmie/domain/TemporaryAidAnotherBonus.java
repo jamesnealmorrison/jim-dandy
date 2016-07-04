@@ -1,6 +1,10 @@
 package com.jimmie.domain;
 
-public class TemporaryAidAnotherBonus extends TemporaryBonus {
+public class TemporaryAidAnotherBonus extends TemporaryEffect {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int ATTACK = 1;
 	public static final int DEFENSE = 2;
 	AttackTarget target;

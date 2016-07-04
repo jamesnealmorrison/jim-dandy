@@ -63,4 +63,12 @@ public class SkillTraining extends Feat {
 		trainedSkill = Utils.getValidInput(choices);
 	}
 
+	public String getTrainedSkill() {
+		return trainedSkill;
+	}
+
+	public void setTrainedSkill(String trainedSkill) {
+		this.trainedSkill = trainedSkill;
+	}
+
 }

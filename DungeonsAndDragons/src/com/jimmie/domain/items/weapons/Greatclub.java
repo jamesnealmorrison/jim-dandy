@@ -82,4 +82,9 @@ public class Greatclub extends Weapon {
 		return WeaponCategory.SIMPLE_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Greatclub";
+	}
+
 }

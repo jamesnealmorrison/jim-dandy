@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Psion;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class DisciplineAdept extends Feat {
@@ -21,20 +22,19 @@ public class DisciplineAdept extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Use each Discipline Focus power twice per encounter";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Psion.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

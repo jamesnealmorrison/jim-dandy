@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Ardent;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class MantleOfReadiness extends Feat {
@@ -21,20 +22,19 @@ public class MantleOfReadiness extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "You and nearby allies gain +2 speed at start of combat";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Ardent.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -1,65 +1,140 @@
 package com.jimmie.domain.creatures;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.AccessoryType;
+import com.jimmie.domain.ActionType;
 import com.jimmie.domain.AlternativeMovementMode;
 import com.jimmie.domain.AttackTarget;
-import com.jimmie.domain.CombatAdvantage;
+import com.jimmie.domain.AttackType;
+import com.jimmie.domain.TemporaryCombatAdvantage;
+import com.jimmie.domain.TemporaryCondition;
 import com.jimmie.domain.CombatAdvantageType;
-import com.jimmie.domain.Condition;
 import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Effect;
 import com.jimmie.domain.Equipment;
+import com.jimmie.domain.LightSource;
 import com.jimmie.domain.Mark;
 import com.jimmie.domain.MarkType;
 import com.jimmie.domain.MovementType;
 import com.jimmie.domain.Position;
-import com.jimmie.domain.PowerId;
-import com.jimmie.domain.Prone;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
+import com.jimmie.domain.TargetedTemporaryEffect;
 import com.jimmie.domain.TemporaryAidAnotherBonus;
-import com.jimmie.domain.TemporaryAttackRollModifier;
-import com.jimmie.domain.TemporaryBonus;
+import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
+import com.jimmie.domain.TemporaryDamageResistance;
 import com.jimmie.domain.TemporaryInvisibility;
+import com.jimmie.domain.TemporaryOngoingDamage;
 import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.classes.Warden;
-import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.Monster;
+import com.jimmie.domain.items.Potion;
 import com.jimmie.domain.items.armor.Armor;
+import com.jimmie.domain.items.weapons.Hand;
+import com.jimmie.domain.items.weapons.ReadiedWeapon;
 import com.jimmie.encounters.Encounter;
-import com.jimmie.util.AtWillPower;
-import com.jimmie.util.DailyPower;
+import com.jimmie.powers.AttackPower;
+import com.jimmie.powers.BullRush;
+import com.jimmie.powers.Charge;
+import com.jimmie.powers.DivineChallenge;
+import com.jimmie.powers.Escape;
+import com.jimmie.powers.OpenDoor;
+import com.jimmie.powers.Power;
+import com.jimmie.powers.QuaffPotion;
+import com.jimmie.powers.ReadyPotion;
+import com.jimmie.powers.StandUp;
+import com.jimmie.powers.CloseDoor;
 import com.jimmie.util.Dice;
-import com.jimmie.util.EncounterPower;
-import com.jimmie.util.FreeAction;
-import com.jimmie.util.MinorAction;
-import com.jimmie.util.RequiresShield;
 import com.jimmie.util.SkillCheck;
-import com.jimmie.util.StandardAction;
 import com.jimmie.util.Utils;
 
 public abstract class Creature implements Serializable, TurnTaker, AttackTarget {
-	private boolean usedActionPoint;
+	protected List<TemporaryEffect> temporaryEffects;
+	private String imagePath;
+	private String bloodiedImagePath;
+	private String battleCardImagePath;
+	protected Role role;
+	protected boolean usedSecondWind;
+	private Creature pursuer;
+	private boolean hitByStirringShout;
+	private boolean hitByTelekineticAnchor;
+	private static final long serialVersionUID = 1L;
+	private Position currentPosition;
+	protected String name;
+	protected String displayName;
+	private boolean usedMinorAction;
+	private boolean usedMoveAction;
+	private boolean usedStandardAction;
+	private MovementType movementType;
+	protected List<Power> powers;
+	protected Alignment alignment;
+	protected List<String> languages;
+	protected List<Skill> skills;
+	protected Size size;
+	protected List<Equipment> equipment;
+	protected int stirringShoutCharismaModifier;
+	protected int currentTurn;
+	protected int initiativeRoll;
+	protected int level;
+	protected int currentHitPoints;
+	protected int maxHitPoints;
+	protected int reflex;
+	protected int will;
+	protected int fortitude;
+	protected int actionPoints;
+	protected int strength;
+	protected int constitution;
+	protected int dexterity;
+	protected int intelligence;
+	protected int wisdom;
+	protected int charisma;
+	protected int initiative;
+	protected int baseSpeed;
+	protected int temporaryHitPoints;
+	protected int channelDivinityUses;
+	protected List<Sense> senses;
+	protected List<AlternativeMovementMode> alternativeMovementModes;
+	protected List<Effect> currentEffects;
+	private HashMap<DamageType, Integer> damageResistances;
+	private HashMap<AttackType, Integer> attackTypeResistances;
+	private HashMap<DamageType, Double> percentDamageResistances;
+	private HashMap<AttackType, Double> percentAttackTypeResistances;
+	private HashMap<DamageType, Integer> damageVulnerabilities;
+	private HashMap<AttackType, Integer> attackTypeVulnerabilities;
+	protected Race race;
+	protected DndClass dndClass;
+	private boolean turnOver;
+	private List<Mark> marks;
+	protected Origin origin;
+	private Potion readiedPotion = null;
+	private LightSource readiedLightSource;
+	private Creature grabbedCreature = null;
+
 	public Creature() {
 		damageResistances = new HashMap<DamageType, Integer>();
+		attackTypeResistances = new HashMap<AttackType, Integer>();
+		percentDamageResistances = new HashMap<DamageType, Double>();
+		percentAttackTypeResistances = new HashMap<AttackType, Double>();
 		damageVulnerabilities = new HashMap<DamageType, Integer>();		
-		powers = new ArrayList<PowerId>();
+		attackTypeVulnerabilities = new HashMap<AttackType, Integer>();		
+		powers = new ArrayList<Power>();
+		addPower(new StandUp());
+		addPower(new OpenDoor());
+		addPower(new CloseDoor());
+		addPower(new Escape());
+
 		/* Initialize skills. */
 		addSkill(new Skill(SkillType.ACROBATICS));
 		addSkill(new Skill(SkillType.ARCANA));
@@ -78,6 +153,597 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		addSkill(new Skill(SkillType.STEALTH));
 		addSkill(new Skill(SkillType.STREETWISE));
 		addSkill(new Skill(SkillType.THIEVERY));
+		
+		temporaryEffects = new ArrayList<TemporaryEffect>();
+		
+		stirringShoutCharismaModifier = 0;
+		currentTurn = 0;
+		initiativeRoll = 0;
+		level = 0;
+		currentHitPoints = 0;
+		maxHitPoints = 0;
+		reflex = 0;
+		will = 0;
+		actionPoints = 0;
+		strength = 0;
+		constitution = 0;
+		dexterity = 0;
+		intelligence = 0;
+		wisdom = 0;
+		charisma = 0;
+		initiative = 0;
+		baseSpeed = 0;
+		temporaryHitPoints = 0;
+		channelDivinityUses = 0;
+		
+		// Add some default powers that all creatures should have
+		powers.add(new BullRush());
+		powers.add(new Charge());
+		powers.add(new ReadyPotion());
+		powers.add(new QuaffPotion());
+// TODO		powers.add(new AdministerPotion());
+	}
+	
+	public int getTemporaryHitPoints() {
+		return temporaryHitPoints;
+	}
+
+	public void setTurnOver(boolean turnOver) {
+		this.turnOver = turnOver;
+	}
+
+	public void push(String direction) {
+		/* Check for things like "Form of the Willow Sentinel. */
+		if (DndCharacter.class.isAssignableFrom(this.getClass())) {
+			DndClass dndClass = ((DndCharacter) this).getDndClass();
+			if (Warden.class.isInstance(dndClass)) {
+				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
+					/* For now assume they wouldn't want to be pushed. */
+					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be pushed. ");
+					return;
+				}
+			}
+		}
+		if ("N".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+		}
+		if ("S".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+		}
+		if ("E".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("W".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("NE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("NW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("SE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("SW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		Utils.print("Just pushed " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
+		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
+	}
+
+	public void pull(String direction) {
+		/* Check for things like "Form of the Willow Sentinel. */
+		if (DndCharacter.class.isAssignableFrom(this.getClass())) {
+			DndClass dndClass = ((DndCharacter) this).getDndClass();
+			if (Warden.class.isInstance(dndClass)) {
+				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
+					/* For now assume they wouldn't want to be pushed. */
+					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be pulled. ");
+					return;
+				}
+			}
+		}
+		if ("N".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+		}
+		if ("S".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+		}
+		if ("E".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("W".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("NE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("NW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("SE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("SW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		Utils.print("Just pulled " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
+		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
+	}
+
+	public void slide(String direction) {
+		/* Check for things like "Form of the Willow Sentinel. */
+		if (DndCharacter.class.isAssignableFrom(this.getClass())) {
+			DndClass dndClass = ((DndCharacter) this).getDndClass();
+			if (Warden.class.isInstance(dndClass)) {
+				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
+					/* For now assume they wouldn't want to be pushed. */
+					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be slid. ");
+					return;
+				}
+			}
+		}
+		if ("N".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+		}
+		if ("S".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+		}
+		if ("E".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("W".equals(direction)) {
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("NE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("NW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()+1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		if ("SE".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()+1);
+		}
+		if ("SW".equals(direction)) {
+			currentPosition.setY(currentPosition.getY()-1);
+			currentPosition.setX(currentPosition.getX()-1);
+		}
+		Utils.print("Just slid " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
+		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
+	}
+
+	public int getCurrentTurn() {
+		return currentTurn;
+	}
+
+
+	public void setCurrentTurn(int currentTurn) {
+		this.currentTurn = currentTurn;
+	}
+
+	public abstract void setArmorClass(int armorClass);
+
+	public boolean isTurnOver() {
+		return turnOver;
+	}
+
+	public void mark(Creature owner, DurationType duration, MarkType markType, int startTurn) {
+		Mark mark = new Mark();
+		mark.setMarkType(markType);
+		mark.setMarker(owner);
+		mark.setDuration(duration);
+		mark.setStartTurn(startTurn);
+		mark.setMisdirectedMarker(null);
+		
+		addMark(mark);
+	}
+	
+	private void addMark(Mark mark) {
+		if (marks == null) {
+			marks = new ArrayList<Mark>();
+		}
+		marks.add(mark);
+	}
+
+	public void mark(Creature owner, DurationType duration, MarkType markType, int startTurn, Creature misdirectedMarker) {
+		Mark mark = new Mark();
+		mark.setMarkType(markType);
+		mark.setMarker(owner);
+		mark.setDuration(duration);
+		mark.setStartTurn(startTurn);
+		mark.setMisdirectedMarker(misdirectedMarker);
+		addMark(mark);
+	}
+	
+	public void setTemporaryCombatAdvantage(Creature source, DurationType durationType, CombatAdvantageType combatAdvantageType, int startTurn) {
+		// I believe multiple people could have combat advantage over a creature at the same time.  So it's ok if there
+		// are multiple combat advantages in the list.
+		
+		TemporaryCombatAdvantage temporaryCombatAdvantage = new TemporaryCombatAdvantage();
+		temporaryCombatAdvantage.setTypeOfCombatAdvantage(combatAdvantageType);
+		temporaryCombatAdvantage.setSource(source);
+		temporaryCombatAdvantage.setDuration(durationType);
+		temporaryCombatAdvantage.setStartTurn(startTurn);
+		temporaryEffects.add(temporaryCombatAdvantage);
+	}
+	
+	public void setTemporaryCondition(Creature source, DurationType durationType, CreatureConditionType conditionType, TemporaryEffectReason reason, int startTurn) {
+		// TODO: Probably want to write smart code that will check the condition type to determine if multiples of that
+		// condition can apply or not, and check the list to see if multiples do apply.
+		TemporaryCondition temporaryCondition = new TemporaryCondition();
+		temporaryCondition.setConditionType(conditionType);
+		temporaryCondition.setSource(source);
+		temporaryCondition.setDuration(durationType);
+		temporaryCondition.setStartTurn(startTurn);
+		temporaryCondition.setReason(reason);
+		temporaryEffects.add(temporaryCondition);
+	}
+
+	public void setTemporaryInvisibility(Creature source, DurationType durationType, List<Creature> target, TemporaryEffectReason reason) {
+		TemporaryInvisibility temporaryInvisibility = new TemporaryInvisibility();
+		temporaryInvisibility.setSource(source);
+		temporaryInvisibility.setDuration(durationType);
+		temporaryInvisibility.setStartTurn(source.getCurrentTurn());
+		temporaryInvisibility.setEffectType(TemporaryEffectType.INVISIBILITY);
+		temporaryInvisibility.setReason(reason);
+		/* If target is null, then you became invisible to everyone. */
+		if (target != null) {
+			temporaryInvisibility.setTargets(target);
+		}
+		temporaryEffects.add(temporaryInvisibility);
+	}
+
+	public int getOtherAttackModifier(AttackTarget target) {
+		int total = 0;
+
+		/* Check for a temporary attack roll modifier. */
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+
+				if (tempEffect.getEffectType() == TemporaryEffectType.ATCK_ROLL_MOD) {
+					boolean appliesToTarget = false;
+					// See if it's a targeted effect (i.e. only applies to certain targets).
+					if (TargetedTemporaryEffect.class.isAssignableFrom(tempEffect.getClass())) {
+						TargetedTemporaryEffect targetedTempEffect = (TargetedTemporaryEffect) tempEffect;
+						if ((targetedTempEffect.getTarget() == null) || (target != targetedTempEffect.getTarget())) {
+							appliesToTarget = false;
+						} else {
+							appliesToTarget = true;
+						}
+					} else {
+						appliesToTarget = true;
+					}
+					if (!appliesToTarget) {
+						continue;
+					}
+					if (tempEffect.stillApplies()) {
+						Utils.print(name + " currently has a temporary attack roll modifier of " + tempEffect.getModifier());
+						total = total + tempEffect.getModifier();
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Attack modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						Utils.print("Attack modifier no longer applies.  Removing.");
+						it.remove();
+					}
+				}			
+			}
+		}
+
+
+		/* Do I have combat advantage against the target? */
+		if (Utils.hasCombatAdvantage(this, (Creature) target)) {
+			Utils.print(getName() + " has combat advantage over " + target.getName() + " and recieves a +2 bonus.");
+			total = total + 2;
+		}
+
+		return total;
+	}
+
+
+	public boolean isMarked() {
+		if (marks != null) {
+			for (Iterator<Mark> iterator = marks.iterator(); iterator.hasNext();) {
+				Mark mark = iterator.next();
+				if (mark.stillApplies()) {
+					return true;
+				} else {
+					Utils.print(mark.getMarkType() + " does not apply anymore.  Removing.");
+					iterator.remove();
+				}
+			}
+		}
+		return false;
+	}
+
+	public void shift(int distance, boolean free) {
+		Utils.print(name + " is shifting " + distance + " squares.");
+
+		if (!free) {
+			if (!canTakeMoveAction()) {
+				Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
+				return;
+			}
+			if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}
+		}
+
+		/* Right now, the only difference between walk and shift is the distance.
+		 * Later I'll add things like checking for opportunity attacks, etc.
+		 */
+
+		int distanceLeft = distance;
+
+		while (distanceLeft > 0) {
+			Utils.print("What direction do you want to move (N, E, S, W, NE, NW, SE, SW, STOP)?");
+			List<String> validDirections = new ArrayList<String>();
+
+			validDirections.add("N");
+			validDirections.add("E");
+			validDirections.add("S");
+			validDirections.add("W");
+			validDirections.add("NE");
+			validDirections.add("NW");
+			validDirections.add("SE");
+			validDirections.add("SW");
+			validDirections.add("STOP");
+
+			Utils.print("Your choice?");
+			String direction = Utils.getValidInput(validDirections);
+			if ("STOP".equalsIgnoreCase(direction)) {
+				distanceLeft = 0;
+			} else {
+				if (moveCreature(direction, MovementType.SHIFTING)) {
+					distanceLeft--;
+				}
+			}
+		}
+	}
+
+	public void shift(int distance, String direction, boolean free) {
+		if (!free) {
+			if (!canTakeMoveAction()) {
+				Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
+				return;
+			}
+			if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}
+		}
+
+		/* Right now, the only difference between walk and shift is the distance.
+		 * Later I'll add things like checking for opportunity attacks, etc.
+		 */
+
+		int distanceLeft = distance;
+
+		while (distanceLeft > 0) {
+			if (moveCreature(direction, MovementType.SHIFTING)) {
+				distanceLeft--;
+			}
+		}
+	}
+
+	public void setTemporaryHitPoints(int i) {
+		temporaryHitPoints = i;
+	}
+
+
+	// TODO: Creatures that take more than one square.
+	public boolean isAdjacentTo(Creature target) {
+		if (target.getCurrentPosition().isWithinReachOf(this.getCurrentPosition(), 1)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isAdjacentTo(Position position) {
+		if (position.isWithinReachOf(this.getCurrentPosition(), 1)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean canFlank() {
+		/* Some conditions don't allow you to flank. */
+		if (isBlinded() || isDazed() || isDominated() || isDying() || isPetrified() || isStunned() || isSurprised() || isUnconscious()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public void knockProne() {
+		setTemporaryCondition(this, DurationType.SPECIAL, CreatureConditionType.PRONE, TemporaryEffectReason.KNOCKED_PRONE, getCurrentTurn());
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public String getBloodiedImagePath() {
+		return bloodiedImagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+	public void setBloodiedImagePath(String bloodiedImagePath) {
+		this.bloodiedImagePath = bloodiedImagePath;
+	}
+	public String getBattleCardImagePath() {
+		return battleCardImagePath;
+	}
+
+	public void setBattleCardImagePath(String battleCardImagePath) {
+		this.battleCardImagePath = battleCardImagePath;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public ReadiedWeapon getReadiedWeapon() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getReadiedWeapon() method");
+		return null;
+	}
+
+	public HashMap<Hand,ReadiedWeapon> getReadiedWeapons() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getReadiedWeapons() method");
+		return null;
+	}
+
+	public int getWeaponProficiencyBonus() {
+		Utils.print("Not sure how you got here, but you're in the Creature.getWeaponProficiencyBonus() method");
+		return 0;
+	}
+
+	public void heal(int hitPoints) {
+		int tempHitPoints = currentHitPoints + hitPoints;
+		if (tempHitPoints >= this.maxHitPoints) {
+			currentHitPoints = maxHitPoints;
+			Utils.print("Fully healed.  Hit Points = " + currentHitPoints);
+		} else {
+			currentHitPoints = tempHitPoints;
+			Utils.print("Partially healed.  Hit Points = " + currentHitPoints);
+		}
+	}
+
+	public boolean usedSecondWind() {
+		return usedSecondWind;
+	}
+
+	public void setTemporaryEffect(int modifier, int modifierStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason) {
+		TemporaryEffect temporaryEffect = new TemporaryEffect();
+		temporaryEffect.setModifier(modifier);
+		temporaryEffect.setStartTurn(modifierStartTurn);
+		temporaryEffect.setDuration(duration);
+		temporaryEffect.setSource(source);
+		temporaryEffect.setEffectType(effectType);
+		temporaryEffect.setReason(reason);
+		temporaryEffects.add(temporaryEffect);
+	}
+
+	public void setTargetedTemporaryEffect(int modifier, int modifierStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, Creature target) {
+		TargetedTemporaryEffect temporaryEffect = new TargetedTemporaryEffect();
+		temporaryEffect.setModifier(modifier);
+		temporaryEffect.setStartTurn(modifierStartTurn);
+		temporaryEffect.setDuration(duration);
+		temporaryEffect.setSource(source);
+		temporaryEffect.setEffectType(effectType);
+		temporaryEffect.setTarget(target);
+		temporaryEffect.setReason(reason);
+		temporaryEffects.add(temporaryEffect);
+	}
+
+	public void setTemporaryAidAnotherBonus(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, AttackTarget target, int bonusType) {
+		TemporaryAidAnotherBonus temporaryAidAnotherBonus = new TemporaryAidAnotherBonus();
+		temporaryAidAnotherBonus.setModifier(bonus);
+		temporaryAidAnotherBonus.setStartTurn(bonusStartTurn);
+		temporaryAidAnotherBonus.setDuration(duration);
+		temporaryAidAnotherBonus.setSource(source);
+		temporaryAidAnotherBonus.setTarget(target);
+		temporaryAidAnotherBonus.setType(bonusType);
+		temporaryAidAnotherBonus.setEffectType(effectType);
+		temporaryAidAnotherBonus.setReason(reason);
+		temporaryEffects.add(temporaryAidAnotherBonus);
+	}
+
+	public void setTemporaryDamageResistance(int bonus, int bonusStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, DamageType damageType) {
+		TemporaryDamageResistance temporaryDamageResistance = new TemporaryDamageResistance();
+		temporaryDamageResistance.setModifier(bonus);
+		temporaryDamageResistance.setStartTurn(bonusStartTurn);
+		temporaryDamageResistance.setDuration(duration);
+		temporaryDamageResistance.setSource(source);
+		temporaryDamageResistance.setDamageType(damageType);
+		temporaryDamageResistance.setEffectType(effectType);
+		temporaryDamageResistance.setReason(reason);
+		temporaryEffects.add(temporaryDamageResistance);
+	}
+
+	public void setTemporaryOngoingDamage(int damage, int damageStartTurn,
+			DurationType duration, Creature source, TemporaryEffectType effectType, TemporaryEffectReason reason, DamageType damageType) {
+		TemporaryOngoingDamage temporaryOngoingDamage = new TemporaryOngoingDamage();
+		temporaryOngoingDamage.setModifier(damage);
+		temporaryOngoingDamage.setStartTurn(damageStartTurn);
+		temporaryOngoingDamage.setDuration(duration);
+		temporaryOngoingDamage.setSource(source);
+		temporaryOngoingDamage.setDamageType(damageType);
+		temporaryOngoingDamage.setEffectType(effectType);
+		temporaryOngoingDamage.setReason(reason);
+		temporaryEffects.add(temporaryOngoingDamage);
+	}
+
+	public List<Mark> getMarks() {
+		return marks;
+	}
+
+	public void setMarks(List<Mark> marks) {
+		this.marks = marks;
+	}
+
+	public void useAction(ActionType actionType) {
+		// A dazed creature can only take one action while dazed.  So mark them all as used.
+		if (isDazed()) {
+			Utils.print(getName() + " can only take one action per turn because they are dazed.");
+			usedMinorAction = true;
+			usedMoveAction = true;
+			usedStandardAction = true;
+		}
+		if (actionType == ActionType.MINOR) {
+			if (!usedMinorAction) {
+				usedMinorAction = true;
+			} else if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}			
+		} else if (actionType == ActionType.MOVE) {
+			if (!usedMoveAction) {
+				usedMoveAction = true;
+			} else if (!usedStandardAction) {
+				usedStandardAction = true;
+			}			
+		} else if (actionType == ActionType.STANDARD) {
+			usedStandardAction = true;
+		}
+	}
+
+	public void setChannelDivinityUses(int channelDivinityUses) {
+		this.channelDivinityUses = channelDivinityUses;
+	}
+
+	public int getChannelDivinityUses() {
+		return channelDivinityUses;
 	}
 
 	private void addSkill(Skill skill) {
@@ -86,33 +752,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		}
 		skills.add(skill);
 	}
-
-	protected TemporaryBonus temporaryArmorClassBonus;
-	protected TemporaryBonus temporaryReflexBonus;
-	protected TemporaryBonus temporaryFortitudeBonus;
-	protected TemporaryBonus temporaryWillBonus;
-	protected TemporaryAidAnotherBonus temporaryAidAnotherBonus;
-	private String imagePath;
-	protected Role role;
-
-	public TemporaryAidAnotherBonus getTemporaryAidAnotherBonus() {
-		return temporaryAidAnotherBonus;
-	}
-
-	public void setTemporaryAidAnotherBonus(
-			TemporaryAidAnotherBonus temporaryAidAnotherBonus) {
-		this.temporaryAidAnotherBonus = temporaryAidAnotherBonus;
-	}
-
-	Creature pursuer = null;
-	boolean hitByStirringShout = false;
-	boolean hitByTelekineticAnchor = false;
-
+	
 	public boolean isHitByStirringShout() {
 		return hitByStirringShout;
 	}
-
-	int stirringShoutCharismaModifier = 0;
 
 	public int getStirringShoutCharismaModifier() {
 		return stirringShoutCharismaModifier;
@@ -134,23 +777,10 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		stirringShoutCharismaModifier = charismaModifier;
 	}
 
-	@Override
-	public boolean isStunned() {
-		return false;
-	}
-
-
-	@Override
-	public boolean isBlinded() {
-		return false;
-	}
-
-	private static final long serialVersionUID = 1L;
-	private Position currentPosition;
-	protected String name;
-	protected String displayName;
-
 	public String getDisplayName() {
+		if (displayName == null) {
+			return name;
+		}
 		return displayName;
 	}
 
@@ -187,25 +817,38 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.usedStandardAction = usedStandardAction;
 	}
 
-	private boolean usedMinorAction;
-	private boolean usedMoveAction;
-	private boolean usedStandardAction;
-	private int currentTurn;
-
 	public void initializeForEncounter() {
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int roll = d.basicRoll();
-		initiativeRoll = roll + initiative;
-		usedActionPoint = false;
+		if (Monster.class.isAssignableFrom(this.getClass())) {
+			// See if this type of creature has already rolled for initiative.
+			int monsterInitiative = Encounter.getEncounter().getMonsterInitiative(this.getClass());
+			if (monsterInitiative != 0) {
+				setInitiativeRoll(monsterInitiative);
+			} else {
+				rollForInitiative();
+			}
+		} else {
+			rollForInitiative();
+		}
 		setCurrentTurn(0);
+		channelDivinityUses = 0;
+		
+		// Initialize powers.
+		for (Power power : powers) {
+			power.initializeForEncounter();
+		}
 	}
 
-	public void initializeForNewDay() {
+	public void rollForInitiative() {
+		Utils.print(getName() + " is rolling for initiative.");
+		Dice d = new Dice(DiceType.TWENTY_SIDED);
+		int roll = d.roll(DiceRollType.INITIATIVE_ROLL);
+		initiativeRoll = roll + initiative;
+	}
+
+	public void initializeForNewDay() {		
+		// TODO: Remove any conditions/effects that last until the "end of next extended rest".
 		actionPoints = 0;
 	}
-
-	private int initiativeRoll;
-	private MovementType movementType;
 
 	public int getInitiativeRoll() {
 		return initiativeRoll;
@@ -216,27 +859,18 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		this.initiativeRoll = initiativeRoll;
 	}
 
-
-	public List<Condition> getCurrentConditions() {
-		return currentConditions;
-	}
-
-
-	public void setCurrentConditions(List<Condition> currentConditions) {
-		this.currentConditions = currentConditions;
-	}
-
-
 	public List<Effect> getCurrentEffects() {
 		return currentEffects;
 	}
-
 
 	public void setCurrentEffects(List<Effect> currentEffects) {
 		this.currentEffects = currentEffects;
 	}
 
 	public boolean canTakeMinorAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedMinorAction || !usedMoveAction || !usedStandardAction) {
 			return true;
 		} else {
@@ -246,6 +880,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean canTakeMoveAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedMoveAction || !usedStandardAction) {
 			return true;
 		} else {
@@ -254,6 +891,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 	public boolean canTakeStandardAction() {
+		if (isSurprised()) {
+			return false;
+		}
 		if (!usedStandardAction) {
 			return true;
 		} else {
@@ -265,169 +905,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return (int) (Math.floor(ability/2) - 5);
 	}
 	
-	public void useStandardAction(Encounter encounter) {
-		if (!canTakeStandardAction()) {
-			Utils.print("I don't know how you got in this method (useStandardAction), but you can't!!!");
-			return;
-		}
-		usedStandardAction = true;
-
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
-		int index = 0;
-
-		/* Use reflection to find valid standard actions for this creature. */
-		if (getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
-
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void useFreeAction(Encounter encounter) {
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
-		int index = 0;
-
-		/* Use reflection to find valid standard actions for this creature. */
-		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && this.getPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(FreeAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(FreeAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(FreeAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
-
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public abstract boolean isShieldReadied();
 
-	public void useMoveAction(Encounter encounter) {
+	public void useMoveAction() {
 		if (!canTakeMoveAction()) {
 			Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
 			return;
@@ -447,6 +927,8 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		validActions.add("Walk");
 		Utils.print("Shift");
 		validActions.add("Shift");
+		Utils.print("Run");;
+		validActions.add("Run");
 
 		Utils.print("Your choice?");
 		String choice = Utils.getValidInput(validActions);
@@ -462,15 +944,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		} else if ("Shift".equalsIgnoreCase(choice)) {
 			movementType = MovementType.SHIFTING;
 			distanceLeft = 1;
-			if (isMarked() && (mark.getTypeOfMark() == MarkType.COMBAT_CHALLENGE)) {
-				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
-				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
-				/* Should be able to cast the marker to a character. */
-				if (Character.class.isInstance(mark.getMarker())) {
-					((Character) (mark.getMarker())).basicMeleeAttack(encounter);
-				}
-			}
-
+		} else if ("Run".equalsIgnoreCase(choice)) {
+			movementType = MovementType.RUNNING;
+			distanceLeft = getSpeed()+2;
+			Utils.print("Because you are running, you get a -5 penalty to attack rolls and you grant combat advantage until the start of your next turn.");
+			Utils.print("You also grant opportunity attacks if you leave a square adjacent to an enemy.");
+			setTemporaryEffect(-5, currentTurn, DurationType.START_OF_NEXT_TURN, this, TemporaryEffectType.ATCK_ROLL_MOD, TemporaryEffectReason.RUNNING);
+			setTemporaryCombatAdvantage(this, DurationType.START_OF_NEXT_TURN, CombatAdvantageType.RUNNING, getCurrentTurn());
 		}
 
 		while (distanceLeft > 0) {
@@ -492,25 +972,25 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			if ("STOP".equalsIgnoreCase(direction)) {
 				distanceLeft = 0;
 			} else {
-				Position newPosition = encounter.getPositionRelativeTo(getCurrentPosition(), direction);
-				/* Do they have to perform a check to enter? */
-				if (encounter.requiresCheckToEnter(newPosition, getCurrentPosition())) {
-					int costForEntering = encounter.getCostForEnteringSquare();
+/*				Position newPosition = Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction);
+				// Do they have to perform a check to enter?
+				if (Encounter.getEncounter().requiresCheckToEnter(newPosition, getCurrentPosition())) {
+					int costForEntering = Encounter.getEncounter().getCostForEnteringSquare();
 					if (distanceLeft < costForEntering) {
 						Utils.print("Sorry.  Don't have enough movement left to enter that square.");
 						continue;
 					}
-					SkillCheck skillCheck = encounter.getGenericSkillCheck();
-					if (performSkillCheck(skillCheck,encounter)) {
+					SkillCheck skillCheck = Encounter.getEncounter().getGenericSkillCheck();
+					if (performSkillCheck(skillCheck)) {
 						Utils.print("You successfully passed the skill check.");
-						/* An extra 1 will be subtracted later. */
+						// An extra 1 will be subtracted later.
 						distanceLeft = distanceLeft - (costForEntering - 1);
 					} else {
 						Utils.print("You failed the skill check.  Staying where you are.");
 						continue;
 					}
-				}/* Are they about to move into difficult terrain? */
-				else if (encounter.isDifficultTerrain(encounter.getPositionRelativeTo(getCurrentPosition(), direction))) {
+				}// Are they about to move into difficult terrain? 
+				else  */if (isDifficultTerrain(Encounter.getEncounter().getPositionRelativeTo(getCurrentPosition(), direction), movementType)) {
 					if (distanceLeft < 2) {
 						Utils.print("Sorry.  Can't enter that square.  It's difficult terrain.");
 						continue;
@@ -520,79 +1000,21 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 					}
 				}
 
-
-
-				/* Before moving, see if it triggers an opportunity attack. */
-				if (movementType != MovementType.SHIFTING) {
-					List<Creature> adjacentEnemies = encounter.getAdjacentEnemies(this);
-					if (adjacentEnemies != null) {
-						for (Creature adjacentEnemy : adjacentEnemies) {
-							/* I may be invisible to them, though.  Check. */
-							if (this.isInvisibleTo(adjacentEnemy)) {
-								Utils.print("This would have provoked an opportunity attack from " + adjacentEnemy.getName() + " but I am invisible to them now. ");
-							} else {
-								Utils.print(adjacentEnemy.getName() + " gets to perform an opportunity attack on " + name + " because " + name + " left a square adjacent to " + adjacentEnemy.getName() + " without shifting.");
-								adjacentEnemy.performOpportunityAttack(this, encounter);
-							}
-						}
-					}
-				}
-				/* Did this trigger a Dragonshield Tactics by shifting away from a dragonshield? */
-				/* Start by getting a list of adjacent kobold dragonshields from before the move. */
-				List<Creature> adjacentDragonshieldsBeforeMove = encounter.getSpecificTypeOfAdjacentEnemies(this, KoboldDragonshield.class);
-
-				/* Also need a list of creatures that are adjacent before the move. */
-				List<Creature> adjacentCreaturesBeforeMove = encounter.getAllAdjacentCreatures(this);
-
-				move(direction, encounter);
-				distanceLeft--;
-
-				/* Get a list of adjacentCreatures after the move. */
-				List<Creature> adjacentCreaturesAfterMove = encounter.getAllAdjacentCreatures(this);
-
-				/* Also need a list of adjacent dragonshields after the move. */
-				List<Creature> adjacentDragonshieldsAfterMove = encounter.getSpecificTypeOfAdjacentEnemies(this, KoboldDragonshield.class);
-
-				/* If the move was a shift, see which dragonshields are no longer adjacent.  In other words,
-				 * did they shift away from any dragonshields?
-				 */
-				if (movementType.equals(MovementType.SHIFTING)) {
-					if (adjacentDragonshieldsBeforeMove != null) {
-						for (Creature adjacentDragonshieldBeforeMove : adjacentDragonshieldsBeforeMove) {
-							if ((adjacentCreaturesAfterMove == null) || (!adjacentCreaturesAfterMove.contains(adjacentDragonshieldBeforeMove))) {
-								Utils.print(this.getName() + " moved away from " + adjacentDragonshieldBeforeMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
-								if (!((KoboldDragonshield) adjacentDragonshieldBeforeMove).isUsedDragonshieldTactics()) {
-									((KoboldDragonshield) adjacentDragonshieldBeforeMove).useDragonshieldTactics(encounter);
-								}
-							}
-						}
-					}
+				if (moveCreature(direction, movementType)) {
+					distanceLeft--;
 				}
 
-				/* Now check for dragonshields who weren't adjacent before the move, but are now (i.e. did they
-				 * move next to a dragonshield?
-				 */
-				if (adjacentDragonshieldsAfterMove != null) {
-					for (Creature adjacentDragonshieldAfterMove : adjacentDragonshieldsAfterMove) {
-						if ((adjacentCreaturesBeforeMove == null) || (!adjacentCreaturesBeforeMove.contains(adjacentDragonshieldAfterMove))) {
-							Utils.print(this.getName() + " moved next to " + adjacentDragonshieldAfterMove.getName() + ", so they may be able to use Dragonshield Tactics to shift.");
-							if (!((KoboldDragonshield) adjacentDragonshieldAfterMove).isUsedDragonshieldTactics()) {
-								((KoboldDragonshield) adjacentDragonshieldAfterMove).useDragonshieldTactics(encounter);
-							}
-						}
-					}
-				}
 			}
 		}
 
 	}
 
-	private boolean performSkillCheck(SkillCheck skillCheck, Encounter encounter) {
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.basicRoll();
-		int roll = diceRoll + getSkillModifier(skillCheck.getSkillType());
+	private boolean isDifficultTerrain(Position position, MovementType movementType) {
+		return Encounter.getEncounter().isDifficultTerrain(position);
+	}
 
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
+	public boolean performSkillCheck(SkillCheck skillCheck) {
+		int roll = skillCheckRoll(skillCheck);
 
 		Utils.print("Your target DC was + " + skillCheck.getDifficultyClass());
 
@@ -606,7 +1028,15 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	}
 
-	private int getSkillModifier(SkillType skillType) {
+	public int skillCheckRoll(SkillCheck skillCheck) {
+		Dice d = new Dice(DiceType.TWENTY_SIDED);
+		int diceRoll = d.roll(DiceRollType.SKILL_CHECK_ROLL);
+		int roll = diceRoll + getSkillModifier(skillCheck.getSkillType());
+		Utils.print("Your skill check roll with modifiers is " + roll);
+		return roll;
+	}
+
+	public int getSkillModifier(SkillType skillType) {
 		int baseSkillLevel = 0;
 		
 		// Grab the specified skill.
@@ -620,9 +1050,9 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 				baseSkillLevel += 5;
 			}
 			if (skill.hasArmorPenalty()) {
-				if (Character.class.isAssignableFrom(this.getClass())) {
-					Armor armor = ((Character) this).getReadiedArmor();
-					baseSkillLevel -= armor.getSkillPenalty(); 
+				if (DndCharacter.class.isAssignableFrom(this.getClass())) {
+					Armor armor = ((DndCharacter) this).getReadiedArmor();
+					baseSkillLevel += armor.getSkillPenalty(); 
 				}
 			}
 			baseSkillLevel += skill.getMisc();
@@ -660,210 +1090,170 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		return null;
 	}
 
-	private void performOpportunityAttack(Creature creature, Encounter encounter) {
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
+	public void performOpportunityAttack(Creature target) {
+		if (isDazed()) {
+			Utils.print("Sorry. Can't take an opportunity action because " + getName() + " is dazed.");
+			return;
+		}
+		
+		HashMap<Integer, Power> validActions = new HashMap<Integer, Power>();
 		int index = 0;
-		/* Use reflection to find valid standard actions for this creature. */
 		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && this.getPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					StandardAction standardAction = method.getAnnotation(StandardAction.class);
-					if (standardAction.isBasicAttack()) {
+			for (Power power : getPowers()) {
+				if (power.getActionType() == ActionType.STANDARD) {
+					if (power.isBasicAttack()) {
 						/* Still might have to meet other requirements to use this power now. */
-						if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
+						if (!power.meetsPrerequisitesToChoosePower(this) || !power.meetsRequirementsToUsePower(this)) {
 							/* Skip it. */
 							continue;
 						}
-						String actionType = null;
-						if (method.isAnnotationPresent(AtWillPower.class)) {
-							actionType = "At Will";
-						} else if (method.isAnnotationPresent(EncounterPower.class)) {
-							actionType = "Encounter";
-						} else if (method.isAnnotationPresent(DailyPower.class)) {
-							actionType = "Daily";
-						}
 						index++;
-						validActions.put(index, method);
-						correspondingValidObjects.put(index, this);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
+						validActions.put(index, power);
+						Utils.print(index + ". " + power.getName() + " (" + power.getPowerUsage() + ")");
 					}
 				}
 			}
 		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(StandardAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(StandardAction.class).powerId()))) {
-					StandardAction standardAction = method.getAnnotation(StandardAction.class);
-					if (standardAction.isBasicAttack()) {
-						/* Still might have to meet other requirements to use this power now. */
-						if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-							/* Skip it. */
-							continue;
-						}
-						String actionType = null;
-						if (method.isAnnotationPresent(AtWillPower.class)) {
-							actionType = "At Will";
-						} else if (method.isAnnotationPresent(EncounterPower.class)) {
-							actionType = "Encounter";
-						} else if (method.isAnnotationPresent(DailyPower.class)) {
-							actionType = "Daily";
-						}
-						index++;
-						validActions.put(index, method);
-						correspondingValidObjects.put(index, dndClass);
-						Utils.print(index + ". " + method.getAnnotation(StandardAction.class).powerId() + " (" + actionType + ")");
-					}
-				}
-			}
-		}
-
 
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
+		Power chosenPower = validActions.get(choice);
 
-		if (chosenMethod != null) {
-			try {
-				Utils.print("Make sure you choose " + creature.getName() + " in the next question, since I haven't automated that yet.");
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		Utils.print("Make sure you choose " + target.getName() + " in the next question, since I haven't automated that yet.");
+		if (chosenPower != null) {
+			chosenPower.process(this);
 		}
 	}
 
 
-	public void move(String direction, Encounter encounter) {
+	public boolean moveCreature(String direction, MovementType movementType) {
 		/* See if I was hit by Telekinetic Anchor.  If so, I take 5 force damage, but only once. */
 		if (hitByTelekineticAnchor) {
 			Utils.print(getName() + " was previously hit by telekinetic anchor and takes 5 force damage now.");
-			hurt(5, DamageType.FORCE_DAMAGE, encounter, true);
+			// TODO, shouldn't pass "this" in as the hurter.
+			hurt(5, DamageType.FORCE, true, this, AttackType.AREA_BURST);
 			hitByTelekineticAnchor = false;
 		}
 
-		/* For now, I'm trusting the user input, and not doing any validation about whether the creature can actually
-		 * move that direction or not.
-		 */
 		if ("N".equalsIgnoreCase(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);		
+			// Check that position to see if they can move there.
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+				currentPosition.setY(currentPosition.getY()+1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("E".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY())))) {
+				currentPosition.setX(currentPosition.getX()+1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("S".equalsIgnoreCase(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1))) && 
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+				currentPosition.setY(currentPosition.getY()-1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("W".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY())))) {
+				currentPosition.setX(currentPosition.getX()-1);
+				return true;
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("NE".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-			currentPosition.setY(currentPosition.getY()+1);
+			//For going caddy-corner, check doors in all directions.
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()+1,currentPosition.getY()), new Position(currentPosition.getX()+1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()+1), new Position(currentPosition.getX()+1,currentPosition.getY()+1)))
+					) {
+				// Diagonals also have to check about going around corners.
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+					currentPosition.setX(currentPosition.getX()+1);
+					currentPosition.setY(currentPosition.getY()+1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+					return false;
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("NW".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-			currentPosition.setY(currentPosition.getY()+1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()-1,currentPosition.getY()), new Position(currentPosition.getX()-1,currentPosition.getY()+1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()+1), new Position(currentPosition.getX()-1,currentPosition.getY()+1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()+1)))) {
+					currentPosition.setX(currentPosition.getX()-1);
+					currentPosition.setY(currentPosition.getY()+1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+					return false;
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("SE".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-			currentPosition.setY(currentPosition.getY()-1);
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY()-1))) && 
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()+1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()+1,currentPosition.getY()), new Position(currentPosition.getX()+1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()-1), new Position(currentPosition.getX()+1,currentPosition.getY()-1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()+1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+					currentPosition.setX(currentPosition.getX()+1);
+					currentPosition.setY(currentPosition.getY()-1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
+				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
+			}
 		} else if ("SW".equalsIgnoreCase(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-			currentPosition.setY(currentPosition.getY()-1);
-		}
-	}
-
-	public void useMinorAction(Encounter encounter) {
-		if (!canTakeMinorAction()) {
-			Utils.print("I don't know how you got in this method (useMinorAction), but you can't!!!");
-			return;
-		}
-		if (!usedMinorAction) {
-			usedMinorAction = true;
-		} else if (!usedMoveAction) {
-			usedMoveAction = true;
-		} else if (!usedStandardAction) {
-			usedStandardAction = true;
-		}
-
-		Utils.print("What action does " + getName() + " want to take?");
-		HashMap<Integer, Method> validActions = new HashMap<Integer, Method>();
-		HashMap<Integer, Object> correspondingValidObjects = new HashMap<Integer, Object>();
-		int index = 0;
-
-		/* Use reflection to find valid standard actions for this creature. */
-		if (this.getPowers() != null) {
-			for (Method method : getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && this.getPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, this);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
+			if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX()-1,currentPosition.getY()))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(currentPosition, new Position(currentPosition.getX(),currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX()-1,currentPosition.getY()), new Position(currentPosition.getX()-1,currentPosition.getY()-1))) &&
+					(!Encounter.getEncounter().isClosedDoorBetween(new Position(currentPosition.getX(),currentPosition.getY()-1), new Position(currentPosition.getX()-1,currentPosition.getY()-1))) 
+					) {
+				if ((Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX()-1,currentPosition.getY())))
+						&& (Encounter.getEncounter().isOpenSquare(new Position(currentPosition.getX(),currentPosition.getY()-1)))) {
+					currentPosition.setX(currentPosition.getX()-1);
+					currentPosition.setY(currentPosition.getY()-1);
+					return true;
+				} else {
+					Utils.print("Can't move diagonally through an obstacle.");
 				}
+			} else {
+				Utils.print("Can't move there.");
+				return false;
 			}
 		}
-
-		/* See if the class has any standard actions. */
-		if ((dndClass != null) && (dndClass.getMyPowers() != null)) {
-			for (Method method : dndClass.getClass().getMethods()) {
-				if ((method.isAnnotationPresent(MinorAction.class) && dndClass.getMyPowers().contains(method.getAnnotation(MinorAction.class).powerId()))) {
-					/* Still might have to meet other requirements to use this power now. */
-					if ((method.isAnnotationPresent(RequiresShield.class) && !this.isShieldReadied())) {
-						/* Skip it. */
-						continue;
-					}
-					String actionType = null;
-					if (method.isAnnotationPresent(AtWillPower.class)) {
-						actionType = "At Will";
-					} else if (method.isAnnotationPresent(EncounterPower.class)) {
-						actionType = "Encounter";
-					} else if (method.isAnnotationPresent(DailyPower.class)) {
-						actionType = "Daily";
-					}
-					index++;
-					validActions.put(index, method);
-					correspondingValidObjects.put(index, dndClass);
-					Utils.print(index + ". " + method.getAnnotation(MinorAction.class).powerId() + " (" + actionType + ")");
-				}
-			}
-		}
-
-
-		Utils.print("Your choice:");
-		int choice = Utils.getValidIntInputInRange(1, index);
-		Method chosenMethod = validActions.get(choice);
-
-		if (chosenMethod != null) {
-			try {
-				chosenMethod.invoke(correspondingValidObjects.get(choice), encounter);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		return false;
 	}
 
 	public void startOfTurn() {
@@ -872,95 +1262,136 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		usedMoveAction = false;
 		usedStandardAction = false;
 		currentTurn++;
-		/* Check for conditions and other effects that are over at the "start of your next turn. */
-		if (temporaryInvisibility != null) {
-			if ((temporaryInvisibility.getDuration() == DurationType.START_OF_NEXT_TURN) && (temporaryInvisibility.getStartTurn() < currentTurn)) {
-				temporaryInvisibility = null;
-				Utils.print("Its the start of " + getName() + "'s next turn, so the temporary invisibility is over!");
+		
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if ((tempEffect.getDuration() == DurationType.START_OF_NEXT_TURN) && (tempEffect.getStartTurn() < currentTurn)) {
+					Utils.print("It's the start of a new turn.  Removing " + tempEffect.getEffectType() + " temporary effect.");
+					it.remove();
+				}
 			}
 		}
-
-		if (temporaryArmorClassBonus != null) {
-			if ((temporaryArmorClassBonus.getDuration() == DurationType.START_OF_NEXT_TURN) && (temporaryArmorClassBonus.getStartTurn() < currentTurn)) {
-				temporaryArmorClassBonus = null;
-				Utils.print("Its the start of " + getName() + "'s next turn, so the temporary armor class bonus is over!");
-			}
+		
+		// Some powers need initialized for the start of turn.
+		for (Power power : getPowers()) {
+			power.initializeForStartOfTurn();
 		}
-		if (temporaryWillBonus != null) {
-			if ((temporaryWillBonus.getDuration() == DurationType.START_OF_NEXT_TURN) && (temporaryWillBonus.getStartTurn() < currentTurn)) {
-				temporaryWillBonus = null;
-				Utils.print("Its the start of " + getName() + "'s next turn, so the temporary Will bonus is over!");
-			}
-		}
-		if (temporaryFortitudeBonus != null) {
-			if ((temporaryFortitudeBonus.getDuration() == DurationType.START_OF_NEXT_TURN) && (temporaryFortitudeBonus.getStartTurn() < currentTurn)) {
-				temporaryFortitudeBonus = null;
-				Utils.print("Its the start of " + getName() + "'s next turn, so the temporary Fortitude bonus is over!");
-			}
-		}
-		if (temporaryReflexBonus != null) {
-			if ((temporaryReflexBonus.getDuration() == DurationType.START_OF_NEXT_TURN) && (temporaryReflexBonus.getStartTurn() < currentTurn)) {
-				temporaryReflexBonus = null;
-				Utils.print("Its the start of " + getName() + "'s next turn, so the temporary Reflex bonus is over!");
-			}
-		}
-
 	}
 
-	public void endOfTurn(Encounter encounter) {
+	public void endOfTurn() {
 		turnOver = true;
 		/* Check for bond of pursuit. */
 		if (pursuer != null) {
 			/* If I didn't end my turn adjacent to my pursuer, they get to shift. */
 			if (!(this.isAdjacentTo(pursuer))) {
-				System.out.println("Pursuer (" + pursuer.getName() + ") gets to shift " + (pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1) + " squares.");
-				System.out.println("Please note: You must end closer to " + this.getName() + ".  This is not enforced in the code though");
-				pursuer.shift(pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1, true, encounter);
+				Utils.print("Pursuer (" + pursuer.getName() + ") gets to shift " + (pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1) + " squares.");
+				Utils.print("Please note: You must end closer to " + this.getName() + ".  This is not enforced in the code though");
+				pursuer.shift(pursuer.getAbilityModifierPlusHalfLevel(AbilityType.DEXTERITY)+1, true);
 			}
 			/* At the end of turn, the bond of pursuit is over. */
 			pursuer = null;
 		}
 		hitByTelekineticAnchor = false;
+		
+		// Divine Challenge
+		for (Power power : powers) {
+			if (DivineChallenge.class.isAssignableFrom(power.getClass())) {
+				DivineChallenge divineChallenge = (DivineChallenge) power; 
+				Creature markedCreature = divineChallenge.getMarkedCreature();
+				if (markedCreature != null) {
+					// TODO: Implement the check to see if we attacked this creature during the turn.  For now,
+					// just do "adjacent check".
+					// TODO: Also need to implement the "can't use divine challenge on your next turn".
+					List<Creature> adjCreatures = Encounter.getEncounter().getAllAdjacentCreatures(this);
+					if (!adjCreatures.contains(markedCreature)) {
+						Utils.print(getName() + " did not engage " + markedCreature.getName() + ". Removing the Divine Challenge mark.");
+						divineChallenge.setMarkedCreature(null);
+						if (markedCreature.getMarks() != null) {
+							for (Iterator<Mark> it = markedCreature.getMarks().iterator(); it.hasNext();) {
+								Mark mark = it.next();
+								if (mark.getMarkType() == MarkType.DIVINE_CHALLENGE) {
+									it.remove();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Saving throws
+		performSavingThrows(0, 0);
 	}
 
-	protected int level;
-	protected Size size;
-	protected int currentHitPoints;
-	protected int maxHitPoints;
-	protected int fortitude;
-	protected int reflex;
-	protected int will;
-	protected int actionPoints;
-	protected List<PowerId> powers;
-	protected Alignment alignment;
-	protected List<String> languages;
-	protected List<Skill> skills;
-	protected int strength;
-	protected int constitution;
-	protected int dexterity;
-	protected int intelligence;
-	protected int wisdom;
-	protected int charisma;
-	protected List<Equipment> equipment;
-	protected int initiative;
-	protected List<Sense> senses;
-	protected int speed;
+	// quantity is the number of saving throws you can do now.  A 0 means you perform a saving throw against all your "save ends" effects.
+	public void performSavingThrows(int quantity, int modifier) {
+		int count = 0;
+		if (getTemporaryEffects() != null) {
+			for (Iterator<TemporaryEffect> it = getTemporaryEffects().iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (effect.getDuration() == DurationType.SAVE_ENDS) {
+					TemporaryEffectType effectType = effect.getEffectType();
+					CreatureConditionType conditionType = null;
+					if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+						conditionType = ((TemporaryCondition) effect).getConditionType();
+					}
+					if (quantity == 0) {
+						if (effectType != null) {
+							Utils.print(getName() + " gets to make a saving throw against " + effectType);
+						} else if (conditionType != null) {
+							Utils.print(getName() + " gets to make a saving throw against " + conditionType);
+						} else {
+							Utils.print(getName() + " gets to make a saving throw against someting.  Not sure what.");
+						}
+						int roll = rollForSavingThrow(modifier);
+						if (roll >= 10) {
+							Utils.print("You are no longer affected.");
+							it.remove();
+						}
+					} else if (count < quantity) {
+						if (effectType != null) {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against " + effectType + "?");
+						} else if (conditionType != null) {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against " + conditionType + "?");
+						} else {
+							Utils.print(getName() + " has " + (quantity - count) + " saving throws left.  Would you like to use one against something (not sure what)?");
+						}
+						
+						Utils.print("Your choice (Y or N):");
+						if (Utils.getYesOrNoInput().equalsIgnoreCase("Y")) {
+							Dice dice = new Dice(DiceType.TWENTY_SIDED);
+							int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
+							// TODO: Add any modifiers (once you run into a power or something that adds a modifier).
+							if (roll + modifier >= 10) {
+								Utils.print("You are no longer affected.");
+								it.remove();
+								count++;
+							}
+						}
+
+					}
+				}
+			}
+		}
+	}
+
+	private int rollForSavingThrow(int modifier) {
+		Dice dice = new Dice(DiceType.TWENTY_SIDED);
+		int roll = dice.roll(DiceRollType.SAVING_THROW_ROLL);
+		int total = roll+modifier;
+		Utils.print("Your saving throw total is + " + total);
+		return total;
+	}
+
 	public List<AlternativeMovementMode> getAlternativeMovementModes() {
 		return alternativeMovementModes;
 	}
-
 
 	public void setAlternativeMovementModes(
 			List<AlternativeMovementMode> alternativeMovementModes) {
 		this.alternativeMovementModes = alternativeMovementModes;
 	}
-
-
-	protected List<AlternativeMovementMode> alternativeMovementModes;
-	protected List<Condition> currentConditions;
-	protected List<Effect> currentEffects;
-	private HashMap<DamageType, Integer> damageResistances;
-	private HashMap<DamageType, Integer> damageVulnerabilities;
 
 
 	public String getName() {
@@ -1028,10 +1459,13 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 
 	public abstract int getArmorClass(Creature attacker);
 
-	public int getFortitude(Encounter encounter, Creature attacker) {
+// This will all be rewritten when I do AOP	
+/*
+ 	public int getFortitude(Creature attacker) {
+
 		int bonus = 0;
 
-		/* See if I am standing next to a Warden that is using "Form of the Willow Sentinel." */
+		// See if I am standing next to a Warden that is using "Form of the Willow Sentinel." 
 		List<Creature> adjacentAllies = encounter.getAdjacentAllies(this);
 		for (Creature adjacentAlly : adjacentAllies) {
 			if (Character.class.isAssignableFrom(adjacentAlly.getClass())) {
@@ -1045,109 +1479,60 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			}
 		}
 
-		/* See if there is a temporary bonus to the fortitude. */
+		// See if there is a temporary bonus to the fortitude.
 		if (temporaryFortitudeBonus != null) {
 			if (temporaryFortitudeBonus.stillApplies()) {
 				Utils.print(name + " is supposed to get a bonus to fortitude until the start of " + temporaryFortitudeBonus.getSource().getName() + "'s next turn.");
 				bonus = bonus + temporaryFortitudeBonus.getBonus();
 				Utils.print("Bonus still applies.");
 			} else {
-				/* Bonus is over.  Reset the bonus. */
+				// Bonus is over.  Reset the bonus.
 				temporaryFortitudeBonus = null;
 				Utils.print("Bonus no longer applies.  Resetting bonus.");
 			}
 		}
 
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
-			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
-				bonus = bonus + temporaryAidAnotherBonus.getBonus();
-				Utils.print("Bonus still applies.");
-				temporaryAidAnotherBonus = null;
-				Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryAidAnotherBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-
-		return fortitude + bonus;
+		return getBaseFortitude() + bonus;
 	}
-
-	public void setFortitude(int fortitude) {
-		this.fortitude = fortitude;
-	}
-
-
+*/
 	public int getReflex(Creature attacker) {
-		int bonus = 0;
-		/* See if there is a temporary bonus to the will. */
-		if (temporaryReflexBonus != null) {
-			if (temporaryReflexBonus.stillApplies()) {
-				Utils.print(name + " is supposed to get a bonus to reflex until the start of " + temporaryReflexBonus.getSource().getName() + "'s next turn.");
-				bonus = bonus + temporaryReflexBonus.getBonus();
-				Utils.print("Bonus still applies.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryReflexBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
-			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
-				bonus = bonus + temporaryAidAnotherBonus.getBonus();
-				Utils.print("Bonus still applies.");
-				temporaryAidAnotherBonus = null;
-				Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryAidAnotherBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-
-		return reflex + bonus;
+		return reflex;
 	}
-
 
 	public void setReflex(int reflex) {
 		this.reflex = reflex;
 	}
-
+	
+	public int getFortitude(Creature attacker) {
+		return fortitude;
+	}
+	
+	public void setFortitude(int fortitude) {
+		this.fortitude = fortitude;
+	}
 
 	public int getWill(Creature attacker) {
 		int currentWill = will;
 
-		/* See if there is a temporary bonus to the will. */
-		if (temporaryWillBonus != null) {
-			if (temporaryWillBonus.stillApplies()) {
-				Utils.print(name + " is supposed to get a bonus to will until the start of " + temporaryWillBonus.getSource().getName() + "'s next turn.");
-				currentWill = currentWill + temporaryWillBonus.getBonus();
-				Utils.print("Bonus still applies.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryWillBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
-			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
-				currentWill = currentWill + temporaryAidAnotherBonus.getBonus();
-				Utils.print("Bonus still applies.");
-				temporaryAidAnotherBonus = null;
-				Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryAidAnotherBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (tempEffect.getEffectType() == TemporaryEffectType.WILL_MOD) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(name + " is supposed to get a modifier to will until " + tempEffect.getDuration());
+						currentWill = currentWill + tempEffect.getModifier();
+						Utils.print("Modifier still applies.");
+						/* If it should be removed now, delete the modifier now. */
+						if (tempEffect.shouldBeRemoved()) {
+							Utils.print("Modifier will no longer apply.");
+							it.remove();
+						}
+					} else {
+						/* modifier is over.  Reset the modifier. */
+						it.remove();
+						Utils.print("Modifier no longer applies.  Resetting modifier.");
+					}
+				}
 			}
 		}
 
@@ -1170,18 +1555,18 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	}
 
 
-	public List<PowerId> getPowers() {
+	public List<Power> getPowers() {
 		return powers;
 	}
 
 
-	public void setPowers(List<PowerId> powers) {
+	public void setPowers(List<Power> powers) {
 		this.powers = powers;
 	}
 
-	public void addPower(PowerId power) {
+	public void addPower(Power power) {
 		if (powers == null) {
-			powers = new ArrayList<PowerId>();
+			powers = new ArrayList<Power>();
 		}
 		powers.add(power);
 	}
@@ -1193,11 +1578,39 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		damageResistances.put(damageType, resistance);
 	}
 
+	public void addAttackTypeResistance(AttackType attackType, Integer resistance) {
+		if (attackTypeResistances == null) {
+			attackTypeResistances = new HashMap<AttackType, Integer>();
+		}
+		attackTypeResistances.put(attackType, resistance);
+	}
+
+	public void addPercentDamageResistance(DamageType damageType, Double percentResistance) {
+		if (percentDamageResistances == null) {
+			percentDamageResistances = new HashMap<DamageType, Double>();
+		}
+		percentDamageResistances.put(damageType, percentResistance);
+	}
+
+	public void addPercentAttackTypeResistance(AttackType attackType, Double percentResistance) {
+		if (percentAttackTypeResistances == null) {
+			percentAttackTypeResistances = new HashMap<AttackType, Double>();
+		}
+		percentAttackTypeResistances.put(attackType, percentResistance);
+	}
+
 	public void addDamageVulnerability(DamageType damageType, Integer vulnerability) {
 		if (damageVulnerabilities == null) {
 			damageVulnerabilities = new HashMap<DamageType, Integer>();
 		}
 		damageVulnerabilities.put(damageType, vulnerability);
+	}
+
+	public void addAttackTypeVulnerability(AttackType attackType, Integer vulnerability) {
+		if (attackTypeVulnerabilities == null) {
+			attackTypeVulnerabilities = new HashMap<AttackType, Integer>();
+		}
+		attackTypeVulnerabilities.put(attackType, vulnerability);
 	}
 
 	public Alignment getAlignment() {
@@ -1331,35 +1744,68 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		senses.add(sense);
 	}
 
+	public int getBaseSpeed() {
+		return baseSpeed;
+	}
+	
 	public int getSpeed() {
-		return speed;
+		int modifier = 0;
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryCondition temporaryCondition = (TemporaryCondition) tempEffect;
+
+					// Check for slowness
+					if (temporaryCondition.getConditionType() == CreatureConditionType.SLOWED) {
+						if (temporaryCondition.stillApplies()) {
+							Utils.print(getName() + " is slowed.  Can only move 2 spaces.");
+							/* If it should be removed now, delete the modifier now. */
+							if (temporaryCondition.shouldBeRemoved()) {
+								Utils.print("Slowed condition will no longer apply.");
+								it.remove();
+							}
+							return 2;
+						} else {
+							Utils.print("The SLOWED condition no longer applies.  Removing.");
+							it.remove();
+						}
+					}
+				}
+				if (tempEffect.getEffectType() == TemporaryEffectType.SPEED_MOD) {
+					if (tempEffect.stillApplies()) {
+						Utils.print(getName() + " has a temporary speed modifier of " + tempEffect.getModifier() + " due to " + tempEffect.getReason());
+						modifier = tempEffect.getModifier();
+					}
+				}
+			}
+		}
+
+		return baseSpeed + modifier;
 	}
 
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	public void setBaseSpeed(int speed) {
+		this.baseSpeed = speed;
 	}
-
 
 	public boolean isBloodied() {
 		return (currentHitPoints <= getBloodyValue());
 	}
 
-
 	public Position getCurrentPosition() {
 		return currentPosition;
 	}
-
 
 	public void setCurrentPosition(Position currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 
-	public void hurt(int damage, DamageType damageType, Encounter encounter, boolean hit) {
+	public void hurt(int damage, DamageType damageType, boolean hit, Object hurter, AttackType attackType) {
 		/* Is this a minion? They don't get hurt by missed attacks. */
 		if ((getMaxHitPoints() == 1) && (!hit)) {
 			return;
 		}
+		
 		/* Resistance. */
 		int resistance = getDamageResistance(damageType);
 		if (resistance > 0) {
@@ -1371,16 +1817,56 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 			Utils.print("Lowering to " + damage + " damage.");
 		}
 
+		/* Attack Type Resistance. */
+		int attackTypeResistance = getAttackTypeResistance(attackType);
+		if (attackTypeResistance > 0) {
+			Utils.print(getName() + " has Resistance " + attackTypeResistance + " to this type of attack.");
+			damage = damage - attackTypeResistance;
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
+		/* Percent Resistance. */
+		double percentResistance = getPercentDamageResistance(damageType);
+		if (percentResistance > 0) {
+			Utils.print(getName() + " has " + (percentResistance * 100) + "% Resistance to this type of damage.");
+			damage = (int) (damage * percentResistance);
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
+		/* Percent Resistance. */
+		double percentAttackTypeResistance = getPercentAttackTypeResistance(attackType);
+		if (percentAttackTypeResistance > 0) {
+			Utils.print(getName() + " has " + (percentAttackTypeResistance * 100) + "% Resistance to this type of attack.");
+			damage = (int) (damage * percentAttackTypeResistance);
+			if (damage < 0) {
+				damage = 0;
+			}
+			Utils.print("Lowering to " + damage + " damage.");
+		}
+
 		/* Vulnerability. */
 		int vulnerability = getDamageVulnerability(damageType);
 		if (vulnerability > 0) {
 			Utils.print(getName() + " has Vulnerability " + vulnerability + " to this type of damage.");
-			damage = damage + resistance;
+			damage = damage + vulnerability;
+			Utils.print("Increasing to " + damage + " damage.");
+		}
+
+		int attackTypeVulnerability = getAttackTypeVulnerability(attackType);
+		if (attackTypeVulnerability > 0) {
+			Utils.print(getName() + " has Vulnerability " + attackTypeVulnerability + " to this type of attack.");
+			damage = damage + attackTypeVulnerability;
 			Utils.print("Increasing to " + damage + " damage.");
 		}
 
 		if (temporaryHitPoints > 0) {
-			Utils.print(name + " has " + temporaryHitPoints + ". Using those first.");
+			Utils.print(name + " has " + temporaryHitPoints + " temporary hit points. Using those first.");
 			if (temporaryHitPoints >= damage) {
 				temporaryHitPoints = temporaryHitPoints - damage;
 				Utils.print(temporaryHitPoints + " remaining.");
@@ -1398,35 +1884,106 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 		if (currentHitPoints <= 0) {
 			/* If this is a monster, that means they are dead. */
 			if (Monster.class.isInstance(this)) {
+				currentHitPoints = 0;
 				Utils.print(name + " is dead.");
-				encounter.removeCreature(this);
+				Encounter.getEncounter().removeCreature(this);
 			} else {
 				/* For now just do the same for player characters. */
 				Utils.print(name + " is dead.");
-				encounter.removeCreature(this);
+				Encounter.getEncounter().removeCreature(this);
 			}
-		}
-
-		/* Some races have effects that take place after they get hurt. */
-		if (race != null) {
-			race.processAfterHurtEffects(this);
 		}
 	}
 
 	private int getDamageResistance(DamageType damageType) {
 		int resistance = 0;
 
-		if (damageResistances.containsKey(damageType)) {
-			resistance = damageResistances.get(damageType);
+		if ((damageType != null) && (damageResistances != null)) {
+
+			if (damageResistances.containsKey(damageType)) {
+				resistance = damageResistances.get(damageType);
+			}
+
+			// Check for temporary damage resistance.
+			if (temporaryEffects != null) {
+				for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+					TemporaryEffect tempEffect = it.next();
+					if (TemporaryDamageResistance.class.isAssignableFrom(tempEffect.getClass())) {
+						TemporaryDamageResistance temporaryDamageResistance = (TemporaryDamageResistance) tempEffect;
+						if (temporaryDamageResistance.stillApplies()) {
+							if ((temporaryDamageResistance.getDamageType() == DamageType.ALL) || (temporaryDamageResistance.getDamageType() == damageType)) {
+								resistance += temporaryDamageResistance.getModifier();
+								/* If it should be removed now, delete the modifier now. */
+								if (tempEffect.shouldBeRemoved()) {
+									Utils.print("Temporary damage resistance will no longer apply.");
+									it.remove();
+								}
+							}
+						} else {
+							Utils.print("Temporary damage resistance no longer applies.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
 		}
+		return resistance;
+	}
+
+	private int getAttackTypeResistance(AttackType attackType) {
+		int resistance = 0;
+
+		if ((attackType != null) && (attackTypeResistances != null)) {
+			if (attackTypeResistances.containsKey(attackType)) {
+				resistance = attackTypeResistances.get(attackType);
+			}
+		}
+		
+		return resistance;
+	}
+
+	private double getPercentDamageResistance(DamageType damageType) {
+		double resistance = 0.0;
+
+		if ((damageType != null) && (percentDamageResistances != null)) {
+			if (percentDamageResistances.containsKey(damageType)) {
+				resistance = percentDamageResistances.get(damageType);
+			}
+		}
+		
+		return resistance;
+	}
+
+	private double getPercentAttackTypeResistance(AttackType attackType) {
+		double resistance = 0.0;
+
+		if ((attackType != null) && (percentAttackTypeResistances != null)) {
+			if (percentAttackTypeResistances.containsKey(attackType)) {
+				resistance = percentAttackTypeResistances.get(attackType);
+			}
+		}
+		
 		return resistance;
 	}
 
 	private int getDamageVulnerability(DamageType damageType) {
 		int vulnerability = 0;
 
-		if (damageVulnerabilities.containsKey(damageType)) {
-			vulnerability = damageVulnerabilities.get(damageType);
+		if ((damageType != null) && (damageVulnerabilities != null)) {
+			if (damageVulnerabilities.containsKey(damageType)) {
+				vulnerability = damageVulnerabilities.get(damageType);
+			}
+		}
+		return vulnerability;
+	}
+
+	private int getAttackTypeVulnerability(AttackType attackType) {
+		int vulnerability = 0;
+
+		if ((attackType != null) && (attackTypeVulnerabilities != null)) {
+			if (attackTypeVulnerabilities.containsKey(attackType)) {
+				vulnerability = attackTypeVulnerabilities.get(attackType);
+			}
 		}
 		return vulnerability;
 	}
@@ -1434,494 +1991,846 @@ public abstract class Creature implements Serializable, TurnTaker, AttackTarget 
 	public Race getRace() {
 		return race;
 	}
+
 	public void setRace(Race race) {
 		this.race = race;
 	}
+
 	public DndClass getDndClass() {
 		return dndClass;
 	}
+
 	public void setDndClass(DndClass dndClass) {
 		/* The "Character" class overrides this method.  Any one else setting
 		 * this object is a monster or someone who shouldn't have a race/class.
 		 */
 		this.dndClass = null;
 	}
-	protected Race race;
-	protected DndClass dndClass;
-	private boolean turnOver;
-	private Mark mark;
-	private int temporaryHitPoints;
-	private CombatAdvantage combatAdvantage;
-	private TemporaryAttackRollModifier temporaryAttackRollModifier;
-	private TemporaryInvisibility temporaryInvisibility;
-	public int getTemporaryHitPoints() {
-		return temporaryHitPoints;
+
+	public List<TemporaryEffect> getTemporaryEffects() {
+		return temporaryEffects;
 	}
 
-
-	public void setTurnOver(boolean turnOver) {
-		this.turnOver = turnOver;
+	public void setTemporaryEffects(List<TemporaryEffect> temporaryEffects) {
+		this.temporaryEffects = temporaryEffects;
 	}
 
-
-	public void push(String direction) {
-		/* Check for things like "Form of the Willow Sentinel. */
-		if (Character.class.isAssignableFrom(this.getClass())) {
-			DndClass dndClass = ((Character) this).getDndClass();
-			if (Warden.class.isInstance(dndClass)) {
-				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
-					/* For now assume they wouldn't want to be pushed. */
-					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be pushed. ");
-					return;
+	public boolean isUnconscious() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.UNCONSCIOUS) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still unconscious.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be unconscious after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer unconscious.  Removing.");
+							it.remove();
+						}
+					}
 				}
 			}
 		}
-		if ("N".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-		}
-		if ("S".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-		}
-		if ("E".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("W".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("NE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("NW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("SE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("SW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		Utils.print("Just pushed " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
-		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
-	}
-
-	public void pull(String direction) {
-		/* Check for things like "Form of the Willow Sentinel. */
-		if (Character.class.isAssignableFrom(this.getClass())) {
-			DndClass dndClass = ((Character) this).getDndClass();
-			if (Warden.class.isInstance(dndClass)) {
-				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
-					/* For now assume they wouldn't want to be pushed. */
-					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be pulled. ");
-					return;
-				}
-			}
-		}
-		if ("N".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-		}
-		if ("S".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-		}
-		if ("E".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("W".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("NE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("NW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("SE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("SW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		Utils.print("Just pulled " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
-		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
-	}
-
-	public void slide(String direction) {
-		/* Check for things like "Form of the Willow Sentinel. */
-		if (Character.class.isAssignableFrom(this.getClass())) {
-			DndClass dndClass = ((Character) this).getDndClass();
-			if (Warden.class.isInstance(dndClass)) {
-				if (((Warden) dndClass).isUsingFormOfTheWillowSentinel()) {
-					/* For now assume they wouldn't want to be pushed. */
-					Utils.print(getName() + " is currently using the Form of the Willow Sentinel power and can not be slid. ");
-					return;
-				}
-			}
-		}
-		if ("N".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-		}
-		if ("S".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-		}
-		if ("E".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("W".equals(direction)) {
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("NE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("NW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()+1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		if ("SE".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()+1);
-		}
-		if ("SW".equals(direction)) {
-			currentPosition.setY(currentPosition.getY()-1);
-			currentPosition.setX(currentPosition.getX()-1);
-		}
-		Utils.print("Just slid " + name + " to (" + currentPosition.getX() + ", " + currentPosition.getY() + ").");
-		Utils.print("Please note, The program did not check if this is out of map bounds or the condition of the terrain, or walls, etc.");
-	}
-
-	public int getCurrentTurn() {
-		return currentTurn;
-	}
-
-
-	public void setCurrentTurn(int currentTurn) {
-		this.currentTurn = currentTurn;
-	}
-
-	public void setArmorClass(int armorClass) {
-		Utils.print("You have somehow reached the setArmorClass method of the Creature class.  You should not do this.");	
-	}
-
-
-	public boolean isTurnOver() {
-		return turnOver;
-	}
-
-	@Override
-	public void markByCombatChallenge(Creature owner, DurationType duration) {
-		mark = new Mark();
-		mark.setTypeOfMark(MarkType.COMBAT_CHALLENGE);
-		mark.setMarker(owner);
-		mark.setDuration(duration);
-		mark.setStartTurn(owner.getCurrentTurn());
-	}
-
-	@Override
-	public void markByMisdirectedMark(Creature owner, Creature misdirectedMarker, DurationType duration) {
-		mark = new Mark();
-		mark.setTypeOfMark(MarkType.MISDIRECTED_MARK);
-		mark.setMarker(owner);
-		mark.setMisdirectedMarker(misdirectedMarker);
-		mark.setDuration(duration);
-		mark.setStartTurn(owner.getCurrentTurn());
-	}
-
-	public void grantCombatAdvantageViaWardensFury(Creature owner) {
-		combatAdvantage = new CombatAdvantage();
-		combatAdvantage.setTypeOfCombatAdvantage(CombatAdvantageType.WARDENS_FURY);
-		combatAdvantage.setOwner(owner);
-		combatAdvantage.setDuration(DurationType.END_OF_NEXT_TURN);
-		combatAdvantage.setStartTurn(owner.getCurrentTurn());
-	}
-
-	public void setTemporaryAttackRollModifier(Creature owner, DurationType durationType, int attackRollModifier) {
-		temporaryAttackRollModifier = new TemporaryAttackRollModifier();
-		temporaryAttackRollModifier.setOwner(owner);
-		temporaryAttackRollModifier.setDuration(durationType);
-		temporaryAttackRollModifier.setStartTurn(owner.getCurrentTurn());
-		temporaryAttackRollModifier.setAttackRollModifier(attackRollModifier);
-	}
-
-	public void setTemporaryInvisibility(Creature owner, DurationType durationType, List<Creature> target) {
-		temporaryInvisibility = new TemporaryInvisibility();
-		temporaryInvisibility.setOwner(owner);
-		temporaryInvisibility.setDuration(durationType);
-		temporaryInvisibility.setStartTurn(owner.getCurrentTurn());
-		/* If target is null, then you became invisible to everyone. */
-		if (target != null) {
-			temporaryInvisibility.setTargets(target);
-		}
-	}
-
-	public int getOtherAttackModifier(List<AttackTarget> targets, Encounter encounter) {
-		int total = 0;
-
-		/* Check for a temporary attack roll modifier. */
-		if (hasTemporaryAttackRollModifier()) {
-			Utils.print(name + " currently has a temporary attack roll modifier of " + temporaryAttackRollModifier.getAttackRollModifier());
-			total = total + temporaryAttackRollModifier.getAttackRollModifier();
-			/* If it was immediate duration, delete the modifier now. */
-			if (temporaryAttackRollModifier.getDuration() == DurationType.IMMEDIATE) {
-				temporaryAttackRollModifier = null;
-			}
-		}
-
-		if (isMarked() && !targets.contains(mark.getMarker())) {
-			Utils.print(getName() + " is currently marked by " + mark.getMarker().getName() + " and takes a -2 penalty because " + mark.getMarker().getName() + " is not being attacked.");
-			total = total - 2;
-
-			/* If I am marked by "Combat challenge", then the fighter that marked me gets to make a melee basic attack against me
-			 * as an immediate interrupt.
-			 */
-			if (mark.getTypeOfMark() == MarkType.COMBAT_CHALLENGE) {
-				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
-				Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
-				/* Should be able to cast the marker to a character. */
-				if (Character.class.isInstance(mark.getMarker())) {
-					((Character) (mark.getMarker())).basicMeleeAttack(encounter);
-				}
-			}
-
-			/* If I am marked by "Nature's Wrath", then the warden that marked me gets to make a Warden's Fury against me
-			 * as an immediate interrupt.
-			 */
-			if (mark.getTypeOfMark() == MarkType.NATURES_WRATH) {
-				Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a Warden's Fury attack against me because they marked me with Nature's Wrath.");
-				/* Should be able to cast the marker to a warden. */
-				if (Warden.class.isInstance(mark.getMarker().getDndClass())) {
-					((Warden) (mark.getMarker().getDndClass())).wardensFury(encounter, this);
-				}
-			}
-		}
-
-		/* Do I have combat advantage against the target? */
-		/* I think I can only check this if it is a single target. */
-		if (targets.size() == 1) {
-			if (Utils.hasCombatAdvantage(this, (Creature) targets.get(0), encounter)) {
-				Utils.print(getName() + " has combat advantage over " + targets.get(0).getName() + " and recieves a +2 bonus.");
-				total = total + 2;
-			}
-		}
-
-		return total;
-	}
-
-
-	private boolean isMarked() {
-		if (mark != null) {
-			if (mark.stillApplies()) {
-				return true;
-			} else {
-				/* Mark is over.  Reset the mark. */
-				mark = null;
-				Utils.print("Mark no longer applies.  Resetting.");
-				return false;
-			}
-		}
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	private boolean hasTemporaryAttackRollModifier() {
-		if (temporaryAttackRollModifier != null) {
-			if (temporaryAttackRollModifier.stillApplies()) {
-				return true;
-			} else {
-				/* temporaryAttackRollModifier is over.  Reset it. */
-				temporaryAttackRollModifier = null;
-				Utils.print("Temporary attack roll modifier no longer applies.  Resetting.");
-				return false;
+	public boolean isSurprised() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.SURPRISED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still surprised.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be surprised after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer surprised.  Removing.");
+							it.remove();
+						}
+					}
+				}
 			}
 		}
-		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isDeafened() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DEAFENED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still deafened.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be deafened after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer deafened.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public boolean isPetrified() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.PETRIFIED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is petrified still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be petrified after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer petrified.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public boolean isDying() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DYING) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dying still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dying after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dying.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public boolean isDominated() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DOMINATED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dominated still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dominated after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dominated.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public boolean isDazed() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.DAZED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is dazed still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be dazed after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer dazed.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isStunned() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.STUNNED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is stunned still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be stunned after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer stunned.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 
 	/* There could be several reasons you are invisible.  For now, just checking for temporary invisibility, though. */
 	public boolean isInvisibleTo(TurnTaker attacker) {
-		if (temporaryInvisibility != null) {
-			if (temporaryInvisibility.stillApplies()) {
-				/* Does it apply to this creature? */
-				if (temporaryInvisibility.getTargets() == null) {
-					return true;
-				} else {
-					if (temporaryInvisibility.getTargets().contains(attacker)) {
-						return true;
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect tempEffect = it.next();
+				if (TemporaryInvisibility.class.isAssignableFrom(tempEffect.getClass())) {
+					TemporaryInvisibility temporaryInvisibility = (TemporaryInvisibility) tempEffect;
+
+					// Gnome Fade Away is marked as special because it ends either at the end of its next turn or when it attacks.
+					// Temporarily setting duration to end of next turn, so the stillApplies method can check for it.
+					boolean gnomeFadeAway = false;
+					if (com.jimmie.domain.creatures.monsters.Gnome.class.isAssignableFrom(this.getClass())) {
+						if (temporaryInvisibility.getReason() == TemporaryEffectReason.FADE_AWAY) {
+							temporaryInvisibility.setDuration(DurationType.END_OF_NEXT_TURN);
+							gnomeFadeAway = true;
+						}
+					}
+					if (temporaryInvisibility.stillApplies()) {
+						if (gnomeFadeAway) {
+							// Set duration type back to special for gnome fade away.
+							temporaryInvisibility.setDuration(DurationType.SPECIAL);
+						}
+						/* Does it apply to this creature? */
+						if (temporaryInvisibility.getTargets() == null) {
+							/* If it should be removed now, delete the modifier now. */
+							if (temporaryInvisibility.shouldBeRemoved()) {
+								it.remove();
+							}
+							return true;
+						} else {
+							if (temporaryInvisibility.getTargets().contains(attacker)) {
+								/* If it should be removed now, delete the modifier now. */
+								if (temporaryInvisibility.shouldBeRemoved()) {
+									it.remove();
+								}
+								return true;
+							}
+						}
+					} else {
+						it.remove();
+						Utils.print("Temporary invisibility no longer applies.  Resetting.");
 					}
 				}
-			} else {
-				/* temporaryInvisibility is over.  Reset it. */
-				temporaryInvisibility = null;
-				Utils.print("Temporary invisibility no longer applies.  Resetting.");
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isBlinded() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.BLINDED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is blinded still.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be blinded after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer blinded.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isHelpless() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.HELPLESS) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still helpless.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be helpless after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer helpless.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isImmobilized() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.IMMOBILIZED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still immobilized.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be immobilized after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer immobilized.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isProne() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.PRONE) {
+						if (condition.stillApplies()) {
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be prone after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer prone.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isRestrained() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.RESTRAINED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still restrained.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be restrained after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer restrained.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isSlowed() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.SLOWED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still slowed.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be slowed after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer slowed.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isWeakened() {
+		if (temporaryEffects != null) {
+			for (Iterator<TemporaryEffect> it = temporaryEffects.iterator(); it.hasNext();) {
+				TemporaryEffect effect = it.next();
+				if (TemporaryCondition.class.isAssignableFrom(effect.getClass())) {
+					TemporaryCondition condition = (TemporaryCondition) effect;
+					if (condition.getConditionType() == CreatureConditionType.WEAKENED) {
+						if (condition.stillApplies()) {
+							Utils.print(getName() + " is still weakened.");
+							/* If it should be removed now, delete the modifier now. */
+							if (condition.shouldBeRemoved()) {
+								Utils.print("But will not be weakened after this.");
+								it.remove();
+							}
+							return true;
+						} else {
+							Utils.print(getName() + " is no longer weakened.  Removing.");
+							it.remove();
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public Origin getOrigin() {
+		return origin;
+	}
+	public void setOrigin(Origin origin) {
+		this.origin = origin;
+	}
+
+	public int attackRoll(AbilityType abilityType, AccessoryType accessoryType, AttackTarget target, Position attackOriginSquare, AttackType attackType) {
+		int diceRoll = rawAttackRoll() + getAbilityModifierPlusHalfLevel(abilityType) + getOtherAttackModifier(target);
+		
+		if (accessoryType == AccessoryType.IMPLEMENT) {
+			diceRoll += getImplementAttackBonus();
+		} else if (accessoryType == AccessoryType.WEAPON) {
+			diceRoll += this.getWeaponProficiencyBonus();
+		}
+		
+		Utils.print("With all the modifiers, your roll becomes " + diceRoll);
+		
+		return diceRoll;
+	}
+
+	// This one should be used mainly for monster attacks.
+	public int attackRoll(int modifiers) {
+		int diceRoll = rawAttackRoll() + modifiers;
+		
+		Utils.print("With all the modifiers, your roll becomes " + diceRoll);
+		
+		return diceRoll;
+	}
+	
+	private int rawAttackRoll() {
+		Dice d = new Dice(DiceType.TWENTY_SIDED);
+		return d.roll(DiceRollType.ATTACK_ROLL);
+	}
+
+	public int getImplementAttackBonus() {
+		Utils.print("In Creature.getImplementAttackBonus.");
+		return 0;
+	}
+
+	public int getImplementDamageBonus() {
+		Utils.print("In Creature.getImplementDamageBonus.");
+		return 0;
+	}
+
+	@Override
+	public void miss(Creature misser, AttackPower power) {
+	}
+
+	public void slideTargets(List<AttackTarget> targets, int distance) {
+
+		if (targets != null) {
+			for (AttackTarget target : targets) {
+				// No use sliding a dead target.
+				if (target.getCurrentHitPoints() > 0) {
+					for (int i = 0; i < distance; i++) {
+						Utils.print("What direction do you want to slide " + target.getName() + "? (N, E, S, W, NE, NW, SE, SW, STOP)?");
+						List<String> validDirections = new ArrayList<String>();
+
+						validDirections.add("N");
+						validDirections.add("E");
+						validDirections.add("S");
+						validDirections.add("W");
+						validDirections.add("NE");
+						validDirections.add("NW");
+						validDirections.add("SE");
+						validDirections.add("SW");
+						validDirections.add("STOP");
+
+						Utils.print("Your choice?");
+						String direction = Utils.getValidInput(validDirections);
+						if ("STOP".equalsIgnoreCase(direction)) {
+							break;
+						}
+
+						target.slide(direction);
+					}
+				}
+			}
+		}
+	}
+
+	public void pushTargets(List<Creature> pushTargets, int distance) {
+		if (pushTargets != null) {
+			for (Creature target : pushTargets) {
+				for (int i = 0; i < distance; i++) {
+					String pushDirection = Encounter.getEncounter().getPushDirection(getCurrentPosition(), target.getCurrentPosition());
+					target.push(pushDirection);
+				}
+			}
+		}
+		
+	}
+
+	public boolean isSmallerThan(Creature user) {
+		switch (size) {
+		case TINY : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return true;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case SMALL : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case MEDIUM : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case LARGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return true;
+			}
+		case HUGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return true;
+			}
+		case GARGANTUAN : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
 				return false;
 			}
 		}
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void shift(int distance, boolean free, Encounter encounter) {
-		Utils.print(name + " is shifting " + distance + " squares.");
-
-		if (!free) {
-			if (!canTakeMoveAction()) {
-				Utils.print("I don't know how you got in this method (useMoveAction), but you can't!!!");
-				return;
-			}
-			if (!usedMoveAction) {
-				usedMoveAction = true;
-			} else if (!usedStandardAction) {
-				usedStandardAction = true;
-			}
-		}
-
-		/* Right now, the only difference between walk and shift is the distance.
-		 * Later I'll add things like checking for opportunity attacks, etc.
-		 */
-
-		int distanceLeft = distance;
-		if (isMarked() && (mark.getTypeOfMark() == MarkType.COMBAT_CHALLENGE)) {
-			Utils.print("UH OH!  " + mark.getMarker().getName() + " gets to make a basic melee attack against me because they marked me with Combat Challenge.");
-			Utils.print("Make sure to pick me (" + getName() + ") when it asks who to attack.");
-			/* Should be able to cast the marker to a character. */
-			if (Character.class.isInstance(mark.getMarker())) {
-				((Character) (mark.getMarker())).basicMeleeAttack(encounter);
-			}
-		}
-
-		while (distanceLeft > 0) {
-			Utils.print("What direction do you want to move (N, E, S, W, NE, NW, SE, SW, STOP)?");
-			List<String> validDirections = new ArrayList<String>();
-
-			validDirections.add("N");
-			validDirections.add("E");
-			validDirections.add("S");
-			validDirections.add("W");
-			validDirections.add("NE");
-			validDirections.add("NW");
-			validDirections.add("SE");
-			validDirections.add("SW");
-			validDirections.add("STOP");
-
-			Utils.print("Your choice?");
-			String direction = Utils.getValidInput(validDirections);
-			if ("STOP".equalsIgnoreCase(direction)) {
-				distanceLeft = 0;
-			} else {
-				move(direction, encounter);
-				distanceLeft--;
-			}
-		}
-	}
-
-
-	public void setTemporaryHitPoints(int i) {
-		temporaryHitPoints = i;
-	}
-
-
-	public boolean isAdjacentTo(Creature target) {
-		if (target.getCurrentPosition().isWithinReachOf(this.getCurrentPosition(), 1)) {
+	public boolean isSameSizeAs(Creature user) {
+		if (size == user.size) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	public boolean isOneSizeBiggerThan(Creature user) {
+		switch (size) {
+		case TINY : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case SMALL : 
+			switch (user.getSize()) {
+			case TINY : 
+				return true;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case MEDIUM : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return true;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case LARGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return true;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case HUGE : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return true;
+			case HUGE : 
+				return false;
+			case GARGANTUAN : 
+				return false;
+			}
+		case GARGANTUAN : 
+			switch (user.getSize()) {
+			case TINY : 
+				return false;
+			case SMALL : 
+				return false;
+			case MEDIUM : 
+				return false;
+			case LARGE : 
+				return false;
+			case HUGE : 
+				return true;
+			case GARGANTUAN : 
+				return false;
+			}
+		}
+		return false;
+	}
 
-	public boolean canFlank() {
-		/* Some conditions don't allow you to flank. */
-		if (isBlinded() || isDazed() || isDominated() || isDying() || isPetrified() || isStunned() || isSurprised() || isUnconscious()) {
-			return false;
+	public void setReadiedPotion(Potion readiedPotion) {
+		this.readiedPotion = readiedPotion;
+	}
+
+	public Potion getReadiedPotion() {
+		return readiedPotion;
+	}
+
+	public Power getBasicMeleeAttack() {
+		HashMap<Integer, Power> basicMeleeAttacks = new HashMap<Integer, Power>();
+		int count = 0;
+		for (Power power : getPowers()) {
+			if (AttackPower.class.isAssignableFrom(power.getClass())) {
+				if (power.isBasicAttack() && Utils.isMeleeAttack(((AttackPower)power).getAttackType())) {
+					// If it's a melee weapon attack, make sure they have a melee weapon readied.
+					AttackType attackType = ((AttackPower)power).getAttackType();
+					if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)
+							|| (((attackType == AttackType.MELEE_WEAPON)	|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isMeleeWeapon())) {
+						count++;
+						basicMeleeAttacks.put(count, power);							
+					}
+				}
+			}
+		}
+		
+		if (count == 1) {
+			return basicMeleeAttacks.get(1);
 		} else {
+			// TODO: Implement choosing from multiples.
+		}
+		return basicMeleeAttacks.get(1);
+	}
+
+	public Power getBasicRangedAttack() {
+		HashMap<Integer, Power> basicRangedAttacks = new HashMap<Integer, Power>();
+		int count = 0;
+		for (Power power : getPowers()) {
+			if (AttackPower.class.isAssignableFrom(power.getClass())) {
+				if (power.isBasicAttack() && Utils.isRangedAttack(((AttackPower)power).getAttackType())) {
+					// If it's a ranged weapon attack, make sure they have a ranged weapon readied.
+					AttackType attackType = ((AttackPower)power).getAttackType();
+					if ((attackType == AttackType.RANGED_NUMBER) || (attackType == AttackType.RANGED_SIGHT) ||
+							(((attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.RANGED_WEAPON)) && getReadiedWeapon().getWeapon().isRangedWeapon())) {
+						count++;
+						basicRangedAttacks.put(count, power);							
+					}
+				}
+			}
+		}
+		
+		if (count == 1) {
+			return basicRangedAttacks.get(1);
+		} else {
+			// TODO: Implement choosing from multiples.
+		}
+		return basicRangedAttacks.get(1);
+	}
+
+	public boolean isCarryingLightSource() {
+		if (readiedLightSource != null) {
 			return true;
 		}
-	}
-
-
-	private boolean isUnconscious() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-
-	private boolean isSurprised() {
-		// TODO Auto-generated method stub
-		return false;
+	public LightSource getReadiedLightSource() {
+		return readiedLightSource;
 	}
 
-
-	private boolean isPetrified() {
-		// TODO Auto-generated method stub
-		return false;
+	public void setReadiedLightSource(LightSource readiedLightSource) {
+		this.readiedLightSource = readiedLightSource;
 	}
 
-
-	private boolean isDying() {
-		// TODO Auto-generated method stub
-		return false;
+	public void setGrabbedCreature(Creature creature) {
+		grabbedCreature  = creature;
 	}
 
-
-	private boolean isDominated() {
-		// TODO Auto-generated method stub
-		return false;
+	public Creature getGrabbedCreature() {
+		return grabbedCreature;
 	}
 
-
-	private boolean isDazed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void knockProne() {
-		currentConditions.add(new Prone());
-	}
-
-	@FreeAction(powerId = PowerId.SPEND_ACTION_POINT)
-	@EncounterPower
-	public void spendActionPoint(Encounter encounter) {
-		/* Only let them do this if they have already used a standard action. */
-		if (this.canTakeStandardAction()) {
-			Utils.print("You really shouldn't spend an action point until you've already used your normal standard action.");
-			return;
-		}
-		if (!usedActionPoint) {
-			if (actionPoints > 0) {
-				actionPoints--;
-			}
-			this.setUsedStandardAction(false);
-			usedActionPoint = true;
-		} else {
-			Utils.print("You have already spent an action point this encounter.  I know it would have been nice if I mentioned that already.  Sorry!");
-		}
-	}
-
-	public BufferedImage getImage() {
-		BufferedImage image = null;
-		try {
-			image = ImageIO.read(new File(imagePath));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return image;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
-	}
 }

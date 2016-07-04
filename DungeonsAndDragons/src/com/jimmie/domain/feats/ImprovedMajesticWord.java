@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Bard;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ImprovedMajesticWord extends Feat {
@@ -21,13 +22,14 @@ public class ImprovedMajesticWord extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Target of majestic word gains temporary hp";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Bard.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 

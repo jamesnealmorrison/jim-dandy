@@ -1,21 +1,27 @@
 package com.jimmie.domain;
 
+import java.io.Serializable;
+
 import com.jimmie.domain.creatures.Creature;
 
-public class Mark {
-	private MarkType typeOfMark;
+public class Mark implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private MarkType markType;
 	private Creature marker;
 	private DurationType duration;
 	private int startTurn;
 	private Creature misdirectedMarker;
 
-	public MarkType getTypeOfMark() {
-		return typeOfMark;
+	public MarkType getMarkType() {
+		return markType;
 	}
 
 
-	public void setTypeOfMark(MarkType typeOfMark) {
-		this.typeOfMark = typeOfMark;
+	public void setMarkType(MarkType markType) {
+		this.markType = markType;
 	}
 
 
@@ -55,7 +61,7 @@ public class Mark {
 	}
 
 	public boolean stillApplies() {
-		if (duration == DurationType.END_OF_NEXT_TURN) {
+		if ((duration == DurationType.END_OF_NEXT_TURN) || (duration == DurationType.IMMEDIATE_BY_END_OF_NEXT_TURN)) {
 			if (marker.getCurrentTurn() <= startTurn) {
 				/* mark still applies. */
 				return true;
@@ -66,8 +72,25 @@ public class Mark {
 			} else {
 				return false;
 			}
+		} else if (duration == DurationType.START_OF_NEXT_TURN) {
+			if (marker.getCurrentTurn() <= startTurn) {
+				/* Bonus still applies. */
+				return true;
+			} else {
+				return false;
+			}
+		} else if (duration == DurationType.IMMEDIATE) {
+			return true;
+		} else if (duration == DurationType.SPECIAL) {
+			// Special marks will be removed elsewhere.  That's why they're special.
+			return true;
+		} else if (duration == DurationType.SAVE_ENDS) {
+			return true;
+		} else if (duration == DurationType.END_OF_NEXT_EXTENDED_REST) {
+			return true;
 		}
 		return false;
+
 	}
 
 

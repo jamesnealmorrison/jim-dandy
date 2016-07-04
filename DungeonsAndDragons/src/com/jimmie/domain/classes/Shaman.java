@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.CallSpiritCompanion;
+import com.jimmie.powers.HealingSpirit;
+import com.jimmie.powers.SpeakWithSpirits;
+import com.jimmie.powers.SpiritsFangs;
+import com.jimmie.powers.SpiritsShield;
 import com.jimmie.util.Utils;
 
 public class Shaman extends DndClass {
@@ -27,7 +34,7 @@ public class Shaman extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -79,18 +86,12 @@ public class Shaman extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponTypeProficiency(WeaponType.LONGSPEAR);
 		
-		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
+		Utils.print("Adding Implement Proficiencies: Totem");
+		pc.addImplementProficiency(ImplementType.TOTEM);
 
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -126,12 +127,16 @@ public class Shaman extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setCompanionSpirit(CompanionSpirit.PROTECTOR);
+			pc.addPower(new SpiritsShield());
 		} else {
 			setCompanionSpirit(CompanionSpirit.STALKER);
+			pc.addPower(new SpiritsFangs());
 		}
 		
-		// TODO: Companion Spirit, Healing Spirit, Speak with Spirits, Implements
-		Utils.print("NOTE: I have not yet coded Companion Spirit, Healing Spirit, Speak with Spirits, Implements.");
+		pc.addPower(new CallSpiritCompanion());
+		pc.addPower(new HealingSpirit());
+		pc.addPower(new SpeakWithSpirits());
+		
 	}
 
 	@Override

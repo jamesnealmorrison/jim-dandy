@@ -20,4 +20,9 @@ public class CrossbowBolts extends Gear {
 	public GearType getGearType() {
 		return GearType.CROSSBOW_BOLTS;
 	}
+
+	@Override
+	public String getName() {
+		return "Crossbow Bolts";
+	}
 }

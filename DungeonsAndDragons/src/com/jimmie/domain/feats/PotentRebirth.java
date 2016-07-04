@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.creatures.Deva;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class PotentRebirth extends Feat {
@@ -21,20 +22,19 @@ public class PotentRebirth extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+2 to attack and damage if reduced to 0 hp.";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Deva.class.isAssignableFrom(pc.getRace().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

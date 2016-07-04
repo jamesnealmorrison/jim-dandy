@@ -20,4 +20,10 @@ public class FlintAndSteel extends Gear {
 	public GearType getGearType() {
 		return GearType.FLINT_AND_STEEL;
 	}
+
+
+	@Override
+	public String getName() {
+		return "Flint And Steel";
+	}
 }

@@ -1,11 +1,13 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.FuriousAssault;
 import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
@@ -24,6 +26,14 @@ public class HalfOrc extends Race {
 	private boolean usedFuriousAssault;
 	private boolean usedHalfOrcResilience;
 
+	public boolean isUsedHalfOrcResilience() {
+		return usedHalfOrcResilience;
+	}
+
+	public void setUsedHalfOrcResilience(boolean usedHalfOrcResilience) {
+		this.usedHalfOrcResilience = usedHalfOrcResilience;
+	}
+
 	@Override
 	public int getRacialDamageBonus() {
 		/* Can they use furious assault? */
@@ -34,7 +44,7 @@ public class HalfOrc extends Race {
 			if ("Y".equalsIgnoreCase(choice)) {
 				usedFuriousAssault = true;
 				Dice dice = new Dice(DiceType.EIGHT_SIDED);
-				return dice.basicRoll();
+				return dice.roll(DiceRollType.DAMAGE_ROLL_MODIFICATION);
 			} else {
 				return 0;
 			}
@@ -47,18 +57,6 @@ public class HalfOrc extends Race {
 	public void initializeForNewDay() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void processAfterHurtEffects(Creature owner) {
-		/* Have they used half orc resilience yet? */
-		if (!usedHalfOrcResilience) {
-			if (owner.isBloodied()) {
-				Utils.print("This is the first time " + owner.getName() + " has been bloodied during this encounter.  Half orc resilience gives them 5 temporary hit points.");
-				owner.setTemporaryHitPoints(5);
-				usedHalfOrcResilience = true;
-			}
-		}
 	}
 
 	@Override
@@ -81,7 +79,7 @@ public class HalfOrc extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -96,16 +94,17 @@ public class HalfOrc extends Race {
 		Skill endurance = pc.getSkill(SkillType.ENDURANCE);
 		endurance.setMisc(endurance.getMisc()+2);
 		
-		// TODO: Half-Orc Resilience, Swift Charge, Furious Assault.
-		Utils.print("NOTE: I have not yet coded Half-Orc Resilience, Swift Charge, Furious Assault.");
+		pc.addPower(new FuriousAssault());
+		
+		// TODO: Half-Orc Resilience, Swift Charge.
+		Utils.print("NOTE: I have not yet coded Half-Orc Resilience, Swift Charge.");
 	}
 
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Half-Orc you get +2 to Strength and Dexterity.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setDexterity(pc.getDexterity() + 2);
-		
+		setStrengthBonus(getStrengthBonus()+2);
+		setDexterityBonus(getDexterityBonus()+2);
 	}
 }

@@ -20,4 +20,9 @@ public class GrapplingHook extends Gear {
 	public GearType getGearType() {
 		return GearType.GRAPPLING_HOOK;
 	}
+
+	@Override
+	public String getName() {
+		return "Grappling Hook";
+	}
 }

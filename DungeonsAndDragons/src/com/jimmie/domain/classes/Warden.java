@@ -4,26 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.AccessoryType;
 import com.jimmie.domain.AttackTarget;
+import com.jimmie.domain.AttackType;
 import com.jimmie.domain.DamageType;
 import com.jimmie.domain.DiceType;
-import com.jimmie.domain.DurationType;
-import com.jimmie.domain.PowerId;
-import com.jimmie.domain.creatures.Creature;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
-import com.jimmie.encounters.Encounter;
-import com.jimmie.util.AtWillPower;
-import com.jimmie.util.DailyPower;
-import com.jimmie.util.Dice;
-import com.jimmie.util.EncounterPower;
-import com.jimmie.util.MinorAction;
-import com.jimmie.util.StandardAction;
+
+import com.jimmie.powers.NaturesWrath;
+import com.jimmie.powers.RemoveFormOfTheWillowSentinel;
+import com.jimmie.powers.WardensFury;
+import com.jimmie.powers.WardensGrasp;
 import com.jimmie.util.Utils;
-import com.jimmie.domain.AttackType;
 
 public class Warden extends DndClass {
 
@@ -31,168 +28,32 @@ public class Warden extends DndClass {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private boolean usedThunderRamAssault;
-	private boolean usedFormOfTheWillowSentinel;
 	private boolean usedFormOfTheWillowSentinelAttack;
 	private boolean usingFormOfTheWillowSentinel;
+	private String willowSentinelImagePath;
+	private String willowSentinelBloodiedImagePath;
 	private GuardianMight guardianMight;
 
 	@Override
 	public void initializeForEncounter() {
-		usedThunderRamAssault = false;
-		usedFormOfTheWillowSentinel = false;
 	}
 
 	@Override
-	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@StandardAction(powerId = PowerId.STRENGTH_OF_STONE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
-	@AtWillPower
-	public void strengthOfStone(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
-			
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(owner);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				owner.heal(target.getStirringShoutCharismaModifier());
-			}
-
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (owner.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
-			
-			Utils.print(owner.getName() + " gets 3 temporary HP");
-			/* Only do this if they have < 3 already.  Otherwise we are removing temp hit points they already had. */
-			if (owner.getTemporaryHitPoints() < 3) {
-			   owner.setTemporaryHitPoints(3);
-			}
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
-	}
-
-	@StandardAction(powerId = PowerId.EARTH_SHIELD_STRIKE, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
-	@AtWillPower
-	public void earthShieldStrike(Encounter encounter) {
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
-			
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(owner);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				owner.heal(target.getStirringShoutCharismaModifier());
-			}
-
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (owner.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
-			
-			/* I get an AC bonus of +1 until the end of my next turn. */
-			Utils.print("Adding a +1 bonus to AC until the end of my next turn.");
-			owner.setTemporaryArmorClassBonus(1, owner.getCurrentTurn(), DurationType.END_OF_NEXT_TURN, owner);
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 	}
 
 	/* This does not have annotation.  It gets called directly. */
-	public void wardensFury(Encounter encounter, AttackTarget target) {
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetFortitude = target.getFortitude(encounter, owner);
-		Utils.print("Your target has an Fortitude of " + targetFortitude);
-		
-		if (roll >= targetFortitude) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				owner.heal(target.getStirringShoutCharismaModifier());
-			}
-
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
-
-			/* Book says at level 21 increase damage to 2[W]. */
-			if (owner.getLevel() >= 21) {
-				damageRolls = damageRolls * 2;
-			}
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
-			
-			Utils.print(target.getName() + " grants combat advantage to " + owner.getName() + " and allies until the end of " + owner.getName() + "'s next turn.");
-			target.grantCombatAdvantageViaWardensFury(owner);
-			Utils.print("This is not completely implemented yet, though.");
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
-	}
-
-	/* This does not have annotation.  It gets called directly. */
-	public int formOfTheWillowSentinelAttack(Encounter encounter, AttackTarget target) {
+	public int formOfTheWillowSentinelAttack(AttackTarget target) {
 		setUsedFormOfTheWillowSentinelAttack(true);
 		List<AttackTarget> targets = new ArrayList<AttackTarget>();
 		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
 		int targetArmorClass = target.getArmorClass(owner);
 		Utils.print("Your target has an AC of " + targetArmorClass);
 		
-		if (roll >= targetArmorClass) {
+		// TODO: This shouldn't be the target's position
+		int attackRoll = owner.attackRoll(AbilityType.STRENGTH, AccessoryType.NONE, target, target.getCurrentPosition(), AttackType.MELEE_NUMBER);
+		
+		if (attackRoll >= targetArmorClass) {
 			/* A HIT! */
 			Utils.print("You successfully hit " + target.getName());
 
@@ -202,136 +63,25 @@ public class Warden extends DndClass {
 				owner.heal(target.getStirringShoutCharismaModifier());
 			}
 
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
+			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
+			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, true);
+			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, true, owner, AttackType.MELEE_NUMBER);
 			
 			Utils.print(target.getName() + " gets a -4 penalty to the attack roll.");
 			return -4;
 		} else {
 			Utils.print("You missed " + target.getName() + ".  Doing half damage.");
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
+			int damageRolls = owner.getReadiedWeapon().getWeapon().getDamageRolls();
+			DiceType damageDiceType = owner.getReadiedWeapon().getWeapon().getDamageDice();
 
-			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.NORMAL_DAMAGE, encounter, false);
+			target.hurt(Utils.rollForHalfDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner), DamageType.NORMAL, false, owner, AttackType.MELEE_NUMBER);
 			
 			Utils.print(target.getName() + " gets a -2 penalty to the attack roll.");
+			
+			// Some targets have powers/effects that happen when they are missed.
+			target.miss(owner, null);
 			return -2;
-		}
-	}
-
-	@StandardAction(powerId = PowerId.THUNDER_RAM_ASSAULT, isBasicAttack = false, weaponTag = true, powerSource = PowerSource.PRIMAL, attackType = AttackType.MELEE)
-	@EncounterPower
-	public void thunderRamAssault(Encounter encounter) {
-		if (!usedThunderRamAssault) {
-			usedThunderRamAssault = true;
-		AttackTarget target = encounter.chooseMeleeTarget(owner, owner.getReadiedWeapon().getNormalRange());
-			
-		List<AttackTarget> targets = new ArrayList<AttackTarget>();
-		targets.add(target);
-		Dice d = new Dice(DiceType.TWENTY_SIDED);
-		int diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-		int roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(targets, encounter);
-		
-		Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-		
-		int targetArmorClass = target.getArmorClass(owner);
-		Utils.print("Your target has an AC of " + targetArmorClass);
-		
-		if (roll >= targetArmorClass) {
-			/* A HIT! */
-			Utils.print("You successfully hit " + target.getName());
-
-			/* See if this target was hit by Stirring Shout. */
-			if (target.isHitByStirringShout()) {
-				Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-				owner.heal(target.getStirringShoutCharismaModifier());
-			}
-
-			int damageRolls = owner.getReadiedWeapon().getDamageRolls();
-			DiceType damageDiceType = owner.getReadiedWeapon().getDamageDice();
-
-			/* TODO: Supposed to be THUNDER damage.  Haven't implemented that yet. */
-			target.hurt(Utils.rollForDamage(damageRolls, damageDiceType, owner.getReadiedWeapon().getDamageBonus(), owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH), owner.getRace()), DamageType.THUNDER_DAMAGE, encounter, true);
-			
-			/* If you chose the Earth Strength build, you can push the primary target. */
-			if (guardianMight == GuardianMight.EARTHSTRENGTH) {
-				String pushDirection = encounter.getPushDirection(owner.getCurrentPosition(), target.getCurrentPosition());
-				for (int i = 0; i < owner.getAbilityModifierPlusHalfLevel(AbilityType.CONSTITUTION); i++) {
-				    target.push(pushDirection);
-				}
-			}
-			
-			int lowerLeftX = 0;
-			int lowerLeftY = 0;
-			
-			Utils.print("Please enter the lower left X coordinate of the blast. No validation is done here, so do it right!");
-			lowerLeftX = Utils.getValidIntInputInRange(1, 50);
-			
-			Utils.print("Please enter the lower left Y coordinate of the blast. No validation is done here, so do it right!");
-			lowerLeftY = Utils.getValidIntInputInRange(1, 50);
-			
-			List<Creature> blastTargets = encounter.getAllCreaturesInBlast(lowerLeftX, lowerLeftY, 3);
-			
-     		Dice secondaryDice = new Dice(DiceType.SIX_SIDED);
-     		int secondaryDamage = secondaryDice.basicRoll();
-			
-			for (Creature secondaryTarget : blastTargets) {
-				List<AttackTarget> secondaryTargets = new ArrayList<AttackTarget>();
-				secondaryTargets.add(secondaryTarget);
-				d = new Dice(DiceType.TWENTY_SIDED);
-				diceRoll = d.attackRoll(owner, target, encounter, owner.getCurrentPosition());
-				roll = diceRoll + owner.getAbilityModifierPlusHalfLevel(AbilityType.STRENGTH) + owner.getWeaponProficiencyBonus() + owner.getOtherAttackModifier(secondaryTargets, encounter);
-				
-				Utils.print("You rolled a " + diceRoll + " for a total of: " + roll);
-				
-				int secondaryTargetFortitude = secondaryTarget.getFortitude(encounter, owner);
-				Utils.print("Your secondary target has an fortitude of " + secondaryTargetFortitude);
-				
-				if (roll >= secondaryTargetFortitude) {
-					/* A HIT! */
-					Utils.print("You successfully hit " + secondaryTarget.getName());
-
-					/* See if this target was hit by Stirring Shout. */
-					if (secondaryTarget.isHitByStirringShout()) {
-						Utils.print("You hit a target that was previously hit by Stirring Shout (bard power). You get " + target.getStirringShoutCharismaModifier() + " hit points.");
-						owner.heal(target.getStirringShoutCharismaModifier());
-					}
-
-			
-					secondaryTarget.hurt(secondaryDamage, DamageType.THUNDER_DAMAGE, encounter, true);
-					
-					/* If you chose the Earth Strength build, you can push the primary target. */
-					String pushDirection = encounter.getPushDirection(owner.getCurrentPosition(), secondaryTarget.getCurrentPosition());
-				    secondaryTarget.push(pushDirection);
-				} else {
-				    Utils.print("Sorry.  You missed " + secondaryTarget.getName());
-				}
-			}
-			
-		} else {
-			Utils.print("You missed " + target.getName());
-		}
-		}else {
-			Utils.print("Sorry, but " + owner.getName() + " has already used Thunder Ram Assault in this encounter.");
-			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
-			owner.setUsedStandardAction(false);
-		}
-	}
-
-	@MinorAction(powerId = PowerId.FORM_OF_THE_WILLOW_SENTINEL)
-	@DailyPower
-	public void formOfTheWillowSentinel(Encounter encounter) {
-		if (!usedFormOfTheWillowSentinel) {
-			usedFormOfTheWillowSentinel = true;
-
-			setUsingFormOfTheWillowSentinel(true);
-			
-		}else {
-			Utils.print("Sorry, but " + owner.getName() + " has already used Form of the Willow Sentinel today.");
-			Utils.print("I know it would have been nice if I had told you that before you picked it, though");
-			owner.setUsedMinorAction(false);
 		}
 	}
 
@@ -402,17 +152,8 @@ public class Warden extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
 		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 7");
 		pc.setHitPointsPerLevelGained(7);
@@ -452,6 +193,13 @@ public class Warden extends DndClass {
 			setGuardianMight(GuardianMight.WILDBLOOD);
 		}
 		
+		pc.addPower(new WardensFury());
+		pc.addPower(new WardensGrasp());
+		pc.addPower(new RemoveFormOfTheWillowSentinel());
+		
+		// Implementing "Nature's Wrath" as a power.
+		pc.addPower(new NaturesWrath());
+		
 		// TODO: Font of Life, Guardian Might, Nature's Wrath 
 		Utils.print("NOTE: I have not yet coded Font of Life, Guardian Might, Nature's Wrath.");
 	}
@@ -480,5 +228,113 @@ public class Warden extends DndClass {
 	public int getArmorClassBonus() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public String getWillowSentinelImagePath() {
+		return willowSentinelImagePath;
+	}
+
+	public void setWillowSentinelImagePath(String willowSentinelImagePath) {
+		this.willowSentinelImagePath = willowSentinelImagePath;
+	}
+
+	public String getWillowSentinelBloodiedImagePath() {
+		return willowSentinelBloodiedImagePath;
+	}
+
+	public void setWillowSentinelBloodiedImagePath(String willowSentinelBloodiedImagePath) {
+		this.willowSentinelBloodiedImagePath = willowSentinelBloodiedImagePath;
+	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, light shield,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "heavy shield. Wpn Prof: Simple melee, military";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Font of Life: Saving throw at start of turn.";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "Earthstrength: While not wearing heavy armor";
+		} else {
+			return "Wildblood: While not wearing heavy armor";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "use my Con modifier for AC. Also, when using";
+		} else {
+			return "use my Wid modifier for AC. Also, when using";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "2nd wind, I add my Con modifier to my AC until";
+		} else {
+			return "2nd wind, each enemy marked by me takes an";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return "the end of my next turn.";
+		} else {
+			return "attack penalty if their attack does not";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (guardianMight == GuardianMight.EARTHSTRENGTH) {
+			return null;
+		} else {
+			return "include me.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		return "Nature's Wrath: I can mark adj enemies.";
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		return "I have Warden's Fury and Warden's Grasp";
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		return "powers.";
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		// TODO Auto-generated method stub
+		return super.getClassFeaturesText13();
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		// TODO Auto-generated method stub
+		return super.getClassFeaturesText14();
 	}
 }

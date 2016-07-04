@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Avenger;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ImprovedArmorOfFaith extends Feat {
@@ -21,13 +22,14 @@ public class ImprovedArmorOfFaith extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Increases armor of faith bonus to AC";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Avenger.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 

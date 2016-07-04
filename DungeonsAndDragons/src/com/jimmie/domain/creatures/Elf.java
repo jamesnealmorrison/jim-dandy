@@ -6,19 +6,10 @@ import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.ElvenAccuracy;
 import com.jimmie.util.Utils;
 
 public class Elf extends Race {
-	private boolean usedElvenAccuracy;
-
-	public boolean isUsedElvenAccuracy() {
-		return usedElvenAccuracy;
-	}
-
-	public void setUsedElvenAccuracy(boolean usedElvenAccuracy) {
-		this.usedElvenAccuracy = usedElvenAccuracy;
-	}
-
 	/**
 	 * 
 	 */
@@ -32,17 +23,10 @@ public class Elf extends Race {
 
 	@Override
 	public void initializeForEncounter() {
-		usedElvenAccuracy = false;		
 	}
 
 	@Override
 	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void processAfterHurtEffects(Creature creature) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -67,7 +51,7 @@ public class Elf extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 7.");
-		pc.setSpeed(7);
+		pc.setBaseSpeed(7);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -86,16 +70,53 @@ public class Elf extends Race {
 		
 		pc.addWeaponTypeProficiency(WeaponType.LONGBOW);
 		pc.addWeaponTypeProficiency(WeaponType.SHORTBOW);
+
+		pc.addPower(new ElvenAccuracy());
 		
-		// TODO: Fey Origin, Group Awareness, Wild Step, Elven Accuracy
-		Utils.print("NOTE: I have not yet coded Fey Origin, Group Awareness, Wild Step, Elven Accuracy.");
+		pc.setOrigin(Origin.FEY);
+		
 	}
 
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As an Elf you get +2 to Dexterity and Wisdom.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);		
+		setDexterityBonus(getDexterityBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
+	}
+
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Elven Weapon Proviciency: Longbow and Shortbow.";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "Fey Origin: Considered a Fey Creature.";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "Group Awareness: I grant non-elf allies a +1";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "bonus to Perception when within 5 squares.";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "Wild Step: I ignore difficult terrain when";
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		return "I shift.";
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		return "Elven Accuracy power: Reroll an attack roll.";
 	}
 }

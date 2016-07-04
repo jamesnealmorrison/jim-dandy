@@ -21,14 +21,12 @@ public class ImplementExpertise extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+1 to attack rolls with chosen implement";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

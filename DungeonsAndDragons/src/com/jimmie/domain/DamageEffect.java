@@ -1,7 +1,5 @@
 package com.jimmie.domain;
 
-import com.jimmie.util.Dice;
-
 public class DamageEffect extends Effect {
 	private static final long serialVersionUID = 1L;
 	
@@ -26,16 +24,5 @@ public class DamageEffect extends Effect {
 	}
 	public void setModifier(int modifier) {
 		this.modifier = modifier;
-	}
-	
-	public int getDamage() {
-		Dice d = new Dice(diceType);
-		int total = 0;
-		
-		for (int i = 0; i < numberOfDice; i++) {
-			total = total + d.basicRoll();
-		}
-		total = total + modifier;
-		return total;
 	}
 }

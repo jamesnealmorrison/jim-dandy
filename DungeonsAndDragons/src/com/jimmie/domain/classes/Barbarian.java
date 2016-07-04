@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.RageStrike;
+import com.jimmie.powers.RoarOfTriumph;
+import com.jimmie.powers.SwiftCharge;
 import com.jimmie.util.Utils;
 
 public class Barbarian extends DndClass {
@@ -26,7 +30,7 @@ public class Barbarian extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -75,11 +79,7 @@ public class Barbarian extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
 		
 		Utils.print("Adding bonus of +2 Fortitude");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(2);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 2);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 2);
 
 		Utils.print("Setting hit points per level gained = 6");
 		pc.setHitPointsPerLevelGained(6);
@@ -115,12 +115,16 @@ public class Barbarian extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setFeralMight(FeralMight.RAGEBLOOD_VIGOR);
+			pc.addPower(new SwiftCharge());
 		} else {
 			setFeralMight(FeralMight.THANEBORN_TRIUMPH);
+			pc.addPower(new RoarOfTriumph());
 		}
 		
-		// TODO: Barbarian Agility, Feral Might, Rage Strike, Rampage
-		Utils.print("NOTE: I have not yet coded Barbarian Agility, Feral Might, Rage Strike, Rampage.");
+		pc.addPower(new RageStrike());
+		
+		// TODO: Barbarian Agility, Rampage
+		Utils.print("NOTE: I have not yet coded Barbarian Agility, Rampage.");
 	}
 
 	@Override

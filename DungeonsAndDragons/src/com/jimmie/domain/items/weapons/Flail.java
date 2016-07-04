@@ -83,4 +83,9 @@ public class Flail extends Weapon {
 		return WeaponCategory.MILITARY_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Flail";
+	}
+
 }

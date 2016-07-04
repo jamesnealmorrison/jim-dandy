@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.creatures.Gnome;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class GroupStealth extends Feat {
@@ -21,20 +22,19 @@ public class GroupStealth extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Nearby allies gain +2 to Stealth checks";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Gnome.class.isAssignableFrom(pc.getRace().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -4,11 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.DamageType;
+import com.jimmie.domain.DiceRollType;
+import com.jimmie.domain.DiceType;
+import com.jimmie.domain.DurationType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TemporaryEffectType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.util.Dice;
 import com.jimmie.util.Utils;
 
 public class Sorcerer extends DndClass {
@@ -18,6 +27,33 @@ public class Sorcerer extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private SorcererSpellSource spellSource;
+	private int firstAttackRoll;
+	private int unfetteredPower;
+	private boolean lastAttackRollEven;
+
+	public boolean getLastAttackRollEven() {
+		return lastAttackRollEven;
+	}
+
+	public void setLastAttackRollEven(boolean lastAttackRollEven) {
+		this.lastAttackRollEven = lastAttackRollEven;
+	}
+
+	public int getUnfetteredPower() {
+		return unfetteredPower;
+	}
+
+	public void setUnfetteredPower(int unfetteredPower) {
+		this.unfetteredPower = unfetteredPower;
+	}
+
+	public int getFirstAttackRoll() {
+		return firstAttackRoll;
+	}
+
+	public void setFirstAttackRoll(int firstAttackRoll) {
+		this.firstAttackRoll = firstAttackRoll;
+	}
 
 	@Override
 	public void initializeForEncounter() {
@@ -26,9 +62,54 @@ public class Sorcerer extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
-		// TODO Auto-generated method stub
-
+	public void initializeForNewDay(DndCharacter dndCharacter) {
+		if (this.getSpellSource() == SorcererSpellSource.WILD_MAGIC) {
+			// Wild Soul
+			Dice d = new Dice(DiceType.TEN_SIDED);
+			int roll = d.roll(DiceRollType.WILD_SOUL);
+			switch (roll) {
+			case 1 :
+				Utils.print("You will have 5 damage resistance to ACID until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.ACID);
+				break;
+			case 2 :
+				Utils.print("You will have 5 damage resistance to COLD until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.COLD);
+				break;
+			case 3 :
+				Utils.print("You will have 5 damage resistance to FIRE until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.FIRE);
+				break;
+			case 4 :
+				Utils.print("You will have 5 damage resistance to FORCE until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.FORCE);
+				break;
+			case 5 :
+				Utils.print("You will have 5 damage resistance to LIGHTNING until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.LIGHTNING);
+				break;
+			case 6 :
+				Utils.print("You will have 5 damage resistance to NECROTIC until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.NECROTIC);
+				break;
+			case 7 :
+				Utils.print("You will have 5 damage resistance to POISON until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.POISON);
+				break;
+			case 8 :
+				Utils.print("You will have 5 damage resistance to PSYCHIC until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.PSYCHIC);
+				break;
+			case 9 :
+				Utils.print("You will have 5 damage resistance to RADIANT until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.RADIANT);
+				break;
+			case 10 :
+				Utils.print("You will have 5 damage resistance to THUNDER until the end of your next extended rest.");
+				dndCharacter.setTemporaryDamageResistance(5, dndCharacter.getCurrentTurn(), DurationType.END_OF_NEXT_EXTENDED_REST, dndCharacter, TemporaryEffectType.DMG_RESIST, TemporaryEffectReason.WILD_MAGIC, DamageType.THUNDER);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -78,12 +159,12 @@ public class Sorcerer extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Daggers, Staffs");
+		pc.addImplementProficiency(ImplementType.DAGGER);
+		pc.addImplementProficiency(ImplementType.STAFF);
+
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(2);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -123,8 +204,8 @@ public class Sorcerer extends DndClass {
 			setSpellSource(SorcererSpellSource.WILD_MAGIC);
 		}
 		
-		// TODO: Spell Source, Implements
-		Utils.print("NOTE: I have not yet coded Spell Source, Implements.");
+		// TODO: Spell Source
+		Utils.print("NOTE: I have not yet coded Spell Source.");
 	}
 
 	@Override
@@ -134,7 +215,7 @@ public class Sorcerer extends DndClass {
 		pc.setMaxHitPoints(hp);
 		pc.setCurrentHitPoints(hp);
 
-		int healingSurgesPerDay = 68 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
+		int healingSurgesPerDay = 6 + pc.getAbilityModifier(AbilityType.CONSTITUTION);
 		Utils.print("Setting healing surges per day = " + healingSurgesPerDay);
 		pc.setHealingSurgesPerDay(healingSurgesPerDay);
 	}
@@ -152,4 +233,119 @@ public class Sorcerer extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth. Weapon Prof: Simple melee,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Implements: Daggers, Staffs";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Draconic Power: Damage roll bonus to arcane powers"; 
+		} else {
+			return "Chaos Burst: If my first attack roll in a turn is";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "equal to my Str modifier."; 
+		} else {
+			return "even, I gain a +1 bonus to AC. If odd, saving throw.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Draconic Resilience: While not wearing heavy"; 
+		} else {
+			return "Chaos Power: Add Dex modifier to damage rolls of";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "armor, use Str modifier for AC."; 
+		} else {
+			return "my arcane powers.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Dragon Soul: I gain resist 5 to a damage type"; 
+		} else {
+			return "Unfettered Power: When I roll a natural 20 on an";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "and my arcane powers ignore any target's"; 
+		} else {
+			return "attack roll, I slide the target and knock it";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "resistance to that damage type."; 
+		} else {
+			return "prone. If a natural 1, I push ALL creatures";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "Scales of the Dragon: The first time I am"; 
+		} else {
+			return "within 5 squares one square.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "bloodied I gain a +2 to AC until the end"; 
+		} else {
+			return "Wild Soul: At an extended rest, I gain resist";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return "of the encounter."; 
+		} else {
+			return "5 to a random damage type, and my powers";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		if (spellSource == SorcererSpellSource.DRAGON_MAGIC) {
+			return null; 
+		} else {
+			return "ignore enemies resistance to it.";
+		}
+	}
+
 }

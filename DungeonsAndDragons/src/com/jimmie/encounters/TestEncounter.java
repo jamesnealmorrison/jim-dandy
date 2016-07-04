@@ -1,18 +1,6 @@
 package com.jimmie.encounters;
 
-import com.jimmie.domain.Position;
-import com.jimmie.domain.PowerId;
-import com.jimmie.domain.classes.Psion;
-import com.jimmie.domain.creatures.Human;
-import com.jimmie.domain.creatures.PlayerCharacter;
-import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
-import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
-import com.jimmie.domain.items.armor.ClothArmor;
-import com.jimmie.domain.items.armor.NoShield;
-import com.jimmie.domain.items.weapons.Mace;
-import com.jimmie.domain.map.LocationType;
-import com.jimmie.domain.map.Map;
-import com.jimmie.domain.map.MapLocation;
+import com.jimmie.domain.TurnTaker;
 
 public class TestEncounter extends Encounter {
 	/**
@@ -25,7 +13,8 @@ public class TestEncounter extends Encounter {
 	}
 
 	public void run() {
-		/* Set up the monsters */
+/*		
+		// Set up the monsters
 		KoboldSkirmisher k = new KoboldSkirmisher();
 		k.setName("Kobold Skirmisher");
 		k.setCurrentPosition(new Position(4,5));
@@ -108,5 +97,29 @@ public class TestEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(5,6), LocationType.GRASS));
 		
 		runEncounter();
+*/		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void makeEncounterInitiativeChanges() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
 	}
 }

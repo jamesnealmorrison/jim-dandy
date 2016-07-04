@@ -1,6 +1,8 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.Shifter;
+import com.jimmie.domain.creatures.ShifterType;
 
 public class GorebruteCharge extends Feat {
 
@@ -21,13 +23,16 @@ public class GorebruteCharge extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+3 damage on charge attacks during longtooth shifting";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Shifter.class.isAssignableFrom(pc.getRace().getClass())) {
+			if (((Shifter) pc.getRace()).getShifterType() == ShifterType.LONGTOOTH) {
+				return true;
+			}
+		}
 		return false;
 	}
 

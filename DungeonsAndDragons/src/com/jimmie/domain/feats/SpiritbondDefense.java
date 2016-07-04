@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Seeker;
+import com.jimmie.domain.classes.SeekerBond;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class SpiritbondDefense extends Feat {
@@ -21,20 +23,21 @@ public class SpiritbondDefense extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Use second wind and grant bonus to defense to adjacent ally";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Seeker.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Seeker) pc.getDndClass()).getSeekerBond() == SeekerBond.SPIRITBOND) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

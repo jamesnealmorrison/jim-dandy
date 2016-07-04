@@ -171,6 +171,7 @@ public class Coins implements Serializable {
 		return (copperPieces + (10*silverPieces) + (100*goldPieces) + (10000*platinumPieces) + (1000000*astralDiamonds));
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private int convertToCopperPieces(int i, CoinType coinType) {
 		switch (coinType) {
 		case COPPER_PIECE :

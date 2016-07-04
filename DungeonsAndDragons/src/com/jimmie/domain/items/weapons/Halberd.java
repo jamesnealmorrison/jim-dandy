@@ -83,4 +83,9 @@ public class Halberd extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.MILITARY_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Halberd";
+	}
 }

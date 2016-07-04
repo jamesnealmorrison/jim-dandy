@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityDivineMettle;
+import com.jimmie.powers.ChannelDivinityDivineStrength;
+import com.jimmie.powers.DivineChallenge;
+import com.jimmie.powers.LayOnHands;
 import com.jimmie.util.Utils;
 
 public class Paladin extends DndClass {
@@ -25,7 +31,7 @@ public class Paladin extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -82,24 +88,13 @@ public class Paladin extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_MELEE);
 		
-		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-		
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
+		Utils.print("Adding Implement Proficiencies: Holy symbol");
+		pc.addImplementProficiency(ImplementType.HOLY_SYMBOL);
 
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex, +1 Will");
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 6");
 		pc.setHitPointsPerLevelGained(6);
@@ -118,7 +113,7 @@ public class Paladin extends DndClass {
 			Utils.print("Suggested Encounter Power: Radiant Smite");
 			Utils.print("Suggested Daily Power: Paladin's Judgment");
 		} else {
-			Utils.print("Make Strength your primary score and Charisma or Strength your secondary score.  Wisdom is third. Choose powers that help allies and a few with damage.");
+			Utils.print("Make Charisma your primary score and Strength your secondary score.  Wisdom is third. Choose powers that help allies and a few with damage.");
 			Utils.print("Suggested Feat: Healing Hands (Human feat: Action Surge)");
 			Utils.print("Suggested Skills: Diplomacy, Heal, Insight, Religion");
 			Utils.print("Suggested At-Will Powers: Bolstering Strike, Enfeebling Strike");
@@ -126,8 +121,11 @@ public class Paladin extends DndClass {
 			Utils.print("Suggested Daily Power: Radiant Delirium");
 		}
 		
-		// TODO: Implement, Choosing deities, Channel Divinity, Divine Challenge, Lay on Hands
-		Utils.print("NOTE: I have not yet coded Implement, Choosing deities, Channel Divinity, Divine Challenge, Lay on Hands");
+		pc.addPower(new ChannelDivinityDivineMettle());
+		pc.addPower(new ChannelDivinityDivineStrength());
+		pc.addPower(new DivineChallenge());
+		pc.addPower(new LayOnHands());
+		
 	}
 
 	@Override
@@ -146,5 +144,45 @@ public class Paladin extends DndClass {
 	public int getArmorClassBonus() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, chainmail, scale,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "plate; light shield, heavy shield. Wpn Prof: Simple";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "melee, military melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Implement: Holy Symbol";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "Channel Divinity: Once per encounter, I can use";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "one of my Channel Divinity powers.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		return "I can mark an enemy with my Divine Challenge.";
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		return "I can heal allies with my Lay on Hands power.";
 	}
 }

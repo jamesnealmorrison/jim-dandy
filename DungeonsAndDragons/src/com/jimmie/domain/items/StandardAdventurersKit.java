@@ -22,4 +22,8 @@ public class StandardAdventurersKit extends Gear {
 		return GearType.STANDARD_ADVENTURERS_KIT;
 	}
 
+	@Override
+	public String getName() {
+		return "Standard Adventurer's Kit";
+	}
 }

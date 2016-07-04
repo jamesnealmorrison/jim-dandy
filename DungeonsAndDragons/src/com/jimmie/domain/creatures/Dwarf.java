@@ -1,11 +1,14 @@
 package com.jimmie.domain.creatures;
 
+import com.jimmie.domain.ActionType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.Power;
+import com.jimmie.powers.SecondWind;
 import com.jimmie.util.Utils;
 
 public class Dwarf extends Race {
@@ -34,12 +37,6 @@ public class Dwarf extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Adrik, Baern, Berend, Darrak, Eberk, Fargrim, Gardain, Harbek, Kildrak, Morgran, Orsik, Rangrim, Thoradin, Thorfin, Tordek, Travok, Vondal");
@@ -59,7 +56,7 @@ public class Dwarf extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 5.");
-		pc.setSpeed(5);
+		pc.setBaseSpeed(5);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -79,17 +76,63 @@ public class Dwarf extends Race {
 		pc.addWeaponTypeProficiency(WeaponType.WARHAMMER);
 		pc.addWeaponTypeProficiency(WeaponType.THROWING_HAMMER);
 		
-		// TODO: Cast-iron stomach, dwarven resilience, encumbered speed, stand your ground.
-		Utils.print("NOTE: I have not yet coded cast-iron stomach, dwarven resilience, encumbered speed or stand your ground.");
+		Utils.print("Dwarven Resilience: Setting Second Wind power to minor action.");
+		for (Power power : pc.getPowers()) {
+			if (SecondWind.class.isAssignableFrom(power.getClass())) {
+				power.setActionType(ActionType.MINOR);
+			}
+		}
+		
+		// TODO: Cast-iron stomach, encumbered speed, stand your ground.
+		Utils.print("NOTE: I have not yet coded cast-iron stomach, encumbered speed or stand your ground.");
 	}
 
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Dwarf you get +2 to Constitution and Wisdom.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setWisdom(pc.getWisdom() + 2);
+		setConstitutionBonus(getConstitutionBonus()+2);
+		setWisdomBonus(getWisdomBonus()+2);
+	}
 
+	@Override
+	public String getRaceFeaturesText1() {
+		return "Cast-Iron Stomach: +5 to saving throws vs poison.";
+	}
+
+	@Override
+	public String getRaceFeaturesText2() {
+		return "Dwarven Resilience: 2nd wind is minor action.";
+	}
+
+	@Override
+	public String getRaceFeaturesText3() {
+		return "Dwarf Wpn Prof: Throw Hammer & Warhammer.";
+	}
+
+	@Override
+	public String getRaceFeaturesText4() {
+		return "Encumbered Speed: Load does not affect my speed.";
+	}
+
+	@Override
+	public String getRaceFeaturesText5() {
+		return "Stand Your Ground: Effects that pull/push/slide me";
+	}
+
+	@Override
+	public String getRaceFeaturesText6() {
+		return "move me 1 less than specified. And I get to make a";
+	}
+
+	@Override
+	public String getRaceFeaturesText7() {
+		return "saving throw against something that would knock";
+	}
+
+	@Override
+	public String getRaceFeaturesText8() {
+		return "me prone.";
 	}
 
 }

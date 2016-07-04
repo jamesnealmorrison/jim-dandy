@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.EncagingSpirits;
+import com.jimmie.powers.InevitableShot;
+import com.jimmie.powers.SpiritsRebuke;
 import com.jimmie.util.Utils;
 
 public class Seeker extends DndClass {
@@ -26,7 +30,7 @@ public class Seeker extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -80,17 +84,8 @@ public class Seeker extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.MILITARY_RANGED);
 		
 		Utils.print("Adding bonus of +1 Reflex, Will");
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -126,12 +121,16 @@ public class Seeker extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setSeekerBond(SeekerBond.BLOODBOND);
+			pc.addPower(new EncagingSpirits());
 		} else {
 			setSeekerBond(SeekerBond.SPIRITBOND);
+			pc.addPower(new SpiritsRebuke());
 		}
 		
-		// TODO: Inevitable Shot, Seeker's Bond
-		Utils.print("NOTE: I have not yet coded Inevitable Shot, Seeker's Bond.");
+		pc.addPower(new InevitableShot());
+		
+		// TODO: Seeker's Bond
+		Utils.print("NOTE: I have not yet coded Seeker's Bond.");
 	}
 
 	@Override

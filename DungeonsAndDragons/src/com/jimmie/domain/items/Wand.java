@@ -1,6 +1,8 @@
 package com.jimmie.domain.items;
 
-public class Wand extends Gear {
+import com.jimmie.domain.ImplementType;
+
+public class Wand extends Implement {
 	/**
 	 * 
 	 */
@@ -19,5 +21,26 @@ public class Wand extends Gear {
 	@Override
 	public GearType getGearType() {
 		return GearType.WAND;
+	}
+
+	@Override
+	public int getAttackBonus() {
+		// According to the book, a non-magical implement gives you no bonus. 
+		return 0;
+	}
+
+	@Override
+	public int getDamageBonus() {
+		return 0;
+	}
+
+	@Override
+	public ImplementType getImplementType() {
+		return ImplementType.WAND;
+	}
+
+	@Override
+	public String getName() {
+		return "Wand";
 	}
 }

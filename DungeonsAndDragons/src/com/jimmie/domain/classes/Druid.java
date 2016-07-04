@@ -1,14 +1,20 @@
 package com.jimmie.domain.classes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.WildShape;
+import com.jimmie.rituals.AnimalMessenger;
+import com.jimmie.rituals.Ritual;
+import com.jimmie.util.RitualMaster;
 import com.jimmie.util.Utils;
 
 public class Druid extends DndClass {
@@ -18,7 +24,10 @@ public class Druid extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private PrimalAspect primalAspect;
-
+	private boolean inBeastForm = false;
+	private String beastFormImagePath;
+	private String beastFormBloodiedImagePath;
+	
 	@Override
 	public void initializeForEncounter() {
 		// TODO Auto-generated method stub
@@ -26,7 +35,7 @@ public class Druid extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -79,18 +88,13 @@ public class Druid extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
-		Utils.print("Adding bonus of +1 Reflex, +1 Will");
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
+		Utils.print("Adding Implement Proficiencies: Staff, Totem");
+		pc.addImplementProficiency(ImplementType.STAFF);
+		pc.addImplementProficiency(ImplementType.TOTEM);
 
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		Utils.print("Adding bonus of +1 Reflex, +1 Will");
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -130,8 +134,31 @@ public class Druid extends DndClass {
 			setPrimalAspect(PrimalAspect.PRIMAL_PREDATOR);
 		}
 		
-		// TODO: Balance of Nature, Primal Aspect, Ritual Casting, Wild Shape, Implements
-		Utils.print("NOTE: I have not yet coded Balance of Nature, Primal Aspect, Ritual Casting, Wild Shape, Implements.");
+		pc.addPower(new WildShape());
+
+		Utils.print("As a Druid, you have Ritual Casting.  Make sure you purchase a Ritual book.  They are 50gp, so you might want to purchase it before making your other purchases.");
+		Utils.print("Adding Animal Messenger ritual.");
+		pc.addRitual(new AnimalMessenger());
+
+		// Choose one more ritual
+		List<Ritual> allRituals = RitualMaster.getFullListOfRituals();
+
+		int i = 0;		
+		HashMap<Integer, Ritual> choices = new HashMap<Integer, Ritual>();
+		Utils.print("Choose another Ritual:");
+		for (Ritual ritual : allRituals) {
+			if (ritual.canBeSelected(pc)) {
+				i++;
+				choices.put(i, ritual);
+				Utils.print(i + ". " + ritual.getName());
+			}
+		}
+			
+		Utils.print("Your choice:");
+		choice = Utils.getValidIntInputInRange(1, i);
+		Ritual ritual = choices.get(choice);
+		pc.addRitual(ritual);
+		
 	}
 
 	@Override
@@ -159,4 +186,109 @@ public class Druid extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	public boolean isInBeastForm() {
+		return inBeastForm;
+	}
+	public void setInBeastForm(boolean inBeastForm) {
+		this.inBeastForm = inBeastForm;
+	}
+
+	public String getBeastFormImagePath() {
+		return beastFormImagePath;
+	}
+
+	public void setBeastFormImagePath(String beastFormImagePath) {
+		this.beastFormImagePath = beastFormImagePath;
+	}
+
+	public String getBeastFormBloodiedImagePath() {
+		return beastFormBloodiedImagePath;
+	}
+
+	public void setBeastFormBloodiedImagePath(String beastFormBloodiedImagePath) {
+		this.beastFormBloodiedImagePath = beastFormBloodiedImagePath;
+	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather hide.";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "Weapon Prof: Simple melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Implements: Staffs, totems";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "Balance of Nature: I begin with 3 at will";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "powers. At least one (and no more than two)";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "must have the Beast Form keyword.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "Primal Guardian: While not wearing heavy";
+		} else {
+			return "Primal Predator: While not wearing heavy";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "armor, I use my Con modifier to determine";
+		} else {
+			return "armor, I gain a +1 bonus to speed.";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (primalAspect == PrimalAspect.PRIMAL_GUARDIAN) {
+			return "my AC.";
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText10() {
+		return "Ritual Casting: I own a ritual book and it";
+	}
+
+	@Override
+	public String getClassFeaturesText11() {
+		return "contains Animal Messenger and one other";
+	}
+
+	@Override
+	public String getClassFeaturesText12() {
+		return "1st level ritual. Once per day I can cast";
+	}
+
+	@Override
+	public String getClassFeaturesText13() {
+		return "Animal Messenger without expending components.";
+	}
+
+	@Override
+	public String getClassFeaturesText14() {
+		return "Wild Shape: I can transform into a beast.";
+	}
+
 }

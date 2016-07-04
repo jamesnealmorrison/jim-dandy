@@ -1,6 +1,7 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.Minotaur;
 
 public class GoringShove extends Feat {
 
@@ -21,20 +22,21 @@ public class GoringShove extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Push target 1 square after goring charge";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Minotaur.class.isAssignableFrom(pc.getRace().getClass())) {
+			if (pc.getStrength() >= 15) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

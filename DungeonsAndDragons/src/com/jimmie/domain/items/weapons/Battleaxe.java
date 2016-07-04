@@ -83,4 +83,9 @@ public class Battleaxe extends Weapon {
 		return WeaponCategory.MILITARY_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Battleaxe";
+	}
+
 }

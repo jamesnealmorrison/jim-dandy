@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.RunicState;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.domain.items.weapons.WeaponGroup;
+import com.jimmie.powers.RuneOfMending;
 import com.jimmie.util.Utils;
 
 public class Runepriest extends DndClass {
@@ -18,15 +22,15 @@ public class Runepriest extends DndClass {
 	 */
 	private static final long serialVersionUID = 1L;
 	private RunicArtistry runicArtistry;
+	private RunicState runicState;
 
 	@Override
 	public void initializeForEncounter() {
-		// TODO Auto-generated method stub
-
+		runicState = RunicState.NONE;
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -79,14 +83,10 @@ public class Runepriest extends DndClass {
 		
 		Utils.print("Adding Weapon Proficiencies: Simple Melee, Simple Ranged");
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
-		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
+		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);		
 		
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(2);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -124,10 +124,14 @@ public class Runepriest extends DndClass {
 			setRunicArtistry(RunicArtistry.DEFIANT_WORD);
 		} else {
 			setRunicArtistry(RunicArtistry.WRATHFUL_HAMMER);
+			pc.addWeaponGroupProficiency(WeaponGroup.HAMMER);		
+			pc.addWeaponGroupProficiency(WeaponGroup.MACE);		
 		}
 		
-		// TODO: Rune Master, Rune of Mending, Runic Artistry
-		Utils.print("NOTE: I have not yet coded Rune Master, Rune of Mending, Runic Artistry.");
+		pc.addPower(new RuneOfMending());
+		
+		// TODO: Runic Artistry
+		Utils.print("NOTE: I have not yet coded Runic Artistry.");
 	}
 
 	@Override
@@ -155,4 +159,80 @@ public class Runepriest extends DndClass {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public RunicState getRunicState() {
+		return runicState;
+	}
+
+	public void setRunicState(RunicState runicState) {
+		this.runicState = runicState;
+	}
+
+	public RunicState chooseRunicState() {
+		Utils.print("Choose a runic state:");
+		Utils.print("1. Rune of Destruction");
+		Utils.print("2. Rune of Protection");
+		Utils.print("Your choice:");
+		int choice = Utils.getValidIntInputInRange(1, 2);
+		if (choice == 1) {
+			runicState = RunicState.RUNE_OF_DESTRUCTION;
+		} else {
+			runicState = RunicState.RUN_OF_PROTECTION;
+		}
+		return runicState;
+	}
+
+	@Override
+	public String getClassFeaturesText1() {
+		return "Armor Prof: Cloth, leather, hide, chainmail, scale,";
+	}
+
+	@Override
+	public String getClassFeaturesText2() {
+		return "light shld. Wpn Prof: Simple melee, simple ranged.";
+	}
+
+	@Override
+	public String getClassFeaturesText3() {
+		return "Rune Master: I choose to enter Rune of Destruction";
+	}
+
+	@Override
+	public String getClassFeaturesText4() {
+		return "or Rune of Protection state when using Runic";
+	}
+
+	@Override
+	public String getClassFeaturesText5() {
+		return "powers. Destruction gives allies attack roll.";
+	}
+
+	@Override
+	public String getClassFeaturesText6() {
+		return "bonus. Protection gives them resist damage.";
+	}
+
+	@Override
+	public String getClassFeaturesText7() {
+		return "Rune of Mending power: Healing allies.";
+	}
+
+	@Override
+	public String getClassFeaturesText8() {
+		if (runicArtistry == RunicArtistry.DEFIANT_WORD) {
+			return "Runic Artistry: Defiant Word. Damage Roll bonus";
+		} else {
+			return "Runic Artistry: Wrathful Hammer. Mace/Hammer";
+		}
+	}
+
+	@Override
+	public String getClassFeaturesText9() {
+		if (runicArtistry == RunicArtistry.DEFIANT_WORD) {
+			return "when an enemy misses me.";
+		} else {
+			return "prof and damage roll bonus when hurt.";
+		}
+	}
+
 }

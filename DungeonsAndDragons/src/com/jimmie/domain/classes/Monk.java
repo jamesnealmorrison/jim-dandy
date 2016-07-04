@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.CenteredFlurryOfBlows;
+import com.jimmie.powers.StoneFistFlurryOfBlows;
 import com.jimmie.util.Utils;
 
 public class Monk extends DndClass {
@@ -26,7 +29,7 @@ public class Monk extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -81,23 +84,9 @@ public class Monk extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.SPEAR);
 		
 		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
-
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -133,8 +122,10 @@ public class Monk extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setMonasticTradition(MonasticTradition.CENTERED_BREATH);
+			pc.addPower(new CenteredFlurryOfBlows());
 		} else {
 			setMonasticTradition(MonasticTradition.STONE_FIST);
+			pc.addPower(new StoneFistFlurryOfBlows());
 		}
 		
 		// TODO: Barbarian Agility, Feral Might, Rage Strike, Rampage

@@ -82,4 +82,9 @@ public class Shuriken extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SUPERIOR_RANGED;
 	}
+
+	@Override
+	public String getName() {
+		return "Shuriken";
+	}
 }

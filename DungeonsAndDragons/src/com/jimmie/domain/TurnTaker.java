@@ -1,6 +1,9 @@
 package com.jimmie.domain;
 
-import com.jimmie.encounters.Encounter;
+import java.util.List;
+
+
+import com.jimmie.powers.Power;
 
 public interface TurnTaker {
 	int getInitiative();
@@ -10,13 +13,11 @@ public interface TurnTaker {
 	void initializeForNewDay();
 	String getName();
 	void startOfTurn();
-	void endOfTurn(Encounter encounter);
+	void endOfTurn();
 	boolean canTakeMoveAction();
 	boolean canTakeMinorAction();
 	boolean canTakeStandardAction();
-	void useMinorAction(Encounter encounter);
-	void useMoveAction(Encounter encounter);
-	void useStandardAction(Encounter encounter);
+	void useMoveAction();
 	Position getCurrentPosition();
-	void useFreeAction(Encounter encounter);
+	List<Power> getPowers();
 }

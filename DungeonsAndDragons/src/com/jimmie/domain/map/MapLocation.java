@@ -1,33 +1,26 @@
 package com.jimmie.domain.map;
 
 import com.jimmie.domain.Position;
+import com.jimmie.util.SkillCheck;
 
 public class MapLocation {
 	private Position position;
-	private LocationType type;
+	private LocationType locationType; // This tells if the square can be entered at all (e.g. wall vs non-wall)
+	private boolean difficultTerrain;
+	private SkillCheck skillCheckToEnter;
+	int extraMovementCostToEnter;
+	int height; // 0 represents the normal level for that map.  (in feet)
 	
-	public MapLocation(Position p, LocationType t) {
-		setPosition(p);
-		setType(t);
+	
+	public MapLocation(Position position, LocationType locationType, boolean difficultTerrain, SkillCheck skillCheckToEnter, int extraMovementCostToEnter, int height) {
+		setPosition(position);
+		setLocationType(locationType);
+		setDifficultTerrain(difficultTerrain);
+		setSkillCheckToEnter(skillCheckToEnter);
+		setExtraMovementCostToEnter(extraMovementCostToEnter);
+		setHeight(height);
 	}
 
-	public boolean isDifficultTerrain() {
-/* The trees in encounter "KoboldLairOutside" do not count as difficult terrain.
- 		if (type == LocationType.TREE) {
-			return true;
-		} else */ 
-			if (type == LocationType.RUBBLE) {
-			return true;
-		} else if (type == LocationType.FOLIAGE) {
-			return true;
-		} else if (type == LocationType.BOULDER) {
-			return true;
-		} else if (type == LocationType.DEEP_RIVER) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public Position getPosition() {
 		return position;
@@ -37,11 +30,43 @@ public class MapLocation {
 		this.position = position;
 	}
 
-	public LocationType getType() {
-		return type;
+	public LocationType getLocationType() {
+		return locationType;
 	}
 
-	public void setType(LocationType type) {
-		this.type = type;
+	public void setLocationType(LocationType locationType) {
+		this.locationType = locationType;
+	}
+
+	public SkillCheck getSkillCheckToEnter() {
+		return skillCheckToEnter;
+	}
+
+	public void setSkillCheckToEnter(SkillCheck skillCheckToEnter) {
+		this.skillCheckToEnter = skillCheckToEnter;
+	}
+
+	public int getExtraMovementCostToEnter() {
+		return extraMovementCostToEnter;
+	}
+
+	public void setExtraMovementCostToEnter(int extraMovementCostToEnter) {
+		this.extraMovementCostToEnter = extraMovementCostToEnter;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public boolean isDifficultTerrain() {
+		return difficultTerrain;
+	}
+
+	public void setDifficultTerrain(boolean difficultTerrain) {
+		this.difficultTerrain = difficultTerrain;
 	}
 }

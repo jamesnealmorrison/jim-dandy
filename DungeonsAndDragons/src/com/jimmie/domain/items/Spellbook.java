@@ -20,4 +20,9 @@ public class Spellbook extends Gear {
 	public GearType getGearType() {
 		return GearType.SPELLBOOK;
 	}
+
+	@Override
+	public String getName() {
+		return "Spellbook";
+	}
 }

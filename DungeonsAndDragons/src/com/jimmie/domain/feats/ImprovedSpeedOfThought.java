@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Battlemind;
+import com.jimmie.domain.classes.PsionicStudy;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ImprovedSpeedOfThought extends Feat {
@@ -21,13 +23,16 @@ public class ImprovedSpeedOfThought extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Your speed of thought movement increases by 2 squares";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Battlemind.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Battlemind) pc.getDndClass()).getPsionicStudy() == PsionicStudy.SPEED_OF_THOUGHT) {
+				return true;
+			}
+		}
 		return false;
 	}
 

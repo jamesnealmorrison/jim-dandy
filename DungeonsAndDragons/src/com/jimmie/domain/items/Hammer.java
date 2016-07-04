@@ -20,4 +20,9 @@ public class Hammer extends Gear {
 	public GearType getGearType() {
 		return GearType.HAMMER;
 	}
+
+	@Override
+	public String getName() {
+		return "Hammer";
+	}
 }

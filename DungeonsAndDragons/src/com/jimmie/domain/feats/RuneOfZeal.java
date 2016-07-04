@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Runepriest;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class RuneOfZeal extends Feat {
@@ -21,20 +22,19 @@ public class RuneOfZeal extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Bonus to Athletics and Endurance equal to your number of rune feats";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Runepriest.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

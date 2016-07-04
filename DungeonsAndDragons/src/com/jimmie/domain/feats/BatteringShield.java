@@ -1,6 +1,8 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.items.armor.ArmorGroup;
+import com.jimmie.domain.items.armor.ArmorType;
 
 public class BatteringShield extends Feat {
 
@@ -21,13 +23,21 @@ public class BatteringShield extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Push or slide target 1 additional square when using shield";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		for (ArmorType armorType : pc.getArmorTypeProficiencies()) {
+			if (armorType == ArmorType.HEAVY_SHIELD) {
+				return true;
+			}
+		}
+		for (ArmorGroup armorGroup : pc.getArmorGroupProficiencies()) {
+			if (armorGroup == ArmorGroup.HEAVY_SHIELD) {
+				return true;
+			}
+		}
 		return false;
 	}
 

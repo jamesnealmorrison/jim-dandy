@@ -1,6 +1,7 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.Gnome;
 
 public class FeyTrickster extends Feat {
 
@@ -21,20 +22,20 @@ public class FeyTrickster extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO: Probably have to modify these classes to add Gnome as a race that can have it.
+		return "Gain mage hand and prestidigitation as encounter powers";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Gnome.class.isAssignableFrom(pc.getRace().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

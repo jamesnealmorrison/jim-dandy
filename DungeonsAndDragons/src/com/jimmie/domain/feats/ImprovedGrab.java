@@ -21,13 +21,14 @@ public class ImprovedGrab extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+4 to grab attacks";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (pc.getStrength() >= 13) {
+			return true;
+		}
 		return false;
 	}
 

@@ -20,4 +20,9 @@ public class Pitons extends Gear {
 	public GearType getGearType() {
 		return GearType.PITONS;
 	}
+
+	@Override
+	public String getName() {
+		return "Pitons";
+	}
 }

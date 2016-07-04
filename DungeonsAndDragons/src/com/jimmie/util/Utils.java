@@ -7,13 +7,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
-
+import com.jimmie.domain.AttackType;
+import com.jimmie.domain.DiceRollType;
 import com.jimmie.domain.DiceType;
+import com.jimmie.domain.TemporaryCombatAdvantage;
+import com.jimmie.domain.TemporaryEffect;
+import com.jimmie.domain.TemporaryEffectType;
 import com.jimmie.domain.creatures.Creature;
-import com.jimmie.domain.creatures.Race;
 import com.jimmie.encounters.Encounter;
 import com.jimmie.gui.DungeonGUI;
-import com.jimmie.domain.creatures.Character;
+import com.jimmie.domain.creatures.DndCharacter;
 
 public class Utils {
 	static IntegratedCommandConsole icc = null;
@@ -247,11 +250,11 @@ public class Utils {
 	}
 
 	public static int rollForDamage(int damageRolls, DiceType damageDiceType,
-			int weaponDamageBonus, int attributeModifier, Race race) {
+			int weaponDamageBonus, int attributeModifier, Creature roller) {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.basicRoll();
+			int currentRoll = damageDice.roll(DiceRollType.DAMAGE_ROLL);
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -261,8 +264,8 @@ public class Utils {
 		Utils.print("Adding attribute bonus of " + attributeModifier);
 		rollTotal = rollTotal + attributeModifier;
 		int raceBonus = 0;
-		if (race != null) {
-			raceBonus = race.getRacialDamageBonus();
+		if ((roller != null) && (roller.getRace() != null)) {
+			raceBonus = roller.getRace().getRacialDamageBonus();
 		}
 		Utils.print("Adding racial bonus of " + raceBonus);
 		rollTotal = rollTotal + raceBonus;
@@ -272,11 +275,11 @@ public class Utils {
 	}
 
 	public static int rollForHalfDamage(int damageRolls, DiceType damageDiceType,
-			int weaponDamageBonus, int attributeModifier, Race race) {
+			int weaponDamageBonus, int attributeModifier, Creature roller) {
 		int rollTotal = 0;
 		Dice damageDice = new Dice(damageDiceType);
 		for (int index = 0; index < damageRolls; index++) {
-			int currentRoll = damageDice.basicRoll();
+			int currentRoll = damageDice.roll(DiceRollType.DAMAGE_ROLL);
 			Utils.print("Rolled a " + currentRoll + " for damage.");
 			rollTotal = rollTotal + currentRoll;
 			Utils.print("Total so far = " + rollTotal);
@@ -286,8 +289,8 @@ public class Utils {
 		Utils.print("Adding attribute bonus of " + attributeModifier);
 		rollTotal = rollTotal + attributeModifier;
 		int raceBonus = 0;
-		if (race != null) {
-			raceBonus = race.getRacialDamageBonus();
+		if (roller.getRace() != null) {
+			raceBonus = roller.getRace().getRacialDamageBonus();
 		}
 		Utils.print("Adding racial bonus of " + raceBonus);
 		rollTotal = rollTotal + raceBonus;
@@ -297,14 +300,35 @@ public class Utils {
 	}
 
 	public static boolean hasCombatAdvantage(Creature source,
-			Creature target, Encounter encounter) {
+			Creature target) {
+		// Make sure they aren't effected by Druid Call of the Beast effect.
+		for (Iterator<TemporaryEffect> it = source.getTemporaryEffects().iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+			if (tempEffect.getEffectType() == TemporaryEffectType.CALL_OF_THE_BEAST_EFFECT) {
+				if  (tempEffect.stillApplies()) {
+					Utils.print("Effected by Call of the Beast and can not gain combat advantage.");
+					/* If it should be removed now, delete the modifier now. */
+					if (tempEffect.shouldBeRemoved()) {
+						Utils.print("But will not apply after this.");
+						it.remove();
+					}
+					return false;
+				} else {
+					Utils.print("Temporary Call of the Beast effect no longer applies. Removing.");
+					it.remove();
+				}
+			}
+		}
+		
 		/* Does the target have a condition that grants combat advantage? */
-		if (target.isStunned() || target.isBlinded()) {
+		// TODO: Prone says only melee attacks.
+		if (target.isBlinded() || target.isDazed() || target.isDominated() || target.isDying() || target.isHelpless() || target.isProne() || target.isRestrained()
+				|| target.isStunned() || target.isSurprised() || target.isUnconscious()) {
 			return true;
 		}
 
 		/* Is the source creature flanking the target? */
-		if (Utils.isFlanking(source, target, encounter)) {
+		if (Utils.isFlanking(source, target)) {
 			return true;
 		}
 
@@ -312,41 +336,63 @@ public class Utils {
 		if (source.isInvisibleTo(target)) {
 			return true;
 		}
+		
+		for (Iterator<TemporaryEffect> it = target.getTemporaryEffects().iterator(); it.hasNext();) {
+			TemporaryEffect tempEffect = it.next();
+			if (TemporaryCombatAdvantage.class.isAssignableFrom(tempEffect.getClass())) {
+				TemporaryCombatAdvantage temporaryCombatAdvantage = (TemporaryCombatAdvantage) tempEffect;
+
+				if  (temporaryCombatAdvantage.stillApplies()) {
+					Utils.print("Granting combat advantage.");
+					/* If it should be removed now, delete the modifier now. */
+					if (temporaryCombatAdvantage.shouldBeRemoved()) {
+						Utils.print("But will not apply after this.");
+						it.remove();
+					}
+					return true;
+				} else {
+					Utils.print("Temporary Combat Advantage no longer applies. Removing.");
+					it.remove();
+				}
+			}
+		}
+
 		return false;
 	}
 
-	private static boolean isFlanking(Creature source, Creature target,
-			Encounter encounter) {
+	private static boolean isFlanking(Creature source, Creature target) {
 		/* First thing to do is find out if the source is adjacent to the target. */
 		if (source.isAdjacentTo(target)) {
 			/* Get all the other adjacent allies.  PLEASE NOTE: I'm calling the "getAdjacentEnemies method on purpose.
 			 * It finds enemies of the TARGET, which would be MY allies!!!!!!!! */
-			List<Creature> adjacentAllies = encounter.getAdjacentEnemies(target);
-			for (Creature adjacentAlly : adjacentAllies) {
-				if (adjacentAlly.canFlank()) {
-					if ((source.getCurrentPosition().isNorthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isNorthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthWestOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isSouthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthEastOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isEastOf(target.getCurrentPosition()))) {
-						return true;
-					}
-					if ((source.getCurrentPosition().isNorthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthEastOf(target.getCurrentPosition()))) {
-						return true;
+			List<Creature> adjacentAllies = Encounter.getEncounter().getAdjacentEnemies(target);
+			if (adjacentAllies != null) {
+				for (Creature adjacentAlly : adjacentAllies) {
+					if (adjacentAlly.canFlank()) {
+						if ((source.getCurrentPosition().isNorthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isNorthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthEastOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthWestOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isSouthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isNorthEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
+						if ((source.getCurrentPosition().isNorthWestOf(target.getCurrentPosition())) && (adjacentAlly.getCurrentPosition().isSouthEastOf(target.getCurrentPosition()))) {
+							return true;
+						}
 					}
 				}
 			}
@@ -354,7 +400,7 @@ public class Utils {
 		return false;
 	}
 	
-	public static void saveCharacter(Character c) {
+	public static void saveCharacter(DndCharacter c) {
 		String fileName = c.getName();
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -368,14 +414,14 @@ public class Utils {
 		}
 	}
 	
-	public static Character loadCharacter(String filename) {
+	public static DndCharacter loadCharacter(String filename) {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
-		Character c = null;
+		DndCharacter c = null;
 		try {
 			fis = new FileInputStream(filename);
 			in = new ObjectInputStream(fis);
-			c = (Character) in.readObject();
+			c = (DndCharacter) in.readObject();
 			in.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -406,12 +452,27 @@ public class Utils {
 		}
 	}
 
-	public static void printCoins(Character c) {
+	public static void printCoins(DndCharacter c) {
 		print(c.getName() + " has the following coins:");
 		print("Copper pieces:   " + c.getCoins().getCopperPieces());
 		print("Silver pieces:   " + c.getCoins().getSilverPieces());
 		print("Gold pieces:     " + c.getCoins().getGoldPieces());
 		print("Platinum pieces: " + c.getCoins().getPlatinumPieces());
 		print("Astral diamonds: " + c.getCoins().getAstralDiamonds());
+	}
+
+	public static boolean isMeleeAttack(AttackType attackType) {
+		if ((attackType == AttackType.MELEE_NUMBER) || (attackType == AttackType.MELEE_TOUCH) || (attackType == AttackType.MELEE_WEAPON)
+				|| (attackType == AttackType.MELEE_OR_RANGED_WEAPON) || (attackType == AttackType.MELEE_SPIRIT_NUMBER)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isRangedAttack(AttackType attackType) {
+		if ((attackType == AttackType.RANGED_NUMBER) || (attackType == AttackType.RANGED_SIGHT) || (attackType == AttackType.RANGED_WEAPON)) {
+			return true;
+		}
+		return false;
 	}
 }

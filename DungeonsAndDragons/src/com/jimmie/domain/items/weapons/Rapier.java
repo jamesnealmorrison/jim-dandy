@@ -81,4 +81,9 @@ public class Rapier extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.SUPERIOR_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Rapier";
+	}
 }

@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.DragonBreath;
 import com.jimmie.util.Utils;
 
 public class Dragonborn extends Race {
@@ -33,12 +34,6 @@ public class Dragonborn extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Arjhan, Balasar, Bharash, Donaar, Ghesh, Heskan, Kriv, Medrash, Nadarr, Patrin, Rhogar, Shamash, Shedinn, Torinn");
@@ -58,7 +53,7 @@ public class Dragonborn extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -75,20 +70,18 @@ public class Dragonborn extends Race {
 		
 		// TODO Implement Dragonborn fury and draconic heritage.
 		Utils.print("NOTE: I have not yet coded the dragonborn fury and draconic heritage.");
+
+		DragonBreath dragonBreath = new DragonBreath();
+		pc.addPower(dragonBreath);
 		
-		
-		// TODO Choices for dragon breath.
-		Utils.print("NOTE: I have not yet coded the choices for dragon breath.");
 	}
 
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Dragonborn you get +2 to Strength and Charisma.");
-		pc.setStrength(pc.getStrength() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
-		
-		
+		setStrengthBonus(getStrengthBonus()+2);
+		setCharismaBonus(getCharismaBonus()+2);		
 	}
 
 }

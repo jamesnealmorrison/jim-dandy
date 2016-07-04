@@ -1,6 +1,7 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.Wilden;
 
 public class SecretOfReawakening extends Feat {
 
@@ -21,20 +22,19 @@ public class SecretOfReawakening extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Change aspect and regain racial power after you drop to 0 hp";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Wilden.class.isAssignableFrom(pc.getRace().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

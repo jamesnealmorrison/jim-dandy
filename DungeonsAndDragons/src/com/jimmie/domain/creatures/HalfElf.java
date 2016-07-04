@@ -33,12 +33,6 @@ public class HalfElf extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests to use elf or human names:");
 		Utils.print("Your name?");
@@ -56,7 +50,7 @@ public class HalfElf extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -81,8 +75,8 @@ public class HalfElf extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Half-Elf you get +2 to Constitution and Charisma.");
-		pc.setConstitution(pc.getConstitution() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
+		setConstitutionBonus(getConstitutionBonus()+2);
+		setCharismaBonus(getCharismaBonus()+2);
 	}
 
 }

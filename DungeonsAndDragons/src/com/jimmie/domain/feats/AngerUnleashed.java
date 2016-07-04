@@ -1,5 +1,6 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.creatures.HalfOrc;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class AngerUnleashed extends Feat {
@@ -21,19 +22,19 @@ public class AngerUnleashed extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+2 attack for 1 round after becoming bloodied";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (HalfOrc.class.isAssignableFrom(pc.getRace().getClass())) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
 
 	}
 

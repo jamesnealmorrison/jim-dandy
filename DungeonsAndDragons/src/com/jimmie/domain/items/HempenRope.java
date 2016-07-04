@@ -20,4 +20,9 @@ public class HempenRope extends Gear {
 	public GearType getGearType() {
 		return GearType.HEMPEN_ROPE;
 	}
+
+	@Override
+	public String getName() {
+		return "Hempen Rope";
+	}
 }

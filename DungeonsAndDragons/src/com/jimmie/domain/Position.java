@@ -54,7 +54,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isNorthOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() == target.getX()) && (this.getY() > target.getY())) {
 			return true;
 		} else {
@@ -63,7 +63,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isEastOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() > target.getX()) && (this.getY() == target.getY())) {
 			return true;
 		} else {
@@ -72,7 +72,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isSouthOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() == target.getX()) && (this.getY() < target.getY())) {
 			return true;
 		} else {
@@ -81,7 +81,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isWestOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() < target.getX()) && (this.getY() == target.getY())) {
 			return true;
 		} else {
@@ -90,7 +90,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isNorthEastOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() > target.getX()) && (this.getY() > target.getY())) {
 			return true;
 		} else {
@@ -99,7 +99,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isNorthWestOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() < target.getX()) && (this.getY() > target.getY())) {
 			return true;
 		} else {
@@ -108,7 +108,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isSouthEastOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() > target.getX()) && (this.getY() < target.getY())) {
 			return true;
 		} else {
@@ -117,7 +117,7 @@ public class Position implements Serializable {
 	}
 
 	public boolean isSouthWestOf(Position target) {
-		/* TODO: Make this method work for creatures that are bigger than one square. */
+		/* TODO: Make this method works for creatures that are bigger than one square. */
 		if ((this.getX() < target.getX()) && (this.getY() < target.getY())) {
 			return true;
 		} else {
@@ -132,6 +132,9 @@ public class Position implements Serializable {
 		} else {
 			return false;
 		}
+	}
+	public int getDistanceTo(Position toPosition) {
+		return (int)(Math.sqrt(((getX() - toPosition.getX())*(getX() - toPosition.getX())) + ((getY() - toPosition.getY())*(getY() - toPosition.getY()))));
 	}
 
 }

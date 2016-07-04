@@ -8,6 +8,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.ShardSwarm;
 import com.jimmie.util.Utils;
 
 public class Shardmind extends Race {
@@ -36,12 +37,6 @@ public class Shardmind extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following names:");
 		Utils.print("Names: Amata, Arshaka, Arwia, Balashi, Bashanu, Belessunu, Dipana, Erishti, Eshunu, Hunzu,");
@@ -61,7 +56,7 @@ public class Shardmind extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -140,9 +135,10 @@ public class Shardmind extends Race {
 		if (skill != null) {
 			skill.setMisc(skill.getMisc()+2);
 		}
+		pc.addPower(new ShardSwarm());
 		
-		// TODO: Telepathy, Crystalline Mind, Living Construct, Immortal Origin, Shard Swarm.
-		Utils.print("NOTE: Telepathy, Crystalline Mind, Living Construct, Immortal Origin, Shard Swarm.");
+		// TODO: Telepathy, Crystalline Mind, Living Construct, Immortal Origin.
+		Utils.print("NOTE: Telepathy, Crystalline Mind, Living Construct, Immortal Origin.");
 		
 		
 		
@@ -152,7 +148,7 @@ public class Shardmind extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Shardmind you get +2 to Intelligence.");
-		pc.setIntelligence(pc.getIntelligence() + 2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);
 
 		Utils.print("As a Shardmind, you get to choose to add +2 to Wisdom or Charisma.");
 		Utils.print("1. Wisdom");
@@ -160,9 +156,9 @@ public class Shardmind extends Race {
 		Utils.print("Your choice:");
 		int choice = Utils.getValidIntInputInRange(1, 2);
 		if (1 == choice) {
-			pc.setWisdom(pc.getWisdom()+2);
+			setWisdomBonus(getWisdomBonus()+2);
 		} else {
-			pc.setCharisma(pc.getCharisma()+2);
+			setCharismaBonus(getCharismaBonus()+2);
 		}
 	}
 

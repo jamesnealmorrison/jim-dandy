@@ -81,4 +81,9 @@ public class Mace extends Weapon {
 	public WeaponHandType getHandType() {
 		return WeaponHandType.ONE_HANDED;
 	}
+
+	@Override
+	public String getName() {
+		return "Mace";
+	}
 }

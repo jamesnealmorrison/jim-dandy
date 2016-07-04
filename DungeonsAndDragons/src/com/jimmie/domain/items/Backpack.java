@@ -20,4 +20,9 @@ public class Backpack extends Gear {
 	public GearType getGearType() {
 		return GearType.BACKPACK;
 	}
+
+	@Override
+	public String getName() {
+		return "Backpack";
+	}
 }

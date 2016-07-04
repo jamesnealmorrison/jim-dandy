@@ -83,4 +83,9 @@ public class Sickle extends Weapon {
 		return WeaponCategory.SIMPLE_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Sickle";
+	}
+
 }

@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ArdentAlacrity;
+import com.jimmie.powers.ArdentOutrage;
+import com.jimmie.powers.ArdentSurge;
 import com.jimmie.util.Utils;
 
 public class Ardent extends DndClass {
@@ -26,7 +30,7 @@ public class Ardent extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -79,17 +83,8 @@ public class Ardent extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
 		Utils.print("Adding bonus of +1 Fortitude, +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -123,12 +118,16 @@ public class Ardent extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setArdentMantle(ArdentMantle.MANTLE_OF_CLARITY);
+			pc.addPower(new ArdentAlacrity());
 		} else {
 			setArdentMantle(ArdentMantle.MANTLE_OF_ELATION);
+			pc.addPower(new ArdentOutrage());
 		}
 		
-		// TODO: Ardent Mantle, Ardent Surge, Psionic Augmentation
-		Utils.print("NOTE: I have not yet coded Ardent Mantle, Ardent Surge, Psionic Augmentation.");
+		pc.addPower(new ArdentSurge());
+		
+		// TODO: Ardent Surge, Psionic Augmentation
+		Utils.print("NOTE: I have not yet coded Ardent Surge, Psionic Augmentation.");
 	}
 
 	@Override

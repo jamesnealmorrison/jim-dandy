@@ -60,7 +60,7 @@ public class AbolethLasher extends Aboleth {
 		setFortitude(27);
 		setReflex(25);
 		setWill(25);
-		setSpeed(5);
+		setBaseSpeed(5);
 		List<AlternativeMovementMode> altMovementModes = new ArrayList<AlternativeMovementMode>();
 		AlternativeMovementMode altMovementMode = new AlternativeMovementMode(AlternativeMovementModeType.SWIM, 10);
 		altMovementModes.add(altMovementMode);

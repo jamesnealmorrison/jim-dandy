@@ -1,11 +1,11 @@
 package com.jimmie.domain.creatures;
 
-import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Sense;
 import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.FadeAway;
 import com.jimmie.util.Utils;
 
 public class Gnome extends Race {
@@ -16,6 +16,14 @@ public class Gnome extends Race {
 	private static final long serialVersionUID = 1L;
 	private boolean usedFadeAway;
 
+	public boolean isUsedFadeAway() {
+		return usedFadeAway;
+	}
+
+	public void setUsedFadeAway(boolean usedFadeAway) {
+		this.usedFadeAway = usedFadeAway;
+	}
+
 	@Override
 	public int getRacialDamageBonus() {
 		// TODO Auto-generated method stub
@@ -24,27 +32,12 @@ public class Gnome extends Race {
 
 	@Override
 	public void initializeForEncounter() {
-		// TODO Auto-generated method stub
-		
+		usedFadeAway = false;
 	}
 
 	@Override
 	public void initializeForNewDay() {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		if (!usedFadeAway) {
-			Utils.print("As a gnome you can use your Fade Away power now to turn invisible for one turn.  Do you want to?");
-			String choice = Utils.getYesOrNoInput();
-			if ("Y".equalsIgnoreCase(choice)) {
-				usedFadeAway = true;
-				owner.setTemporaryInvisibility(owner, DurationType.END_OF_NEXT_TURN, null);
-
-			}
-		}
 		
 	}
 
@@ -68,7 +61,7 @@ public class Gnome extends Race {
 		pc.setSize(Size.SMALL);
 		
 		Utils.print("Setting speed to 5.");
-		pc.setSpeed(5);
+		pc.setBaseSpeed(5);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -83,15 +76,20 @@ public class Gnome extends Race {
 		Skill stealth = pc.getSkill(SkillType.STEALTH);
 		stealth.setMisc(stealth.getMisc()+2);
 		
-		// TODO: Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.
-		Utils.print("NOTE: I have not yet coded Fey Origin, Master Trickster, Reactive Stealth, Trickster's Cunning and Fade Away.");
+		pc.addPower(new FadeAway());
+		
+		pc.setOrigin(Origin.FEY);
+
+		// TODO: Master Trickster, Reactive Stealth, Trickster's Cunning.
+		Utils.print("NOTE: I have not yet coded Master Trickster, Reactive Stealth, Trickster's Cunning.");
 	}
 
 	@Override
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Gnome you get +2 to Charisma and Intelligence.");
-		pc.setCharisma(pc.getCharisma() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
+		setCharismaBonus(getCharismaBonus()+2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);
 	}
+
 }

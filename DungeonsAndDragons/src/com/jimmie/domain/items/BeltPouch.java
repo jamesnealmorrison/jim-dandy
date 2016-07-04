@@ -20,4 +20,9 @@ public class BeltPouch extends Gear {
 	public GearType getGearType() {
 		return GearType.BELT_POUCH;
 	}
+
+	@Override
+	public String getName() {
+		return "BeltPouch";
+	}
 }

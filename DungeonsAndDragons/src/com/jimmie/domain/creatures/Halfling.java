@@ -5,6 +5,7 @@ import com.jimmie.domain.SenseType;
 import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.powers.SecondChance;
 import com.jimmie.util.Utils;
 
 public class Halfling extends Race {
@@ -33,12 +34,6 @@ public class Halfling extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Ander, Corrin, Dannad, Errich, Finnan, Garret, Lazam, Lindal, Merric, Nebin, Ostran, Perrin, Reed, Shardon, Ulmo, Wenner");
@@ -58,7 +53,7 @@ public class Halfling extends Race {
 		pc.setSize(Size.SMALL);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding normal vision to senses.");
 		pc.addSense(new Sense(SenseType.NORMAL_VISION));
@@ -75,6 +70,8 @@ public class Halfling extends Race {
 		Skill thievery = pc.getSkill(SkillType.THIEVERY);
 		thievery.setMisc(thievery.getMisc()+2);
 		
+		pc.addPower(new SecondChance());
+		
 		// TODO: Bold, Nimble Reaction, Second Chance.
 		Utils.print("NOTE: I have not yet coded Bold, Nimble Reaction, Second Chance.");
 	}
@@ -83,8 +80,8 @@ public class Halfling extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As a Halfling you get +2 to Dexterity and Charisma.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setCharisma(pc.getCharisma() + 2);
+		setDexterityBonus(getDexterityBonus()+2);
+		setCharismaBonus(getCharismaBonus()+2);
 	}
 
 }

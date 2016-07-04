@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.DivineCovenant;
+import com.jimmie.domain.classes.Invoker;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class ScouringWrath extends Feat {
@@ -21,20 +23,21 @@ public class ScouringWrath extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Armor of wrath gives target vulnerable 2";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Invoker.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Invoker) pc.getDndClass()).getDivineCovenant() == DivineCovenant.WRATH) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

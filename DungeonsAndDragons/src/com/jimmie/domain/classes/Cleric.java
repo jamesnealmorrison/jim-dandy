@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityDivineFortune;
+import com.jimmie.powers.ChannelDivinityTurnUndead;
+import com.jimmie.powers.HealingWord;
 import com.jimmie.util.Utils;
 
 public class Cleric extends DndClass {
@@ -25,7 +30,7 @@ public class Cleric extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -76,12 +81,11 @@ public class Cleric extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Holy symbol");
+		pc.addImplementProficiency(ImplementType.HOLY_SYMBOL);
+		
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(2);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 		
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);
@@ -108,8 +112,13 @@ public class Cleric extends DndClass {
 			Utils.print("Suggested Daily Power: Beacon of Hope");
 		}
 		
-		// TODO: Channel divinity, Healer's Lore, Healing Word, Ritual Casting, Implement
-		Utils.print("NOTE: I have not yet implemented Channel divinity, Healer's Lore, Healing Word, Ritual Casting, Implement.");
+		pc.addPower(new ChannelDivinityDivineFortune());
+		pc.addPower(new ChannelDivinityTurnUndead());
+		pc.addPower(new HealingWord());
+		
+		// TODO: Healer's Lore, Ritual Casting 
+		// TODO: Still need to make sure the feats for channel divinity are available for Clerics and Paladins, etc.
+		Utils.print("NOTE: I have not yet implemented Healer's Lore, Ritual Casting.");
 		
 		// TODO: Selecting deities.
 		Utils.print("NOTE: I also have not yet implemented anything related to deities.");

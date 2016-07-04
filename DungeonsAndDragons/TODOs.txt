@@ -1,0 +1,99 @@
+BIG TODO!!!  I haven't really done feats for any of the characters yet.
+
+RACES*************************************
+
+Goliath: Haven't implemented powerful athlete yet, because I won't often be doing jump or climb checks for now. But other than that Goliath should be 100% implemented.
+
+Dwarf: Haven't implemented Cast-Iron Stomach yet, because I haven't ran across a creature that poisons yet. Haven't done encumbered speed because I haven't coded any encumbrances yet.
+Haven't implemented Stand Your Ground yet.  I'll implement it when I have the first critter that has a power that pushes, pulls, slides or knocks someone prone.
+
+Deva: Astral Majesty is fully implemented and tested. Astral Resistance is coded, but not tested. Memory of a Thousand Lifetimes is implemented except for ability check.
+Deva is pretty much implemented then.
+
+Elf: Fey Origin is implemented.  Group Awareness is also, but not tested.  Elven accuracy is done.  So, all done with ELVES!!!!!!!!!
+
+Shifter: Razorclaw Shifting is done. Only thing left is longtooth shifting.
+
+
+
+CLASSES***********************************
+
+Warden:
+Font Of Life is coded, but not tested yet.
+Earthstrength is completely implemented and tested.  :-)
+Wildblood: Implemented the first paragraph, about light armor.  But haven't implemented the second paragraph about second wind.  Put it in the second wind aspect, when I do.
+Nature's Wrath is fully implemented and tested.
+Warden's Fury is fully implemented/tested.
+Warden's Grasp is implemented and tested EXCEPT for the "cannot shift until the end of its next turn" part.
+Earth Shield Strike, Strength Of Stone, Thunder Ram Assault, and Form of the Willow Sentinel were implemented previously.  Should be retested.
+Not implementing other powers for Warden yet, since my character doesn't have them.
+Idea: There will probably end up being a lot of powers that should target a creature we already know, but don't need to select.  Create an aspect that will advice the choose method and automatically put the creature instead of asking which one, maybe.
+
+
+Paladin:
+Divine Mettle is implemented but not tested yet.
+Divine Strength.  Need to make sure it doesn't apply to more than one attack.  Right now I just have the duration set to the start of the next turn.
+Divine Challenge.  Done except for checking if you attacked the creature during your turn and penalizing by not letting you use it the next turn if you didn't engage the target.
+Lay on Hands is completely done and tested (well, except for the "minimum 1" - but my guy has 2 wisdom)
+Bolstering Strike is done and tested.
+Enfeebling Strike is done and tested.
+Shielding Smite is done and tested.
+
+
+Runepriest:
+Rune of Mending is done and tested.  Rune Master is done and tested. Word of Binding is done and tested.
+Runic Artistry Defiant Word is done, but not Wrathful Hammer.
+Word of Exchange is done except for "next ally to hit the target gets an AC bonus...."
+Divine Rune of Thunder is done and tested.
+Rune of the Undeniable Dawn done and tested.  EVEN THE ZONE!!!
+
+
+
+Sorcerer:
+I have implemented daggers as Implements, but not really tested.
+Chaos burst is coded and tested.
+Chaos Power is coded, but not tested until I implement some of the sorcerer attack powers.
+Not sure of a better way to code this.... but at the end of each of my sorcerer powers, I need to code checks for the unfettered power roll.
+Coded/tested wild soul, except for "ignoring target's resistance to that damage type".
+Chaos Bolt is tested pretty thoroughly.  But I'm sure with how complex it is, that it's a bit buggy.  It even has the unfettered power logic.
+Storm Walk is done and tested.
+Bedeviling Burst is done and tested.
+Dazzling Ray is done and tested.
+
+
+Druid:
+Balance of Nature is done, except I just put a note saying they must choose at least one (but not more than two) beast form powers.
+Wild Shape is done and tested.  But I need to make sure that I only allow powers with the beast form keyword when in beast form and vice versa.  There is still a lot of stuff mentioned about dropping things when going to beast form.
+Call of the Beast - implemented and mostly tested.  Yes, implemented only allowing it in humanoid form.
+Chill Wind - fully implemented and tested.  Even humanoid form only.
+Grasping Claws - fully implemented and tested. Even beast form only.
+Frost Flash - fully implemented and tested. Even immobilized part. And beast form only.
+Fires of Life is done and tested!!!
+
+Monk:
+Need to implement Implements: Ki focuses
+
+
+
+FEATS **************************************************************************
+Healing Hands is done.
+Arcane Spellfury is done.
+Crushing Earthstrength is done.
+Rune of Mending is done.
+Primal Instinct is done.
+
+
+
+General*************************************
+Expand the store to include gear from book 2 (p 197)
+Modify powers' meetsRequirementsToUsePower method to see if you have an enemy that you can attack with it,
+so menus are more context sensitive.
+Dazed is all coded except for "you can't take immediate actions".
+Bull Rush is implemented and tested.
+Charge is done.
+Running is done.
+
+
+MONSTERS**********************************
+Kobold Slinger is completely done.
+Kobold Minion is completely done.

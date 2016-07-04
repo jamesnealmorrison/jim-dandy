@@ -82,4 +82,9 @@ public class Quarterstaff extends Weapon {
 		return WeaponCategory.SIMPLE_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Quarterstaff";
+	}
+
 }

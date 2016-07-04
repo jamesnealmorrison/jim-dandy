@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
@@ -26,7 +27,7 @@ public class Rogue extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -91,11 +92,7 @@ public class Rogue extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.SHORTSWORD);
 		
 		Utils.print("Adding bonus of +2 Reflex");
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(2);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 2);
-		}
+		setReflexBonus(getReflexBonus() + 2);
 		
 		Utils.print("Setting hit points per level gained = 5");
 		pc.setHitPointsPerLevelGained(5);

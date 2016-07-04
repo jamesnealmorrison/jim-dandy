@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.ChannelDivinityArmorOfWrath;
+import com.jimmie.powers.ChannelDivinityPreserversRebuke;
+import com.jimmie.powers.ChannelDivinityRebukeUndead;
 import com.jimmie.util.Utils;
 
 public class Invoker extends DndClass {
@@ -26,7 +31,7 @@ public class Invoker extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -78,24 +83,14 @@ public class Invoker extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_MELEE);
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
+		Utils.print("Adding Implement Proficiencies: Rods, Staffs");
+		pc.addImplementProficiency(ImplementType.ROD);
+		pc.addImplementProficiency(ImplementType.STAFF);
+
 		Utils.print("Adding bonus of +1 Fortitude, +1 Reflex +1 Will");
-		if (pc.getFortitudeMisc1() == 0) {
-			pc.setFortitudeMisc1(1);
-		} else {
-			pc.setFortitudeMisc2(pc.getFortitudeMisc2() + 1);
-		}
-
-		if (pc.getReflexMisc1() == 0) {
-			pc.setReflexMisc1(1);
-		} else {
-			pc.setReflexMisc2(pc.getReflexMisc2() + 1);
-		}
-
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 1);
-		}
+		setFortitudeBonus(getFortitudeBonus() + 1);
+		setReflexBonus(getReflexBonus() + 1);
+		setWillBonus(getWillBonus() + 1);
 
 		Utils.print("Setting hit points per level gained = 4");
 		pc.setHitPointsPerLevelGained(4);
@@ -131,12 +126,16 @@ public class Invoker extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setDivineCovenant(DivineCovenant.PRESERVATION);
+			pc.addPower(new ChannelDivinityPreserversRebuke());
 		} else {
 			setDivineCovenant(DivineCovenant.WRATH);
+			pc.addPower(new ChannelDivinityArmorOfWrath());
 		}
 		
-		// TODO: Channel Divinity, Divine Covenant, Ritual Casting, Implements
-		Utils.print("NOTE: I have not yet coded Channel Divinity, Divine Covenant, Ritual Casting, Implements.");
+		pc.addPower(new ChannelDivinityRebukeUndead());
+		
+		// TODO: Divine Covenant, Ritual Casting
+		Utils.print("NOTE: I have not yet coded Divine Covenant, Ritual Casting.");
 	}
 
 	@Override

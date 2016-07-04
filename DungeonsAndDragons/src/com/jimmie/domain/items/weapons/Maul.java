@@ -81,4 +81,9 @@ public class Maul extends Weapon {
 	public WeaponCategory getWeaponCategory() {
 		return WeaponCategory.MILITARY_MELEE;
 	}
+
+	@Override
+	public String getName() {
+		return "Maul";
+	}
 }

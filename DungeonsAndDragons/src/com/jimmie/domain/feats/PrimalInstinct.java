@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Druid;
+import com.jimmie.domain.classes.PrimalAspect;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class PrimalInstinct extends Feat {
@@ -21,20 +23,21 @@ public class PrimalInstinct extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Ally can reroll initiative";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Druid.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Druid) pc.getDndClass()).getPrimalAspect() == PrimalAspect.PRIMAL_GUARDIAN) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

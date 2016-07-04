@@ -20,4 +20,9 @@ public class Lantern extends Gear {
 	public GearType getGearType() {
 		return GearType.LANTERN;
 	}
+
+	@Override
+	public String getName() {
+		return "Lantern";
+	}
 }

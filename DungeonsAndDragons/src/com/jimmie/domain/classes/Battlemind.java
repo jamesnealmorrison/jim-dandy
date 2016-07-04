@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponCategory;
+import com.jimmie.powers.BattleResilience;
+import com.jimmie.powers.BattlemindsDemand;
+import com.jimmie.powers.BlurredStep;
+import com.jimmie.powers.MindSpike;
+import com.jimmie.powers.SpeedOfThought;
 import com.jimmie.util.Utils;
 
 public class Battlemind extends DndClass {
@@ -26,7 +32,7 @@ public class Battlemind extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -81,11 +87,7 @@ public class Battlemind extends DndClass {
 		pc.addWeaponCategoryProficiency(WeaponCategory.SIMPLE_RANGED);
 		
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(2);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 
 		Utils.print("Setting hit points per level gained = 6");
 		pc.setHitPointsPerLevelGained(6);
@@ -119,9 +121,15 @@ public class Battlemind extends DndClass {
 		choice = Utils.getValidIntInputInRange(1, 2);
 		if (choice == 1) {
 			setPsionicStudy(PsionicStudy.BATTLE_RESILIENCE);
+			pc.addPower(new BattleResilience());
 		} else {
 			setPsionicStudy(PsionicStudy.SPEED_OF_THOUGHT);
+			pc.addPower(new SpeedOfThought());
 		}
+		
+		pc.addPower(new BattlemindsDemand());
+		pc.addPower(new BlurredStep());
+		pc.addPower(new MindSpike());
 		
 		// TODO: Psionic Augmentation, Psionic Defense, Psionic Study
 		Utils.print("NOTE: I have not yet coded Psionic Augmentation, Psionic Defense, Psionic Study.");

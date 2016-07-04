@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jimmie.domain.AbilityType;
+import com.jimmie.domain.ImplementType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.PlayerCharacter;
 import com.jimmie.domain.creatures.PowerSource;
 import com.jimmie.domain.creatures.Role;
 import com.jimmie.domain.items.armor.ArmorGroup;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.GhostSound;
+import com.jimmie.powers.Light;
+import com.jimmie.powers.MageHand;
+import com.jimmie.powers.Prestidigitation;
 import com.jimmie.util.Utils;
 
 public class Wizard extends DndClass {
@@ -26,7 +32,7 @@ public class Wizard extends DndClass {
 	}
 
 	@Override
-	public void initializeForNewDay() {
+	public void initializeForNewDay(DndCharacter dndCharacter) {
 		// TODO Auto-generated method stub
 
 	}
@@ -75,12 +81,13 @@ public class Wizard extends DndClass {
 		pc.addWeaponTypeProficiency(WeaponType.DAGGER);
 		pc.addWeaponTypeProficiency(WeaponType.QUARTERSTAFF);
 		
+		Utils.print("Adding Implement Proficiencies: Orbs, Staffs, Wands");
+		pc.addImplementProficiency(ImplementType.ORB);
+		pc.addImplementProficiency(ImplementType.STAFF);
+		pc.addImplementProficiency(ImplementType.WAND);
+
 		Utils.print("Adding bonus of +2 Will");
-		if (pc.getWillMisc1() == 0) {
-			pc.setWillMisc1(1);
-		} else {
-			pc.setWillMisc2(pc.getWillMisc2() + 2);
-		}
+		setWillBonus(getWillBonus() + 2);
 		
 		Utils.print("Setting hit points per level gained = 4");
 		pc.setHitPointsPerLevelGained(4);
@@ -121,8 +128,13 @@ public class Wizard extends DndClass {
 			setArcaneImplement(ArcaneImplement.WAND_OF_ACCURACY);
 		}
 		
-		// TODO: Arcane Implement Mastery, Cantrips, Ritual Casting, Spellbook
-		Utils.print("NOTE: I have not yet coded Arcane Implement Mastery, Cantrips, Ritual Casting, Spellbook");
+		pc.addPower(new GhostSound());
+		pc.addPower(new Light());
+		pc.addPower(new MageHand());
+		pc.addPower(new Prestidigitation());
+		
+		// TODO: Arcane Implement Mastery, Ritual Casting, Spellbook
+		Utils.print("NOTE: I have not yet coded Arcane Implement Mastery, Ritual Casting, Spellbook");
 	}
 
 	@Override

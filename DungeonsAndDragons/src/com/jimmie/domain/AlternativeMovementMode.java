@@ -1,6 +1,12 @@
 package com.jimmie.domain;
 
-public class AlternativeMovementMode {
+import java.io.Serializable;
+
+public class AlternativeMovementMode implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private AlternativeMovementModeType type;
 	private int speed;
 	public AlternativeMovementModeType getType() {

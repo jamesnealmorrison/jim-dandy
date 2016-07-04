@@ -82,4 +82,9 @@ public class Scythe extends Weapon {
 		return WeaponCategory.SIMPLE_MELEE;
 	}
 
+	@Override
+	public String getName() {
+		return "Scythe";
+	}
+
 }

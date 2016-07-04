@@ -3,10 +3,8 @@ package com.jimmie.domain.creatures.monsters;
 import java.util.List;
 
 import com.jimmie.domain.Aura;
-import com.jimmie.domain.TemporaryAidAnotherBonus;
 import com.jimmie.domain.creatures.Creature;
 import com.jimmie.domain.creatures.CreatureType;
-import com.jimmie.domain.creatures.Origin;
 import com.jimmie.util.Utils;
 
 public abstract class Monster extends Creature {
@@ -25,39 +23,11 @@ public abstract class Monster extends Creature {
 	protected int savingThrows;
 	protected String tactics;
 	protected int experiencePointValue;
-	protected Origin origin;
 	protected CreatureType type;
 	protected List<MonsterKeyword> keywords;
 	protected int armorClass;
 	public int getArmorClass(Creature attacker) {
-		int bonus = 0;
-		/* See if there is a temporary bonus to the armor class. */
-		if (temporaryArmorClassBonus != null) {
-			if (temporaryArmorClassBonus.stillApplies()) {
-				Utils.print(name + " is supposed to get a bonus to armor class until the end of " + temporaryArmorClassBonus.getSource().getName() + "'s next turn.");
-					bonus = bonus + temporaryArmorClassBonus.getBonus();
-					Utils.print("Bonus still applies.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryArmorClassBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-		/* See if there is a temporary defense bonus due to the "Aid another" bonus. */
-		if ((temporaryAidAnotherBonus != null) && (temporaryAidAnotherBonus.getType() == TemporaryAidAnotherBonus.DEFENSE)) {
-			if (temporaryAidAnotherBonus.stillApplies() && (temporaryAidAnotherBonus.getTarget() == attacker)) {
-				Utils.print(name + " is supposed to get a bonus of " + temporaryAidAnotherBonus.getBonus() + " to defense against this attack by " + attacker.getName() + ".");
-					bonus = bonus + temporaryAidAnotherBonus.getBonus();
-					Utils.print("Bonus still applies.");
-					temporaryAidAnotherBonus = null;
-					Utils.print("One time bonus so bonus no longer applies.  Resetting bonus.");
-			} else {
-				/* Bonus is over.  Reset the bonus. */
-				temporaryAidAnotherBonus = null;
-				Utils.print("Bonus no longer applies.  Resetting bonus.");
-			}
-		}
-		return armorClass + bonus;
+		return armorClass;
 	}
 	public void setArmorClass(int armorClass) {
 		this.armorClass = armorClass;
@@ -112,12 +82,6 @@ public abstract class Monster extends Creature {
 	}
 	public void setExperiencePointValue(int experiencePointValue) {
 		this.experiencePointValue = experiencePointValue;
-	}
-	public Origin getOrigin() {
-		return origin;
-	}
-	public void setOrigin(Origin origin) {
-		this.origin = origin;
 	}
 	public CreatureType getType() {
 		return type;

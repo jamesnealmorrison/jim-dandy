@@ -2,293 +2,71 @@ package com.jimmie.encounters;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.SkillType;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TurnTaker;
+import com.jimmie.domain.creatures.CreatureConditionType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldWyrmpriest;
-import com.jimmie.util.Utils;
-import com.jimmie.domain.creatures.Character;
 import com.jimmie.domain.creatures.monsters.Monster;
-import com.jimmie.domain.map.LocationType;
 import com.jimmie.domain.map.Map;
-import com.jimmie.domain.map.MapLocation;
+import com.jimmie.util.SkillCheck;
+import com.jimmie.util.Utils;
 
 public class KoboldAmbushEncounter extends Encounter {
+	@Autowired
+	private KoboldSkirmisher k;
+	@Autowired
+	private KoboldDragonshield d1;
+	@Autowired
+	private KoboldDragonshield d2;
+	@Autowired
+	private KoboldDragonshield d3;
+	@Autowired
+	private KoboldWyrmpriest w;
+	@Autowired
+	private DndCharacter gamal;
+	@Autowired
+	private DndCharacter percian;
+	@Autowired
+	private DndCharacter keothi;
+	@Autowired
+	private DndCharacter travok;
+	@Autowired
+	private DndCharacter hazel;
+	
+	@Override
+	public void init() {
+		showCoordinateSystem(true);
+		Encounter.setMonstersActive(false);
+		Encounter.setMonstersVisible(false);
+		Encounter.setCharactersVisible(true);
+		Encounter.setCharactersActive(true);
 
-	public KoboldAmbushEncounter() {
-		/* Set up the monsters */
-		KoboldSkirmisher k = new KoboldSkirmisher();
-		k.setName("Kobold Skirmisher");
-		k.setDisplayName("K");
-		k.setCurrentPosition(new Position(14,18));
-		KoboldDragonshield d1 = new KoboldDragonshield();
-		d1.setName("Kobold Dragonshield 1");
-		d1.setDisplayName("D1");
-		d1.setCurrentPosition(new Position(15,17));
-		KoboldDragonshield d2 = new KoboldDragonshield();
-		d2.setName("Kobold Dragonshield 2");
-		d2.setDisplayName("D2");
-		d2.setCurrentPosition(new Position(19,10));
-		KoboldDragonshield d3 = new KoboldDragonshield();
-		d3.setName("Kobold Dragonshield 3");
-		d3.setDisplayName("D3");
-		d3.setCurrentPosition(new Position(18,10));
-		KoboldWyrmpriest w = new KoboldWyrmpriest();
-		w.setName("Kobold Wyrmpriest");
-		w.setDisplayName("W");
-		w.setCurrentPosition(new Position(15,19));
+		// Set up monsters
 		monsters = new ArrayList<Monster>();
 		monsters.add(k);
 		monsters.add(d1);
 		monsters.add(d2);
 		monsters.add(d3);
 		monsters.add(w);
-		
 
-		
-	
-		/* Set up the player characters */
-/*		Avenger avenger = new Avenger();
-		avenger.addPower(Avenger.BOND_OF_PURSUIT);
-		avenger.addPower(Avenger.RADIANT_VENGEANCE);
-		avenger.addPower(Avenger.ANGELIC_ALACRITY);
-		avenger.addPower(Avenger.OATH_OF_ENMITY);
-		avenger.addPower(Avenger.ABJURE_UNDEAD);
-		avenger.addPower(Avenger.DIVINE_GUIDANCE);
-		avenger.addPower(Avenger.ASPECT_OF_MIGHT);
-		avenger.setCensure(Avenger.CENSURE_OF_PURSUIT);
-		Elf elf = new Elf();
-		PlayerCharacter elfAvenger = new PlayerCharacter(elf, avenger);
-		avenger.setOwner(elfAvenger);
-		elf.setOwner(elfAvenger);
-		elfAvenger.setName("Thokul Moonshadow");
-		elfAvenger.setDisplayName("TM");
-		elfAvenger.setInitiative(3);
-		elfAvenger.setMaxHitPoints(23);
-		elfAvenger.setCurrentHitPoints(15);
-		elfAvenger.setFortitude(12);
-		elfAvenger.setReflex(14);
-		elfAvenger.setWill(15);
-		elfAvenger.setSpeed(7);
-		elfAvenger.setStrength(11);
-		elfAvenger.setConstitution(12);
-		elfAvenger.setDexterity(16);
-		elfAvenger.setIntelligence(13);
-		elfAvenger.setWisdom(18);
-		elfAvenger.setCharisma(10);
-		LongSword ls1 = new LongSword();
-		elfAvenger.addWeaponProficiency(ls1.getWeaponId());
-		elfAvenger.setReadiedWeapon(ls1);
-		elfAvenger.setArmor(new ClothArmor());
-		elfAvenger.setReadiedShield(new NoShield());
-		elfAvenger.setCurrentPosition(new Position(16,13));
-		elfAvenger.setHealingSurgesPerDay(8);
-		elfAvenger.setHealingSurgeValue(5);
-		elfAvenger.setCurrentSurgeUses(1);
-		elfAvenger.setTrainedInAcrobatics(true);
-		elfAvenger.setTrainedInPerception(true);
-		elfAvenger.setTrainedInReligion(true);
-		elfAvenger.setTrainedInStealth(true);
-		elfAvenger.setImagePath("c:\\eclipse_workspace\\DungeonsAndDragons\\resources\\ElfAvenger.JPG");
-		elfAvenger.initializeForNewDay();
-		Utils.saveCharacter(elfAvenger);
-
-		
-		
-		Bard bard = new Bard();
-		bard.addPower(Bard.MISDIRECTED_MARK);
-		bard.addPower(Bard.VICIOUS_MOCKERY);
-		bard.addPower(Bard.BLUNDER);
-		bard.addPower(Bard.MAJESTIC_WORD);
-		bard.addPower(Bard.WORDS_OF_FRIENDSHIP);
-
-//      TODO: I am not currently implementing the Ghost Sound power.
-//      Also, it should come from the Wizard class, even though this bard is using it.
-//      bard.addPower(Wizard.GHOST_SOUND);
-
-		bard.addPower(Bard.STIRRING_SHOUT);
-		Gnome gnome = new Gnome();
-		gnome.addPower(Gnome.FADE_AWAY);
-		
-		PlayerCharacter kellen = new PlayerCharacter(gnome, bard);
-		bard.setOwner(kellen);
-		gnome.setOwner(kellen);
-		kellen.setName("Kellen Wordsmith");
-		kellen.setDisplayName("KW");
-		kellen.setInitiative(1);
-		kellen.setMaxHitPoints(25);
-		kellen.setCurrentHitPoints(21);
-		kellen.setFortitude(11);
-		kellen.setReflex(15);
-		kellen.setWill(15);
-		kellen.setSpeed(4);
-		kellen.setStrength(10);
-		kellen.setConstitution(13);
-		kellen.setDexterity(12);
-		kellen.setIntelligence(16);
-		kellen.setWisdom(11);
-		kellen.setCharisma(18);
-		kellen.setCurrentPosition(new Position(19,14));
-		kellen.setReadiedWeapon(new ShortSword());
-		kellen.setReadiedShield(new LightShield());
-		kellen.setArmor(new ChainMail());
-		kellen.setHealingSurgesPerDay(8);
-		kellen.setHealingSurgeValue(6);
-		kellen.setTrainedInArcana(true);
-		kellen.setTrainedInBluff(true);
-		kellen.setTrainedInIntimidate(true);
-		kellen.setTrainedInPerception(true);
-		kellen.setTrainedInStreetwise(true);
-		kellen.setImagePath("c:\\eclipse_workspace\\DungeonsAndDragons\\resources\\GnomeBard.JPG");
-		kellen.initializeForNewDay();
-		Utils.saveCharacter(kellen);
-		
-		Warden warden = new Warden();
-		warden.addPower(Warden.STRENGTH_OF_STONE);
-		warden.addPower(Warden.EARTH_SHIELD_STRIKE);
-		warden.addPower(Warden.WARDENS_FURY);
-		warden.addPower(Warden.THUNDER_RAM_ASSAULT);
-		warden.addPower(Warden.WARDENS_GRASP);
-		warden.addPower(Warden.FORM_OF_THE_WILLOW_SENTINEL);
-		warden.addOption(Warden.EARTH_STRENGTH);
-		Goliath goliath = new Goliath();
-		goliath.addPower(Goliath.STONES_ENDURANCE);
-		PlayerCharacter glock = new PlayerCharacter(goliath, warden);
-		warden.setOwner(glock);
-		goliath.setOwner(glock);
-		glock.setName("Glock Elmhurst");
-		glock.setDisplayName("GE");
-		glock.setInitiative(1);
-		glock.setMaxHitPoints(33);
-		glock.setCurrentHitPoints(16);
-		glock.setFortitude(15);
-		glock.setReflex(11);
-		glock.setWill(13);
-		glock.setSpeed(6);
-		glock.setStrength(18);
-		glock.setConstitution(16);
-		glock.setDexterity(12);
-		glock.setIntelligence(11);
-		glock.setWisdom(10);
-		glock.setCharisma(13);
-		glock.setCurrentPosition(new Position(15,14));
-		WarHammer warHammer = new WarHammer();
-		glock.setReadiedWeapon(warHammer);
-		glock.addWeaponProficiency(warHammer.getWeaponId());
-		glock.setReadiedShield(new LightShield());
-		glock.setArmor(new HideArmor());
-		glock.setHealingSurgesPerDay(12);
-		glock.setCurrentSurgeUses(1);
-		glock.setHealingSurgeValue(8);
-		glock.setTrainedInAthletics(true);
-		glock.setTrainedInHeal(true);
-		glock.setTrainedInNature(true);
-		glock.setTrainedInPerception(true);
-		glock.setImagePath("c:\\eclipse_workspace\\DungeonsAndDragons\\resources\\GoliathWarden.JPG");
-		glock.initializeForNewDay();
-		Utils.saveCharacter(glock);
-
-		Fighter fighter = new Fighter();
-		fighter.addPower(Fighter.SURE_STRIKE);
-		fighter.addPower(Fighter.TIDE_OF_IRON);
-		fighter.addPower(Fighter.COVERING_ATTACK);
-		fighter.addPower(Fighter.COMEBACK_STRIKE);
-		HalfOrc halfOrc = new HalfOrc();
-		halfOrc.addPower(HalfOrc.FURIOUS_ASSAULT);
-		halfOrc.addPower(HalfOrc.HALF_ORC_RESILIENCE);
-		PlayerCharacter halfOrcFighter = new PlayerCharacter(halfOrc, fighter);
-		fighter.setOwner(halfOrcFighter);
-		fighter.setFighterWeaponTalent(Fighter.ONE_HANDED_WEAPON);
-		halfOrc.setOwner(halfOrcFighter);
-		halfOrcFighter.setName("Eleak Nightraider");
-		halfOrcFighter.setDisplayName("EN");
-		//halfOrcFighter.setInitiative(3);
-		halfOrcFighter.setInitiative(3);
-		halfOrcFighter.setMaxHitPoints(27);
-		halfOrcFighter.setCurrentHitPoints(13);
-		halfOrcFighter.setFortitude(16);
-		halfOrcFighter.setReflex(15);
-		halfOrcFighter.setWill(11);
-		halfOrcFighter.setSpeed(5);
-		halfOrcFighter.setStrength(18);
-		halfOrcFighter.setConstitution(12);
-		halfOrcFighter.setDexterity(16);
-		halfOrcFighter.setIntelligence(10);
-		halfOrcFighter.setWisdom(13);
-		halfOrcFighter.setCharisma(11);
-		LongSword ls = new LongSword();
-		halfOrcFighter.setReadiedWeapon(ls);
-		halfOrcFighter.setReadiedShield(new HeavyShield());
-		halfOrcFighter.addWeaponProficiency(ls.getWeaponId());
-		halfOrcFighter.setCurrentPosition(new Position(19,16));
-		halfOrcFighter.setArmor(new ScaleArmor());
-		halfOrcFighter.setHealingSurgesPerDay(10);
-		halfOrcFighter.setHealingSurgeValue(6);
-		halfOrcFighter.setTrainedInAthletics(true);
-		halfOrcFighter.setTrainedInHeal(true);
-		halfOrcFighter.setTrainedInIntimidate(true);
-		halfOrcFighter.setImagePath("c:\\eclipse_workspace\\DungeonsAndDragons\\resources\\HalfOrcFighter.JPG");
-		halfOrcFighter.initializeForNewDay();
-		Utils.saveCharacter(halfOrcFighter);
-
-		Human human = new Human();
-		Psion psion = new Psion();
-		psion.addPower(Psion.KINETIC_TRAWL);
-		psion.addPower(Psion.FORCE_PUNCH);
-		psion.addPower(Psion.MEMORY_HOLE);
-		psion.addPower(Psion.FAR_HAND);
-		psion.addPower(Psion.FORCEFUL_PUSH);
-		psion.addPower(Psion.TELEKINETIC_ANCHOR);
-		PlayerCharacter zanros = new PlayerCharacter(human, psion);
-		psion.setOwner(zanros);
-		human.setOwner(zanros);
-		zanros.setName("Zanros Hawklight");
-		zanros.setDisplayName("ZH");
-		zanros.setInitiative(0); 
-		zanros.setMaxHitPoints(25);
-		zanros.setCurrentHitPoints(25);
-		zanros.setFortitude(12);
-		zanros.setReflex(15);
-		zanros.setWill(15);
-		zanros.setSpeed(6);
-		zanros.setStrength(12);
-		zanros.setConstitution(13);
-		zanros.setDexterity(10);
-		zanros.setIntelligence(18);
-		zanros.setWisdom(14);
-		zanros.setCharisma(11);
-		zanros.setReadiedWeapon(new Mace());
-		zanros.setReadiedShield(new NoShield());
-		zanros.setCurrentPosition(new Position(17,15));
-		zanros.setArmor(new ClothArmor());
-		zanros.setHealingSurgesPerDay(7);
-		zanros.setHealingSurgeValue(6);
-		zanros.setTrainedInArcana(true);
-		zanros.setTrainedInDungeoneering(true);
-		zanros.setTrainedInInsight(true);
-		zanros.setTrainedInIntimidate(true);
-		zanros.setTrainedInPerception(true);
-		zanros.setImagePath("c:\\eclipse_workspace\\DungeonsAndDragons\\resources\\HumanPsion.JPG");
-		zanros.initializeForNewDay();
-		Utils.saveCharacter(zanros);
-*/		
-		Character elfAvenger = Utils.loadCharacter("Thokul Moonshadow");
-		Character kellen = Utils.loadCharacter("Kellen Wordsmith");
-		Character glock = Utils.loadCharacter("Glock Elmhurst");
-		Character halfOrcFighter = Utils.loadCharacter("Eleak Nightraider");
-		Character zanros = Utils.loadCharacter("Zanros Hawklight");
-		
-		characters = new ArrayList<Character>();
-		characters.add(elfAvenger);
-		characters.add(kellen);
-		characters.add(glock);
-		characters.add(halfOrcFighter);
-		characters.add(zanros);
-		
+		characters = new ArrayList<DndCharacter>();
+		characters.add(gamal);
+		characters.add(percian);
+		characters.add(keothi);
+		characters.add(travok);
+		characters.add(hazel);
 
 		map = new Map();
 		map.setWidth(30);
 		map.setHeight(21);
+		/* Commenting out.  If I want to run this encounter again, I'll have to refactor all this.
 		map.addLocation(new MapLocation(new Position(1,1), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(1,2), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(1,3), LocationType.GRASS));
@@ -918,6 +696,169 @@ public class KoboldAmbushEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(30,18), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(30,19), LocationType.FOLIAGE));
 		map.addLocation(new MapLocation(new Position(30,20), LocationType.FOLIAGE));
-		map.addLocation(new MapLocation(new Position(30,21), LocationType.FOLIAGE));		
+		map.addLocation(new MapLocation(new Position(30,21), LocationType.FOLIAGE));
+		*/		
+	}	
+
+	@Override
+	public void setup() {
+/*		
+		if (PlayerCharacter.class.isAssignableFrom(gamal.getClass())) {
+			((PlayerCharacter) gamal).setExperiencePoints(220);
+			gamal.addCoins(1, CoinType.GOLD_PIECE);
+			gamal.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(percian.getClass())) {
+			((PlayerCharacter) percian).setExperiencePoints(220);
+			percian.addCoins(1, CoinType.GOLD_PIECE);
+			percian.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(keothi.getClass())) {
+			((PlayerCharacter) keothi).setExperiencePoints(220);
+			keothi.addCoins(1, CoinType.GOLD_PIECE);
+			keothi.addCoins(4, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(travok.getClass())) {
+			((PlayerCharacter) travok).setExperiencePoints(220);
+			travok.addCoins(1, CoinType.GOLD_PIECE);
+			travok.addCoins(5, CoinType.SILVER_PIECE);
+		}
+		if (PlayerCharacter.class.isAssignableFrom(hazel.getClass())) {
+			((PlayerCharacter) hazel).setExperiencePoints(220);
+			hazel.addCoins(1, CoinType.GOLD_PIECE);
+			hazel.addCoins(5, CoinType.SILVER_PIECE);
+		}
+		
+Utils.saveCharacter(gamal);
+Utils.saveCharacter(percian);
+Utils.saveCharacter(keothi);
+Utils.saveCharacter(travok);
+Utils.saveCharacter(hazel);
+*/		
+		// Put the characters on the road.
+		Utils.print("Place characters on the road at the western side of the map.");
+		
+		for (DndCharacter character : getCharacters()) {
+			Utils.print("Where do you want to put " + character.getName() + "?");
+
+			Encounter.showCoordinateSystem(true);
+			
+			Utils.print("Please enter the X coordinate (8 - 11).");
+			int x = Utils.getValidIntInputInRange(8, 11);
+
+			Utils.print("Please enter the Y coordinate (11 - 14).");
+			int y = Utils.getValidIntInputInRange(11, 14);
+			Encounter.showCoordinateSystem(false);
+			
+			character.setCurrentPosition(new Position(x,y));
+			
+			Utils.print("Now, doing a perception check.");
+			SkillCheck skillCheck = new SkillCheck();
+			skillCheck.setDifficultyClass(25);
+			skillCheck.setSkillType(SkillType.PERCEPTION);
+			if (!character.performSkillCheck(skillCheck)) {
+				character.setTemporaryCondition(character, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, character.getCurrentTurn());
+			}
+		}
+		
+		Utils.print("The wind in your face is cool and comfortable.  The road beneath your feet is level.  An occasional ancient cobblestone ");
+		Utils.print("peeks through the dirt road, indicating decades of neglect.  You notice footprints leading up and down the road, many of");
+		Utils.print("which were made by small, clawed feet.");
+		
+		Utils.print("Small creatures hiding behind the rocks spring into view and begin to move toward you.  With a shriek, the small humanoids");
+		Utils.print("attack.  Scaled and rust-colored, they have reptilian heads and tails.");
+		Encounter.setMonstersActive(true);
+		Encounter.setMonstersVisible(true);
+	}
+
+	@Override
+	protected void makeEncounterInitiativeChanges() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public KoboldSkirmisher getK() {
+		return k;
+	}
+
+	public void setK(KoboldSkirmisher k) {
+		this.k = k;
+	}
+
+	public KoboldDragonshield getD1() {
+		return d1;
+	}
+
+	public void setD1(KoboldDragonshield d1) {
+		this.d1 = d1;
+	}
+
+	public KoboldDragonshield getD2() {
+		return d2;
+	}
+
+	public void setD2(KoboldDragonshield d2) {
+		this.d2 = d2;
+	}
+
+	public KoboldDragonshield getD3() {
+		return d3;
+	}
+
+	public void setD3(KoboldDragonshield d3) {
+		this.d3 = d3;
+	}
+
+	public KoboldWyrmpriest getW() {
+		return w;
+	}
+
+	public void setW(KoboldWyrmpriest w) {
+		this.w = w;
+	}
+
+	public DndCharacter getGamal() {
+		return gamal;
+	}
+
+	public void setGamal(DndCharacter gamal) {
+		this.gamal = gamal;
+	}
+
+	public DndCharacter getPercian() {
+		return percian;
+	}
+
+	public void setPercian(DndCharacter percian) {
+		this.percian = percian;
+	}
+
+	public DndCharacter getKeothi() {
+		return keothi;
+	}
+
+	public void setKeothi(DndCharacter keothi) {
+		this.keothi = keothi;
+	}
+
+	public DndCharacter getTravok() {
+		return travok;
+	}
+
+	public void setTravok(DndCharacter travok) {
+		this.travok = travok;
+	}
+
+	public DndCharacter getHazel() {
+		return hazel;
+	}
+
+	public void setHazel(DndCharacter hazel) {
+		this.hazel = hazel;
+	}
+
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
 	}
 }

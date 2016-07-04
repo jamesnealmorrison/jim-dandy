@@ -1,29 +1,27 @@
 package com.jimmie.domain.creatures;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.jimmie.domain.AbilityType;
 import com.jimmie.domain.EpicDestiny;
 import com.jimmie.domain.MagicItem;
 import com.jimmie.domain.ParagonPath;
-import com.jimmie.domain.PowerId;
+import com.jimmie.domain.PowerUsage;
 import com.jimmie.domain.classes.DndClass;
+import com.jimmie.domain.classes.Druid;
 import com.jimmie.domain.feats.Feat;
 import com.jimmie.domain.feats.FeatType;
 import com.jimmie.domain.items.armor.ClothArmor;
-import com.jimmie.util.AtWillPower;
-import com.jimmie.util.DailyPower;
-import com.jimmie.util.EncounterPower;
+import com.jimmie.powers.Power;
+import com.jimmie.rituals.Ritual;
 import com.jimmie.util.FeatMaster;
-import com.jimmie.util.FreeAction;
-import com.jimmie.util.MinorAction;
-import com.jimmie.util.StandardAction;
+import com.jimmie.util.PowerMaster;
 import com.jimmie.util.Utils;
 
-public class PlayerCharacter extends Character implements Serializable {
+public class PlayerCharacter extends DndCharacter implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ParagonPath paragonPath;
 	private EpicDestiny epicDestiny;
@@ -53,6 +51,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	public PlayerCharacter(Race r, DndClass c) {
 		race = r;
 		dndClass = c;
+		dndClass.setOwner(this);
 		// The book says that all player characters start out with cloth armor (basic clothing).
 		addArmor(new ClothArmor());
 	}
@@ -99,7 +98,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	 */
 	public void selectFeat() {
 		HashMap<Integer, Feat> choices = new HashMap<Integer, Feat>();
-
+		
 		List<Feat> allFeats = FeatMaster.getFullListOfFeats();
 		
 		/* Add allFeats to the HashMap of choices, based on if they qualify or not. */
@@ -126,7 +125,7 @@ public class PlayerCharacter extends Character implements Serializable {
 		addFeat(chosenFeat);
 	}
 
-	private void addFeat(Feat chosenFeat) {
+	public void addFeat(Feat chosenFeat) {
 		if (feats == null) {
 			feats = new ArrayList<Feat>();
 		}
@@ -145,87 +144,73 @@ public class PlayerCharacter extends Character implements Serializable {
 	}
 
 	public void choosePowers() {
+		List<Power> allPowers = PowerMaster.getFullListOfPowers();
+
+		
 		if (dndClass != null) {
 			// Choose two At Will powers 
-			HashMap<Integer, PowerId> choices = new HashMap<Integer, PowerId>();
-			int i = 1;
+			HashMap<Integer, Power> choices = new HashMap<Integer, Power>();
+			int i = 0;
 			Utils.print("Choose two At Will Powers:");
-			for (Method method : dndClass.getClass().getMethods()) {
-				if (method.isAnnotationPresent(AtWillPower.class)) {
-					PowerId powerId = null;
-					// Grab the power id.  This could come from Standard, Free, Minor annotation
-					if (method.isAnnotationPresent(StandardAction.class)) {
-						powerId = method.getAnnotation(StandardAction.class).powerId();
-					} else if (method.isAnnotationPresent(FreeAction.class)) {
-						powerId = method.getAnnotation(FreeAction.class).powerId();
-					} else if (method.isAnnotationPresent(MinorAction.class)) {
-						powerId = method.getAnnotation(MinorAction.class).powerId();
-					}
-					choices.put(i, powerId);
-					Utils.print(i + ". " + powerId);
+			for (Power power : allPowers) {
+				if ((power.getPowerUsage() == PowerUsage.AT_WILL) && (power.canBeSelected(this))) {
 					i++;
+					choices.put(i, power);
+					Utils.print(i + ". " + power.getName());
 				}
 			}
 			
-			if (i < 2) {
-				Utils.print("There are less than two At Will powers to choose from.  Something went wrong.");
+			int atWillChoices = 2;
+			if (Druid.class.isAssignableFrom(dndClass.getClass())) {
+				Utils.print("As a Druid with Balance of Nature, you get 3 at will powers.  But please follow the following rule because I didn't check for this:");
+				Utils.print("Throughout your career, at least one of your at will powers, and no more than two, must have the beast form keyword.");
+				atWillChoices = 3;
+			}
+			if (i < atWillChoices) {
+				Utils.print("There are less than " + atWillChoices + " At Will powers to choose from.  Something went wrong.");
 			} else {
-				for (int choiceIndex = 0; choiceIndex < 2; choiceIndex++) {
+				for (int choiceIndex = 0; choiceIndex < atWillChoices; choiceIndex++) {
 					Utils.print("Your choice: (Note: I don't have anything to prevent you from choosing the same thing twice.  Just don't do it, please.)");
 					int choice = Utils.getValidIntInputInRange(1, i);
-					PowerId powerId = choices.get(choice);
-					addPower(powerId);
+					Power power = choices.get(choice);
+					if (power != null) {
+						addPower(power);
+					}
 				}
 			}
 
 			// Choose one encounter power 
-			choices = new HashMap<Integer, PowerId>();
-			i = 1;
+			choices = new HashMap<Integer, Power>();
+			i = 0;
 			Utils.print("Choose an Encounter Power:");
-			for (Method method : dndClass.getClass().getMethods()) {
-				if (method.isAnnotationPresent(EncounterPower.class)) {
-					PowerId powerId = null;
-					// Grab the power id.  This could come from Standard, Free, Minor annotation
-					if (method.isAnnotationPresent(StandardAction.class)) {
-						powerId = method.getAnnotation(StandardAction.class).powerId();
-					} else if (method.isAnnotationPresent(FreeAction.class)) {
-						powerId = method.getAnnotation(FreeAction.class).powerId();
-					} else if (method.isAnnotationPresent(MinorAction.class)) {
-						powerId = method.getAnnotation(MinorAction.class).powerId();
-					}
-					choices.put(i, powerId);
-					Utils.print(i + ". " + powerId);
+			for (Power power : allPowers) {
+				if (((power.getPowerUsage() == PowerUsage.ENCOUNTER) || (power.getPowerUsage() == PowerUsage.ENCOUNTER_SPECIAL)) && (power.canBeSelected(this))) {
 					i++;
+					choices.put(i, power);
+					Utils.print(i + ". " + power.getName());
 				}
 			}
 			
 			if (i < 1) {
-				Utils.print("There are no encounter powers to choose from.  Something went wrong.");
+				Utils.print("There are no encounter powers to choose from.");
 			} else {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, i);
-				PowerId powerId = choices.get(choice);
-				addPower(powerId);
+				Power power = choices.get(choice);
+				if (power != null) {
+					addPower(power);
+				}
 			}
 
 			// Choose one daily power 
-			choices = new HashMap<Integer, PowerId>();
-			i = 1;
+			choices = new HashMap<Integer, Power>();
+			i = 0;
 			Utils.print("Choose a Daily Power:");
-			for (Method method : dndClass.getClass().getMethods()) {
-				if (method.isAnnotationPresent(DailyPower.class)) {
-					PowerId powerId = null;
-					// Grab the power id.  This could come from Standard, Free, Minor annotation
-					if (method.isAnnotationPresent(StandardAction.class)) {
-						powerId = method.getAnnotation(StandardAction.class).powerId();
-					} else if (method.isAnnotationPresent(FreeAction.class)) {
-						powerId = method.getAnnotation(FreeAction.class).powerId();
-					} else if (method.isAnnotationPresent(MinorAction.class)) {
-						powerId = method.getAnnotation(MinorAction.class).powerId();
-					}
-					choices.put(i, powerId);
-					Utils.print(i + ". " + powerId);
+			for (Power power : allPowers) {
+				if (((power.getPowerUsage() == PowerUsage.DAILY) || (power.getPowerUsage() == PowerUsage.DAILY_SPECIAL)) && (power.canBeSelected(this))) {
 					i++;
+					choices.put(i, power);
+					Utils.print(i + ". " + power.getName());
 				}
 			}
 			
@@ -234,8 +219,10 @@ public class PlayerCharacter extends Character implements Serializable {
 			} else {
 				Utils.print("Your choice:");
 				int choice = Utils.getValidIntInputInRange(1, i);
-				PowerId powerId = choices.get(choice);
-				addPower(powerId);
+				Power power = choices.get(choice);
+				if (power != null) {
+					addPower(power);
+				}
 			}
 		}
 	}
@@ -251,5 +238,119 @@ public class PlayerCharacter extends Character implements Serializable {
 	@Override
 	public int getBaseArmorClass() {
 		return super.getBaseArmorClass() + getFeatArmorClassBonus();
+	}
+
+	public int getFeatFortitudeBonus() {
+		int base = 0;
+		for (Feat feat : feats) {
+			base = base + feat.getFortitudeBonus();
+		}
+		return 0;
+	}
+
+	public int getFortitude(Creature attacker) {
+		return (10+getLevel()/2 + getFortitudeAbilityModifier() + dndClass.getFortitudeBonus() + getFeatFortitudeBonus() + race.getFortitudeBonus() + getFortitudeMisc1() + getFortitudeMisc2());
+		// TODO: Enhancement????
+	}
+	
+	public int getFortitudeAbilityModifier() {
+		return Math.max(getAbilityModifier(AbilityType.STRENGTH), getAbilityModifier(AbilityType.CONSTITUTION));
+	}
+
+	public int getReflex(Creature attacker) {
+		return (10+getLevel()/2 + getReflexAbilityModifier() + dndClass.getReflexBonus() + getFeatReflexBonus() + race.getReflexBonus() + getReflexMisc1() + getReflexMisc2());
+		// TODO: Enhancement????
+	}
+	
+	public int getReflexAbilityModifier() {
+		return Math.max(getAbilityModifier(AbilityType.DEXTERITY), getAbilityModifier(AbilityType.INTELLIGENCE));
+	}
+
+	public int getFeatReflexBonus() {
+		int base = 0;
+		for (Feat feat : feats) {
+			base = base + feat.getReflexBonus();
+		}
+		return 0;
+	}
+
+	public int getWill(Creature attacker) {
+		return (10+getLevel()/2 + getWillAbilityModifier() + dndClass.getWillBonus() + getFeatWillBonus() + race.getWillBonus() + getWillMisc1() + getWillMisc2());
+		// TODO: Enhancement????
+	}
+	
+	public int getWillAbilityModifier() {
+		return Math.max(getAbilityModifier(AbilityType.WISDOM), getAbilityModifier(AbilityType.CHARISMA));
+	}
+
+	public int getFeatWillBonus() {
+		int base = 0;
+		for (Feat feat : feats) {
+			base = base + feat.getWillBonus();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getStrength() {
+		return super.getStrength() + race.getStrengthBonus();
+	}
+
+	@Override
+	public int getConstitution() {
+		return super.getConstitution() + race.getConstitutionBonus();
+	}
+
+	@Override
+	public int getDexterity() {
+		return super.getDexterity() + race.getDexterityBonus();
+	}
+
+	@Override
+	public int getIntelligence() {
+		return super.getIntelligence() + race.getIntelligenceBonus();
+	}
+
+	@Override
+	public int getWisdom() {
+		return super.getWisdom() + race.getWisdomBonus();
+	}
+
+	@Override
+	public int getCharisma() {
+		return super.getCharisma() + race.getCharismaBonus();
+	}
+	
+	@Override
+	public int getSpeed() {
+		// TODO: Item and misc.
+		int armorPenalty = this.getReadiedArmor().getSpeedPenalty();
+		// See if they are a Dwarf (with encumbered speed).
+		if (armorPenalty < 0) {
+			if (Dwarf.class.isAssignableFrom(this.getRace().getClass())) {
+				Utils.print("This Dwarf has Encumbered Speed and does not take the " + armorPenalty + " armor penalty to speed.");
+				armorPenalty = 0;
+			}
+		}
+		return super.getSpeed() + armorPenalty;
+	}
+
+	public void addRitual(Ritual ritual) {
+		if (rituals == null) {
+			rituals = new ArrayList<Ritual>();
+		}
+		rituals.add(ritual);
+	}
+
+	public int getNumberOfRuneFeats() {
+		int total = 0;
+		for (Feat feat : feats) {
+			if ((feat.getType() == FeatType.RUNE_OF_ELOQUENCE) || (feat.getType() == FeatType.RUNE_OF_HOPE) || (feat.getType() == FeatType.RUNE_OF_VENGEANCE) ||
+					(feat.getType() == FeatType.RUNE_OF_ZEAL) || (feat.getType() == FeatType.RUNE_OF_ESCAPE) || (feat.getType() == FeatType.RUNE_OF_TORMENT) ||
+					(feat.getType() == FeatType.RUNE_OF_BATTLE) || (feat.getType() == FeatType.RUNE_OF_HEALTH)) {
+				total++;
+			}
+		}
+		return total;
 	}
 }

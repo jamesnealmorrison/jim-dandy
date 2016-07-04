@@ -33,6 +33,18 @@ public class Dagger extends Weapon {
 	public int getProficiencyBonus() {
 		return 3;
 	}
+	
+	// The following method is only here as a way to implement daggers as "Implements".  
+	public int getAttackBonus() {
+		// Non-magical daggers shouldn't give an implement bonus.
+		return 0;
+	}
+
+	// The following method is only here as a way to implement daggers as "Implements".  
+	public int getImplementDamageBonus() {
+		// Non-magical daggers shouldn't give an implement bonus.
+		return 0;
+	}
 
 	@Override
 	public int getNormalRange() {
@@ -82,6 +94,11 @@ public class Dagger extends Weapon {
 	@Override
 	public WeaponHandType getHandType() {
 		return WeaponHandType.ONE_HANDED;
+	}
+
+	@Override
+	public String getName() {
+		return "Dagger";
 	}
 
 }

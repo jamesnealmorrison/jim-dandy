@@ -21,13 +21,14 @@ public class SkillPower extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Gain skill power of your level or lower";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (pc.getLevel() >= 2) {
+			return false;
+		}
 		return false;
 	}
 

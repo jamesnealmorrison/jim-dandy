@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.MonasticTradition;
+import com.jimmie.domain.classes.Monk;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class CrashingTempestStyle extends Feat {
@@ -21,20 +23,21 @@ public class CrashingTempestStyle extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+2 to Flurry of Blows damage when wielding club";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Monk.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Monk) pc.getDndClass()).getMonasticTradition() == MonasticTradition.CENTERED_BREATH) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

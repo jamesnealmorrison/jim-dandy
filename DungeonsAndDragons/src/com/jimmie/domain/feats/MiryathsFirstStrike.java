@@ -1,6 +1,7 @@
 package com.jimmie.domain.feats;
 
 import com.jimmie.domain.creatures.PlayerCharacter;
+import com.jimmie.domain.creatures.Githzerai;
 
 public class MiryathsFirstStrike extends Feat {
 
@@ -21,20 +22,21 @@ public class MiryathsFirstStrike extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Extra damage against creature that has not yet acted";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Githzerai.class.isAssignableFrom(pc.getRace().getClass())) {
+			if (pc.getWisdom() >= 13) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -80,4 +80,12 @@ public class WeaponProficiency extends Feat {
 		proficientWeapon = Utils.getValidInput(choices);
 	}
 
+	public String getProficientWeapon() {
+		return proficientWeapon;
+	}
+
+	public void setProficientWeapon(String proficientWeapon) {
+		this.proficientWeapon = proficientWeapon;
+	}
+
 }

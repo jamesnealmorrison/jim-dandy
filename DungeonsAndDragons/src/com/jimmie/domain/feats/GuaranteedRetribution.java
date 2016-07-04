@@ -1,5 +1,7 @@
 package com.jimmie.domain.feats;
 
+import com.jimmie.domain.classes.Avenger;
+import com.jimmie.domain.classes.AvengersCensure;
 import com.jimmie.domain.creatures.PlayerCharacter;
 
 public class GuaranteedRetribution extends Feat {
@@ -21,20 +23,21 @@ public class GuaranteedRetribution extends Feat {
 
 	@Override
 	public String getBenefit() {
-		// TODO Auto-generated method stub
-		return null;
+		return "+1 to next attack roll against oath of enmity target when another enemy hits you";
 	}
 
 	@Override
 	public boolean meetsPrerequisites(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
+		if (Avenger.class.isAssignableFrom(pc.getDndClass().getClass())) {
+			if (((Avenger) pc.getDndClass()).getCensure() == AvengersCensure.CENSURE_OF_RETRIBUTION) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void makeFeatChoices(PlayerCharacter pc) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

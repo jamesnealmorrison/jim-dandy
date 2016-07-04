@@ -13,4 +13,6 @@ public abstract class Gear implements Serializable {
 	public abstract int getWeight();
 	
 	public abstract GearType getGearType();
+	
+	public abstract String getName();
 }

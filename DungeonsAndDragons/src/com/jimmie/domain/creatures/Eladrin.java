@@ -9,6 +9,7 @@ import com.jimmie.domain.Skill;
 import com.jimmie.domain.SkillType;
 import com.jimmie.domain.classes.DndClass;
 import com.jimmie.domain.items.weapons.WeaponType;
+import com.jimmie.powers.FeyStep;
 import com.jimmie.util.Utils;
 
 public class Eladrin extends Race {
@@ -37,12 +38,6 @@ public class Eladrin extends Race {
 	}
 
 	@Override
-	public void processAfterHurtEffects(Creature creature) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void makeRaceChoices(PlayerCharacter pc, DndClass dndClass) {
 		Utils.print("What is your character's name? From the book it suggests the following male and female names:");
 		Utils.print("Male Names: Aesthetic, Arannis, Berrian, Dayereth, Erevan, Galinndan, Hadarai, Immeral, Mindartis, Paelias, Quarion, Riardon, Soveliss");
@@ -62,7 +57,7 @@ public class Eladrin extends Race {
 		pc.setSize(Size.MEDIUM);
 		
 		Utils.print("Setting speed to 6.");
-		pc.setSpeed(6);
+		pc.setBaseSpeed(6);
 		
 		Utils.print("Adding low-light vision to senses.");
 		pc.addSense(new Sense(SenseType.LOWLIGHT_VISION));
@@ -151,11 +146,15 @@ public class Eladrin extends Race {
 		
 		pc.addWeaponTypeProficiency(WeaponType.LONGSWORD);
 
-		Utils.print("As an Eladrin, you get a +1 bonus to your will defense.  Adding that to misc 1.");
-		pc.setWillMisc1(pc.getWillMisc1()+1);
+		Utils.print("As an Eladrin, you get a +1 bonus to your will defense.");
+		setWillBonus(getWillBonus()+1);
 		
-		// TODO: +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step
-		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Fey Origin, Trance, Fey Step.");
+		pc.setOrigin(Origin.FEY);
+
+		// TODO: +5 racial bonus to charm effects, Trance, Fey Step
+		Utils.print("NOTE: I have not yet coded +5 racial bonus to charm effects, Trance.");
+		
+		pc.addPower(new FeyStep());
 	
 	}
 
@@ -163,9 +162,8 @@ public class Eladrin extends Race {
 	public void makeRacialAbilityScoreAdjustments(PlayerCharacter pc,
 			DndClass dndClass) {
 		Utils.print("As an Eladrin you get +2 to Dexterity and Intelligence.");
-		pc.setDexterity(pc.getDexterity() + 2);
-		pc.setIntelligence(pc.getIntelligence() + 2);
-		
+		setDexterityBonus(getDexterityBonus()+2);
+		setIntelligenceBonus(getIntelligenceBonus()+2);		
 	}
 
 }

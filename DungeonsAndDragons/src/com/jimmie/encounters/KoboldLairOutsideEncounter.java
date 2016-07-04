@@ -2,76 +2,75 @@ package com.jimmie.encounters;
 
 import java.util.ArrayList;
 
+import com.jimmie.domain.DurationType;
 import com.jimmie.domain.Position;
+import com.jimmie.domain.SkillType;
+import com.jimmie.domain.TemporaryEffectReason;
+import com.jimmie.domain.TurnTaker;
 import com.jimmie.domain.creatures.monsters.KoboldDragonshield;
 import com.jimmie.domain.creatures.monsters.KoboldMinion;
 import com.jimmie.domain.creatures.monsters.KoboldSkirmisher;
 import com.jimmie.domain.creatures.monsters.KoboldSlinger;
 import com.jimmie.domain.creatures.monsters.Monster;
-import com.jimmie.domain.creatures.Character;
-import com.jimmie.domain.map.LocationType;
+import com.jimmie.domain.creatures.CreatureConditionType;
+import com.jimmie.domain.creatures.DndCharacter;
 import com.jimmie.domain.map.Map;
-import com.jimmie.domain.map.MapLocation;
+import com.jimmie.util.SkillCheck;
 import com.jimmie.util.Utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class KoboldLairOutsideEncounter extends Encounter {
-	public KoboldLairOutsideEncounter() {
+	@Autowired
+	private KoboldMinion m1;
+	@Autowired
+	private KoboldMinion m2;
+	@Autowired
+	private KoboldMinion m3;
+	@Autowired
+	private KoboldMinion m4;
+	@Autowired
+	private KoboldMinion m5;
+	@Autowired
+	private KoboldMinion m6;
+	@Autowired
+	private KoboldMinion m7;
+	@Autowired
+	private KoboldMinion m8;
+	@Autowired
+	private KoboldMinion m9;
+	@Autowired
+	private KoboldMinion m10;
+	@Autowired
+	private KoboldSkirmisher k;
+	@Autowired
+	private KoboldDragonshield d;
+	@Autowired
+	private KoboldSlinger s;
+	@Autowired
+	private DndCharacter gamal;
+	@Autowired
+	private DndCharacter percian;
+	@Autowired
+	private DndCharacter keothi;
+	@Autowired
+	private DndCharacter travok;
+	@Autowired
+	private DndCharacter hazel;
+	
+	@Override
+	public void init() {
+		Encounter.setMonstersVisible(false);
+		
+		gamal.setCurrentPosition(new Position (-1,-1));
+		percian.setCurrentPosition(new Position (-1,-1));
+		keothi.setCurrentPosition(new Position (-1,-1));
+		travok.setCurrentPosition(new Position (-1,-1));
+		hazel.setCurrentPosition(new Position (-1,-1));
+		
 		/* Set up the monsters */
-		KoboldMinion m1 = new KoboldMinion();
-		m1.setName("Kobold Minion 1");
-		m1.setDisplayName("M1");
-		m1.setCurrentPosition(new Position(4,4));
-		KoboldMinion m2 = new KoboldMinion();
-		m2.setName("Kobold Minion 2");
-		m2.setDisplayName("M2");
-		m2.setCurrentPosition(new Position(5,3));
-		KoboldMinion m3 = new KoboldMinion();
-		m3.setName("Kobold Minion 3");
-		m3.setDisplayName("M3");
-		m3.setCurrentPosition(new Position(6,6));
-		KoboldMinion m4 = new KoboldMinion();
-		m4.setName("Kobold Minion 4");
-		m4.setDisplayName("M4");
-		m4.setCurrentPosition(new Position(7,3));
-		KoboldMinion m5 = new KoboldMinion();
-		m5.setName("Kobold Minion 5");
-		m5.setDisplayName("M5");
-		m5.setCurrentPosition(new Position(8,7));
-		KoboldMinion m6 = new KoboldMinion();
-		m6.setName("Kobold Minion 6");
-		m6.setDisplayName("M6");
-		m6.setCurrentPosition(new Position(9,11));
-		KoboldMinion m7 = new KoboldMinion();
-		m7.setName("Kobold Minion 7");
-		m7.setDisplayName("M7");
-		m7.setCurrentPosition(new Position(11,13));
-		KoboldMinion m8 = new KoboldMinion();
-		m8.setName("Kobold Minion 8");
-		m8.setDisplayName("M8");
-		m8.setCurrentPosition(new Position(13,7));
-		KoboldMinion m9 = new KoboldMinion();
-		m9.setName("Kobold Minion 9");
-		m9.setDisplayName("M9");
-		m9.setCurrentPosition(new Position(13,9));
-		KoboldMinion m10 = new KoboldMinion();
-		m10.setName("Kobold Minion 10");
-		m10.setDisplayName("M10");
-		m10.setCurrentPosition(new Position(14,13));
-			
-		KoboldSkirmisher k = new KoboldSkirmisher();
-		k.setName("Kobold Skirmisher");
-		k.setDisplayName("K");
-		k.setCurrentPosition(new Position(15,19));
-		
-		KoboldDragonshield d = new KoboldDragonshield();
-		d.setName("Kobold Dragonshield");
-		d.setDisplayName("D");
-		d.setCurrentPosition(new Position(7,11));
-		
-		KoboldSlinger s = new KoboldSlinger();
-		s.setName("Kobold Slinger");
-		s.setDisplayName("S");
-		s.setCurrentPosition(new Position(14,15));
 		monsters = new ArrayList<Monster>();		
 		
 		monsters.add(m1);		
@@ -82,36 +81,103 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		monsters.add(m6);		
 		monsters.add(m7);		
 		monsters.add(m8);		
-		monsters.add(m9);		
+		monsters.add(m9);
 		monsters.add(m10);
+		
 		monsters.add(k);
 		monsters.add(d);
 		monsters.add(s);
-
-		
 	
 		/* Set up the player characters */
-		Character elfAvenger = Utils.loadCharacter("Aelar");
-		elfAvenger.setCurrentPosition(new Position(3,19));
-		Character kellen = Utils.loadCharacter("Jim");
-		kellen.setCurrentPosition(new Position(1,21));
-		Character glock = Utils.loadCharacter("Jim");
-		glock.setCurrentPosition(new Position(1,19));
-		Character halfOrcFighter = Utils.loadCharacter("Jim");
-		halfOrcFighter.setCurrentPosition(new Position(3,18));
-		Character zanros = Utils.loadCharacter("Jim");
-		zanros.setCurrentPosition(new Position(2,20));
+/*		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(gamal.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		gamal.addReadiedWeapon(readiedWeapon);
+		gamal.setReadiedArmor(gamal.getArmor().get(0));
+		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(percian.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		percian.addReadiedWeapon(readiedWeapon);
+		percian.setReadiedArmor(percian.getArmor().get(0));
+		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(keothi.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		keothi.addReadiedWeapon(readiedWeapon);
+		keothi.setReadiedArmor(keothi.getArmor().get(0));
+		readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(travok.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		travok.addReadiedWeapon(readiedWeapon);
+		travok.setReadiedArmor(travok.getArmor().get(0));
 		
-		characters = new ArrayList<Character>();
-		characters.add(elfAvenger);
-		characters.add(kellen);
-		characters.add(glock);
-		characters.add(halfOrcFighter);
-		characters.add(zanros);
+		for (Gear gear : travok.getGear()) {
+			if (HolySymbol.class.isAssignableFrom(gear.getClass())) {
+				travok.setReadiedImplement((Implement) gear);
+			}
+		}
+		ReadiedWeapon readiedWeapon = new ReadiedWeapon();
+		readiedWeapon.setWeapon(hazel.getWeapons().get(0));
+		if (readiedWeapon.getWeapon().getHandType() == WeaponHandType.TWO_HANDED) {
+			readiedWeapon.setHand(Hand.BOTH_HANDS);
+		} else {
+			readiedWeapon.setHand(Hand.MAIN_HAND);
+		}
+		hazel.addReadiedWeapon(readiedWeapon);
+		hazel.setReadiedArmor(hazel.getArmor().get(0));
+*/		
+
+//		gamal.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Gamal.jpg");		
+//		gamal.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\GamalBloodied.jpg");		
+//		percian.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Percian.JPG");
+//		percian.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\PercianBloodied.JPG");
+//		keothi.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Keothi.JPG");
+//		keothi.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\KeothiBloodied.JPG");
+//		travok.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Travok.JPG");
+//		travok.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\TravokBloodied.JPG");
+//		hazel.setImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\Hazel.JPG");
+//		hazel.setBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\HazelBloodied.JPG");
+/*		
+		if (Druid.class.isAssignableFrom(hazel.getDndClass().getClass())) {
+			((Druid) hazel.getDndClass()).setBeastFormImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolf.JPG");
+			((Druid) hazel.getDndClass()).setBeastFormBloodiedImagePath("c:\\GitRepositories\\jim-dandy\\DungeonsAndDragons\\resources\\DungeonTiles\\Monsters\\GrayWolfBloodied.JPG");
+		}
+*/
+//		Utils.saveCharacter(gamal);
+//		Utils.saveCharacter(percian);
+//		Utils.saveCharacter(keothi);
+//		Utils.saveCharacter(travok);
+//		Utils.saveCharacter(hazel);
+		
+		
+		characters = new ArrayList<DndCharacter>();
+
+		
+		characters.add(gamal);
+		characters.add(percian);
+		characters.add(keothi);
+		characters.add(travok);
+		characters.add(hazel);
 		
 		map = new Map();
 		map.setWidth(15);
 		map.setHeight(21);
+		/* Commenting out.  If I want to run this encounter again, I'll have to refactor all this.		
 		map.addLocation(new MapLocation(new Position(1,1), LocationType.SHALLOW_RIVER));
 		map.addLocation(new MapLocation(new Position(1,2), LocationType.SHALLOW_RIVER));
 		map.addLocation(new MapLocation(new Position(1,3), LocationType.GRASS));
@@ -427,5 +493,226 @@ public class KoboldLairOutsideEncounter extends Encounter {
 		map.addLocation(new MapLocation(new Position(15,19), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(15,20), LocationType.GRASS));
 		map.addLocation(new MapLocation(new Position(15,21), LocationType.GRASS));
+		*/
+	}
+	
+	public KoboldMinion getM1() {
+		return m1;
+	}
+
+	public void setM1(KoboldMinion m1) {
+		this.m1 = m1;
+	}
+
+	public KoboldMinion getM2() {
+		return m2;
+	}
+
+	public void setM2(KoboldMinion m2) {
+		this.m2 = m2;
+	}
+
+	public KoboldMinion getM3() {
+		return m3;
+	}
+
+	public void setM3(KoboldMinion m3) {
+		this.m3 = m3;
+	}
+
+	public KoboldMinion getM4() {
+		return m4;
+	}
+
+	public void setM4(KoboldMinion m4) {
+		this.m4 = m4;
+	}
+
+	public KoboldMinion getM5() {
+		return m5;
+	}
+
+	public void setM5(KoboldMinion m5) {
+		this.m5 = m5;
+	}
+
+	public KoboldMinion getM6() {
+		return m6;
+	}
+
+	public void setM6(KoboldMinion m6) {
+		this.m6 = m6;
+	}
+
+	public KoboldMinion getM7() {
+		return m7;
+	}
+
+	public void setM7(KoboldMinion m7) {
+		this.m7 = m7;
+	}
+
+	public KoboldMinion getM8() {
+		return m8;
+	}
+
+	public void setM8(KoboldMinion m8) {
+		this.m8 = m8;
+	}
+
+	public KoboldMinion getM9() {
+		return m9;
+	}
+
+	public void setM9(KoboldMinion m9) {
+		this.m9 = m9;
+	}
+
+	public KoboldMinion getM10() {
+		return m10;
+	}
+
+	public void setM10(KoboldMinion m10) {
+		this.m10 = m10;
+	}
+	
+
+	public KoboldSkirmisher getK() {
+		return k;
+	}
+
+	public void setK(KoboldSkirmisher k) {
+		this.k = k;
+	}
+
+	public KoboldDragonshield getD() {
+		return d;
+	}
+
+	public void setD(KoboldDragonshield d) {
+		this.d = d;
+	}
+
+	public KoboldSlinger getS() {
+		return s;
+	}
+
+	public void setS(KoboldSlinger s) {
+		this.s = s;
+	}
+
+	public DndCharacter getGamal() {
+		return gamal;
+	}
+
+	public void setGamal(DndCharacter gamal) {
+		this.gamal = gamal;
+	}
+
+	public DndCharacter getKeothi() {
+		return keothi;
+	}
+
+	public void setKeothi(DndCharacter keothi) {
+		this.keothi = keothi;
+	}
+
+	public DndCharacter getTravok() {
+		return travok;
+	}
+
+	public void setTravok(DndCharacter travok) {
+		this.travok = travok;
+	}
+
+	public DndCharacter getHazel() {
+		return hazel;
+	}
+
+	public void setHazel(DndCharacter hazel) {
+		this.hazel = hazel;
+	}
+
+	public DndCharacter getPercian() {
+		return percian;
+	}
+
+	public void setPercian(DndCharacter percian) {
+		this.percian = percian;
+	}
+
+	@Override
+	public void setup() {
+		// Put the characters on the road.
+		Utils.print("Place characters in the clearing on the left hand edge of the map. Take into consideration whether or not");
+		Utils.print("the PC's will want to sneak attack.");
+		
+		boolean allStealthChecksSucceeded = true;
+		
+		for (DndCharacter character : getCharacters()) {
+			Utils.print("Where do you want to put " + character.getName() + "?");
+
+			Encounter.showCoordinateSystem(true);
+			
+			Utils.print("Please enter the X coordinate (1 - 8).");
+			int x = Utils.getValidIntInputInRange(1, 8);
+
+			Utils.print("Please enter the Y coordinate (1 - 21).");
+			int y = Utils.getValidIntInputInRange(1, 21);
+			Encounter.showCoordinateSystem(false);
+			
+			character.setCurrentPosition(new Position(x,y));
+			
+			Utils.print("Perception Check:");
+			SkillCheck skillCheck = new SkillCheck();
+			skillCheck.setDifficultyClass(13);
+			skillCheck.setSkillType(SkillType.PERCEPTION);
+			int roll = character.skillCheckRoll(skillCheck);
+			if (roll >= 15) {
+				Utils.print("Several kobolds are visible through the trees.");
+				Encounter.setMonstersVisible(true);
+			} else if (roll >= 13) {
+				Utils.print("The sound of many voices is just audible over the din of the waterfall.");
+			}
+			
+			Utils.print("Stealth Check:");
+			skillCheck = new SkillCheck();
+			skillCheck.setDifficultyClass(12);
+			skillCheck.setSkillType(SkillType.STEALTH);
+			if (!character.performSkillCheck(skillCheck)) {
+				Utils.print(character.getName() + " was a little too noisy and the enemies are alerted to your presence.");
+				allStealthChecksSucceeded = false;
+			}
+		}
+		
+		if (allStealthChecksSucceeded) {
+			// Surprise round.
+			m1.setTemporaryCondition(m1, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m1.getCurrentTurn());
+			m2.setTemporaryCondition(m2, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m2.getCurrentTurn());
+			m3.setTemporaryCondition(m3, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m3.getCurrentTurn());
+			m4.setTemporaryCondition(m4, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m4.getCurrentTurn());
+			m5.setTemporaryCondition(m5, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m5.getCurrentTurn());
+			m6.setTemporaryCondition(m6, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m6.getCurrentTurn());
+			m7.setTemporaryCondition(m7, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m7.getCurrentTurn());
+			m8.setTemporaryCondition(m8, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m8.getCurrentTurn());
+			m9.setTemporaryCondition(m9, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m9.getCurrentTurn());
+			m10.setTemporaryCondition(m10, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, m10.getCurrentTurn());
+			k.setTemporaryCondition(k, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, k.getCurrentTurn());
+			d.setTemporaryCondition(d, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, d.getCurrentTurn());
+			s.setTemporaryCondition(s, DurationType.END_OF_NEXT_TURN, CreatureConditionType.SURPRISED, TemporaryEffectReason.SURPRISE_ROUND, s.getCurrentTurn());
+		}
+	}
+
+	@Override
+	protected void makeEncounterInitiativeChanges() {
+		// The dragonshield and skirmisher are supposed to have an initiative 1 lower than the minion's initiative.
+		d.setInitiativeRoll(m1.getInitiativeRoll()-2); // Setting dragonshield to -2 because they have a +4 initiative while the minions have +3.  So I have to subtract 2 to get a total roll that's 1 less.
+		k.setInitiativeRoll(m1.getInitiativeRoll()-3); // Setting skirmisher to -3 because they have a +5 initiative while the minions have +3.  So I have to subtract 2 to get a total roll that's 1 less.
+		
+	}
+
+	@Override
+	public boolean isActive(TurnTaker nextParticipant) {
+		return true;
 	}
 }
